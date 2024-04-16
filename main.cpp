@@ -14,9 +14,9 @@
 //ウィンドウプロシージャ
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
-void Log(const std::string& message);
-
-
+void Log(const std::string& message) {
+	OutputDebugStringA(message.c_str());
+}
 
 std::wstring ConvertString(const std::string& str) {
 	if (str.empty()) {
@@ -124,7 +124,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
 
-			Log(std::format(L"Use Adapter:{}\n", adapterDesc.Description));
+			Log(ConvertString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
 			break;
 		}
 		useAdapter = nullptr;
@@ -170,8 +170,4 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	//標準のメッセージ処理を行う
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 
-}
-
-void Log(const std::string& message) {
-	OutputDebugStringA(message.c_str());
 }
