@@ -65,7 +65,9 @@ PixelShaderOutput main(VertexShaderOutput input)
     if (gMaterial.enableLighting != 0)
     {
         
-        float att = GetDistanceAttenuation(gDirectionalLight.lightPosition, gDirectionalLight.lightInvSqrRadius);
+        float lightInvRadiusSq = 1 / pow(gDirectionalLight.lightInvSqrRadius, 2.0f);
+        
+        float att = GetDistanceAttenuation(gDirectionalLight.lightPosition, lightInvRadiusSq);
         
         output.color = gMaterial.color * textureColor * gDirectionalLight.color * gDirectionalLight.intensity * att;
         
