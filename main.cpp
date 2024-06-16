@@ -1218,8 +1218,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	directionalLightData->direction = Normalize({ -0.3f,-1.0f,0.0f });
 	directionalLightData->color = { 1.0f,1.0f,1.0f,1.0f };
 	directionalLightData->intensity = 1.0f;
-	directionalLightData->lightInnerCos = 1.0f;
-	directionalLightData->lightOuterCos = 1.5f;
+	directionalLightData->lightInnerCos = 0.5f;
+	directionalLightData->lightOuterCos = 1.0f;
 
 
 	///===================================================================
@@ -1619,8 +1619,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderFloat3("direction", &directionalLightData->direction.x, -1.0f, 1.0f);
 				ImGui::ColorEdit4("color", &directionalLightData->color.x);
 				ImGui::SliderFloat("intensity", &directionalLightData->intensity, 0.0f, 1.0f);
-				ImGui::SliderFloat("lightInnerCos", &directionalLightData->lightInnerCos, -7.0f, 7.0f);
-				ImGui::SliderFloat("lightOuterCos", &directionalLightData->lightOuterCos, -7.0f, 7.0f);
+				ImGui::SliderFloat("lightInnerCos", &directionalLightData->lightInnerCos, -1.0f, 1.0f);
+				ImGui::SliderFloat("lightOuterCos", &directionalLightData->lightOuterCos, -1.0f, 1.0f);
 
 			}
 

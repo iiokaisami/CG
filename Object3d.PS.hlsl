@@ -70,6 +70,28 @@ float GetAngleAttenuation
     return t * t;
 }
 
+/*float GetAngleAttenuation
+(
+   float3 unnormalizedLightVector,
+   float3 direction,
+   float lightAngleScale,
+   float lightAngleOffset
+)
+{
+    
+    float cd = dot(direction, unnormalizedLightVector);
+    
+    float attenuation = saturate(cd * lightAngleScale + lightAngleOffset);
+    
+    //滑らかに変化させる
+    attenuation *= attenuation;
+    
+    return attenuation;
+    
+}*/
+
+#define MIN_DIST (0.01)
+
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
@@ -77,18 +99,31 @@ PixelShaderOutput main(VertexShaderOutput input)
     
     if (gMaterial.enableLighting != 0)
     {
+        float minDist = 0.01;
+        
         float lightInvRadiusSq = 1/pow(gDirectionalLight.lightInvSqrRadius, 2.0f);
         
         float3 unnormalizedLightVector = gDirectionalLight.lightPosition;
         
+        
         float3 L = normalize(unnormalizedLightVector);
+       /* float lightAngleScale = 1.0f / max(0.001f, (gDirectionalLight.lightInnerCos - gDirectionalLight.lightOuterCos));
+        float lightAngleOffset = -gDirectionalLight.lightOuterCos * lightAngleScale;
         
-        float att = GetAngleAttenuation(dot(-L, gDirectionalLight.direction),gDirectionalLight.lightInnerCos,gDirectionalLight.lightOuterCos);
+        float sqrDist = dot(unnormalizedLightVector, unnormalizedLightVector);
+           
+        float att = 1.0f / max(sqrDist, MIN_DIST * MIN_DIST);
         
+        att *= GetAngleAttenuation(-L, gDirectionalLight.direction, lightAngleScale, lightAngleOffset);*/
+        
+        float att = GetAngleAttenuation(dot(-L, gDirectionalLight.direction), gDirectionalLight.lightInnerCos, gDirectionalLight.lightOuterCos);
         att = GetDistanceAttenuation(unnormalizedLightVector, lightInvRadiusSq);
         
-        output.color = gMaterial.color * textureColor * gDirectionalLight.color * gDirectionalLight.intensity * att;
+        float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
+        float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
         
+        output.color = gMaterial.color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity * att;
+       
     }
     else
     {
