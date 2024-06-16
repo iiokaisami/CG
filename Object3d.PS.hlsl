@@ -16,9 +16,6 @@ struct DirectionalLight
     float lightInnerCos; //角度減衰が起こらない範囲を表す角
     float lightOuterCos; //ライトが当たる範囲を表す角
     
-    //float4 color;//ライトの色
-    //float3 direction; //ライトの向き
-    //float intensity;//輝度
 };
 
 ConstantBuffer<Material> gMaterial : register(b0);
@@ -86,22 +83,12 @@ PixelShaderOutput main(VertexShaderOutput input)
         
         float3 L = normalize(unnormalizedLightVector);
         
-        float att = GetAngleAttenuation(
-        dot(-L, gDirectionalLight.direction),
-        gDirectionalLight.lightInnerCos,
-        gDirectionalLight.lightOuterCos);
+        float att = GetAngleAttenuation(dot(-L, gDirectionalLight.direction),gDirectionalLight.lightInnerCos,gDirectionalLight.lightOuterCos);
         
-        att *= GetDistanceAttenuation(unnormalizedLightVector, lightInvRadiusSq);
+        att = GetDistanceAttenuation(unnormalizedLightVector, lightInvRadiusSq);
         
         output.color = gMaterial.color * textureColor * gDirectionalLight.color * gDirectionalLight.intensity * att;
         
-        //float att = GetDistanceAttenuation(gDirectionalLight.lightPosition, gDirectionalLight.lightInvSqrRadius);
-        
-        //output.color = gMaterial.color * textureColor * gDirectionalLight.color * gDirectionalLight.intensity * att;
-        
-        //float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
-        //float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
-        //output.color = gMaterial.color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity;
     }
     else
     {
