@@ -68,8 +68,12 @@ struct DirectionalLight
 {
 	Vector3 lightPosition; //ライトの位置
 	float lightInvSqrRadius; //ライトがとどく距離
+	Vector3 direction; //ライトの向き
 	Vector4 color; //ライトの色
 	float intensity; //輝度
+	float lightInnerCos; //角度減衰が起こらない範囲を表す角
+	float lightOuterCos; //ライトが当たる範囲を表す角
+
 
 	//Vector4 color;//ライトの色
 	//Vector3 direction;//ライトの向き
@@ -1210,9 +1214,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//デフォルト値は以下のようにしておく
 	directionalLightData->lightPosition = { 0.0f,1.0f,0.0f };
-	directionalLightData->lightInvSqrRadius = 0.4f;
+	directionalLightData->lightInvSqrRadius = 5.0f;
+	directionalLightData->direction = Normalize({ 0.0f,-1.0f,0.0f });
 	directionalLightData->color = { 1.0f,1.0f,1.0f,1.0f };
 	directionalLightData->intensity = 1.0f;
+	directionalLightData->lightInnerCos = 1.0f;
+	directionalLightData->lightOuterCos = 1.5f;
 
 	//directionalLightData->color = { 1.0f,1.0f,1.0f,1.0f };
 	//directionalLightData->direction = Normalize({ 0.0f,-1.0f,0.0f });

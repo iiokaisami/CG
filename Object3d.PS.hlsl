@@ -86,8 +86,14 @@ PixelShaderOutput main(VertexShaderOutput input)
         
         float3 L = normalize(unnormalizedLightVector);
         
-        float att=GetAngleAttenuation(unnormalizedLightVector,)
+        float att = GetAngleAttenuation(
+        dot(-L, gDirectionalLight.direction),
+        gDirectionalLight.lightInnerCos,
+        gDirectionalLight.lightOuterCos);
         
+        att *= GetDistanceAttenuation(unnormalizedLightVector, lightInvRadiusSq);
+        
+        output.color = gMaterial.color * textureColor * gDirectionalLight.color * gDirectionalLight.intensity * att;
         
         //float att = GetDistanceAttenuation(gDirectionalLight.lightPosition, gDirectionalLight.lightInvSqrRadius);
         
