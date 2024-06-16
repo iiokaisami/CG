@@ -66,9 +66,14 @@ struct Material
 
 struct DirectionalLight
 {
-	Vector4 color;
-	Vector3 direction;
-	float intensity;
+	Vector3 lightPosition; //ライトの位置
+	float lightInvSqrRadius; //ライトがとどく距離
+	Vector4 color; //ライトの色
+	float intensity; //輝度
+
+	//Vector4 color;//ライトの色
+	//Vector3 direction;//ライトの向き
+	//float intensity;//輝度
 };
 
 //DirectX12
@@ -1109,8 +1114,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//1頂点当たりのサイズ
 	vertexBufferView.StrideInBytes = sizeof(VertexData);
 
-
-	/*     スプライト     */
+    //   スプライト     
 	//頂点バッファビューを作成する
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewSprite{};
 	//リソースの先頭アドレスから使う
@@ -1205,9 +1209,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	);
 
 	//デフォルト値は以下のようにしておく
+	directionalLightData->lightPosition = { 0.0f,1.0f,0.0f };
+	directionalLightData->lightInvSqrRadius = 0.4f;
 	directionalLightData->color = { 1.0f,1.0f,1.0f,1.0f };
-	directionalLightData->direction = Normalize({ 0.0f,-1.0f,0.0f });
 	directionalLightData->intensity = 1.0f;
+
+	//directionalLightData->color = { 1.0f,1.0f,1.0f,1.0f };
+	//directionalLightData->direction = Normalize({ 0.0f,-1.0f,0.0f });
+	//directionalLightData->intensity = 1.0f;
 
 	///===================================================================
 	///DepthStencilTextureをウィンドウのサイズで作成
@@ -1577,7 +1586,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			ImGui::Begin("Setting");
 
 			ImGui::Text("camera");
-			ImGui::SliderFloat3("cameraPosition", &cameraTransform.translate.x, -100.0f, 0.0f);
+			ImGui::SliderFloat3("cameraPosition", &cameraTransform.translate.x, -5.0f, 5.0f);
+			ImGui::SliderFloat3("cameraRotation", &cameraTransform.rotate.x, -5.0f, 5.0f);
 			ImGui::Checkbox("useMonsterBall", &useMonsterBall);
 
 			//改行
@@ -1600,9 +1610,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			if (ImGui::CollapsingHeader("Lighting"))
 			{
+				ImGui::SliderFloat3("position", &directionalLightData->lightPosition.x,-5.0f,5.0f);
+				ImGui::SliderFloat("Distance travels", &directionalLightData->lightInvSqrRadius, 0.0f, 7.0f);
 				ImGui::ColorEdit4("color", &directionalLightData->color.x);
-				ImGui::SliderFloat3("direction", &directionalLightData->direction.x, -1.0f, 1.0f);
 				ImGui::SliderFloat("intensity", &directionalLightData->intensity, 0.0f, 1.0f);
+
+				//ImGui::ColorEdit4("color", &directionalLightData->color.x);
+				//ImGui::SliderFloat3("direction", &directionalLightData->direction.x, -1.0f, 1.0f);
+				//ImGui::SliderFloat("intensity", &directionalLightData->intensity, 0.0f, 1.0f);
 
 			}
 
