@@ -1210,7 +1210,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//デフォルト値は以下のようにしておく
 	directionalLightData->lightPosition = { 0.0f,1.0f,0.0f };
-	directionalLightData->lightInvSqrRadius = 0.4f;
+	directionalLightData->lightInvSqrRadius = 5.0f;
 	directionalLightData->color = { 1.0f,1.0f,1.0f,1.0f };
 	directionalLightData->intensity = 1.0f;
 
