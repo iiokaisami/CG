@@ -70,6 +70,7 @@ struct DirectionalLight
 	float lightInvSqrRadius; //ライトがとどく距離
 	Vector4 color; //ライトの色
 	float intensity; //輝度
+	Vector3 direction;//ライトの向き
 
 	//Vector4 color;//ライトの色
 	//Vector3 direction;//ライトの向き
@@ -1213,6 +1214,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	directionalLightData->lightInvSqrRadius = 5.0f;
 	directionalLightData->color = { 1.0f,1.0f,1.0f,1.0f };
 	directionalLightData->intensity = 1.0f;
+	directionalLightData->direction = Normalize({ 0.0f,-1.0f,0.0f });
 
 	//directionalLightData->color = { 1.0f,1.0f,1.0f,1.0f };
 	//directionalLightData->direction = Normalize({ 0.0f,-1.0f,0.0f });
@@ -1613,6 +1615,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderFloat3("position", &directionalLightData->lightPosition.x,-5.0f,5.0f);
 				ImGui::SliderFloat("Distance travels", &directionalLightData->lightInvSqrRadius, 0.0f, 7.0f);
 				ImGui::ColorEdit4("color", &directionalLightData->color.x);
+				ImGui::SliderFloat3("direction", &directionalLightData->direction.x, -1.0f, 1.0f);
 				ImGui::SliderFloat("intensity", &directionalLightData->intensity, 0.0f, 1.0f);
 
 				//ImGui::ColorEdit4("color", &directionalLightData->color.x);

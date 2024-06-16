@@ -12,6 +12,7 @@ struct DirectionalLight
     float lightInvSqrRadius; //ライトがとどく距離
     float4 color; //ライトの色
     float intensity; //輝度
+    float3 direction; //ライトの向き
     
     //float4 color;//ライトの色
     //float3 direction;//ライトの向き
@@ -69,7 +70,10 @@ PixelShaderOutput main(VertexShaderOutput input)
         
         float att = GetDistanceAttenuation(gDirectionalLight.lightPosition, lightInvRadiusSq);
         
-        output.color = gMaterial.color * textureColor * gDirectionalLight.color * gDirectionalLight.intensity * att;
+        float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
+        float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
+        
+        output.color = gMaterial.color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity * att;
         
         //float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
         //float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
