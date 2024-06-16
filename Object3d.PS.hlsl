@@ -56,7 +56,7 @@ float GetDistanceAttenuation
     return attenuation;
 }
 
-float GetAngleAttenuation
+/*float GetAngleAttenuation
 (
    float cos_s, //ライト方向ベクトルと光源ベクトルの内積
    float cos_p, //内側のcos
@@ -68,9 +68,9 @@ float GetAngleAttenuation
     float d = max(cos_p - cos_u, minDist);
     float t = saturate((cos_s - cos_u) / d);
     return t * t;
-}
+}*/
 
-/*float GetAngleAttenuation
+float GetAngleAttenuation
 (
    float3 unnormalizedLightVector,
    float3 direction,
@@ -84,11 +84,8 @@ float GetAngleAttenuation
     float attenuation = saturate(cd * lightAngleScale + lightAngleOffset);
     
     //滑らかに変化させる
-    attenuation *= attenuation;
-    
-    return attenuation;
-    
-}*/
+    return attenuation * attenuation;
+}
 
 #define MIN_DIST (0.01)
 
@@ -107,17 +104,17 @@ PixelShaderOutput main(VertexShaderOutput input)
         
         
         float3 L = normalize(unnormalizedLightVector);
-       /* float lightAngleScale = 1.0f / max(0.001f, (gDirectionalLight.lightInnerCos - gDirectionalLight.lightOuterCos));
+       float lightAngleScale = 1.0f / max(0.001f, (gDirectionalLight.lightInnerCos - gDirectionalLight.lightOuterCos));
         float lightAngleOffset = -gDirectionalLight.lightOuterCos * lightAngleScale;
         
         float sqrDist = dot(unnormalizedLightVector, unnormalizedLightVector);
            
         float att = 1.0f / max(sqrDist, MIN_DIST * MIN_DIST);
         
-        att *= GetAngleAttenuation(-L, gDirectionalLight.direction, lightAngleScale, lightAngleOffset);*/
+        att *= GetAngleAttenuation(-L, gDirectionalLight.direction, lightAngleScale, lightAngleOffset);
         
-        float att = GetAngleAttenuation(dot(-L, gDirectionalLight.direction), gDirectionalLight.lightInnerCos, gDirectionalLight.lightOuterCos);
-        att = GetDistanceAttenuation(unnormalizedLightVector, lightInvRadiusSq);
+        //float att = GetAngleAttenuation(dot(-L, gDirectionalLight.direction), gDirectionalLight.lightInnerCos, gDirectionalLight.lightOuterCos);
+        //att /***/= GetDistanceAttenuation(unnormalizedLightVector, lightInvRadiusSq);
         
         float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
         float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
