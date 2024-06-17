@@ -111,7 +111,7 @@ PixelShaderOutput main(VertexShaderOutput input)
            
         float att = 1.0f / max(sqrDist, MIN_DIST * MIN_DIST);
         
-        att *= GetAngleAttenuation(-L, gDirectionalLight.direction, lightAngleScale, lightAngleOffset);
+        att /***/= GetAngleAttenuation(-L, gDirectionalLight.direction, lightAngleScale, lightAngleOffset);
         
         //float att = GetAngleAttenuation(dot(-L, gDirectionalLight.direction), gDirectionalLight.lightInnerCos, gDirectionalLight.lightOuterCos);
         //att /***/= GetDistanceAttenuation(unnormalizedLightVector, lightInvRadiusSq);
