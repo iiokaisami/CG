@@ -1097,7 +1097,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		reinterpret_cast<void**>(&vertexDataSprite)
 	);
 
-	//１枚目の三角形
 	vertexDataSprite[0].position = { 0.0f,360.0f,0.0f,1.0f };
 	vertexDataSprite[0].texcoord = { 0.0f,1.0f };
 	vertexDataSprite[0].normal = { 0.0f,0.0f,-1.0f };
@@ -1108,21 +1107,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	vertexDataSprite[2].position = { 640.0f,360.0f,0.0f,1.0f };
 	vertexDataSprite[2].texcoord = { 1.0f,1.0f };
+	vertexDataSprite[2].normal = { 0.0f,0.0f,-1.0f };
+
+	vertexDataSprite[3].position = { 640.0f,0.0f,0.0f,1.0f };
+	vertexDataSprite[3].texcoord = { 1.0f,0.0f };
 	vertexDataSprite[3].normal = { 0.0f,0.0f,-1.0f };
-
-	//２枚目の三角形
-	vertexDataSprite[3].position = { 0.0f,0.0f,0.0f,1.0f };
-	vertexDataSprite[3].texcoord = { 0.0f,0.0f };
-	vertexDataSprite[3].normal = { 0.0f,0.0f,-1.0f };
-
-	vertexDataSprite[4].position = { 640.0f,0.0f,0.0f,1.0f };
-	vertexDataSprite[4].texcoord = { 1.0f,0.0f };
-	vertexDataSprite[4].normal = { 0.0f,0.0f,-1.0f };
-
-	vertexDataSprite[5].position = { 640.0f,360.0f,0.0f,1.0f };
-	vertexDataSprite[5].texcoord = { 1.0f,1.0f };
-	vertexDataSprite[5].normal = { 0.0f,0.0f,-1.0f };
-
 
 
 	//IndexResourceを生成する
@@ -1513,6 +1502,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderFloat3("translate", &transform.translate.x, -20.0f, 20.0f);
 				ImGui::SliderFloat3("scale", &transform.scale.x, 0.0f, 5.0f);
 			}
+			if (ImGui::CollapsingHeader("vertexDataSprite"))
+			{
+				ImGui::SliderFloat3("translate", &transformSprite.translate.x, -20.0f, 20.0f);
+				ImGui::SliderFloat3("scale", &transformSprite.scale.x, 0.0f, 5.0f);
+			}
 			if (ImGui::CollapsingHeader("Lighting"))
 			{
 				ImGui::ColorEdit4("color", &directionalLightData->color.x);
@@ -1625,17 +1619,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			commandList->DrawInstanced(1536/* 頂点数。今回は分割数は縦横16 */, 1, 0, 0);
 
 
-			////Spriteの描画。変更が必要なものだけ変更する
-			//commandList->IASetVertexBuffers(0, 1, &vertexBufferViewSprite);
-			////TransformationMatrixCBufferの場所を設定
-			//commandList->SetGraphicsRootConstantBufferView(1, transformationMatrixResourceSprite->GetGPUVirtualAddress());
-			////SRVのDescriptorTableの先頭を設定。2はrootPatameter[2]である。
-			//commandList->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
 
-			//commandList->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
 
-			////スプライトの描画(DrawCall//ドローコール)
-			//commandList->DrawInstanced(6, 1, 0, 0);
+			//Spriteの描画。変更が必要なものだけ変更する
+			commandList->IASetVertexBuffers(0, 1, &vertexBufferViewSprite);
+	        
+			//IBVを設定
+			commandList->IASetIndexBuffer(&indexBufferViewSprite);
+			commandList->SetGraphicsRootConstantBufferView(0, materialResourceSprite->GetGPUVirtualAddress());
+			
+			//TransformationMatrixCBufferの場所を設定
+			commandList->SetGraphicsRootConstantBufferView(1, transformationMatrixResourceSprite->GetGPUVirtualAddress());
+			//SRVのDescriptorTableの先頭を設定。2はrootPatameter[2]である。
+			commandList->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
+
+			commandList->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
+
+			//スプライトの描画(DrawCall//ドローコール)6のにインデックスを使用し1つのインスタンスを描画。その他は当面0で良い
+			commandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+
 
 
 			//実際のcommandListのImGuiの描画コマンドを積む
