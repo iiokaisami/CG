@@ -197,6 +197,11 @@ struct Vector4
 	float w;
 };
 
+struct Matrix3x3
+{
+	float m[3][3];
+};
+
 struct Matrix4x4
 {
 	float m[4][4];
@@ -226,6 +231,8 @@ struct Material
 {
 	Vector4 color;
 	int32_t enableLighting;
+	float padding[3];
+	Matrix4x4 uvTransform;
 };
 
 struct DirectionalLight
@@ -315,11 +322,7 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2)
 //アフィン変換
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate)
 {
-
-	///==================================
-	///平行移動の4x4行列の生成
-	///==================================
-
+	//平行移動の4x4行列の生成
 	Matrix4x4 scaleMatrix = {
 		scale.x,0,0,0,
 		0,scale.y,0,0,
@@ -328,26 +331,18 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 	};
 
 
-	///==================================
-	///回転で使う4x4行列の宣言
-	///==================================
-
+	//回転で使う4x4行列の宣言
 	Matrix4x4 rotateMatrix;
 	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);		//X軸の回転
 	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);		//Y軸の回転
 	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);		//Z軸の回転
 
-	///=================================
-	///回転の合成
-	///=================================
-
+	
+	//回転の合成
 	rotateMatrix = Multiply(rotateXMatrix, Multiply(rotateYMatrix, rotateZMatrix));
 
 
-	///==================================
-	///平行移動の4x4行列の生成
-	///==================================
-
+	//平行移動の4x4行列の生成
 	Matrix4x4 translateMatrix = {
 		1,0,0,0,
 		0,1,0,0,
@@ -356,10 +351,7 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 	};
 
 
-	///==================================
-	///3次元のアフィン変換
-	///==================================
-
+	//3次元のアフィン変換
 	Matrix4x4 weight = Multiply(Multiply(scaleMatrix, rotateMatrix), translateMatrix);
 
 	//アフィン変換した値を返す
@@ -475,6 +467,30 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 	};
 	return m;
 }
+
+
+Matrix4x4 MakeScaleMatrix(Vector3 scale)
+{
+	Matrix4x4 result = {
+		scale.x,0.0f,0.0f,0.0f,
+		0.0f,scale.y,0.0f,0.0f,
+		0.0f,0.0f,scale.z,0.0f,
+		0.0f,0.0f,0.0f,1.0f
+	};
+	return result;
+}
+
+Matrix4x4 MakeTranslateMatrix(Vector3 translate)
+{
+	Matrix4x4 result = {
+		1.0f,0.0f,0.0f,0.0f,
+		0.0f,1.0f,0.0f,0.0f,
+		0.0f,0.0f,1.0f,0.0f,
+		translate.x,translate.y,translate.z,1.0f
+	};
+	return result;
+}
+
 
 ID3D12DescriptorHeap* CreateDescriptorHeap(ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptor, bool shaderVisible)
 {
@@ -1200,10 +1216,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//Lightingを有効にする
 	materialData->enableLighting = true;
 
+	materialData->uvTransform = MakeIdentity4x4();
+
+
 	//スプライト用のマテリアルリソースを作る
 	ID3D12Resource* materialResourceSprite = CreateBufferResource(device, sizeof(Material));
 
-	Material* materialDataSprite;
+	Material* materialDataSprite = nullptr;
 
 	//マテリアルにデータを書き込む
 	materialResourceSprite->Map(0, nullptr, reinterpret_cast<void**>(&materialDataSprite));
@@ -1213,6 +1232,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//spriteはLightingしないのでfalseを設定する
 	materialDataSprite->enableLighting = false;
+
+	materialDataSprite->uvTransform = MakeIdentity4x4();
 
 	
 	//TransformationMatrix用のResourceを作る
@@ -1242,6 +1263,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0,-10.0f}
 	};
+
+	//UVTransform用の変数
+	Transform uvTransformSprite{
+		{ 1.0f,1.0f,1.0f },
+		{ 0.0f,0.0f,0.0f },
+		{ 0.0f,0.0f,0.0f }
+	};
+
 
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 	Matrix4x4 cameraMatrix = MakeAffineMatrix(cameraTransform.scale, cameraTransform.rotate, cameraTransform.translate);
@@ -1514,6 +1543,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderFloat("intensity", &directionalLightData->intensity, 0.0f, 1.0f);
 
 			}
+			if (ImGui::CollapsingHeader("UVTransform"))
+			{
+				ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
+				ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
+				ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
+			}
 
 
 			ImGui::End();
@@ -1545,7 +1580,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 			
-			
+			Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransformSprite.scale);
+			uvTransformMatrix = Multiply(uvTransformMatrix, MakeRotateZMatrix(uvTransformSprite.rotate.z));
+			uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix(uvTransformSprite.translate));
+			materialDataSprite->uvTransform = uvTransformMatrix;
+
+
 			//ゲームの処理		描画処理
 			
 	
