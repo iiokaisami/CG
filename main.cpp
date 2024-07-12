@@ -1984,43 +1984,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 
-	/*transformationMatrixResourceSprite->Release();
-	vertexResourceSprite->Release();
-	depthStencilResource->Release();
-	intermediateResource->Release();
-	intermediateResource2->Release();
-	textureResource->Release();
-	textureResource2->Release();*/
+	
 	CloseHandle(fenceEvent);
-	/*fence->Release();
-	dsvDescriptorHeap->Release();
-	rtvDescriptorHeap->Release();
-	srvDescriptorHeap->Release();
-	swapChainResources[0]->Release();
-	swapChainResources[1]->Release();
-	swapChain->Release();
-	vertexResource->Release();
-	graphicsPipelineState->Release();
-	signatureBlob->Release();
-	if (errorBlob)
-	{
-		errorBlob->Release();
-	}
-	rootSignature->Release();
-	materialResource->Release();
-	materialResourceSprite->Release();
-	directionalLightResource->Release();
-	wvpResource->Release();
-	pixelShaderBlob->Release();
-	vertexShaderBlob->Release();
-	commandList->Release();
-	commandAllocator->Release();
-	commandQueue->Release();
-	device->Release();
-	useAdapter->Release();
-	dxgiFactory->Release();*/
+	
 #ifdef _DEBUG
-	//debugController->Release();
+	
 #endif
 	CloseWindow(hwnd);
 
@@ -2030,7 +1998,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
 		debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
 		debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
-		//debug->Release();
 	}
 
 	return 0;
