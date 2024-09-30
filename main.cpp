@@ -43,6 +43,11 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg
 #include "externals/imgui/imgui_impl_win32.h"
 extern  IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+//Input
+#define DIRECTINPUT_VERSION  0x0800
+#include <dinput.h>
+#pragma comment(lib,"dinput8.lib")
+#pragma comment(lib,"dxguid.lib")
 
 void Log(const std::string& message)
 {
@@ -1024,7 +1029,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	const uint32_t descriptorSizeSRV = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	const uint32_t descriptorSizeRTV = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	const uint32_t descriptorSizeDSV = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-
+	
 	GetCPUDescriptorHandle(rtvDescriptorHeap, descriptorSizeRTV, 0);
 
 	
@@ -1229,6 +1234,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//実際に生成
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState = nullptr;
 	hr = device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
+	assert(SUCCEEDED(hr));
+
+
+
+	// DirectInputの初期化
+	IDirectInput8* directInput = nullptr;
+	hr = DirectInput8Create(wc.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
+	assert(SUCCEEDED(hr));
+
+	// キーボードデバイスの生成
+	IDirectInputDevice8* keyboard = nullptr;
+	hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
+	assert(SUCCEEDED(hr));
+
+	// 入力データ形式のセット
+	hr = keyboard->SetDataFormat(&c_dfDIKeyboard);
+	assert(SUCCEEDED(hr));
+
+	// 排他的制御レベルのセット
+	hr = keyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(hr));
 
 
@@ -1726,6 +1751,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		else
 		{
+
+
+			// キーボード情報の取得開始
+			keyboard->Acquire();
+			// 全キーの入力状態を取得する
+			BYTE key[256] = {};
+			keyboard->GetDeviceState(sizeof(key), key);
+			// 数字の0キーが押されていたら
+			if (key[DIK_0])
+			{
+				OutputDebugStringA("Hit 0\n");
+			}
+
 			//フレームの先頭でImGuiに、ここからフレームが始まる旨を告げる
 			ImGui_ImplDX12_NewFrame();
 			ImGui_ImplWin32_NewFrame();
