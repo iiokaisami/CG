@@ -1271,7 +1271,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	
 	//モデル読み込み
-	ModelData modelData = LoadObjFile("resources", "axis.obj");
+	ModelData modelData = LoadObjFile("resources", "fence.obj");
 	//頂点リソースを作る
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = CreateBufferResource(device, sizeof(VertexData) * modelData.vertices.size());
 	//頂点バッファビューを作成する
@@ -1649,7 +1649,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//Textureを読んで転送する
 
 	//1枚目
-	DirectX::ScratchImage mipImages = LoadTexture("resources/uvChecker.png");
+	DirectX::ScratchImage mipImages = LoadTexture("resources/fence.png");
 	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
 	Microsoft::WRL::ComPtr<ID3D12Resource> textureResource = CreateTextureResource(device, metadata);
 	Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = UploadTextureData(textureResource, mipImages, device, commandList);
