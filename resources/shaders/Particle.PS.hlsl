@@ -1,4 +1,4 @@
-#include "Object3d.hlsli"
+#include "Particle.hlsli"
 
 struct Material
 {
@@ -40,11 +40,6 @@ PixelShaderOutput main(VertexShaderOutput input)
     else
     {
         output.color = gMaterial.color * textureColor;
-        
-        if(output.color.a ==0.0)
-        {
-            discard;
-        }
     }
     
     
