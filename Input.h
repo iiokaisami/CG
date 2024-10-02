@@ -9,6 +9,8 @@ using namespace Microsoft::WRL;
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
+#include "WinApp.h"
+
 class Input
 {
 public:
@@ -19,7 +21,7 @@ public:
 public:
 
 	// 初期化
-	void Initialize(HINSTANCE hInstance,HWND hwnd);
+	void Initialize(WinApp* winApp);
 	// 更新
 	void Update();
 
@@ -38,6 +40,9 @@ public:
 	bool TriggerKey(BYTE keyNumber);
 
 private:
+
+	// WindowsAPI
+	WinApp* winApp_ = nullptr;
 
 	// DirectInputのインスタンス
 	ComPtr<IDirectInput8> directInput;

@@ -1180,7 +1180,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Input* input = nullptr;
 
 	input = new Input();
-	input->Initialize(winApp->GetHInstance(), winApp->GetHwnd());
+	input->Initialize(winApp);
 
 
 	//VertexResourceを生成する
@@ -1936,8 +1936,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 	}
 
-	//COMの終了処理
-	CoUninitialize();
+	
 
 	//ImGuiの終了処理。
 	ImGui_ImplDX12_Shutdown();
@@ -1946,11 +1945,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// 入力解放
 	delete input;
+	
+	// WindowsAPIの終了処理
+	winApp->Finalize();
 	// WindowsAPI解放
 	delete winApp;
 
 	CloseHandle(fenceEvent);
-	CloseWindow(winApp->GetHwnd());
+	
 
 	Microsoft::WRL::ComPtr<IDXGIDebug1> debug;
 	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug))))
