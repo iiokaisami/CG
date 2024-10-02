@@ -1,5 +1,11 @@
 #pragma once
 #include <windows.h>
+#include <cstdint>
+
+//ImGui
+#include "externals/imgui/imgui.h"
+#include "externals/imgui/imgui_impl_dx12.h"
+#include "externals/imgui/imgui_impl_win32.h"
 
 class WinApp
 {
@@ -8,9 +14,27 @@ public:
 
 public:
 
+	//クライアント領域のサイズ
+	static const int32_t kClientWidth = 1200;
+	static const int32_t kClientHeight = 720;
+
+
 	// 初期化
 	void Initialize();
 	// 更新
 	void Update();
+
+	// getter
+	HWND GetHwnd() const { return hwnd; }
+
+	HINSTANCE GetHInstance() const { return wc.hInstance; }
+
+private:
+
+	// ウィンドウハンドル
+	HWND hwnd = nullptr;
+
+	//ウィンドウクラスの設定
+	WNDCLASS wc{};
 
 };
