@@ -1,7 +1,11 @@
 #pragma once
+#include <windows.h>
 
 class WinApp
 {
+public:
+	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+
 public:
 
 	// 初期化
@@ -10,4 +14,3 @@ public:
 	void Update();
 
 };
-
