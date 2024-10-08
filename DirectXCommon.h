@@ -103,6 +103,20 @@ public:
     /// </summary>
 	void InitializeImGui();
 
+    /// <summary>
+    /// 描画前処理
+	/// </summary>
+	void PreDraw();
+
+	/// <summary>
+	/// 描画後処理
+	/// </summary>
+	void PostDraw();
+
+	/// <summary>
+	/// 
+	/// </summary>
+
 private:
 
 	// WindowsAPI
