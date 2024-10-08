@@ -3,9 +3,13 @@
 #include <dxgi1_6.h>
 #include <wrl.h>
 #include <vector>
+#include <array>
 
+#include <dxcapi.h>
+#pragma comment(lib,"dxcompiler.lib")
 
 #include "WinApp.h"
+#include "Logger.h"
 
 class DirectXCommon
 {
@@ -13,6 +17,11 @@ public:
 
 	// 初期化
 	void Initialize(WinApp* winApp);
+
+	/// <summary>
+	/// デバイスの初期化
+	/// </summary>
+	void InitializeDevice();
 
 	/// <summary>
 	/// コマンド関連初期化
@@ -64,9 +73,35 @@ public:
 	/// </summary>
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUDescriptorHandle(uint32_t index);
 
-    /// <summary>
-    /// 
+	/// <summary>
+	/// 深度ステンシルビューの初期化
+	/// </summary>
+	void InitializeDepthStencilView();
+
+	/// <summary>
+	/// フェンス生成
+	/// </summary>
+	void CreateFence();
+
+	/// <summary>
+	/// ビューポート矩形の初期化
+	/// </summary>
+	void InitializeViewPort();
+	
+	/// <summary>
+    /// シザリング矩形の設定
     /// </summary>
+	void InitializeScissor();
+
+	/// <summary>
+	/// DXCコンパイラの生成
+	/// </summary>
+	void CreateDXCompiler();
+
+    /// <summary>
+    /// ImGuiの初期化
+    /// </summary>
+	void InitializeImGui();
 
 private:
 
@@ -89,10 +124,16 @@ private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
 	// デスクリプタヒープ
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap_ = nullptr;
+	// resourceの生成
+	Microsoft::WRL::ComPtr<ID3D12Resource> resource_ = nullptr;
+	// スワップチェイン
+	DXGI_SWAP_CHAIN_DESC1 swapChainDesc_{};
+	// RTV
+	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc_{};
 
-	const uint32_t descriptorSizeSRV_ = 0;
-	const uint32_t descriptorSizeRTV_ = 0;
-	const uint32_t descriptorSizeDSV_ = 0;
+	 uint32_t descriptorSizeSRV_ = 0;
+	 uint32_t descriptorSizeRTV_ = 0;
+	 uint32_t descriptorSizeDSV_ = 0;
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
@@ -102,5 +143,14 @@ private:
 
 	//RTVを2つ作るのでディスクリプタを２つ用意
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2]{};
-};
 
+	// スワップチェーンリソース
+	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChainResources_;
+
+	Microsoft::WRL::ComPtr<ID3D12Fence> fence_ = nullptr;
+	uint64_t fenceValue_ = 0;
+	//ビューポート
+	D3D12_VIEWPORT viewport_{};
+	//シザー矩形
+	D3D12_RECT scissorRect_{};
+};
