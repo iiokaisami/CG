@@ -510,11 +510,13 @@ void DirectXCommon::PreDraw()
 
 void DirectXCommon::PostDraw()
 {
+	HRESULT result = S_FALSE;
+
 	//これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
 
 	//画面の各処理はすべて終わり、画面に移すので、状態を遷移
-			//今回はRenderTargetからPresentにする
+	//今回はRenderTargetからPresentにする
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	//TransitonのBarrierを張る
@@ -523,8 +525,8 @@ void DirectXCommon::PostDraw()
 
 
 	//コマンドリストの内容を確定させる。すべてのコマンドを頼んでからCloseすること
-	hr = commandList_->Close();
-	assert(SUCCEEDED(hr));
+	result = commandList_->Close();
+	assert(SUCCEEDED(result));
 
 
 
@@ -542,15 +544,15 @@ void DirectXCommon::PostDraw()
 
 
 	//Fenceの値を更新
-	fenceValue++;
+	fenceValue_++;
 	//GPUがここまでたどり着いたときに、Fenceの値を指定した値を代入するようにSignalを送る
-	commandQueue->Signal(fence.Get(), fenceValue);
+	commandQueue->Signal(fence_.Get(), fenceValue_);
 	//Fenceの値が指定したSignal値にたどり着いているか確認する
 	//GetCompleteValueの初期値はFence制作時に渡した初期値
-	if (fence->GetCompletedValue() < fenceValue)
+	if (fence_->GetCompletedValue() < fenceValue_)
 	{
 		//指定したSignalにたどり着いていないので、たどり着くまで待つようにイベントを設定する
-		fence->SetEventOnCompletion(fenceValue, fenceEvent);
+		fence_->SetEventOnCompletion(fenceValue_, fenceEvent);
 		//イベントを待つ
 		WaitForSingleObject(fenceEvent, INFINITE);
 	}
