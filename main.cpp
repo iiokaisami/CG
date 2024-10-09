@@ -14,7 +14,8 @@
 #include "Input.h"
 #include "WinApp.h"
 #include "DirectXCommon.h"
-
+#include "SpriteCommon.h"
+#include "Sprite.h"
 
 /// <summary>
 ///  dxCommmon->CompileShader
@@ -517,16 +518,22 @@ ModelData LoadObjFile(const std::string& directoryPath, const std::string& filen
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 
-	D3DResourceLeakChecker leakCheck;
+	//D3DResourceLeakChecker leakCheck;
 
 
 	// ポインタ
 	WinApp* winApp = nullptr;
+	SpriteCommon* spriteCommon = nullptr;
 	DirectXCommon* dxCommon = nullptr;
+	Sprite* sprite = nullptr;
 
 	// WindowsAPIの初期化
 	winApp = new WinApp();
 	winApp->Initialize();
+
+	// スプライト共通部分の初期化
+	spriteCommon = new SpriteCommon();
+	spriteCommon->Initialize();
 
 	// DirectXの初期化
 	dxCommon = new DirectXCommon();
@@ -852,7 +859,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
+	//////////////////////////////////////
 
+	Sprite* sprite = new Sprite();
+	sprite->Initialize();
+
+	//////////////////////////////////////
 
 
 
@@ -1346,8 +1358,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// WindowsAPI解放
 	delete winApp;
 
+	// スプライト共通部分解放
+	delete spriteCommon;
+
 	// DirectX解放
 	delete dxCommon;
+
+	//スプライト解放
+	delete sprite;
+
 
 	//CloseHandle(fenceEvent);
 	
