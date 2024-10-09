@@ -4,11 +4,20 @@
 #include <wrl.h>
 #include <vector>
 #include <array>
+#include <format>
+
+#include "externals/DirectXTex/DirectXTex.h"
+#include "externals/DirectXTex/d3dx12.h"
 
 #include <dxcapi.h>
 #pragma comment(lib,"dxcompiler.lib")
 
+//DirectX12
+#include <dxgidebug.h>
+#pragma comment(lib,"dxguid.lib")
+
 #include "WinApp.h"
+#include "StringUtility.h"
 #include "Logger.h"
 
 class DirectXCommon
@@ -114,6 +123,31 @@ public:
 	void PostDraw();
 
 	/// <summary>
+	/// シェーダーのコンパイル
+	/// </summary>
+	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
+
+	/// <summary>
+	/// バッファリソースの生成
+	/// </summary>
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+
+	/// <summary>
+	/// テクスチャリソースの生成
+	/// </summary>
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(ID3D12Device* device, const DirectX::TexMetadata& metadata);
+
+	/// <summary>
+	/// テクスチャデータの転送
+	/// </summary>
+	Microsoft::WRL::ComPtr<ID3D12Resource> UploadTextureData(Microsoft::WRL::ComPtr<ID3D12Resource> texture, const DirectX::ScratchImage& mipImages);
+
+	/// <summary>
+	/// テクスチャファイルの読み込み
+	/// </summary>
+	static DirectX::ScratchImage LoadTexture(const std::string& filePath);
+
+	/// <summary>
 	/// 
 	/// </summary>
 
@@ -144,6 +178,12 @@ private:
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc_{};
 	// RTV
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc_{};
+	// バリア
+	D3D12_RESOURCE_BARRIER barrier_{};
+
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle_;
+
+	HANDLE fenceEvent_ = nullptr;
 
 	 uint32_t descriptorSizeSRV_ = 0;
 	 uint32_t descriptorSizeRTV_ = 0;
@@ -163,6 +203,12 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence_ = nullptr;
 	uint64_t fenceValue_ = 0;
+
+	// DXC
+	IDxcUtils* dxcUtils_ = nullptr;
+	IDxcCompiler3* dxcCompiler_ = nullptr;
+	IDxcIncludeHandler* includeHandler_ = nullptr;
+
 	//ビューポート
 	D3D12_VIEWPORT viewport_{};
 	//シザー矩形
