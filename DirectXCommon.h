@@ -39,8 +39,8 @@ public:
 	void InitializeCommand();
 
 	/// <summary>
-    /// スワップチェーンの生成
-    /// </summary>
+	/// スワップチェーンの生成
+	/// </summary>
 	void CreateSwapChain();
 
 	/// <summary>
@@ -48,14 +48,14 @@ public:
 	/// </summary>
 	void CreateDepthBuffer();
 
-    /// <summary>
-    /// 各種デスクリプタヒープの生成
-    /// </summary>
+	/// <summary>
+	/// 各種デスクリプタヒープの生成
+	/// </summary>
 	void CreateDescriptorHeap();
-	
-    /// <summary>
-    /// デスクリプタヒープを生成する
-    /// </summary>
+
+	/// <summary>
+	/// デスクリプタヒープを生成する
+	/// </summary>
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptor, bool shaderVisible);
 
 	/// <summary>
@@ -63,9 +63,9 @@ public:
 	/// </summary>
 	void InitializeFinalRenderTargets();
 
-    /// <summary>
-    /// CPUのDescriptorHandleを取得
-    /// </summary>
+	/// <summary>
+	/// CPUのDescriptorHandleを取得
+	/// </summary>
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index);
 
 	/// <summary>
@@ -97,10 +97,10 @@ public:
 	/// ビューポート矩形の初期化
 	/// </summary>
 	void InitializeViewPort();
-	
+
 	/// <summary>
-    /// シザリング矩形の設定
-    /// </summary>
+	/// シザリング矩形の設定
+	/// </summary>
 	void InitializeScissor();
 
 	/// <summary>
@@ -108,13 +108,13 @@ public:
 	/// </summary>
 	void CreateDXCompiler();
 
-    /// <summary>
-    /// ImGuiの初期化
-    /// </summary>
+	/// <summary>
+	/// ImGuiの初期化
+	/// </summary>
 	void InitializeImGui();
 
-    /// <summary>
-    /// 描画前処理
+	/// <summary>
+	/// 描画前処理
 	/// </summary>
 	void PreDraw();
 
@@ -136,7 +136,7 @@ public:
 	/// <summary>
 	/// テクスチャリソースの生成
 	/// </summary>
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(ID3D12Device* device, const DirectX::TexMetadata& metadata);
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device, const DirectX::TexMetadata& metadata);
 
 	/// <summary>
 	/// テクスチャデータの転送
@@ -151,6 +151,24 @@ public:
 	/// <summary>
 	/// 
 	/// </summary>
+
+
+	//-----------ゲッター----------//
+
+	// デバイス
+	Microsoft::WRL::ComPtr<ID3D12Device> GetDevice() { return device_; }
+	// コマンドアロケータ
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> GetCommandAllocator() { return commandAllocator_; }
+	// コマンドリスト
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> GetCommandList() { return commandList_; }
+	// DescriptorHeap
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> GetSrvDescriptorHeap() { return srvDescriptorHeap_; }
+	// descriptorSizeSRV
+	uint32_t GetDescriptorSizeSRV() { return descriptorSizeSRV_; }
+	// ビューポート
+	D3D12_VIEWPORT GetViewport() { return viewport_; }
+	// シザー矩形
+	D3D12_RECT GetScissorRect() { return scissorRect_; }
 
 private:
 
@@ -172,7 +190,7 @@ private:
 
 
 	// コマンドアロケータ
-	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocator_ = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocator_;
 	// コマンドリスト
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_ = nullptr;
 	// コマンドキュー
@@ -204,7 +222,7 @@ private:
 
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers_;
 
-	//RTVを2つ作るのでディスクリプタを２つ用意
+	// RTVを2つ作るのでディスクリプタを２つ用意
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2]{};
 
 	// スワップチェーンリソース
@@ -218,10 +236,10 @@ private:
 	IDxcCompiler3* dxcCompiler_ = nullptr;
 	IDxcIncludeHandler* includeHandler_ = nullptr;
 
-	//ビューポート
+	// ビューポート
 	D3D12_VIEWPORT viewport_{};
-	//シザー矩形
-	D3D12_RECT scissorRect_{};
+	// シザー矩形
+	D3D12_RECT scissorRect_{}; 
 
 	// 記録時間（FPS固定）
 	std::chrono::steady_clock::time_point reference_;

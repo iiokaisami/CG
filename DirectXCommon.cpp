@@ -197,10 +197,10 @@ void DirectXCommon::CreateSwapChain()
 	HRESULT result = S_FALSE;
 
 	//スワップチェインを生成する
-	swapChainDesc_.Width = WinApp::kClientWidth;							// 画面の幅。ウィンドウのクライアント領域を同じものにしておく
+	swapChainDesc_.Width = WinApp::kClientWidth;						// 画面の幅。ウィンドウのクライアント領域を同じものにしておく
 	swapChainDesc_.Height = WinApp::kClientHeight;						// 画面の高さ。ウィンドウのクライアント領域を同じものにしておく
 	swapChainDesc_.Format = DXGI_FORMAT_R8G8B8A8_UNORM;				    // 色の形式
-	swapChainDesc_.SampleDesc.Count = 1;								    // マルチサンプルしない
+	swapChainDesc_.SampleDesc.Count = 1;								// マルチサンプルしない
 	swapChainDesc_.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;	    // 描画のターゲットとして利用する
 	swapChainDesc_.BufferCount = 2;									    // ダブルバッファ
 	swapChainDesc_.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;		    // モニタにうつしたら、中身を廃棄
@@ -656,14 +656,14 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateBufferResource(size_
 	return bufferResource;
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateTextureResource(ID3D12Device* device, const DirectX::TexMetadata& metadata)
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device, const DirectX::TexMetadata& metadata)
 {
 	HRESULT result = S_FALSE;
 
 	D3D12_RESOURCE_DESC resourceDesc{};
 	resourceDesc.Width = UINT(metadata.width);									//Textureの幅
 	resourceDesc.Height = UINT(metadata.height);								//Textureの高さ
-	resourceDesc.MipLevels = UINT16(metadata.mipLevels);							//mipmapの数
+	resourceDesc.MipLevels = UINT16(metadata.mipLevels);						//mipmapの数
 	resourceDesc.DepthOrArraySize = UINT16(metadata.arraySize);					//奥行き or 配列Textureの配列数
 	resourceDesc.Format = metadata.format;										//TextureのFormat
 	resourceDesc.SampleDesc.Count = 1;											//サンプリングカウント。１固定
