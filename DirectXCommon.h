@@ -5,6 +5,7 @@
 #include <vector>
 #include <array>
 #include <format>
+#include <chrono>
 
 #include "externals/DirectXTex/DirectXTex.h"
 #include "externals/DirectXTex/d3dx12.h"
@@ -153,6 +154,14 @@ public:
 
 private:
 
+	// FPS固定初期化
+	void InitializeFixFPS();
+
+	// FPS固定更新
+	void UpdateFixFPS();
+
+private:
+
 	// WindowsAPI
 	WinApp* winApp_ = nullptr;
 
@@ -213,4 +222,7 @@ private:
 	D3D12_VIEWPORT viewport_{};
 	//シザー矩形
 	D3D12_RECT scissorRect_{};
+
+	// 記録時間（FPS固定）
+	std::chrono::steady_clock::time_point reference_;
 };
