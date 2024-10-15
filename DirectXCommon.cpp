@@ -343,20 +343,22 @@ void DirectXCommon::InitializeFinalRenderTargets()
 	
 	
 	
-	//２つ目_のディスクリプタハンドルを得る
-	rtvHandles_[1].ptr = rtvHandles_[0].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	
 	//描画先のRTVとDSVを設定する
 	dsvHandle_ = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 
 
 	// 裏表の2つ分
-	for (uint32_t i = 0; i < 2; i++)
-	{
-		rtvHandles_[i] = rtvStartHandle;
-		device_->CreateRenderTargetView(swapChainResources_[i].Get(), &rtvDesc_, rtvHandles_[i]);
-		rtvHandles_[i] = GetCPUDescriptorHandle(rtvDescriptorHeap_, descriptorSizeRTV_, i);
-	}
+	rtvHandles_[0] = rtvStartHandle;
+	device_->CreateRenderTargetView(swapChainResources_[0].Get(), &rtvDesc_, rtvHandles_[0]);
+	rtvHandles_[0] = GetCPUDescriptorHandle(rtvDescriptorHeap_, descriptorSizeRTV_, 0);
+
+	//２つ目_のディスクリプタハンドルを得る
+	rtvHandles_[1].ptr = rtvHandles_[0].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+
+	rtvHandles_[1] = rtvStartHandle;
+	rtvHandles_[1] = GetCPUDescriptorHandle(rtvDescriptorHeap_, descriptorSizeRTV_, 1);
+	
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE DirectXCommon::GetCPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index)
@@ -523,7 +525,7 @@ void DirectXCommon::PostDraw()
 	//TransitonのBarrierを張る
 	commandList_->ResourceBarrier(1, &barrier_);
 
-
+	
 
 	//コマンドリストの内容を確定させる。すべてのコマンドを頼んでからCloseすること
 	result = commandList_->Close();
