@@ -32,12 +32,17 @@ void DirectXCommon::Initialize(WinApp* winApp)
 	
 	// スワップチェーンの生成
 	CreateSwapChain();
+
+
+
+	// ディスクリプタヒープの生成
+	CreateDescriptorHeap();
 	
 	// 深度バッファの生成
 	CreateDepthBuffer();
 	
-	// ディスクリプタヒープの生成
-	CreateDescriptorHeap();
+
+	
 
 	// レンダーターゲットビューの初期化
 	InitializeFinalRenderTargets();
@@ -166,7 +171,7 @@ void DirectXCommon::InitializeDevice()
 		infoQueue->PushStorageFilter(&filter);
 
 		//解放
-		infoQueue->Release();
+		//infoQueue->Release();
 	}
 #endif
 }
@@ -390,7 +395,7 @@ void DirectXCommon::InitializeDepthStencilView()
 	device_->CreateDepthStencilView(
 		resource_.Get(),
 		&dsvDesc,
-		descriptorHeap_->GetCPUDescriptorHandleForHeapStart()
+		dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart()
 	);
 }
 
