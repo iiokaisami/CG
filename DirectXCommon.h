@@ -149,9 +149,9 @@ public:
 	static DirectX::ScratchImage LoadTexture(const std::string& filePath);
 
 	/// <summary>
-	/// 
+	/// DepthStencilTextureを作る
 	/// </summary>
-
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(int32_t width, int32_t height);
 
 	//-----------ゲッター----------//
 
@@ -209,6 +209,8 @@ private:
 	D3D12_RESOURCE_BARRIER barrier_{};
 
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle_;
+
+	//Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_;
 
 	HANDLE fenceEvent_ = nullptr;
 
