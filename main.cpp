@@ -523,21 +523,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// ポインタ
 	WinApp* winApp = nullptr;
-	SpriteCommon* spriteCommon = nullptr;
 	DirectXCommon* dxCommon = nullptr;
+	SpriteCommon* spriteCommon = nullptr;
 	Sprite* sprite = nullptr;
 
 	// WindowsAPIの初期化
 	winApp = new WinApp();
 	winApp->Initialize();
 
-	// スプライト共通部分の初期化
-	spriteCommon = new SpriteCommon();
-	spriteCommon->Initialize();
-
 	// DirectXの初期化
 	dxCommon = new DirectXCommon();
 	dxCommon->Initialize(winApp);
+
+	// スプライト共通部分の初期化
+	spriteCommon = new SpriteCommon();
+	spriteCommon->Initialize(dxCommon);
 
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
