@@ -209,37 +209,11 @@ void DirectXCommon::CreateSwapChain()
 	swapChainDesc_.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;	    // 描画のターゲットとして利用する
 	swapChainDesc_.BufferCount = 2;									    // ダブルバッファ
 	swapChainDesc_.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;		    // モニタにうつしたら、中身を廃棄
-	//swapChainDesc.Flags =
-	//	DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING |
-	//	DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT; // ティアリングサポート
-	//ComPtr<IDXGISwapChain1> swapChain1;
 
 	//コマンドキュー、ウィンドウハンドル、設定を渡して生成する
 	result = dxgiFactory_->CreateSwapChainForHwnd(commandQueue_.Get(), winApp_->GetHwnd(), &swapChainDesc_, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
 	assert(SUCCEEDED(result));
 
-
-	//// リフレッシュレートを取得。floatで取るのは大変なので大体あってれば良いので整数で。
-	//HDC hdc = GetDC(winApp_->GetHwnd());
-	//refreshRate_ = GetDeviceCaps(hdc, VREFRESH);
-	//ReleaseDC(winApp_->GetHwnd(), hdc);
-
-	//// SwapChain4を得る
-	//swapChain1->QueryInterface(IID_PPV_ARGS(&swapChain_));
-	//assert(SUCCEEDED(result));
-
-	//// VSync共存型fps固定のためにレイテンシ1
-	//swapChain_->SetMaximumFrameLatency(1);
-
-	//// 実際のflip用イベントを取得
-	//frameLatencyWaitableObject_ = swapChain_->GetFrameLatencyWaitableObject();
-	//// 取得直後のカウンタが1になっているので、レイテンシ1にしても実際はバッファが1ある状態になるので、強制的に0にして即時flipを稼働させる。
-	//// たぶん非推奨ではある。
-	//WaitForSingleObject(frameLatencyWaitableObject_, INFINITE);
-
-	//// OSが行うAlt+Enterのフルスクリーンは制御不能なので禁止
-	//dxgiFactory_->MakeWindowAssociation(
-	//	winApp_->GetHwnd(), DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER);
 }
 
 void DirectXCommon::CreateDepthBuffer()
@@ -270,7 +244,7 @@ void DirectXCommon::CreateDepthBuffer()
 		&heapProperties,												//Heapの設定
 		D3D12_HEAP_FLAG_NONE,											//Heapの特殊な設定。特になし
 		&resourceDesc,													//Resourceの設定
-		D3D12_RESOURCE_STATE_COPY_DEST,								    //深度値を書き込む状態にしておく
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,								    //深度値を書き込む状態にしておく
 		&depthClearValue,											    //Clear最適値
 		IID_PPV_ARGS(&resource_)											//作成するResourceポインタへのポインタ
 	);
@@ -305,7 +279,8 @@ Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap = nullptr;
 	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
-	descriptorHeapDesc.Type = heapType; descriptorHeapDesc.NumDescriptors = numDescriptor;
+	descriptorHeapDesc.Type = heapType;
+	descriptorHeapDesc.NumDescriptors = numDescriptor;
 	descriptorHeapDesc.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	result = device_->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
 	assert(SUCCEEDED(result));
@@ -316,15 +291,6 @@ Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap
 void DirectXCommon::InitializeFinalRenderTargets()
 {
 	HRESULT result = S_FALSE;
-
-	//ディスクリプタレンジの生成
-	/*D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
-	descriptorRange[0].BaseShaderRegister = 0;
-	descriptorRange[0].NumDescriptors = 1;
-	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;*/
-
-
 
 
 	//SwapChainからResourceを引っ張ってくる
@@ -340,12 +306,6 @@ void DirectXCommon::InitializeFinalRenderTargets()
 	rtvDesc_.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 	//ディスクリプタの先頭を取得する
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
-	
-	
-	
-	//描画先のRTVとDSVを設定する
-	dsvHandle_ = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
-
 
 	// 裏表の2つ分
 	rtvHandles_[0] = rtvStartHandle;
@@ -355,10 +315,14 @@ void DirectXCommon::InitializeFinalRenderTargets()
 	//２つ目_のディスクリプタハンドルを得る
 	rtvHandles_[1].ptr = rtvHandles_[0].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
-
-	rtvHandles_[1] = rtvStartHandle;
+	//rtvHandles_[1] = rtvStartHandle;
+	device_->CreateRenderTargetView(swapChainResources_[1].Get(), &rtvDesc_, rtvHandles_[1]);
 	rtvHandles_[1] = GetCPUDescriptorHandle(rtvDescriptorHeap_, descriptorSizeRTV_, 1);
-	
+
+
+	//描画先のRTVとDSVを設定する
+	dsvHandle_ = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
+
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE DirectXCommon::GetCPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index)
@@ -521,7 +485,8 @@ void DirectXCommon::PostDraw()
 	//画面の各処理はすべて終わり、画面に移すので、状態を遷移
 	//今回はRenderTargetからPresentにする
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+	barrier_.Transition.StateAfter =  D3D12_RESOURCE_STATE_PRESENT;
+	barrier_.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	//TransitonのBarrierを張る
 	commandList_->ResourceBarrier(1, &barrier_);
 
@@ -537,8 +502,6 @@ void DirectXCommon::PostDraw()
 
 
 	//コマンドをキックする
-
-
 	//GPU二コマンドリストの実行を行わせる
 	Microsoft::WRL::ComPtr<ID3D12CommandList> commandLists[] = { commandList_ };
 	commandQueue_->ExecuteCommandLists(1, commandLists->GetAddressOf());
