@@ -106,7 +106,7 @@ namespace MyMath {
 	
 	Matrix4x4 Inverse(const Matrix4x4& m);
 	
-	float cot(float a) { return cos(a) / sin(a); }
+	inline float cot(float a) { return cos(a) / sin(a); }
 
 	//正規化
 	Vector3 Normalize(const Vector3& v);
