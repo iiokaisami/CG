@@ -618,14 +618,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			ImGui::SliderFloat3("cameraPosition", &cameraTransform.translate.x, -100.0f, 0.0f);
 			ImGui::Checkbox("useMonsterBall", &useMonsterBall);
 
+			sprite->ui();
+
 			//改行
 			ImGui::NewLine();
 
-			if (ImGui::CollapsingHeader("material"))
-			{
-				//ImGui::ColorEdit4("color", &materialData->color.x);
-			}
-
+		
+			
 			if (ImGui::CollapsingHeader("vertexData"))
 			{
 				ImGui::SliderFloat3("translate", &transform.translate.x, -20.0f, 20.0f);
@@ -633,11 +632,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderAngle("rotationY", &transform.rotate.y);
 				ImGui::SliderAngle("rotationZ", &transform.rotate.z);
 				ImGui::SliderFloat3("scale", &transform.scale.x, 0.0f, 5.0f);
-			}
-			if (ImGui::CollapsingHeader("vertexDataSprite"))
-			{
-				//ImGui::SliderFloat3("translate", &transformSprite.translate.x, -20.0f, 20.0f);
-				//ImGui::SliderFloat3("scale", &transformSprite.scale.x, 0.0f, 5.0f);
 			}
 			if (ImGui::CollapsingHeader("Lighting"))
 			{
@@ -653,6 +647,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
 				ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
 			}
+			
 
 			ImGui::End();
 
@@ -707,40 +702,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			//いざ描画
 
-			commandList->RSSetViewports(1, &viewport);
-			commandList->RSSetScissorRects(1, &scissorRect);
-			
+			//commandList->RSSetViewports(1, &viewport);
+			//commandList->RSSetScissorRects(1, &scissorRect);
+			//
 
-			spriteCommon->CommonDrawSetting();
+			//spriteCommon->CommonDrawSetting();
 
-			commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
-			
-			
-			//wvp用のCBufferの場所を設定
-			commandList->SetGraphicsRootConstantBufferView(1, wvpResource->GetGPUVirtualAddress());
-			//SRVのDescriptorTableの先頭を設定。2はrootPatameter[2]である。
-			//commandList->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
+			//commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
+			//
+			//
+			////wvp用のCBufferの場所を設定
+			//commandList->SetGraphicsRootConstantBufferView(1, wvpResource->GetGPUVirtualAddress());
+			//
 
-			commandList->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
-			//描画！
-			commandList->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
-
+			//commandList->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
+			////描画！
+			//commandList->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
 
 
 
-			
+
+			//
 
 
-			
+			//commandList->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
 
-
-			
-			
-
-
-			commandList->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
-
-			
+			//
 
 
 
