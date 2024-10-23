@@ -23,6 +23,8 @@ public:
 	// 描画
 	void Draw();
 
+	void ui();
+
 private:
 
 	// spriteCommon
@@ -48,8 +50,15 @@ private:
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 	
+	Microsoft::WRL::ComPtr<ID3D12Resource> textureResource_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource_;
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc_{};
 
 	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU_;
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU_;
+
+
+	Transform transformSprite;
 };
 
