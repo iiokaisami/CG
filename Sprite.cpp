@@ -41,7 +41,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon)
 	//色を変える
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	//Lightingを有効にする
-	materialData_->enableLighting = true;
+	materialData_->enableLighting = false;
 	materialData_->uvTransform = MyMath::MakeIdentity4x4();
 
 	//書き込むためのアドレス
@@ -53,18 +53,18 @@ void Sprite::Initialize(SpriteCommon* spriteCommon)
 	
 	///-----------------------------------
 
-	directionalLightResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(DirectionalLight));
+	//directionalLightResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(DirectionalLight));
 
-	directionalLightResource_->Map(
-		0,
-		nullptr,
-		reinterpret_cast<void**>(&directionalLightData_)
-	);
+	//directionalLightResource_->Map(
+	//	0,
+	//	nullptr,
+	//	reinterpret_cast<void**>(&directionalLightData_)
+	//);
 
-	//デフォルト値は以下のようにしておく
-	directionalLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
-	directionalLightData_->direction = MyMath::Normalize({ 0.0f,-1.0f,0.0f });
-	directionalLightData_->intensity = 1.0f;
+	////デフォルト値は以下のようにしておく
+	//directionalLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
+	//directionalLightData_->direction = MyMath::Normalize({ 0.0f,-1.0f,0.0f });
+	//directionalLightData_->intensity = 1.0f;
 
 	///-----------------------------------
 	
@@ -140,11 +140,10 @@ void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU)
 
 
 
+	//spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(3, spriteCommon_->GetDxCommon()->GetSrvDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
 
-	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(3, spriteCommon_->GetDxCommon()->GetSrvDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
-
-	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_->GetGPUVirtualAddress());
-	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(3, cbvBuffer->GetGPUVirtualAddress());
+	//spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_->GetGPUVirtualAddress());
+	//spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(3, cbvBuffer->GetGPUVirtualAddress());
 }
 
 void Sprite::ui()
