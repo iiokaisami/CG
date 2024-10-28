@@ -21,8 +21,9 @@ public:
 	void Update();
 
 	// 描画
-	void Draw();
+	void Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU);
 
+	// 仮 後で消す
 	void ui();
 
 private:
@@ -55,10 +56,14 @@ private:
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc_{};
 
-	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU_;
-	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU_;
+	//D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU_;
+	//D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU_;
 
 
 	Transform transformSprite;
+
+	//平行光源用のリソース
+	DirectionalLight* directionalLightData_ = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_;
 };
 
