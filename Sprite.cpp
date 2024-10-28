@@ -50,27 +50,24 @@ void Sprite::Initialize(SpriteCommon* spriteCommon)
 	transformationMatrixData_->World = MyMath::MakeIdentity4x4();
 	transformationMatrixData_->WVP = MyMath::MakeIdentity4x4();
 
-	DirectX::ScratchImage mipImages = spriteCommon_->GetDxCommon()->LoadTexture("resources/uvChecker.png");
-	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-	textureResource_ = spriteCommon_->GetDxCommon()->CreateTextureResource(spriteCommon_->GetDxCommon()->GetDevice(), metadata);
-	intermediateResource_ = spriteCommon_->GetDxCommon()->UploadTextureData(textureResource_, mipImages);
+	
+	///-----------------------------------
 
-	//metadataをもとにSRVの設定
-	srvDesc_.Format = metadata.format;
-	srvDesc_.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc_.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc_.Texture2D.MipLevels = UINT(metadata.mipLevels);
+	directionalLightResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(DirectionalLight));
 
-	//SRVを制作するDescriptorHeapの場所を決める
-	textureSrvHandleCPU_ = spriteCommon_->GetDxCommon()->GetSrvDescriptorHeap()->GetCPUDescriptorHandleForHeapStart();
-	textureSrvHandleGPU_ = spriteCommon_->GetDxCommon()->GetSrvDescriptorHeap()->GetGPUDescriptorHandleForHeapStart();
+	directionalLightResource_->Map(
+		0,
+		nullptr,
+		reinterpret_cast<void**>(&directionalLightData_)
+	);
 
-	//先頭はImGuiが使っているのでその次を使う
-	textureSrvHandleCPU_.ptr += spriteCommon_->GetDxCommon()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	textureSrvHandleGPU_.ptr += spriteCommon_->GetDxCommon()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	//SRVの生成
-	spriteCommon_->GetDxCommon()->GetDevice()->CreateShaderResourceView(textureResource_.Get(), &srvDesc_, textureSrvHandleCPU_);
+	//デフォルト値は以下のようにしておく
+	directionalLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
+	directionalLightData_->direction = MyMath::Normalize({ 0.0f,-1.0f,0.0f });
+	directionalLightData_->intensity = 1.0f;
 
+	///-----------------------------------
+	
 	transformSprite={
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
@@ -114,9 +111,9 @@ void Sprite::Update()
 	
 }
 
-void Sprite::Draw()
+void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU)
 {
-	spriteCommon_->CommonDrawSetting();
+	
 
 	//Spriteの描画。変更が必要なものだけ変更する
 	spriteCommon_->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
@@ -130,21 +127,34 @@ void Sprite::Draw()
 	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
 
 	//SRVのDescriptorTableの先頭を設定。2はrootPatameter[2]である。
-	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_);
+	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
 	//スプライトの描画(DrawCall//ドローコール)
 	spriteCommon_->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
+
+
+
+
+
+
+
+
+
+
+
+	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(3, spriteCommon_->GetDxCommon()->GetSrvDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
+
+	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_->GetGPUVirtualAddress());
+	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(3, cbvBuffer->GetGPUVirtualAddress());
 }
 
 void Sprite::ui()
 {
-//#ifdef DEBUG
-
+#ifdef _DEBUG
 	
-	
-		ImGui::SliderFloat3("translate", &transformSprite.translate.x, -20.0f, 20.0f);
-		ImGui::SliderFloat3("scale", &transformSprite.scale.x, 0.0f, 5.0f);
-		ImGui::SliderFloat3("r", &transformSprite.rotate.x, 0.0f, 5.0f);
+	ImGui::SliderFloat3("translate", &transformSprite.translate.x, -20.0f, 20.0f);
+	ImGui::SliderFloat3("scale", &transformSprite.scale.x, 0.0f, 5.0f);
+	ImGui::SliderFloat3("r", &transformSprite.rotate.x, 0.0f, 5.0f);
 
-//#endif // DEBUG
+#endif // _DEBUG
 
 }

@@ -550,6 +550,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//実際にShaderResourceViewを作る
 
+
+
+	DirectX::ScratchImage mipImages = dxCommon->LoadTexture("resources/uvChecker.png");
+	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
+	Microsoft::WRL::ComPtr<ID3D12Resource> textureResource = dxCommon->CreateTextureResource(device, metadata);
+	Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = dxCommon->UploadTextureData(textureResource, mipImages);
+
+
+	//metadataをもとにSRVの設定
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = metadata.format;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
+
+	//SRVを制作するDescriptorHeapの場所を決める
+	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+
+	//先頭はImGuiが使っているのでその次を使う
+	textureSrvHandleCPU.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	textureSrvHandleGPU.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//SRVの生成
+	device->CreateShaderResourceView(textureResource.Get(), &srvDesc, textureSrvHandleCPU);
+
+
+
 	
 
 	//metadata2をもとにSRVの設定
@@ -567,6 +594,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//SRVの生成
 	device->CreateShaderResourceView(textureResource2.Get(), &srvDesc2, textureSrvHandleCPU2);
+
 
 
 
@@ -693,20 +721,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			dxCommon->PreDraw();
 
+			spriteCommon->CommonDrawSetting();
 
 
-
-			sprite->Draw();
+			sprite->Draw(textureSrvHandleGPU);
 
 
 
 			//いざ描画
-
-			//commandList->RSSetViewports(1, &viewport);
-			//commandList->RSSetScissorRects(1, &scissorRect);
-			//
-
-			//spriteCommon->CommonDrawSetting();
 
 			//commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
 			//
@@ -720,14 +742,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			//commandList->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
 
 
-
-
-			//
-
-
-			//commandList->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
-
-			//
 
 
 

@@ -473,6 +473,9 @@ void DirectXCommon::PreDraw()
 	//Guiは画面の最前面に映すので、一番最後の描画として行う
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { srvDescriptorHeap_ };
 	commandList_->SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
+
+	commandList_->RSSetViewports(1, &viewport_);
+	commandList_->RSSetScissorRects(1, &scissorRect_);
 }
 
 void DirectXCommon::PostDraw()
@@ -693,6 +696,11 @@ DirectX::ScratchImage DirectXCommon::LoadTexture(const std::string& filePath)
 
 	//ミップマップ付きのデータを返す
 	return mipImages;
+}
+
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateDepthStencilTextureResource(int32_t width, int32_t height)
+{
+	return Microsoft::WRL::ComPtr<ID3D12Resource>();
 }
 
 void DirectXCommon::InitializeFixFPS()
