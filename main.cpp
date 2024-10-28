@@ -1967,7 +1967,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 			//Spriteの描画。変更が必要なものだけ変更する
-			//commandList->IASetVertexBuffers(0, 1, &vertexBufferViewSprite);
+			commandList->IASetVertexBuffers(0, 1, &vertexBufferViewSprite);
 
 
 			//IBVを設定
@@ -1976,9 +1976,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 			//TransformationMatrixCBufferの場所を設定
-			//commandList->SetGraphicsRootConstantBufferView(1, transformationMatrixResourceSprite->GetGPUVirtualAddress());
+			commandList->SetGraphicsRootConstantBufferView(1, transformationMatrixResourceSprite->GetGPUVirtualAddress());
 			//SRVのDescriptorTableの先頭を設定。2はrootPatameter[2]である。
-			//commandList->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
+			commandList->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
 
 
 			//commandList->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
