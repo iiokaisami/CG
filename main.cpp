@@ -1451,7 +1451,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//色を変える
 	materialData->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	//Lightingを有効にする
-	materialData->enableLighting = true;
+	materialData->enableLighting = false;
 
 	materialData->uvTransform = MakeIdentity4x4();
 
