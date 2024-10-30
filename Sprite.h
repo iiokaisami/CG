@@ -7,6 +7,7 @@
 #include "externals/DirectXTex/d3dx12.h"
 
 #include "MyMath.h"
+#include "TextureManager.h"
 
 class SpriteCommon;
 
@@ -15,7 +16,7 @@ class Sprite
 public:
 
 	// 初期化
-	void Initialize(SpriteCommon* spriteCommon);
+	void Initialize(SpriteCommon* spriteCommon, std::string textureFilePath);
 
 	// 更新
 	void Update();
@@ -70,8 +71,9 @@ private:
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc_{};
 
-	//D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU_;
-	//D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU_;
+	// テクスチャ番号
+	uint32_t textureIndex = 0;
+
 
 
 	Transform transform_;
