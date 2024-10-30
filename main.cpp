@@ -201,7 +201,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	WinApp* winApp = nullptr;
 	DirectXCommon* dxCommon = nullptr;
 	SpriteCommon* spriteCommon = nullptr;
-	Sprite* sprite = nullptr;
+
 
 	// WindowsAPIの初期化
 	winApp = new WinApp();
@@ -355,10 +355,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 	//////////////////////////////////////
+	std::vector<Sprite*> sprites;
+	for (uint32_t i = 0; i < 5; ++i)
+	{
+		Sprite* sprite = new Sprite();
+		sprite->Initialize(spriteCommon);
+		sprites.push_back(sprite);
 
-	sprite = new Sprite();
-	sprite->Initialize(spriteCommon);
+		Vector2 position = sprite->GetPosition();
+		// 座標を変更する
+		position.x = 100.0f * sprites.size();
+		// 変更を反映する
+		sprite->SetPosition(position);
 
+		Vector2 size = sprite->GetSize();
+		size.x = 70.0f;
+		size.y = 70.0f;
+		sprite->SetSize(size);
+	}
+	
 	//////////////////////////////////////
 
 
@@ -424,7 +439,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	
 	
-	sprite->Update();
+	
 
 	
 
@@ -645,9 +660,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			ImGui::Text("camera");
 			ImGui::SliderFloat3("cameraPosition", &cameraTransform.translate.x, -100.0f, 0.0f);
 			ImGui::Checkbox("useMonsterBall", &useMonsterBall);
-
-			sprite->ui();
-
+			
 			//改行
 			ImGui::NewLine();
 
@@ -704,6 +717,40 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			//materialDataSprite->uvTransform = uvTransformMatrix;
 
 
+			for (Sprite* sprite : sprites)
+			{
+				sprite->Update();
+			}
+
+			//// 現在の座標を変数で受ける
+			//Vector2 position = sprite->GetPosition();
+			//// 座標を変更する
+			//position.x += 0.1f;
+			//position.y += 0.1f;
+			//// 変更を反映する
+			//sprite->SetPosition(position);
+
+			// 角度を変化させるテスト
+			/*float rotation = sprite->GetRotation();
+			rotation += 0.01f;
+			sprite->SetRotation(rotation);*/
+
+			//// 色を変化させるテスト
+			//Vector4 color = sprite->GetColor();
+			//color.x += 0.01f;
+			//if (color.x > 1.0f) 
+			//{
+			//	color.x -= 1.0f;
+			//}
+			//sprite->SetColor(color);
+
+			// サイズを変化させるテスト
+			/*Vector2 size = sprite->GetSize();
+			size.x += 0.1f;
+			size.y += 0.1f;
+			sprite->SetSize(size);*/
+
+
 
 			//ゲームの処理		描画処理
 
@@ -723,9 +770,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			spriteCommon->CommonDrawSetting();
 
-
-			sprite->Draw(textureSrvHandleGPU);
-
+			for (Sprite* sprite : sprites)
+			{
+				sprite->Draw(textureSrvHandleGPU);
+			}
 
 
 			//いざ描画
@@ -784,8 +832,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	delete dxCommon;
 
 	//スプライト解放
-	delete sprite;
-
+	for (Sprite* sprite : sprites)
+	{
+		delete sprite;
+	}
 
 	//CloseHandle(fenceEvent);
 	

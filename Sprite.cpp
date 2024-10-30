@@ -51,24 +51,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon)
 	transformationMatrixData_->WVP = MyMath::MakeIdentity4x4();
 
 	
-	///-----------------------------------
-
-	//directionalLightResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(DirectionalLight));
-
-	//directionalLightResource_->Map(
-	//	0,
-	//	nullptr,
-	//	reinterpret_cast<void**>(&directionalLightData_)
-	//);
-
-	////デフォルト値は以下のようにしておく
-	//directionalLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
-	//directionalLightData_->direction = MyMath::Normalize({ 0.0f,-1.0f,0.0f });
-	//directionalLightData_->intensity = 1.0f;
-
-	///-----------------------------------
-	
-	transformSprite={
+	transform_={
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f}
@@ -78,7 +61,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon)
 void Sprite::Update()
 {
 
-	vertexData_[0].position = { 0.0f,360.0f,0.0f,1.0f };
+	vertexData_[0].position = { 0.0f,1.0f,0.0f,1.0f };
 	vertexData_[0].texcoord = { 0.0f,1.0f };
 	vertexData_[0].normal = { 0.0f,0.0f,-1.0f };
 
@@ -86,11 +69,11 @@ void Sprite::Update()
 	vertexData_[1].texcoord = { 0.0f,0.0f };
 	vertexData_[1].normal = { 0.0f,0.0f,-1.0f };
 
-	vertexData_[2].position = { 640.0f,360.0f,0.0f,1.0f };
+	vertexData_[2].position = { 1.0f,1.0f,0.0f,1.0f };
 	vertexData_[2].texcoord = { 1.0f,1.0f };
 	vertexData_[3].normal = { 0.0f,0.0f,-1.0f };
 
-	vertexData_[3].position = { 640.0f,0.0f,0.0f,1.0f };
+	vertexData_[3].position = { 1.0f,0.0f,0.0f,1.0f };
 	vertexData_[3].texcoord = { 1.0f,0.0f };
 	vertexData_[3].normal = { 0.0f,0.0f,-1.0f };
 
@@ -98,10 +81,12 @@ void Sprite::Update()
 	indexData_[3] = 1;		indexData_[4] = 3;		indexData_[5] = 2;
 
 
-	
+	transform_.translate = { position_.x,position_.y ,0.0f};
+	transform_.rotate = { 0.0f,0.0f,rotation_ };
+	transform_.scale = { size_.x,size_.y,1.0f };
 
 
-	Matrix4x4 worldMatrixSprite = MyMath::MakeAffineMatrix(transformSprite.scale, transformSprite.rotate, transformSprite.translate);
+	Matrix4x4 worldMatrixSprite = MyMath::MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 	Matrix4x4 viewMatrixSprite = MyMath::MakeIdentity4x4();
 	Matrix4x4 projectionMatrixSprite = MyMath::MakeOrthographicMatrix(0.0f, 0.0f, float(WinApp::kClientWidth), float(WinApp::kClientHeight), 0.0f, 100.0f);
 	Matrix4x4 worldViewProjectionMatrixSprite = MyMath::Multiply(worldMatrixSprite, MyMath::Multiply(viewMatrixSprite, projectionMatrixSprite));
@@ -131,29 +116,5 @@ void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU)
 	//スプライトの描画(DrawCall//ドローコール)
 	spriteCommon_->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 
-
-
-
-
-
-
-
-
-
-	//spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(3, spriteCommon_->GetDxCommon()->GetSrvDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
-
-	//spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_->GetGPUVirtualAddress());
-	//spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(3, cbvBuffer->GetGPUVirtualAddress());
-}
-
-void Sprite::ui()
-{
-#ifdef _DEBUG
-	
-	ImGui::SliderFloat3("translate", &transformSprite.translate.x, -20.0f, 20.0f);
-	ImGui::SliderFloat3("scale", &transformSprite.scale.x, 0.0f, 5.0f);
-	ImGui::SliderFloat3("r", &transformSprite.rotate.x, 0.0f, 5.0f);
-
-#endif // _DEBUG
 
 }
