@@ -1,5 +1,7 @@
 #include "Particle.hlsli"
 
+#include <string>
+
 struct TransformationMatrix
 {
     float4x4 WVP;
