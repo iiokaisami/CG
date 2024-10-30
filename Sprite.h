@@ -23,8 +23,22 @@ public:
 	// 描画
 	void Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU);
 
-	// 仮 後で消す
-	void ui();
+
+	//-----------ゲッター----------//
+	const Vector2& GetPosition()const { return position_; }
+	float GetRotation() const { return rotation_; }
+
+	const Vector4& GetColor() const { return materialData_->color; }
+
+	const Vector2& GetSize()const { return size_; }
+
+	//-----------セッター----------//
+	void SetPosition(const Vector2& position) { position_ = position; }
+	void SetRotation(float rotation) { rotation_ = rotation; }
+
+	void SetColor(const Vector4& color) { materialData_->color = color; }
+
+	void SetSize(const Vector2& size) { size_ = size; }
 
 private:
 
@@ -60,10 +74,15 @@ private:
 	//D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU_;
 
 
-	Transform transformSprite;
+	Transform transform_;
 
 	//平行光源用のリソース
 	DirectionalLight* directionalLightData_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_;
+
+	Vector2 position_ = { 0.0f,0.0f };
+	float rotation_ = 0.0f;
+
+	Vector2 size_ = { 640.0f,360.0f };
 };
 
