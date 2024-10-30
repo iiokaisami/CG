@@ -1967,7 +1967,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			commandList->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
 			//描画！
-			//commandList->DrawInstanced(UINT(modelData.vertices.size()), instancing, 0, 0);
+			commandList->DrawInstanced(UINT(modelData.vertices.size()), instancing, 0, 0);
 
 
 
