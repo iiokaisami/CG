@@ -1,6 +1,7 @@
 #include "Particle.hlsli"
 
-#include <string>
+#include <string>　
+// SV_InstanceIDの宣言 int から uint に
 
 struct TransformationMatrix
 {
