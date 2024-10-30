@@ -16,6 +16,7 @@
 #include "SpriteCommon.h"
 #include "Sprite.h"
 #include "MyMath.h"
+#include "TextureManager.h"
 
 /// <summary>
 ///  dxCommmon->CompileShader
@@ -211,6 +212,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	dxCommon = new DirectXCommon();
 	dxCommon->Initialize(winApp);
 
+	// テクスチャマネージャーの初期化
+	TextureManager::GetInstance()->Initialize(dxCommon);
+
 	// スプライト共通部分の初期化
 	spriteCommon = new SpriteCommon();
 	spriteCommon->Initialize(dxCommon);
@@ -354,27 +358,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
-	//////////////////////////////////////
-	std::vector<Sprite*> sprites;
-	for (uint32_t i = 0; i < 5; ++i)
-	{
-		Sprite* sprite = new Sprite();
-		sprite->Initialize(spriteCommon);
-		sprites.push_back(sprite);
 
-		Vector2 position = sprite->GetPosition();
-		// 座標を変更する
-		position.x = 100.0f * sprites.size();
-		// 変更を反映する
-		sprite->SetPosition(position);
-
-		Vector2 size = sprite->GetSize();
-		size.x = 70.0f;
-		size.y = 70.0f;
-		sprite->SetSize(size);
-	}
-	
-	//////////////////////////////////////
 
 
 
@@ -573,22 +557,46 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = dxCommon->UploadTextureData(textureResource, mipImages);
 
 
+	//////////////////////////////////////
+	std::vector<Sprite*> sprites;
+	for (uint32_t i = 0; i < 5; ++i)
+	{
+		Sprite* sprite = new Sprite();
+		sprite->Initialize(spriteCommon, "resources/uvChecker.png");
+		sprites.push_back(sprite);
+
+		Vector2 position = sprite->GetPosition();
+		// 座標を変更する
+		position.x = 100.0f * sprites.size();
+		// 変更を反映する
+		sprite->SetPosition(position);
+
+		Vector2 size = sprite->GetSize();
+		size.x = 70.0f;
+		size.y = 70.0f;
+		sprite->SetSize(size);
+	}
+
+	//////////////////////////////////////
+
+
+
 	//metadataをもとにSRVの設定
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	/*D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = metadata.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
+	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);*/
 
 	//SRVを制作するDescriptorHeapの場所を決める
 	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
 
-	//先頭はImGuiが使っているのでその次を使う
-	textureSrvHandleCPU.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	textureSrvHandleGPU.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	//SRVの生成
-	device->CreateShaderResourceView(textureResource.Get(), &srvDesc, textureSrvHandleCPU);
+	////先頭はImGuiが使っているのでその次を使う
+	//textureSrvHandleCPU.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//textureSrvHandleGPU.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	////SRVの生成
+	//device->CreateShaderResourceView(textureResource.Get(), &srvDesc, textureSrvHandleCPU);
 
 
 
@@ -764,7 +772,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			//コマンドを積み込んで確定させる
 
 
-
+			// テクスチャマネージャーの終了
+			TextureManager::GetInstance()->Finalize();
 
 			dxCommon->PreDraw();
 

@@ -2,7 +2,7 @@
 
 #include "SpriteCommon.h"
 
-void Sprite::Initialize(SpriteCommon* spriteCommon)
+void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 {
 	spriteCommon_ = spriteCommon;
 
@@ -56,6 +56,9 @@ void Sprite::Initialize(SpriteCommon* spriteCommon)
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f}
 	};
+
+	// 単位行列を書き込んでおく
+	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
 }
 
 void Sprite::Update()
@@ -112,7 +115,7 @@ void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU)
 	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
 
 	//SRVのDescriptorTableの先頭を設定。2はrootPatameter[2]である。
-	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
+	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex));
 	//スプライトの描画(DrawCall//ドローコール)
 	spriteCommon_->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 
