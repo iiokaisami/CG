@@ -21,6 +21,7 @@
 #include <sstream>
 #include <wrl.h>
 #include <random>
+#include <numbers>
 
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -1608,8 +1609,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	Transform cameraTransform{
 		{1.0f,1.0f,1.0f},
-		{0.0f,0.0f,0.0f},
-		{0.0f,0.0,-10.0f}
+		//{0.0f,0.0f,0.0f},
+		{std::numbers::pi_v<float> / 3.0f,std::numbers::pi_v<float>,0.0f},
+		{0.0f,23.0,10.0f}
 	};
 
 	//UVTransform用の変数
@@ -1869,6 +1871,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// Δtを定義。とりあえず60fps固定せてあるが、実時間を計測して可変fpsで動かせるようにしておくとなおよい
 	const float kDeltaTime = 1.0f / 60.0f;
 
+	int blendMode = 1;
+
+	Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
+
+	Matrix4x4 worldMatrixInstancing;
+
+	bool useBillboard = true;
 	
 
 
@@ -1907,6 +1916,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			ImGui::Text("camera");
 			ImGui::SliderFloat3("cameraPosition", &cameraTransform.translate.x, -100.0f, 100.0f);
 			ImGui::Checkbox("useMonsterBall", &useMonsterBall);
+			ImGui::Checkbox("useBillboard", &useBillboard);
 
 			//改行
 			ImGui::NewLine();
@@ -2004,14 +2014,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 				// Billboard
-				/*Matrix4x4 billboardMatrix = Multiply(backToFrontMatrix, cameraMatrix);
+				Matrix4x4 billboardMatrix = Multiply(backToFrontMatrix, cameraMatrix);
 				billboardMatrix.m[3][0] = 0.0f;
 				billboardMatrix.m[3][1] = 0.0f;
-				billboardMatrix.m[3][2] = 0.0f;*/
+				billboardMatrix.m[3][2] = 0.0f;
 
 		
 
-				/*if (useBillboard == true) {
+				if (useBillboard == true) {
 
 					worldMatrixInstancing = Multiply(Multiply(scaleMatrix, billboardMatrix), translateMatrix);
 
@@ -2019,7 +2029,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				else {
 
 					worldMatrixInstancing = MakeAffineMatrix(particles[index].transform.scale, particles[index].transform.rotate, particles[index].transform.translate);
-				}*/
+				}
 
 				Matrix4x4 WVPMatrixInstancing = Multiply(worldMatrixInstancing, Multiply(viewMatrix, projectionMatrix));
 
