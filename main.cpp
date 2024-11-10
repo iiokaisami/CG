@@ -1821,7 +1821,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	
 	bool useMonsterBall = true;
 
-	uint32_t instancing = 10;
+	//uint32_t instancing = 10;
 	
 	Transform transforms[kNumInstance];
 	for (uint32_t index = 0; index < kNumInstance; ++index)
@@ -2036,7 +2036,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			//commandList->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
 			//描画！
-			commandList->DrawInstanced(UINT(modelData.vertices.size()), instancing, 0, 0);
+			//commandList->DrawInstanced(UINT(modelData.vertices.size()), instancing, 0, 0);
 
 			// 描画!6頂点のポリゴンを、kNumInstance（今回は10）だけInstance描画を行う
 			commandList->DrawInstanced(UINT(modelData.vertices.size()), kNumInstance, 0, 0);
