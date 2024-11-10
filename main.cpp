@@ -272,6 +272,10 @@ struct D3DResourceLeakChecker
 	}
 };
 
+struct Particle {
+	Transform transform;
+	Vector3 velocity;
+};
 
 
 class ResourceObject
@@ -1827,7 +1831,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	for (uint32_t index = 0; index < kNumInstance; ++index)
 	{
 		transforms[index].scale = { 1.0f,1.0f,1.0f };
-		transforms[index].rotate = { 0.0f,0.0f,0.0f };
+		transforms[index].rotate = { 0.0f,3.3f,0.0f };
 		transforms[index].translate = { index * 0.1f,index * 0.1f,index * 0.1f };
 	}
 	
@@ -1903,6 +1907,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
 			}
 
+			if (ImGui::CollapsingHeader("particleTransform"))
+			{
+				ImGui::DragFloat3("UVTranslate", &transforms[0].translate.x, 0.01f, -10.0f, 10.0f);
+				ImGui::DragFloat3("UVScale", &transforms[0].scale.x, 0.01f, -10.0f, 10.0f);
+				ImGui::SliderFloat3("r", &transforms[0].rotate.x, 0.0f, 5.0f);
+			}
+
 			ImGui::End();
 
 
@@ -1937,10 +1948,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			for (uint32_t index = 0; index < kNumInstance; ++index)
 			{
-				Matrix4x4 worldMatrixInstancing = MakeAffineMatrix(transforms[index].scale, transforms[index].rotate, transforms[index].translate);
+				/*Matrix4x4 worldMatrixInstancing = MakeAffineMatrix(transforms[index].scale, transforms[index].rotate, transforms[index].translate);
 				Matrix4x4 viewMatrixInstancing = MakeIdentity4x4();
 				Matrix4x4 projectionMatrixInstancing = MakeOrthographicMatrix(0.0f, 0.0f, float(kClientWidth), float(kClientHeight), 0.0f, 100.0f);
 				Matrix4x4 worldViewProjectionMatrixInstancing = Multiply(worldMatrixInstancing, Multiply(viewMatrixInstancing, projectionMatrixInstancing));
+				instancingData[index].WVP = worldViewProjectionMatrixInstancing;
+				instancingData[index].World = worldMatrixInstancing;*/
+
+				Matrix4x4 worldMatrixInstancing = MakeAffineMatrix(transforms[index].scale, transforms[index].rotate, transforms[index].translate);
+				Matrix4x4 worldViewProjectionMatrixInstancing = Multiply(worldMatrixInstancing, Multiply(viewMatrix, projectionMatrix));
 				instancingData[index].WVP = worldViewProjectionMatrixInstancing;
 				instancingData[index].World = worldMatrixInstancing;
 			}
