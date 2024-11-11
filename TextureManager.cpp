@@ -110,3 +110,12 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(uint32_t textureInde
 	TextureData& textureData = textureDatas[textureIndex];
 	return textureData.srvHandleGPU;
 }
+
+const DirectX::TexMetadata& TextureManager::GetMetaData(uint32_t textureIndex)
+{
+	// 範囲外指定違反チェック
+	assert(textureDatas.size() + kSRVIndexTop < DirectXCommon::kMaxSRVCount);
+
+	TextureData& textureData= textureDatas[textureIndex];
+	return textureData.metadata;
+}

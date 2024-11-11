@@ -33,6 +33,14 @@ public:
 
 	const Vector2& GetSize()const { return size_; }
 
+	const Vector2& GetAnchorPoint()const { return anchorPoint_; }
+
+	const bool& IsFlipX()const { return isFlipX_; }
+	const bool& IsFlipY()const { return isFlipY_; }
+
+	const Vector2& GetTextureLeftTop()const { return textureLeftTop_; }
+	const Vector2& GetTextureSize()const { return textureSize_; }
+
 	//-----------セッター----------//
 	void SetPosition(const Vector2& position) { position_ = position; }
 	void SetRotation(float rotation) { rotation_ = rotation; }
@@ -40,6 +48,14 @@ public:
 	void SetColor(const Vector4& color) { materialData_->color = color; }
 
 	void SetSize(const Vector2& size) { size_ = size; }
+
+	void SetAnchorPoint(const Vector2& anchorPoint) { anchorPoint_ = anchorPoint; }
+
+	void SetFlipX(const bool& IsFlipX) { isFlipX_ = IsFlipX; }
+	void SetFlipY(const bool& IsFlipY) { isFlipY_ = IsFlipY; }
+
+	void SetTextureLeftTop(const Vector2& textureLeftTop) { textureLeftTop_ = textureLeftTop; }
+	void SetTextureSize(const Vector2& textureSize) { textureSize_ = textureSize; }
 
 private:
 
@@ -82,9 +98,24 @@ private:
 	DirectionalLight* directionalLightData_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_;
 
-	Vector2 position_ = { 0.0f,0.0f };
+	Vector2 position_ = { 0.0f,50.0f };
 	float rotation_ = 0.0f;
 
 	Vector2 size_ = { 640.0f,360.0f };
+
+	// アンカーポイント
+	Vector2 anchorPoint_ = { 0.0f,0.0f };
+
+	// 左右フリップ
+	bool isFlipX_ = false;
+	// 上下フリップ
+	bool isFlipY_ = false;
+
+	// テクスチャ左上座標
+	Vector2 textureLeftTop_ = { 0.0f,0.0f };
+	// テクスチャ切り出しサイズ
+	Vector2 textureSize_ = { 100.0f,100.0f };
+
+	// 
 };
 
