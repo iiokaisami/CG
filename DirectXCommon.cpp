@@ -246,7 +246,7 @@ void DirectXCommon::CreateDepthBuffer()
 		D3D12_HEAP_FLAG_NONE,											//Heapの特殊な設定。特になし
 		&resourceDesc,													//Resourceの設定
 		D3D12_RESOURCE_STATE_DEPTH_WRITE,								    //深度値を書き込む状態にしておく
-		&depthClearValue,											    //Clear最適値
+		&depthClearValue,		//Clear最適値
 		IID_PPV_ARGS(&resource_)											//作成するResourceポインタへのポインタ
 	);
 	assert(SUCCEEDED(result));
@@ -488,9 +488,14 @@ void DirectXCommon::PostDraw()
 
 	//画面の各処理はすべて終わり、画面に移すので、状態を遷移
 	//今回はRenderTargetからPresentにする
+	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier_.Transition.pResource = swapChainResources_[backBufferIndex].Get();
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier_.Transition.StateAfter =  D3D12_RESOURCE_STATE_PRESENT;
 	barrier_.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+
 	//TransitonのBarrierを張る
 	commandList_->ResourceBarrier(1, &barrier_);
 
@@ -527,6 +532,12 @@ void DirectXCommon::PostDraw()
 		//イベントを待つ
 		WaitForSingleObject(fenceEvent_, INFINITE);
 	}
+
+	//次フレーム用のコマンドリストを準備
+	result = commandAllocator_->Reset();
+	assert(SUCCEEDED(result));
+	result = commandList_->Reset(commandAllocator_.Get(), nullptr);
+	assert(SUCCEEDED(result));
 }
 
 Microsoft::WRL::ComPtr<IDxcBlob> DirectXCommon::CompileShader(const std::wstring& filePath, const wchar_t* profile)
@@ -611,6 +622,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateBufferResource(size_
 	//頂点リソース用のヒープ設定
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
+	
 	//頂点リソースの設定
 	D3D12_RESOURCE_DESC bufferResourceDesc{};
 	//バッファリソース。テクスチャの場合はまた別の設定をする
@@ -702,6 +714,44 @@ DirectX::ScratchImage DirectXCommon::LoadTexture(const std::string& filePath)
 Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateDepthStencilTextureResource(int32_t width, int32_t height)
 {
 	return Microsoft::WRL::ComPtr<ID3D12Resource>();
+}
+
+void DirectXCommon::CommandPass()
+{
+	HRESULT result = S_FALSE;
+
+	//コマンドリストの内容を確定させる。すべてのコマンドを頼んでからCloseすること
+	result = commandList_->Close();
+	assert(SUCCEEDED(result));
+
+	//コマンドをキックする
+	//GPU二コマンドリストの実行を行わせる
+	Microsoft::WRL::ComPtr<ID3D12CommandList> commandLists[] = { commandList_ };
+	commandQueue_->ExecuteCommandLists(1, commandLists->GetAddressOf());
+	//GPUとOSに画面の交換を行うように通知する
+	swapChain_->Present(1, 0);
+
+
+
+	//Fenceの値を更新
+	fenceValue_++;
+	//GPUがここまでたどり着いたときに、Fenceの値を指定した値を代入するようにSignalを送る
+	commandQueue_->Signal(fence_.Get(), fenceValue_);
+	//Fenceの値が指定したSignal値にたどり着いているか確認する
+	//GetCompleteValueの初期値はFence制作時に渡した初期値
+	if (fence_->GetCompletedValue() < fenceValue_)
+	{
+		//指定したSignalにたどり着いていないので、たどり着くまで待つようにイベントを設定する
+		fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
+		//イベントを待つ
+		WaitForSingleObject(fenceEvent_, INFINITE);
+	}
+
+	//次フレーム用のコマンドリストを準備
+	result = commandAllocator_->Reset();
+	assert(SUCCEEDED(result));
+	result = commandList_->Reset(commandAllocator_.Get(), nullptr);
+	assert(SUCCEEDED(result));
 }
 
 void DirectXCommon::InitializeFixFPS()

@@ -156,6 +156,8 @@ public:
 	/// </summary>
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(int32_t width, int32_t height);
 
+	void CommandPass();
+
 	//-----------ゲッター----------//
 
 	// デバイス

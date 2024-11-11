@@ -32,21 +32,18 @@ void TextureManager::Initialize(DirectXCommon* dxCommon)
 void TextureManager::LoadTexture(const std::string& filePath)
 {
 	// 読み込み済みテクスチャを検索
-	//auto it = std::find_if(
-	//	textureDatas.begin(),
-	//	textureDatas.end(),
-	//	[&](TextureData& textureData) {return textureData.filePath == filePath; }
-	//);
-	//// テクスチャ枚数上限チェック
-	////assert(textureDatas.size() + kSRVIndexTop <DirectXCommon::kMaxSRVCount);
-	//
-	//if (it != textureDatas.end())
-	//{
-	//	// 読み込み済みなら早期 return
-	//	return;
-	//}
-	GetTextureIndexByFilePath(filePath);
-	GetSrvHandleGPU(textureDatas.size() + kSRVIndexTop);
+	auto it = std::find_if(
+		textureDatas.begin(),
+		textureDatas.end(),
+		[&](TextureData& textureData) {return textureData.filePath == filePath; }
+	);
+	if (it != textureDatas.end())
+	{
+		// 読み込み済みなら早期 return
+		return;
+	}
+	// テクスチャ枚数上限チェック
+	assert(textureDatas.size() + kSRVIndexTop <DirectXCommon::kMaxSRVCount);
 
 	//テクスチャファイルを読んでプログラムで扱えるようにする
 	DirectX::ScratchImage image{};
@@ -60,13 +57,15 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	assert(SUCCEEDED(hr));
 
 	// テクスチャデータを追加
-	textureDatas.resize(textureDatas.size() * 1);
+	textureDatas.resize(textureDatas.size() + 1);
 	// 追加したテクスチャデータの参照を取得する
 	TextureData& textureData = textureDatas.back();
 
 	textureData.filePath = filePath;
-	textureData.metadata = image.GetMetadata();
+	textureData.metadata = mipImages.GetMetadata();
 	textureData.resource = dxCommon_->CreateTextureResource(dxCommon_->GetDevice(), textureData.metadata);
+	textureData.intermediate = dxCommon_->UploadTextureData(textureData.resource, mipImages);
+	dxCommon_->CommandPass();
 
 	// テクスチャデータの要素番号をSRVのインデックスをする
 	uint32_t srvIndex = static_cast<uint32_t>(textureDatas.size() - 1) + kSRVIndexTop;
@@ -106,8 +105,8 @@ uint32_t TextureManager::GetTextureIndexByFilePath(const std::string& filePath)
 D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(uint32_t textureIndex)
 {
 	// テクスチャ枚数上限チェック
-	assert(textureIndex < DirectXCommon::kMaxSRVCount);
+	assert(textureDatas.size() + kSRVIndexTop < DirectXCommon::kMaxSRVCount);
 
-	TextureData& textureData = textureDatas.back();
+	TextureData& textureData = textureDatas[textureIndex];
 	return textureData.srvHandleGPU;
 }
