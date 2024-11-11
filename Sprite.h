@@ -59,6 +59,11 @@ public:
 
 private:
 
+	// テクスチャサイズをイメージに合わせる
+	void AdjustTextureSize();
+
+private:
+
 	// spriteCommon
 	SpriteCommon* spriteCommon_ = nullptr;
 
@@ -116,6 +121,6 @@ private:
 	// テクスチャ切り出しサイズ
 	Vector2 textureSize_ = { 100.0f,100.0f };
 
-	// 
+	
 };
 

@@ -59,6 +59,8 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 
 	// 単位行列を書き込んでおく
 	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
+
+	AdjustTextureSize();
 }
 
 void Sprite::Update()
@@ -91,18 +93,22 @@ void Sprite::Update()
 
 	vertexData_[0].position = { left,bottom,0.0f,1.0f };
 	vertexData_[0].texcoord = { tex_left,tex_bottom };
+	//vertexData_[0].texcoord = { 0.0f,1.0f };
 	vertexData_[0].normal = { 0.0f,0.0f,-1.0f };
 
 	vertexData_[1].position = { left,top,0.0f,1.0f };
 	vertexData_[1].texcoord = { tex_left,tex_top };
+	//vertexData_[1].texcoord = { 0.0f,0.0f };
 	vertexData_[1].normal = { 0.0f,0.0f,-1.0f };
 
 	vertexData_[2].position = { right,bottom,0.0f,1.0f };
 	vertexData_[2].texcoord = { tex_right,tex_bottom };
+	//vertexData_[2].texcoord = { 1.0f,1.0f };
 	vertexData_[3].normal = { 0.0f,0.0f,-1.0f };
 
 	vertexData_[3].position = { right,top,0.0f,1.0f };
 	vertexData_[3].texcoord = { tex_right,tex_top };
+	//vertexData_[3].texcoord = { 1.0f,0.0f };
 	vertexData_[3].normal = { 0.0f,0.0f,-1.0f };
 
 	indexData_[0] = 0;		indexData_[1] = 1;		indexData_[2] = 2;
@@ -145,4 +151,15 @@ void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU)
 	spriteCommon_->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 
 
+}
+
+void Sprite::AdjustTextureSize()
+{
+	// テクスチャメタデータを取得
+	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureIndex);
+
+	textureSize_.x = static_cast<float>(metadata.width);
+	textureSize_.y = static_cast<float>(metadata.height);
+	// 画像サイズをテクスチャサイズに合わせる
+	size_ = textureSize_;
 }
