@@ -63,21 +63,46 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 
 void Sprite::Update()
 {
+	float left = 0.0f - anchorPoint_.x;
+	float right = 1.0f - anchorPoint_.x;
+	float top = 0.0f - anchorPoint_.y;
+	float bottom = 1.0f - anchorPoint_.y;
 
-	vertexData_[0].position = { 0.0f,1.0f,0.0f,1.0f };
-	vertexData_[0].texcoord = { 0.0f,1.0f };
+	// 左右反転
+	if (isFlipX_)
+	{
+		left = -left;
+		right = -right;
+	}
+
+	// 上下反転
+	if (isFlipY_)
+	{
+		top = -top;
+		bottom = -bottom;
+	}
+
+	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureIndex);
+	float tex_left = textureLeftTop_.x / metadata.width;
+	float tex_right = (textureLeftTop_.x + textureSize_.x)/ metadata.width;
+	float tex_top = textureLeftTop_.y / metadata.height;
+	float tex_bottom = (textureLeftTop_.y + textureSize_.y) / metadata.height;
+
+
+	vertexData_[0].position = { left,bottom,0.0f,1.0f };
+	vertexData_[0].texcoord = { tex_left,tex_bottom };
 	vertexData_[0].normal = { 0.0f,0.0f,-1.0f };
 
-	vertexData_[1].position = { 0.0f,0.0f,0.0f,1.0f };
-	vertexData_[1].texcoord = { 0.0f,0.0f };
+	vertexData_[1].position = { left,top,0.0f,1.0f };
+	vertexData_[1].texcoord = { tex_left,tex_top };
 	vertexData_[1].normal = { 0.0f,0.0f,-1.0f };
 
-	vertexData_[2].position = { 1.0f,1.0f,0.0f,1.0f };
-	vertexData_[2].texcoord = { 1.0f,1.0f };
+	vertexData_[2].position = { right,bottom,0.0f,1.0f };
+	vertexData_[2].texcoord = { tex_right,tex_bottom };
 	vertexData_[3].normal = { 0.0f,0.0f,-1.0f };
 
-	vertexData_[3].position = { 1.0f,0.0f,0.0f,1.0f };
-	vertexData_[3].texcoord = { 1.0f,0.0f };
+	vertexData_[3].position = { right,top,0.0f,1.0f };
+	vertexData_[3].texcoord = { tex_right,tex_top };
 	vertexData_[3].normal = { 0.0f,0.0f,-1.0f };
 
 	indexData_[0] = 0;		indexData_[1] = 1;		indexData_[2] = 2;
@@ -85,7 +110,7 @@ void Sprite::Update()
 
 
 	transform_.translate = { position_.x,position_.y ,0.0f};
-	transform_.rotate = { 0.0f,0.0f,rotation_ };
+	transform_.rotate = { 0.0f,0.0f,rotation_};
 	transform_.scale = { size_.x,size_.y,1.0f };
 
 

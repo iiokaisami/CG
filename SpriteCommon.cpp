@@ -52,7 +52,7 @@ void SpriteCommon::Initialize(DirectXCommon* dxCommon)
 
 	//RasterizerStateの設定
 	//裏面(時計回り)を表示しない
-	rasterizerDesc_.CullMode = D3D12_CULL_MODE_BACK;
+	rasterizerDesc_.CullMode = D3D12_CULL_MODE_NONE;//D3D12_CULL_MODE_BACK;
 	//三角形の中を塗りつぶす
 	rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;
 
@@ -159,6 +159,9 @@ void SpriteCommon::CreateGraphicsPipeline()
 	//実際に生成
 	result = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_));
 	assert(SUCCEEDED(result));
+
+	// カリングしない（裏面も表示させる）
+	rasterizerDesc_.CullMode = D3D12_CULL_MODE_NONE;
 }
 
 void SpriteCommon::CommonDrawSetting()

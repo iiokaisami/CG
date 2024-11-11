@@ -630,8 +630,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	bool useMonsterBall = true;
 
+	bool isFilipX = false;
+	bool isFilipY = false;
 
-
+	Vector2 textureLeftTop{};
+	Vector2 textureSize{};
 
 	//メインループ
 	//ウィンドウのxボタンが押されるまでループ
@@ -675,6 +678,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			ImGui::SliderFloat3("cameraPosition", &cameraTransform.translate.x, -100.0f, 0.0f);
 			ImGui::Checkbox("useMonsterBall", &useMonsterBall);
 			
+			
+
+
 			//改行
 			ImGui::NewLine();
 
@@ -701,6 +707,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
 				ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
 				ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
+			}
+
+			if (ImGui::CollapsingHeader("sprite"))
+			{
+				ImGui::Checkbox("FilipX", &isFilipX);
+				ImGui::Checkbox("FilipY", &isFilipY);
+				ImGui::SliderFloat2("textureLeftTop", &textureLeftTop.x, 0.0f, 1000.0f);
+				ImGui::SliderFloat2("textureSize", &textureSize.x, 0.0f, 1000.0f);
 			}
 			
 
@@ -734,6 +748,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			for (Sprite* sprite : sprites)
 			{
 				sprite->Update();
+				sprite->SetFlipX(isFilipX);
+				sprite->SetFlipY(isFilipY);
+				sprite->SetTextureLeftTop(textureLeftTop);
+				sprite->SetTextureSize(textureSize);
 			}
 
 			//// 現在の座標を変数で受ける
