@@ -295,6 +295,18 @@ struct Emitter {
 	float frequencyTime;  //!< 頻度用時刻
 };
 
+struct AABB
+{
+	Vector3 min;//!<最小点
+	Vector3 max;//!< 最大点
+};
+
+struct AccelerationField {
+	Vector3 acceleration; //!< 加速度
+	AABB area;            //!< 範囲
+};
+
+
 class ResourceObject
 {
 public:
@@ -567,6 +579,28 @@ Matrix4x4 MakeTranslateMatrix(Vector3 translate)
 	return result;
 }
 
+// 減算
+Vector3 Subtract(const Vector3& v1, const Vector3& v2)
+{
+	Vector3 result;
+	result.x = v1.x - v2.x;
+	result.y = v1.y - v2.y;
+	result.z = v1.z - v2.z;
+	return result;
+}
+
+// 距離
+float Length(const Vector3& v1, const Vector3& v2)
+{
+	Vector3 distance;
+	float d;
+
+	distance = Subtract(v2, v1);
+	d = sqrtf(powf(distance.x, 2) + powf(distance.y, 2) + powf(distance.z, 2));
+
+	return d;
+}
+
 Particle MakeNewParticle(std::mt19937& randomEngine, const Vector3& translate) {
 
 	std::uniform_real_distribution<float> distPosition(-1.0f, 1.0f);
@@ -601,6 +635,30 @@ std::list<Particle> Emit(const Emitter& emitter, std::mt19937& randomEngine){
 	}
 	return particles;
 }
+
+bool IsCollision(const AABB& aabb, const Vector3& point) {
+
+	//最接点を求める
+	Vector3 closestPoint{
+	 std::clamp(point.x,aabb.min.x,aabb.max.x),
+	 std::clamp(point.y,aabb.min.y,aabb.max.y),
+	 std::clamp(point.z,aabb.min.z,aabb.max.z) };
+
+	//最接点と球の中心との距離を求める
+	float distance = Length(closestPoint,point);
+
+	//距離が半径よりも小さければ衝突
+	if (distance < point.x / 2)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+
 
 Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(Microsoft::WRL::ComPtr<ID3D12Device> device, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptor, bool shaderVisible)
 {
@@ -1915,6 +1973,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bool useBillboard = true;
 	
 
+	AccelerationField accelerationField;
+	accelerationField.acceleration = { 15.0f,0.0f,0.0f };
+	accelerationField.area.min = { -1.0f,-1.0f,-1.0f };
+	accelerationField.area.max = { 1.0f,1.0f,1.0f };
+
+
 
 
 	//メインループ
@@ -1996,6 +2060,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			ImGui::DragFloat3("EmitterTranslate", &emitter.transform.translate.x, 0.01f, -100.0f, 100.0f);
 
+			ImGui::DragFloat3("Field.min", &accelerationField.area.min.x, 0.01f);
+			ImGui::DragFloat3("Field.max", &accelerationField.area.max.x, 0.01f);
+
 			ImGui::End();
 
 
@@ -2055,6 +2122,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				instancingData[particles.size()].world = worldMatrixInstancing;
 				instancingData[particles.size()].color = (*particleIterator).color;
 
+
+				// Field の範囲内のParticle には加速度を適応する
+				if (IsCollision(accelerationField.area, (*particleIterator).transform.translate)) {
+					
+					(*particleIterator).velocity.x += accelerationField.acceleration.x * kDeltaTime;
+					(*particleIterator).velocity.y += accelerationField.acceleration.y * kDeltaTime;
+					(*particleIterator).velocity.z += accelerationField.acceleration.z * kDeltaTime;
+				}
+
+				// 速度を適応
 				(*particleIterator).transform.translate.x += (*particleIterator).velocity.x * kDeltaTime;
 				(*particleIterator).transform.translate.y += (*particleIterator).velocity.y * kDeltaTime;
 				(*particleIterator).transform.translate.z += (*particleIterator).velocity.z * kDeltaTime;
