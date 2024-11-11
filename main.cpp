@@ -550,11 +550,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//実際にShaderResourceViewを作る
 
 
-
-	DirectX::ScratchImage mipImages = dxCommon->LoadTexture("resources/uvChecker.png");
+	/*TextureManager::GetInstance()->LoadTexture("resources/uvChecker.png");
+	TextureManager::GetInstance()->LoadTexture("resources/monsterBall.png");*/
+	/*DirectX::ScratchImage mipImages = dxCommon->LoadTexture("resources/uvChecker.png");
 	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
 	Microsoft::WRL::ComPtr<ID3D12Resource> textureResource = dxCommon->CreateTextureResource(device, metadata);
-	Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = dxCommon->UploadTextureData(textureResource, mipImages);
+	Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = dxCommon->UploadTextureData(textureResource, mipImages);*/
 
 
 	//////////////////////////////////////
@@ -562,7 +563,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	for (uint32_t i = 0; i < 5; ++i)
 	{
 		Sprite* sprite = new Sprite();
+		if (i == 1 || i == 3) {
 		sprite->Initialize(spriteCommon, "resources/uvChecker.png");
+		}
+		else {
+			sprite->Initialize(spriteCommon, "resources/monsterBall.png");
+		}
 		sprites.push_back(sprite);
 
 		Vector2 position = sprite->GetPosition();
@@ -772,8 +778,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			//コマンドを積み込んで確定させる
 
 
-			// テクスチャマネージャーの終了
-			TextureManager::GetInstance()->Finalize();
+			
 
 			dxCommon->PreDraw();
 
@@ -800,9 +805,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
-
-
-
+			
 			//実際のcommandListのImGuiの描画コマンドを積む
 			ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
 
@@ -810,16 +813,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			dxCommon->PostDraw();
 
 
-			//次フレーム用のコマンドリストを準備
-			hr = commandAllocator->Reset();
-			assert(SUCCEEDED(hr));
-			hr = commandList->Reset(commandAllocator.Get(), nullptr);
-			assert(SUCCEEDED(hr));
+			////次フレーム用のコマンドリストを準備
+			//hr = commandAllocator->Reset();
+			//assert(SUCCEEDED(hr));
+			//hr = commandList->Reset(commandAllocator.Get(), nullptr);
+			//assert(SUCCEEDED(hr));
 
 		}
 	}
 
 	
+	// テクスチャマネージャーの終了
+	TextureManager::GetInstance()->Finalize();
 
 	//ImGuiの終了処理。
 	ImGui_ImplDX12_Shutdown();
