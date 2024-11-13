@@ -17,6 +17,8 @@
 #include "Sprite.h"
 #include "MyMath.h"
 #include "TextureManager.h"
+#include "Object3dCommon.h"
+#include "Object3d.h"
 
 /// <summary>
 ///  dxCommmon->CompileShader
@@ -202,6 +204,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	WinApp* winApp = nullptr;
 	DirectXCommon* dxCommon = nullptr;
 	SpriteCommon* spriteCommon = nullptr;
+	Object3dCommon* object3dCommon = nullptr;
 
 
 	// WindowsAPIの初期化
@@ -275,7 +278,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	*/
 
 	
-
+	// 3Dオブジェクト共通部の初期化
+	object3dCommon = new Object3dCommon;
+	object3dCommon->Initialize();
 
 
 	//モデル読み込み
@@ -329,8 +334,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 	
-
-
+	// 3Dオブジェクトの初期化
+	Object3d* object3d = new Object3d();
+	object3d->Initialize();
 
 	
 
@@ -863,11 +869,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// DirectX解放
 	delete dxCommon;
 
-	//スプライト解放
+	// スプライト解放
 	for (Sprite* sprite : sprites)
 	{
 		delete sprite;
 	}
+
+	// 3Dオブジェクト共通部解放
+	delete object3dCommon;
+
+	// 3Dオブジェクト解放
+	delete object3d;
 
 	//CloseHandle(fenceEvent);
 	
