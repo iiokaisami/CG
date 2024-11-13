@@ -280,7 +280,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	
 	// 3Dオブジェクト共通部の初期化
 	object3dCommon = new Object3dCommon;
-	object3dCommon->Initialize();
+	object3dCommon->Initialize(dxCommon);
 
 
 	//モデル読み込み
@@ -806,6 +806,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			dxCommon->PreDraw();
 
+
+			// 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
+			object3dCommon->CommonDrawSetting();
+			
+
+
+			//いざ描画
+
+			//commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
+			//
+			////wvp用のCBufferの場所を設定
+			//commandList->SetGraphicsRootConstantBufferView(1, wvpResource->GetGPUVirtualAddress());
+
+			////commandList->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
+			////描画！
+			//commandList->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
+
+
+
+
 			spriteCommon->CommonDrawSetting();
 
 			for (Sprite* sprite : sprites)
@@ -813,35 +833,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				sprite->Draw(textureSrvHandleGPU);
 			}
 
-
-			//いざ描画
-
-			//commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
-			//
-			//
-			////wvp用のCBufferの場所を設定
-			//commandList->SetGraphicsRootConstantBufferView(1, wvpResource->GetGPUVirtualAddress());
-			//
-
-			//commandList->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
-			////描画！
-			//commandList->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
-
-
-
 			
 			//実際のcommandListのImGuiの描画コマンドを積む
 			ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
 
 
 			dxCommon->PostDraw();
-
-
-			////次フレーム用のコマンドリストを準備
-			//hr = commandAllocator->Reset();
-			//assert(SUCCEEDED(hr));
-			//hr = commandList->Reset(commandAllocator.Get(), nullptr);
-			//assert(SUCCEEDED(hr));
 
 		}
 	}
