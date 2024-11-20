@@ -5,11 +5,15 @@
 
 #include "Object3dCommon.h"
 #include "Model.h"
+#include "ModelManager.h"
 
-void Object3d::Initialize(Object3dCommon* object3dCommon)
+void Object3d::Initialize(Object3dCommon* object3dCommon/* const std::string& filePath */)
 {
 	object3dCommon_ = object3dCommon;
 
+	//object3dCommon_ = Object3dCommon::GetInstance();
+	//// モデルを設定
+	//SetModel(filePath);
 
 	// 座標変換行列リソースを作る
 	CreateTransformationMatrixData();
@@ -46,6 +50,11 @@ void Object3d::Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU)
 	{
 		model_->Draw();
 	}
+}
+
+void Object3d::SetModel(const std::string& filePath)
+{
+	model_ = ModelManager::GetInstance()->FindModel(filePath);
 }
 
 void Object3d::CreateTransformationMatrixData()

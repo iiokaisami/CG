@@ -5,12 +5,12 @@
 
 #include "ModelCommon.h"
 
-void Model::Initialize(ModelCommon* modelCommon)
+void Model::Initialize(ModelCommon* modelCommon, const std::string& directorypath, const std::string& filename)
 {
 	modelCommon_ = modelCommon;
 
 	//モデル読み込み
-	modelData_ = LoadObjFile("resources", "plane.obj");
+	modelData_ = LoadObjFile(directorypath, filename);
 
 	// VertexResourceを作る
 	CreateVertexData();
