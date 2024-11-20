@@ -11,7 +11,7 @@ class Object3d
 public:
 
 	// 初期化
-	void Initialize(Object3dCommon* object3dCommon);
+	void Initialize(Object3dCommon* object3dCommon /* const std::string& filePath */);
 
 	// 更新処理
 	void Update();
@@ -23,11 +23,13 @@ public: // セッター
 
 	void SetModel(Model* model) { model_ = model; }
 
+	void SetModel(const std::string& filePath);
+
 	void SetScale(const Vector3& scale) { transform_.scale = scale; }
 
 	void SetRotate(const Vector3& rotate) { transform_.rotate = rotate; }
 
-	void SetTranslate(const Vector3& translate) { transform_.translate = translate; }
+	void SetPosition(const Vector3& translate) { transform_.translate = translate; }
 
 public: // ゲッター
 
@@ -35,7 +37,7 @@ public: // ゲッター
 
 	const Vector3& GetRotate() const { return transform_.rotate; }
 
-	const Vector3& GetTranslate() const { return transform_.translate; }
+	const Vector3& GetPosition() const { return transform_.translate; }
 
 private:
 

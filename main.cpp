@@ -21,6 +21,7 @@
 #include "Object3d.h"
 #include "ModelCommon.h"
 #include "Model.h"
+#include "ModelManager.h"
 
 /// <summary>
 ///  dxCommmon->CompileShader
@@ -232,6 +233,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	modelCommon = new ModelCommon();
 	modelCommon->Initialize(dxCommon);
 
+	// 3Dモデルマネージャーの初期化
+	ModelManager::GetInstance()->Initialize(dxCommon);
+
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
 
@@ -342,22 +346,42 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 	// モデルの初期化
-	Model* model = new Model();
-	model->Initialize(modelCommon);
+	//Model* model = new Model();
+	//model->Initialize(modelCommon,);
 	
+	ModelManager::GetInstance()->LoadModel("plane.obj");
+	ModelManager::GetInstance()->LoadModel("axis.obj");
+
 	// 3Dオブジェクトの初期化
 	std::vector<Object3d*>object3ds;
-	for (uint32_t i = 0; i < 2; i++)
+	/*for (uint32_t i = 0; i < 2; i++)
 	{
 		Object3d* object3d = new Object3d();
 		object3d->Initialize(object3dCommon);
 		object3d->SetModel(model);
 
 		object3ds.push_back(object3d);
-	}
-	
+	}*/
 
-	
+	for (uint32_t i = 0; i < 2; ++i) {
+		Object3d* object = new Object3d();
+		if (i == 0) {
+			//object->Initialize("plane.obj");
+			object->Initialize(object3dCommon);
+			object->SetModel("plane.obj");
+		}
+		if (i == 1) {
+			//object->Initialize("axis.obj");
+			object->Initialize(object3dCommon);
+			object->SetModel("axis.obj");
+		}
+
+		Vector3 position;
+		position.x = i * 2.0f;
+		object->SetPosition(position);
+
+		object3ds.push_back(object);
+	}
 
 	
 
@@ -565,10 +589,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//// 変更を反映する
 		//sprite->SetPosition(position);
 
-		//Vector2 size = sprite->GetSize();
-		//size.x = 70.0f;
-		//size.y = 70.0f;
-		//sprite->SetSize(size);
+		Vector2 size = sprite->GetSize();
+		size.x = 370.0f;
+		size.y = 370.0f;
+		sprite->SetSize(size);
 	}
 
 	//////////////////////////////////////
@@ -738,14 +762,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				{
 					rotate=object3d->GetRotate();
 					rotate.y += 0.1f;
-					object3d->SetTranslate(pos);
+					object3d->SetPosition(pos);
 					object3d->SetRotate(rotate);
 				}
 				else
 				{
 					rotate2 = object3d->GetRotate();
 					rotate2.z += 0.05f;
-					object3d->SetTranslate(pos2);
+					object3d->SetPosition(pos2);
 					object3d->SetRotate(rotate2);
 				}
 				i++;
@@ -818,8 +842,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 			// 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
+			//Object3dCommon::GetInstance()->CommonDrawSetting();
 			object3dCommon->CommonDrawSetting();
-			
+
 			for (Object3d* object3d : object3ds)
 			{
 				object3d->Draw(textureSrvHandleGPU);
@@ -886,6 +911,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	}
 
 	// 3Dオブジェクト共通部解放
+	//Object3dCommon::GetInstance()->Finalize();
 	delete object3dCommon;
 
 	// 3Dオブジェクト解放
@@ -898,8 +924,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	delete modelCommon;
 
 	// モデル解放
-	delete model;
+	//delete model;
 	
+	// 3Dモデルマネージャー解放
+	ModelManager::GetInstance()->Finalize();
+
 
 	//CloseHandle(fenceEvent);
 	
