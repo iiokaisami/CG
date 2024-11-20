@@ -7,8 +7,7 @@ class TextureManager
 private:
 	static TextureManager* instance;
 
-	// SRVインデックスの開始番号
-	static uint32_t kSRVIndexTop;
+	
 
 	TextureManager() = default;
 	~TextureManager() = default;
@@ -56,6 +55,7 @@ private:
 
 	DirectXCommon* dxCommon_;
 
-	
+	// SRVインデックスの開始番号
+	static uint32_t kSRVIndexTop;
 };
 

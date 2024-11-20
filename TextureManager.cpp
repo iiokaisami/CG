@@ -43,7 +43,7 @@ void TextureManager::LoadTexture(const std::string& filePath)
 		return;
 	}
 	// テクスチャ枚数上限チェック
-	assert(textureDatas.size() + kSRVIndexTop <DirectXCommon::kMaxSRVCount);
+	assert(textureDatas.size() + kSRVIndexTop < DirectXCommon::kMaxSRVCount);
 
 	//テクスチャファイルを読んでプログラムで扱えるようにする
 	DirectX::ScratchImage image{};
@@ -54,10 +54,11 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	//ミップマップの作成
 	DirectX::ScratchImage mipImages{};
 	hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
-	assert(SUCCEEDED(hr));
-
+	
 	// テクスチャデータを追加
 	textureDatas.resize(textureDatas.size() + 1);
+	assert(SUCCEEDED(hr));
+
 	// 追加したテクスチャデータの参照を取得する
 	TextureData& textureData = textureDatas.back();
 
@@ -105,7 +106,7 @@ uint32_t TextureManager::GetTextureIndexByFilePath(const std::string& filePath)
 D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(uint32_t textureIndex)
 {
 	// テクスチャ枚数上限チェック
-	assert(textureDatas.size() + kSRVIndexTop < DirectXCommon::kMaxSRVCount);
+	assert(textureIndex < DirectXCommon::kMaxSRVCount);
 
 	TextureData& textureData = textureDatas[textureIndex];
 	return textureData.srvHandleGPU;
@@ -114,7 +115,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(uint32_t textureInde
 const DirectX::TexMetadata& TextureManager::GetMetaData(uint32_t textureIndex)
 {
 	// 範囲外指定違反チェック
-	assert(textureDatas.size() + kSRVIndexTop < DirectXCommon::kMaxSRVCount);
+	assert(textureIndex < DirectXCommon::kMaxSRVCount);
 
 	TextureData& textureData= textureDatas[textureIndex];
 	return textureData.metadata;
