@@ -53,6 +53,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(ProjectDir)gameEngine\2d;$(ProjectDir)gameEngine\3d;$(ProjectDir)gameEngine\audio;$(ProjectDir)gameEngine\base;$(ProjectDir)gameEngine\io;$(ProjectDir)gameEngine\math;$(ProjectDir)gameEngine\scene;$(ProjectDir)gameEngine\utillity;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -92,8 +93,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="D3DResourceLeakChecker.cpp" />
-    <ClCompile Include="DirectXCommon.cpp" />
+    <ClCompile Include="gameEngine\base\D3DResourceLeakChecker.cpp" />
+    <ClCompile Include="gameEngine\base\DirectXCommon.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
     <ClCompile Include="externals\imgui\imgui_demo.cpp" />
     <ClCompile Include="externals\imgui\imgui_draw.cpp" />
@@ -101,24 +102,24 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="gameEngine\io\Input.cpp" />
+    <ClCompile Include="gameEngine\utillity\Logger.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="ModelCommon.cpp" />
-    <ClCompile Include="ModelManager.cpp" />
-    <ClCompile Include="MyMath.cpp" />
-    <ClCompile Include="Object3d.cpp" />
-    <ClCompile Include="Object3dCommon.cpp" />
-    <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="SpriteCommon.cpp" />
-    <ClCompile Include="StringUtility.cpp" />
-    <ClCompile Include="TextureManager.cpp" />
-    <ClCompile Include="WinApp.cpp" />
+    <ClCompile Include="gameEngine\3d\Model.cpp" />
+    <ClCompile Include="gameEngine\3d\ModelCommon.cpp" />
+    <ClCompile Include="gameEngine\3d\ModelManager.cpp" />
+    <ClCompile Include="gameEngine\math\MyMath.cpp" />
+    <ClCompile Include="gameEngine\3d\Object3d.cpp" />
+    <ClCompile Include="gameEngine\3d\Object3dCommon.cpp" />
+    <ClCompile Include="gameEngine\2d\Sprite.cpp" />
+    <ClCompile Include="gameEngine\2d\SpriteCommon.cpp" />
+    <ClCompile Include="gameEngine\utillity\StringUtility.cpp" />
+    <ClCompile Include="gameEngine\base\TextureManager.cpp" />
+    <ClCompile Include="gameEngine\base\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="D3DResourceLeakChecker.h" />
-    <ClInclude Include="DirectXCommon.h" />
+    <ClInclude Include="gameEngine\base\D3DResourceLeakChecker.h" />
+    <ClInclude Include="gameEngine\base\DirectXCommon.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />
     <ClInclude Include="externals\imgui\imgui.h" />
     <ClInclude Include="externals\imgui\imgui_impl_dx12.h" />
@@ -127,19 +128,19 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="externals\imgui\imstb_textedit.h" />
     <ClInclude Include="externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Logger.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="ModelCommon.h" />
-    <ClInclude Include="ModelManager.h" />
-    <ClInclude Include="MyMath.h" />
-    <ClInclude Include="Object3d.h" />
-    <ClInclude Include="Object3dCommon.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="SpriteCommon.h" />
-    <ClInclude Include="StringUtility.h" />
-    <ClInclude Include="TextureManager.h" />
-    <ClInclude Include="WinApp.h" />
+    <ClInclude Include="gameEngine\io\Input.h" />
+    <ClInclude Include="gameEngine\utillity\Logger.h" />
+    <ClInclude Include="gameEngine\3d\Model.h" />
+    <ClInclude Include="gameEngine\3d\ModelCommon.h" />
+    <ClInclude Include="gameEngine\3d\ModelManager.h" />
+    <ClInclude Include="gameEngine\math\MyMath.h" />
+    <ClInclude Include="gameEngine\3d\Object3d.h" />
+    <ClInclude Include="gameEngine\3d\Object3dCommon.h" />
+    <ClInclude Include="gameEngine\2d\Sprite.h" />
+    <ClInclude Include="gameEngine\2d\SpriteCommon.h" />
+    <ClInclude Include="gameEngine\utillity\StringUtility.h" />
+    <ClInclude Include="gameEngine\base\TextureManager.h" />
+    <ClInclude Include="gameEngine\base\WinApp.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
