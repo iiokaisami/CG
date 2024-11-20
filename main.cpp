@@ -19,6 +19,8 @@
 #include "TextureManager.h"
 #include "Object3dCommon.h"
 #include "Object3d.h"
+#include "ModelCommon.h"
+#include "Model.h"
 
 /// <summary>
 ///  dxCommmon->CompileShader
@@ -205,7 +207,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	DirectXCommon* dxCommon = nullptr;
 	SpriteCommon* spriteCommon = nullptr;
 	Object3dCommon* object3dCommon = nullptr;
-
+	ModelCommon* modelCommon = nullptr;
 
 	// WindowsAPIの初期化
 	winApp = new WinApp();
@@ -221,6 +223,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// スプライト共通部分の初期化
 	spriteCommon = new SpriteCommon();
 	spriteCommon->Initialize(dxCommon);
+
+	// 3Dオブジェクト共通部の初期化
+	object3dCommon = new Object3dCommon;
+	object3dCommon->Initialize(dxCommon);
+
+	// モデル共通部分の初期化
+	modelCommon = new ModelCommon();
+	modelCommon->Initialize(dxCommon);
 
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
@@ -278,9 +288,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	*/
 
 	
-	// 3Dオブジェクト共通部の初期化
-	object3dCommon = new Object3dCommon;
-	object3dCommon->Initialize(dxCommon);
+	
 
 
 	//モデル読み込み
@@ -333,12 +341,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
+	// モデルの初期化
+	Model* model = new Model();
+	model->Initialize(modelCommon);
 	
 	// 3Dオブジェクトの初期化
-	Object3d* object3d = new Object3d();
-	object3d->Initialize(object3dCommon);
-	
+	std::vector<Object3d*>object3ds;
+	for (uint32_t i = 0; i < 2; i++)
+	{
+		Object3d* object3d = new Object3d();
+		object3d->Initialize(object3dCommon);
+		object3d->SetModel(model);
 
+		object3ds.push_back(object3d);
+	}
 	
 
 	
@@ -608,6 +624,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Vector2 textureLeftTop{};
 	Vector2 textureSize{ 500.0f ,500.0f};
 
+	
+
 	//メインループ
 	//ウィンドウのxボタンが押されるまでループ
 	while (true)
@@ -704,9 +722,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			worldViewProjectionMatrix = MyMath::Multiply(worldMatrix, MyMath::Multiply(viewMatrix, projectionMatrix));
 			wvpData->WVP = worldViewProjectionMatrix;
 			wvpData->World = worldMatrix;*/
-			object3d->Update();
+			
+
+			uint32_t i = 1;
+			for (Object3d* object3d : object3ds)
+			{
+				object3d->Update();
 
 
+				Vector3 pos{},pos2{},rotate{}, rotate2{};
+
+				pos2 = { 1.0f,-1.0f,1.0f };
+
+				if (i == 1)
+				{
+					rotate=object3d->GetRotate();
+					rotate.y += 0.1f;
+					object3d->SetTranslate(pos);
+					object3d->SetRotate(rotate);
+				}
+				else
+				{
+					rotate2 = object3d->GetRotate();
+					rotate2.z += 0.05f;
+					object3d->SetTranslate(pos2);
+					object3d->SetRotate(rotate2);
+				}
+				i++;
+			}
+			
 			
 
 
@@ -776,7 +820,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			// 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
 			object3dCommon->CommonDrawSetting();
 			
-			object3d->Draw(textureSrvHandleGPU);
+			for (Object3d* object3d : object3ds)
+			{
+				object3d->Draw(textureSrvHandleGPU);
+			}
 
 			//いざ描画
 
@@ -842,7 +889,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	delete object3dCommon;
 
 	// 3Dオブジェクト解放
-	delete object3d;
+	for (Object3d* object3d : object3ds)
+	{
+		delete object3d;
+	}
+
+	// モデル共通部分解放
+	delete modelCommon;
+
+	// モデル解放
+	delete model;
+	
 
 	//CloseHandle(fenceEvent);
 	

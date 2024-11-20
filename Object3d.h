@@ -4,8 +4,7 @@
 #include "TextureManager.h"
 
 class Object3dCommon;
-
-
+class Model;
 
 class Object3d
 {
@@ -20,34 +19,25 @@ public:
 	// 描画処理
 	void Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU);
 
+public: // セッター
+
+	void SetModel(Model* model) { model_ = model; }
+
+	void SetScale(const Vector3& scale) { transform_.scale = scale; }
+
+	void SetRotate(const Vector3& rotate) { transform_.rotate = rotate; }
+
+	void SetTranslate(const Vector3& translate) { transform_.translate = translate; }
+
+public: // ゲッター
+
+	const Vector3& GetScale() const { return transform_.scale; }
+
+	const Vector3& GetRotate() const { return transform_.rotate; }
+
+	const Vector3& GetTranslate() const { return transform_.translate; }
+
 private:
-
-	struct VertexData
-	{
-		Vector4 position;
-		Vector2 texcoord;
-		Vector3 normal;
-	};
-
-	struct MaterialData
-	{
-		std::string textureFilePath;
-		uint32_t textureIndex = 0;
-	};
-
-	struct ModelData
-	{
-		std::vector<VertexData> vertices;
-		MaterialData material;
-	};
-
-	struct Material
-	{
-		Vector4 color;
-		int32_t enableLighting;
-		float padding[3];
-		Matrix4x4 uvTransform;
-	};
 
 	struct TransformationMatrix
 	{
@@ -62,18 +52,6 @@ private:
 		float intensity;
 	};
 
-	//mtlファイルを読む関数
-	static MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
-
-	//Objファイルを読む関数
-	static ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
-
-	// 頂点データ生成
-	void CreateVertexData();
-
-	// マテリアルデータ生成
-	void CreateMaterialData();
-
 	// 座標変換行列データ生成
 	void CreateTransformationMatrixData();
 
@@ -83,28 +61,20 @@ private:
 private:
 
 	Object3dCommon* object3dCommon_ = nullptr;
-
-	// Objファイルのデータ
-	ModelData modelData_;
-
-	// バッファリソース
-	// 頂点リソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_{};
-	// マテリアルリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_{};
+	
+	Model* model_ = nullptr;
+	
 	//TransformationMatrix用のリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource_{};
 	// 平行光源リソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_{};
 
-	// バッファリソース内のデータを指すポインタ
-	VertexData* vertexData_ = nullptr;
-	Material* materialData_ = nullptr;
+	//// バッファリソース内のデータを指すポインタ
 	TransformationMatrix* transformationMatrixData_ = nullptr;
 	DirectionalLight* directionalLightData_ = nullptr;
 	
-	// バッファリソースの使い道を補足するバッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
+	//// バッファリソースの使い道を補足するバッファビュー
+	//D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
 	Transform transform_{};
 	Transform cameraTransform_{};
