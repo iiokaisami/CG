@@ -134,20 +134,20 @@ void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU)
 {
 	
 
-	//Spriteの描画。変更が必要なものだけ変更する
+	// Spriteの描画。変更が必要なものだけ変更する
 	spriteCommon_->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
-	//IBVを設定
+	// IBVを設定
 	spriteCommon_->GetDxCommon()->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
 
 
-	//マテリアルCBufferの場所を設定
+	// マテリアルCBufferの場所を設定
 	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
-	//TransformationMatrixCBufferの場所を設定
+	// TransformationMatrixCBufferの場所を設定
 	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
 
-	//SRVのDescriptorTableの先頭を設定。2はrootPatameter[2]である。
+	// SRVのDescriptorTableの先頭を設定。2はrootPatameter[2]である。
 	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex));
-	//スプライトの描画(DrawCall//ドローコール)
+	// スプライトの描画(DrawCall//ドローコール)
 	spriteCommon_->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 
 

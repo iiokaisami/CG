@@ -11,6 +11,8 @@
 
 class SpriteCommon;
 
+
+
 class Sprite
 {
 public:
@@ -64,6 +66,27 @@ private:
 
 private:
 
+	struct VertexData
+	{
+		Vector4 position;
+		Vector2 texcoord;
+		Vector3 normal;
+	};
+
+	struct Material
+	{
+		Vector4 color;
+		int32_t enableLighting;
+		float padding[3];
+		Matrix4x4 uvTransform;
+	};
+
+	struct TransformationMatrix
+	{
+		Matrix4x4 WVP;
+		Matrix4x4 World;
+	};
+
 	// spriteCommon
 	SpriteCommon* spriteCommon_ = nullptr;
 
@@ -99,9 +122,6 @@ private:
 
 	Transform transform_;
 
-	//平行光源用のリソース
-	DirectionalLight* directionalLightData_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_;
 
 	Vector2 position_ = { 0.0f,50.0f };
 	float rotation_ = 0.0f;
