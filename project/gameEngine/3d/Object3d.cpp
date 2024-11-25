@@ -40,7 +40,7 @@ void Object3d::Update()
 
 void Object3d::Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU)
 {
-	
+	textureSrvHandleGPU;
 	// TransformationMatrixCBufferの場所を設定
 	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
 	// 平行光源CBufferの場所を設定

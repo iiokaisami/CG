@@ -3,8 +3,8 @@
 #include <d3d12.h>
 #include <dxgi1_6.h>
 
-#include "externals/DirectXTex/DirectXTex.h"
-#include "externals/DirectXTex/d3dx12.h"
+#include "../../externals/DirectXTex/DirectXTex.h"
+#include "../../externals/DirectXTex/d3dx12.h"
 
 #include "MyMath.h"
 #include "TextureManager.h"
