@@ -6,7 +6,7 @@ on:
 env:
  # リポジトリのルートディレクトリを基点としたソリューションファイルのパス
  SOLUTION_FILEPATH: project/CG.sln
- # Visual Studio の構成（Debug / Relese）
+ # Visual Studio の構成（Debug / Release）
  CONFIGURATION: Debug
 jobs:
    build:
