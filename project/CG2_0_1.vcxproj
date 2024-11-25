@@ -45,7 +45,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)..\generated\obj\CG2_0_1\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\generated\obj\CG2_0_1\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -82,6 +86,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>$(ProjectDir)gameEngine\2d;$(ProjectDir)gameEngine\3d;$(ProjectDir)gameEngine\audio;$(ProjectDir)gameEngine\base;$(ProjectDir)gameEngine\io;$(ProjectDir)gameEngine\math;$(ProjectDir)gameEngine\scene;$(ProjectDir)gameEngine\utillity;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

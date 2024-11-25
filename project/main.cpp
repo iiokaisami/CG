@@ -237,7 +237,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	ModelManager::GetInstance()->Initialize(dxCommon);
 
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
-
+	hr;
 
 
 	
