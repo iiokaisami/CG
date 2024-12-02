@@ -208,7 +208,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SpriteCommon* spriteCommon = nullptr;
 	Object3dCommon* object3dCommon = nullptr;
 	ModelCommon* modelCommon = nullptr;
-	Camera* camera = nullptr;
 
 	// WindowsAPIの初期化
 	winApp = new WinApp();
@@ -353,13 +352,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 	//////////////////////////////////////
-
-	camera = new Camera();
-	Vector3 cameraRotate = camera->GetRotate();
-	Vector3 cameraPosition = camera->GetPosition();
-	cameraPosition.z = -10.0f;
-	//object3dCommon->SetDefaultCamera(camera);
-
 
 	// カメラマネージャーテスト
 
@@ -773,11 +765,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderFloat2("textureSize", &textureSize.x, 0.0f, 1500.0f);
 			}
 			
-			if (ImGui::CollapsingHeader("camera"))
-			{
-				ImGui::SliderFloat3("rotate", &cameraRotate.x, -5.0f, 5.0f);
-				ImGui::SliderFloat3("position", &cameraPosition.x, -50.0f, 50.0f);
-			}
 
 			if (ImGui::CollapsingHeader("cameraManager"))
 			{
@@ -803,10 +790,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			wvpData->WVP = worldViewProjectionMatrix;
 			wvpData->World = worldMatrix;*/
 			
-			camera->SetRotate(cameraRotate);
-			camera->SetPosition(cameraPosition);
-			camera->Update();
-
 			
 
 			// カメラマネージャーのテスト
@@ -1032,7 +1015,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	ModelManager::GetInstance()->Finalize();
 
 	// カメラ解放
-	delete camera;
 	cameraManager.RemoveCamera(0);
 	cameraManager.RemoveCamera(1);
 
