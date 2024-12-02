@@ -35,7 +35,7 @@ void Model::Draw()
 	
 
 	// SRVのDescriptorTableの先頭を設定。2はrootPatameter[2]である。
-	modelCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureIndex) /*textureSrvHandleGPU*/);
+	modelCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureFilePath));
 
 
 	//描画！

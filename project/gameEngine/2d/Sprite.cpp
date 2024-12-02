@@ -2,18 +2,24 @@
 
 #include "SpriteCommon.h"
 
+#include <fstream>
+
 void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 {
 	spriteCommon_ = spriteCommon;
 
-
+	std::ifstream file;
+	// 基本パスを指定（"Resources/images/"）
+	/*std::string basePath = "resources/";
+	std::string fullPath = basePath + textureFilePath;*/
+	textureFilePath_ = textureFilePath;
 
 	vertexResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * 4);
 	indexResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(uint32_t) * 6);
 	materialResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(Material));
 	transformationMatrixResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(TransformationMatrix));
 
-	TextureManager::GetInstance()->LoadTexture(textureFilePath);
+	TextureManager::GetInstance()->LoadTexture(textureFilePath_);
 	//リソースの先頭アドレスから使う
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 	//使用するリソースのサイズは頂点６つ分のサイズ
@@ -58,7 +64,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 	};
 
 	// 単位行列を書き込んでおく
-	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
+	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath_);
 
 	AdjustTextureSize();
 }
@@ -84,7 +90,7 @@ void Sprite::Update()
 		bottom = -bottom;
 	}
 
-	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureIndex);
+	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath_);
 	float tex_left = textureLeftTop_.x / metadata.width;
 	float tex_right = (textureLeftTop_.x + textureSize_.x)/ metadata.width;
 	float tex_top = textureLeftTop_.y / metadata.height;
@@ -146,7 +152,7 @@ void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU)
 	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
 
 	// SRVのDescriptorTableの先頭を設定。2はrootPatameter[2]である。
-	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex));
+	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureFilePath_));
 	// スプライトの描画(DrawCall//ドローコール)
 	spriteCommon_->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 
@@ -156,7 +162,7 @@ void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU)
 void Sprite::AdjustTextureSize()
 {
 	// テクスチャメタデータを取得
-	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureIndex);
+	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath_);
 
 	textureSize_.x = static_cast<float>(metadata.width);
 	textureSize_.y = static_cast<float>(metadata.height);

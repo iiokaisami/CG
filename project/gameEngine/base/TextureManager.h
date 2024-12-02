@@ -1,6 +1,9 @@
 #pragma once
 
+#include <unordered_map>
+
 #include "DirectXCommon.h"
+#include "SrvManager.h"
 
 class TextureManager
 {
@@ -23,37 +26,43 @@ public:
 
 
 	// 初期化
-	void Initialize(DirectXCommon* dxCommon);
+	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager);
 
 	// テクスチャファイルの読み込み
 	void LoadTexture(const std::string& filePath);
 
-	//-----------ゲッター----------//
+public: // ゲッター
+	
 	uint32_t GetTextureIndexByFilePath(const std::string& filePath);
 
 	// テクスチャ番号からGPUハンドルを所得
-	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(uint32_t textureIndex);
+	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(const std::string& filePath);
 
 	// メタデータを取得
-	const DirectX::TexMetadata& GetMetaData(uint32_t textureIndex);
+	const DirectX::TexMetadata& GetMetaData(const std::string& filePath);
+
+	// SRVインデックスの取得
+	uint32_t GetSrvIndex(const std::string& filePath);
 
 private:
 
 	// テクスチャ1枚分のデータ
 	struct TextureData 
 	{
-		std::string filePath;
 		DirectX::TexMetadata metadata;
 		Microsoft::WRL::ComPtr<ID3D12Resource> resource;
 		Microsoft::WRL::ComPtr<ID3D12Resource> intermediate;
+		uint32_t srvIndex;
 		D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU;
 		D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
 	};
 
 	// テクスチャデータ
-	std::vector<TextureData> textureDatas;
+	std::unordered_map<std::string,TextureData> textureDatas;
 
-	DirectXCommon* dxCommon_;
+	DirectXCommon* dxCommon_ = nullptr;
+
+	SrvManager* srvManager_ = nullptr;
 
 	// SRVインデックスの開始番号
 	static uint32_t kSRVIndexTop;

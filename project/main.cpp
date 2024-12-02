@@ -22,6 +22,7 @@
 #include "ModelCommon.h"
 #include "Model.h"
 #include "ModelManager.h"
+#include "SrvManager.h"
 
 /// <summary>
 ///  dxCommmon->CompileShader
@@ -208,6 +209,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SpriteCommon* spriteCommon = nullptr;
 	Object3dCommon* object3dCommon = nullptr;
 	ModelCommon* modelCommon = nullptr;
+	SrvManager* srvManager = nullptr;
 
 	// WindowsAPIの初期化
 	winApp = new WinApp();
@@ -216,9 +218,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// DirectXの初期化
 	dxCommon = new DirectXCommon();
 	dxCommon->Initialize(winApp);
-
-	// テクスチャマネージャーの初期化
-	TextureManager::GetInstance()->Initialize(dxCommon);
 
 	// スプライト共通部分の初期化
 	spriteCommon = new SpriteCommon();
@@ -234,6 +233,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// 3Dモデルマネージャーの初期化
 	ModelManager::GetInstance()->Initialize(dxCommon);
+
+	// SRVマネージャーの初期化
+	srvManager = new SrvManager();
+	srvManager->Initialize(dxCommon);
+
+
+	// テクスチャマネージャーの初期化
+	TextureManager::GetInstance()->Initialize(dxCommon,srvManager);
+
 
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 	hr;
@@ -1017,6 +1025,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// カメラ解放
 	cameraManager.RemoveCamera(0);
 	cameraManager.RemoveCamera(1);
+
+	// SRVマネージャー解放
+	delete srvManager;
+
+
+
 
 	//CloseHandle(fenceEvent);
 	

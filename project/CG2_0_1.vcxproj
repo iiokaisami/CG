@@ -130,6 +130,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="gameEngine\math\Vector2.cpp" />
     <ClCompile Include="gameEngine\math\Matrix4x4.cpp" />
     <ClCompile Include="gameEngine\math\Vector3.cpp" />
+    <ClCompile Include="gameEngine\base\SrvManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameEngine\3d\CameraManager.h" />
@@ -160,6 +161,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="gameEngine\math\Vector2.h" />
     <ClInclude Include="gameEngine\math\Matrix4x4.h" />
     <ClInclude Include="gameEngine\math\Vector3.h" />
+    <ClInclude Include="gameEngine\base\SrvManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
