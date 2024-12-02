@@ -2,7 +2,7 @@
 
 #include "MyMath.h"
 #include "TextureManager.h"
-#include "Camera.h"
+#include "CameraManager.h"
 
 class Object3dCommon;
 class Model;
@@ -22,7 +22,7 @@ public:
 
 public: // セッター
 
-	void SetCamera(Camera* camera) { camera_ = camera; }
+	void SetCamera(std::shared_ptr<Camera> camera) { camera_ = camera; }
 
 	void SetModel(Model* model) { model_ = model; }
 
@@ -74,7 +74,7 @@ private:
 
 	Object3dCommon* object3dCommon_ = nullptr;
 	
-	Camera* camera_ = nullptr;
+	std::shared_ptr<Camera> camera_ = nullptr;
 
 	Model* model_ = nullptr;
 	

@@ -5,7 +5,7 @@
 
 #include "DirectXCommon.h"
 #include "Logger.h"
-#include "Camera.h"
+#include "CameraManager.h"
 
 class Object3dCommon
 {
@@ -41,11 +41,11 @@ public:
 
 public: // セッター
 
-	void SetDefaultCamera(Camera* camera) { defaultCamera_ = camera; }
+	void SetDefaultCamera(std::shared_ptr<Camera> camera) { defaultCamera_ = camera; }
 
 public: // ゲッター
 
-	Camera* GetDefaultCamera() const { return defaultCamera_; }
+	std::shared_ptr<Camera> GetDefaultCamera() const { return defaultCamera_; }
 
 private:
 
@@ -59,7 +59,7 @@ private:
 
 	DirectXCommon* dxCommon_;
 
-	Camera* defaultCamera_ = nullptr;
+	std::shared_ptr<Camera> defaultCamera_ = nullptr;
 	
 	// デバイス
 	Microsoft::WRL::ComPtr<ID3D12Device> device_ = nullptr;
