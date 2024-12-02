@@ -5,6 +5,7 @@
 
 #include "DirectXCommon.h"
 #include "Logger.h"
+#include "Camera.h"
 
 class Object3dCommon
 {
@@ -38,6 +39,14 @@ public:
 
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
 
+public: // セッター
+
+	void SetDefaultCamera(Camera* camera) { defaultCamera_ = camera; }
+
+public: // ゲッター
+
+	Camera* GetDefaultCamera() const { return defaultCamera_; }
+
 private:
 
 	// ルートシグネイチャの生成
@@ -50,6 +59,8 @@ private:
 
 	DirectXCommon* dxCommon_;
 
+	Camera* defaultCamera_ = nullptr;
+	
 	// デバイス
 	Microsoft::WRL::ComPtr<ID3D12Device> device_ = nullptr;
 	// コマンドリスト

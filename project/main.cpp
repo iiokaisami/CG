@@ -195,7 +195,6 @@ private:
 
 
 
-
 //Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
@@ -209,6 +208,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SpriteCommon* spriteCommon = nullptr;
 	Object3dCommon* object3dCommon = nullptr;
 	ModelCommon* modelCommon = nullptr;
+	Camera* camera = nullptr;
 
 	// WindowsAPIの初期化
 	winApp = new WinApp();
@@ -349,6 +349,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//Model* model = new Model();
 	//model->Initialize(modelCommon,);
 	
+
+
+
+	//////////////////////////////////////
+
+	camera = new Camera();
+	Vector3 rotate = camera->GetRotate();
+	Vector3 position = camera->GetPosition();
+	position.z = -10.0f;
+	object3dCommon->SetDefaultCamera(camera);
+
+
+	//////////////////////////////////////
+
+
 	ModelManager::GetInstance()->LoadModel("plane.obj");
 	ModelManager::GetInstance()->LoadModel("axis.obj");
 
@@ -417,11 +432,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	};*/
 
 	//UVTransform用の変数
-	Transform uvTransformSprite{
+	/*Transform uvTransformSprite
+	{
 		{ 1.0f,1.0f,1.0f },
 		{ 0.0f,0.0f,0.0f },
 		{ 0.0f,0.0f,0.0f }
-	};
+	};*/
 
 	/*Matrix4x4 worldMatrix = MyMath::MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 	Matrix4x4 cameraMatrix = MyMath::MakeAffineMatrix(cameraTransform.scale, cameraTransform.rotate, cameraTransform.translate);
@@ -598,7 +614,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//////////////////////////////////////
 
 
-
 	//metadataをもとにSRVの設定
 	/*D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = metadata.format;
@@ -707,21 +722,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderAngle("rotationY", &transform.rotate.y);
 				ImGui::SliderAngle("rotationZ", &transform.rotate.z);
 				ImGui::SliderFloat3("scale", &transform.scale.x, 0.0f, 5.0f);
-			}*/
-			/*if (ImGui::CollapsingHeader("Lighting"))
+			}
+			if (ImGui::CollapsingHeader("Lighting"))
 			{
 				ImGui::ColorEdit4("color", &directionalLightData->color.x);
 				ImGui::SliderFloat3("direction", &directionalLightData->direction.x, -1.0f, 1.0f);
 				ImGui::SliderFloat("intensity", &directionalLightData->intensity, 0.0f, 1.0f);
 
-			}*/
+			}
 
 			if (ImGui::CollapsingHeader("UVTransform"))
 			{
 				ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
 				ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
 				ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
-			}
+			}*/
 
 			if (ImGui::CollapsingHeader("sprite"))
 			{
@@ -731,6 +746,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderFloat2("textureSize", &textureSize.x, 0.0f, 1500.0f);
 			}
 			
+			if (ImGui::CollapsingHeader("camera"))
+			{
+				ImGui::SliderFloat3("rotate", &rotate.x, -50.0f, 50.0f);
+				ImGui::SliderFloat3("position", &position.x, -50.0f, 50.0f);
+			}
 
 			ImGui::End();
 
@@ -747,6 +767,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			wvpData->WVP = worldViewProjectionMatrix;
 			wvpData->World = worldMatrix;*/
 			
+			camera->SetRotate(rotate);
+			camera->SetPosition(position);
+			camera->Update();
+
+			rotate = camera->GetRotate();
+			position = camera->GetPosition();
+
 
 			uint32_t i = 1;
 			for (Object3d* object3d : object3ds)
@@ -779,9 +806,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
-			Matrix4x4 uvTransformMatrix = MyMath::MakeScaleMatrix(uvTransformSprite.scale);
-			uvTransformMatrix = MyMath::Multiply(uvTransformMatrix, MyMath::MakeRotateZMatrix(uvTransformSprite.rotate.z));
-			uvTransformMatrix = MyMath::Multiply(uvTransformMatrix, MyMath::MakeTranslateMatrix(uvTransformSprite.translate));
+			/*Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransformSprite.scale);
+			uvTransformMatrix = Multiply(uvTransformMatrix, MakeRotateZMatrix(uvTransformSprite.rotate.z));
+			uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix(uvTransformSprite.translate));*/
 			//materialDataSprite->uvTransform = uvTransformMatrix;
 
 
@@ -929,6 +956,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// 3Dモデルマネージャー解放
 	ModelManager::GetInstance()->Finalize();
 
+	// カメラ解放
+	delete camera;
 
 	//CloseHandle(fenceEvent);
 	

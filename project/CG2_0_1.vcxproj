@@ -102,6 +102,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="gameEngine\3d\Camera.cpp" />
     <ClCompile Include="gameEngine\base\D3DResourceLeakChecker.cpp" />
     <ClCompile Include="gameEngine\base\DirectXCommon.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
@@ -125,8 +126,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="gameEngine\utillity\StringUtility.cpp" />
     <ClCompile Include="gameEngine\base\TextureManager.cpp" />
     <ClCompile Include="gameEngine\base\WinApp.cpp" />
+    <ClCompile Include="gameEngine\math\Vector2.cpp" />
+    <ClCompile Include="gameEngine\math\Matrix4x4.cpp" />
+    <ClCompile Include="gameEngine\math\Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="gameEngine\3d\Camera.h" />
     <ClInclude Include="gameEngine\base\D3DResourceLeakChecker.h" />
     <ClInclude Include="gameEngine\base\DirectXCommon.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />
@@ -150,6 +155,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="gameEngine\utillity\StringUtility.h" />
     <ClInclude Include="gameEngine\base\TextureManager.h" />
     <ClInclude Include="gameEngine\base\WinApp.h" />
+    <ClInclude Include="gameEngine\math\Vector2.h" />
+    <ClInclude Include="gameEngine\math\Matrix4x4.h" />
+    <ClInclude Include="gameEngine\math\Vector3.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

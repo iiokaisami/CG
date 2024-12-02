@@ -2,6 +2,7 @@
 
 #include "MyMath.h"
 #include "TextureManager.h"
+#include "Camera.h"
 
 class Object3dCommon;
 class Model;
@@ -20,6 +21,8 @@ public:
 	void Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU);
 
 public: // セッター
+
+	void SetCamera(Camera* camera) { camera_ = camera; }
 
 	void SetModel(Model* model) { model_ = model; }
 
@@ -54,6 +57,13 @@ private:
 		float intensity;
 	};
 
+	struct Transform
+	{
+		Vector3 scale;
+		Vector3 rotate;
+		Vector3 translate;
+	};
+
 	// 座標変換行列データ生成
 	void CreateTransformationMatrixData();
 
@@ -64,6 +74,8 @@ private:
 
 	Object3dCommon* object3dCommon_ = nullptr;
 	
+	Camera* camera_ = nullptr;
+
 	Model* model_ = nullptr;
 	
 	//TransformationMatrix用のリソース
@@ -79,6 +91,5 @@ private:
 	//D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
 	Transform transform_{};
-	Transform cameraTransform_{};
 };
 

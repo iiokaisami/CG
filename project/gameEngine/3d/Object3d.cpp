@@ -23,17 +23,25 @@ void Object3d::Initialize(Object3dCommon* object3dCommon/* const std::string& fi
 
 
 	// Transform変数を作る
-	transform_ = { {1.0f,1.0f,1.0f }, {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
-	cameraTransform_ = { {1.0f,1.0f,1.0f},{0.3f,0.0f,0.0f},{0.0f,4.0f,-10.0f} };
+	transform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,4.0f,-10.0f} };
+
+	camera_ = object3dCommon_->GetDefaultCamera();
 }
 
 void Object3d::Update()
 {
-	Matrix4x4 worldMatrix = MyMath::MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-	Matrix4x4 cameraMatrix = MyMath::MakeAffineMatrix(cameraTransform_.scale, cameraTransform_.rotate, cameraTransform_.translate);
-	Matrix4x4 viewMatrix = MyMath::Inverse(cameraMatrix);
-	Matrix4x4 projectionMatrix = MyMath::MakePerspectiveFovMatrix(0.45f, float(WinApp::kClientWidth) / float(WinApp::kClientHeight), 0.1f, 100.0f);
-	Matrix4x4 worldViewProjectionMatrix = MyMath::Multiply(worldMatrix, MyMath::Multiply(viewMatrix, projectionMatrix));
+	Matrix4x4 worldMatrix = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
+	Matrix4x4 worldViewProjectionMatrix;
+	if (camera_)
+	{
+		const Matrix4x4& viewProjectionMatrix = camera_->GetViewProjectionMatrix();
+		worldViewProjectionMatrix = (worldMatrix * viewProjectionMatrix);
+	}
+	else
+	{
+		worldViewProjectionMatrix = worldMatrix;
+	}
+
 	transformationMatrixData_->WVP = worldViewProjectionMatrix;
 	transformationMatrixData_->World = worldMatrix;
 }
@@ -64,8 +72,8 @@ void Object3d::CreateTransformationMatrixData()
 	//書き込むためのアドレス
 	transformationMatrixResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData_));
 	//単位行列を書き込んでおく
-	transformationMatrixData_->World = MyMath::MakeIdentity4x4();
-	transformationMatrixData_->WVP = MyMath::MakeIdentity4x4();
+	transformationMatrixData_->World = MakeIdentity4x4();
+	transformationMatrixData_->WVP = MakeIdentity4x4();
 }
 
 void Object3d::CreateDirectionalLight()
@@ -76,6 +84,6 @@ void Object3d::CreateDirectionalLight()
 	directionalLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData_));
 	//デフォルト値は以下のようにしておく
 	directionalLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
-	directionalLightData_->direction = MyMath::Normalize({ 0.0f,-1.0f,0.0f });
+	directionalLightData_->direction = Normalize({ 0.0f,-1.0f,0.0f });
 	directionalLightData_->intensity = 1.0f;
 }

@@ -15,6 +15,13 @@ public:
 
 private: // 構造体、関数
 
+	struct Transform
+	{
+		Vector3 scale;
+		Vector3 rotate;
+		Vector3 translate;
+	};
+
 	struct VertexData
 	{
 		Vector4 position;

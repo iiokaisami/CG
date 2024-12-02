@@ -182,5 +182,5 @@ void Model::CreateMaterialData()
 	// マテリアルデータの初期値を描き来む
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData_->enableLighting = false;
-	materialData_->uvTransform = MyMath::MakeIdentity4x4();
+	materialData_->uvTransform = MakeIdentity4x4();
 }

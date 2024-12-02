@@ -64,7 +64,14 @@ private:
 	// テクスチャサイズをイメージに合わせる
 	void AdjustTextureSize();
 
-private:
+private: // 構造体、関数
+
+	struct Transform
+	{
+		Vector3 scale;
+		Vector3 rotate;
+		Vector3 translate;
+	};
 
 	struct VertexData
 	{
@@ -86,6 +93,9 @@ private:
 		Matrix4x4 WVP;
 		Matrix4x4 World;
 	};
+
+
+private:
 
 	// spriteCommon
 	SpriteCommon* spriteCommon_ = nullptr;
