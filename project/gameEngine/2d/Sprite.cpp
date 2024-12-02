@@ -42,13 +42,13 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	//Lightingを有効にする
 	materialData_->enableLighting = false;
-	materialData_->uvTransform = MyMath::MakeIdentity4x4();
+	materialData_->uvTransform = MakeIdentity4x4();
 
 	//書き込むためのアドレス
 	transformationMatrixResource_->Map(0,nullptr,reinterpret_cast<void**>(&transformationMatrixData_));
 	//単位行列を書き込んでおく
-	transformationMatrixData_->World = MyMath::MakeIdentity4x4();
-	transformationMatrixData_->WVP = MyMath::MakeIdentity4x4();
+	transformationMatrixData_->World = MakeIdentity4x4();
+	transformationMatrixData_->WVP = MakeIdentity4x4();
 
 	
 	transform_={
@@ -120,10 +120,10 @@ void Sprite::Update()
 	transform_.scale = { size_.x,size_.y,1.0f };
 
 
-	Matrix4x4 worldMatrixSprite = MyMath::MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-	Matrix4x4 viewMatrixSprite = MyMath::MakeIdentity4x4();
-	Matrix4x4 projectionMatrixSprite = MyMath::MakeOrthographicMatrix(0.0f, 0.0f, float(WinApp::kClientWidth), float(WinApp::kClientHeight), 0.0f, 100.0f);
-	Matrix4x4 worldViewProjectionMatrixSprite = MyMath::Multiply(worldMatrixSprite, MyMath::Multiply(viewMatrixSprite, projectionMatrixSprite));
+	Matrix4x4 worldMatrixSprite = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
+	Matrix4x4 viewMatrixSprite = MakeIdentity4x4();
+	Matrix4x4 projectionMatrixSprite = MakeOrthographicMatrix(0.0f, 0.0f, float(WinApp::kClientWidth), float(WinApp::kClientHeight), 0.0f, 100.0f);
+	Matrix4x4 worldViewProjectionMatrixSprite = Multiply(worldMatrixSprite, Multiply(viewMatrixSprite, projectionMatrixSprite));
 	transformationMatrixData_->WVP = worldViewProjectionMatrixSprite;
 	transformationMatrixData_->World = worldMatrixSprite;
 

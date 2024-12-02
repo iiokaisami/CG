@@ -141,6 +141,18 @@
     <ClCompile Include="gameEngine\utillity\StringUtility.cpp">
       <Filter>ソース ファイル\gameEngine\utillity</Filter>
     </ClCompile>
+    <ClCompile Include="gameEngine\3d\Camera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="gameEngine\math\Vector2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="gameEngine\math\Vector3.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="gameEngine\math\Matrix4x4.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -211,6 +223,18 @@
     </ClInclude>
     <ClInclude Include="gameEngine\base\TextureManager.h">
       <Filter>ヘッダー ファイル\gameEngine\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="gameEngine\3d\Camera.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="gameEngine\math\Vector2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="gameEngine\math\Vector3.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="gameEngine\math\Matrix4x4.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
