@@ -355,13 +355,40 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//////////////////////////////////////
 
 	camera = new Camera();
-	Vector3 rotate = camera->GetRotate();
-	Vector3 position = camera->GetPosition();
-	position.z = -10.0f;
-	object3dCommon->SetDefaultCamera(camera);
+	Vector3 cameraRotate = camera->GetRotate();
+	Vector3 cameraPosition = camera->GetPosition();
+	cameraPosition.z = -10.0f;
+	//object3dCommon->SetDefaultCamera(camera);
+
+
+	// カメラマネージャーテスト
+
+	auto& cameraManager = CameraManager::GetInstance();
+
+	// カメラの作成
+	auto camera1 = std::make_shared<Camera>();
+	auto camera2 = std::make_shared<Camera>();
+
+	Vector3 camera1Rotate = camera1->GetRotate();
+	Vector3 camera1Position = camera1->GetPosition();
+	camera1Position.z = -5.0f;
+	Vector3 camera2Rotate = camera2->GetRotate();
+	Vector3 camera2Position = camera2->GetPosition();
+	camera2Position.z = -10.0f;
+
+	// カメラの追加
+	cameraManager.AddCamera(camera1);
+	cameraManager.AddCamera(camera2);
+
+	// アクティブカメラの設定
+	cameraManager.SetActiveCamera(0);
+	uint32_t activeIndex = cameraManager.GetActiveIndex();
+
+	object3dCommon->SetDefaultCamera(cameraManager.GetActiveCamera());
 
 
 	//////////////////////////////////////
+
 
 
 	ModelManager::GetInstance()->LoadModel("plane.obj");
@@ -748,8 +775,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			
 			if (ImGui::CollapsingHeader("camera"))
 			{
-				ImGui::SliderFloat3("rotate", &rotate.x, -50.0f, 50.0f);
-				ImGui::SliderFloat3("position", &position.x, -50.0f, 50.0f);
+				ImGui::SliderFloat3("rotate", &cameraRotate.x, -5.0f, 5.0f);
+				ImGui::SliderFloat3("position", &cameraPosition.x, -50.0f, 50.0f);
+			}
+
+			if (ImGui::CollapsingHeader("cameraManager"))
+			{
+				ImGui::Text("activeIndex:(%d)", activeIndex);
+				ImGui::SliderFloat3("rotate1", &camera1Rotate.x, -5.0f, 5.0f);
+				ImGui::SliderFloat3("position1", &camera1Position.x, -50.0f, 50.0f);
+				ImGui::SliderFloat3("rotate2", &camera2Rotate.x, -5.0f, 5.0f);
+				ImGui::SliderFloat3("position2", &camera2Position.x, -50.0f, 50.0f);
 			}
 
 			ImGui::End();
@@ -767,12 +803,48 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			wvpData->WVP = worldViewProjectionMatrix;
 			wvpData->World = worldMatrix;*/
 			
-			camera->SetRotate(rotate);
-			camera->SetPosition(position);
+			camera->SetRotate(cameraRotate);
+			camera->SetPosition(cameraPosition);
 			camera->Update();
 
-			rotate = camera->GetRotate();
-			position = camera->GetPosition();
+			
+
+			// カメラマネージャーのテスト
+			cameraManager.UpdateAll();
+
+			// ENTER押してカメラ切り替え
+			if (input->TriggerKey(DIK_RETURN))
+			{
+				if (cameraManager.GetActiveIndex() == 0)
+				{
+					cameraManager.SetActiveCamera(1);
+
+				}
+				else if (cameraManager.GetActiveIndex() == 1)
+				{
+					cameraManager.SetActiveCamera(0);
+
+				}
+			}
+			// 稼働中のカメラインデックス
+			activeIndex = cameraManager.GetActiveIndex();
+
+			camera1->SetRotate(camera1Rotate);
+			camera1->SetPosition(camera1Position);
+			camera2->SetRotate(camera2Rotate);
+			camera2->SetPosition(camera2Position);
+
+			// アクティブカメラの情報を取得
+			auto activeCamera = cameraManager.GetActiveCamera();
+			if (activeCamera) 
+			{
+				auto viewMatrix = activeCamera->GetViewMatrix();
+				// viewMatrix を使った処理
+			}
+
+
+
+
 
 
 			uint32_t i = 1;
@@ -800,6 +872,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					object3d->SetRotate(rotate2);
 				}
 				i++;
+
+				// カメラ切り替え
+				object3d->SetCamera(cameraManager.GetActiveCamera());
 			}
 			
 			
@@ -958,6 +1033,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// カメラ解放
 	delete camera;
+	cameraManager.RemoveCamera(0);
+	cameraManager.RemoveCamera(1);
 
 	//CloseHandle(fenceEvent);
 	

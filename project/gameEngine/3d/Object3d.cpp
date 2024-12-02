@@ -32,6 +32,7 @@ void Object3d::Update()
 {
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 	Matrix4x4 worldViewProjectionMatrix;
+	
 	if (camera_)
 	{
 		const Matrix4x4& viewProjectionMatrix = camera_->GetViewProjectionMatrix();
