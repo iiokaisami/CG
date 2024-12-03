@@ -43,7 +43,7 @@ void ModelManager::LoadModel(const std::string& filePath)
 
 	// ディレクトリが存在しない場合は "resources/models" をデフォルトに
 	if (directory.empty()) {
-		directory = "resources/models";
+		directory = "resources/models/";
 	}
 
 	// モデルの生成とファイル読み込み・初期化 ---

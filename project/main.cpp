@@ -619,10 +619,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 		Sprite* sprite = new Sprite();
 		if (i == 0 || i == 3) {
-		sprite->Initialize(spriteCommon, "resources/uvChecker.png");
+		sprite->Initialize(spriteCommon, "uvChecker.png");
 		}
 		else {
-			sprite->Initialize(spriteCommon, "resources/monsterBall.png");
+			sprite->Initialize(spriteCommon, "monsterBall.png");
 		}
 		sprites.push_back(sprite);
 
@@ -940,7 +940,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			for (Object3d* object3d : object3ds)
 			{
-				//object3d->Draw(textureSrvHandleGPU);
+				object3d->Draw(textureSrvHandleGPU);
 			}
 
 			//いざ描画

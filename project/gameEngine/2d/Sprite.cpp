@@ -8,10 +8,10 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 {
 	spriteCommon_ = spriteCommon;
 
-	//std::ifstream file;
+	std::ifstream file;
 	// 基本パスを指定（"Resources/images/"）
-	/*std::string basePath = "resources/";
-	std::string fullPath = basePath + textureFilePath;*/
+	std::string basePath = "resources/images/";
+	std::string fullPath = basePath + textureFilePath;
 	textureFilePath_ = textureFilePath;
 
 	vertexResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * 4);
