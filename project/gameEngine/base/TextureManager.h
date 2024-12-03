@@ -32,17 +32,16 @@ public:
 	void LoadTexture(const std::string& filePath);
 
 public: // ゲッター
-	
-	uint32_t GetTextureIndexByFilePath(const std::string& filePath);
-
-	// テクスチャ番号からGPUハンドルを所得
-	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(const std::string& filePath);
 
 	// メタデータを取得
 	const DirectX::TexMetadata& GetMetaData(const std::string& filePath);
 
 	// SRVインデックスの取得
-	uint32_t GetSrvIndex(const std::string& filePath);
+	uint32_t GetTextureIndexByFilePath(const std::string& filePath);
+
+	// テクスチャ番号からGPUハンドルを所得
+	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(const std::string& filePath);
+
 
 private:
 

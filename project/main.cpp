@@ -940,7 +940,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			for (Object3d* object3d : object3ds)
 			{
-				object3d->Draw(textureSrvHandleGPU);
+				//object3d->Draw(textureSrvHandleGPU);
 			}
 
 			//いざ描画

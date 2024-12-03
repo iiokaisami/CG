@@ -75,17 +75,35 @@ void TextureManager::LoadTexture(const std::string& filePath)
 
 }
 
+const DirectX::TexMetadata& TextureManager::GetMetaData(const std::string& filePath)
+{
+	// テクスチャが存在するか確認
+	auto it = textureDatas.find(filePath);
+	if (it == textureDatas.end()) {
+		// なかったらエラーメッセージ
+		Logger::Log("Error: Texture not found for filePath: " + filePath);
+		throw std::runtime_error("Texture not found for filePath: " + filePath);
+	}
+
+	// テクスチャデータの参照を取得
+	TextureData& textureData = it->second;
+	return textureData.metadata;
+}
+
+
 uint32_t TextureManager::GetTextureIndexByFilePath(const std::string& filePath)
 {
-	// unordered_mapを使って直接インデックスを取得
+	// テクスチャが存在するか確認
 	auto it = textureDatas.find(filePath);
-	if (it != textureDatas.end()) {
-		return it->second.srvIndex;
+	if (it == textureDatas.end()) {
+		// なかったらエラーメッセージ
+		Logger::Log("Error: Texture not found for filePath: " + filePath);
+		throw std::runtime_error("Texture not found for filePath: " + filePath);
 	}
-	// なかったらエラーメッセージ
-	Logger::Log("Error: Texture not found for filePath: " + filePath);
-	assert(0);
-	return 0;
+
+	// テクスチャデータの参照を取得
+	TextureData& textureData = it->second;
+	return textureData.srvIndex;
 }
 
 D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const std::string& filePath)
@@ -104,32 +122,3 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const std::string& f
 	return textureData.srvHandleGPU;
 }
 
-const DirectX::TexMetadata& TextureManager::GetMetaData(const std::string& filePath)
-{
-	// テクスチャが存在するか確認
-	auto it = textureDatas.find(filePath);
-	if (it == textureDatas.end()) {
-		// なかったらエラーメッセージ
-		Logger::Log("Error: Texture not found for filePath: " + filePath);
-		throw std::runtime_error("Texture not found for filePath: " + filePath);
-	}
-
-	// テクスチャデータの参照を取得
-	TextureData& textureData = it->second;
-	return textureData.metadata;
-}
-
-uint32_t TextureManager::GetSrvIndex(const std::string& filePath)
-{
-	// テクスチャが存在するか確認
-	auto it = textureDatas.find(filePath);
-	if (it == textureDatas.end()) {
-		// なかったらエラーメッセージ
-		Logger::Log("Error: Texture not found for filePath: " + filePath);
-		throw std::runtime_error("Texture not found for filePath: " + filePath);
-	}
-
-	// テクスチャデータの参照を取得
-	TextureData& textureData = it->second;
-	return textureData.srvIndex;
-}

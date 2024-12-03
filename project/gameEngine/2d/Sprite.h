@@ -99,7 +99,7 @@ private:
 
 	// spriteCommon
 	SpriteCommon* spriteCommon_ = nullptr;
-	std::string textureFilePath_ = nullptr;
+	std::string textureFilePath_;
 
 	// バッファリソース
 	//スプライト用の頂点リソースを作る
