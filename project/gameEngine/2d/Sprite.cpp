@@ -12,7 +12,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 	// 基本パスを指定（"Resources/images/"）
 	std::string basePath = "resources/images/";
 	std::string fullPath = basePath + textureFilePath;
-	textureFilePath_ = textureFilePath;
+	textureFilePath_ = fullPath;
 
 	vertexResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * 4);
 	indexResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(uint32_t) * 6);

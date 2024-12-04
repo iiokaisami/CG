@@ -64,7 +64,7 @@ void DirectXCommon::Initialize(WinApp* winApp)
 	CreateDXCompiler();
 	
 	// ImGuiの初期化
-	InitializeImGui();
+	//InitializeImGui(); 9章でやる
 
 	//FenceのSignalを待つためのイベントを作成する
 	fenceEvent_ = CreateEvent(NULL, FALSE, FALSE, NULL);

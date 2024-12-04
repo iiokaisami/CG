@@ -714,80 +714,80 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				OutputDebugStringA("Hit 0\n");
 			}
 
-			//フレームの先頭でImGuiに、ここからフレームが始まる旨を告げる
-			ImGui_ImplDX12_NewFrame();
-			ImGui_ImplWin32_NewFrame();
-			ImGui::NewFrame();
+			//フレームの先頭でImGuiに、ここからフレームが始まる旨を告げる  以下9章でやる
+			//ImGui_ImplDX12_NewFrame();
+			//ImGui_ImplWin32_NewFrame();
+			//ImGui::NewFrame();
 
 
 
-			//ゲームの処理		更新処理
+			////ゲームの処理		更新処理
 
 
 
-			//ImGui
+			////ImGui
 
 
-			ImGui::Begin("Setting");
+			//ImGui::Begin("Setting");
 
-			ImGui::Text("camera");
-			//ImGui::SliderFloat3("cameraPosition", &cameraTransform.translate.x, -100.0f, 0.0f);
-			ImGui::Checkbox("useMonsterBall", &useMonsterBall);
-			
-			
+			//ImGui::Text("camera");
+			////ImGui::SliderFloat3("cameraPosition", &cameraTransform.translate.x, -100.0f, 0.0f);
+			//ImGui::Checkbox("useMonsterBall", &useMonsterBall);
+			//
+			//
 
 
-			//改行
-			ImGui::NewLine();
+			////改行
+			//ImGui::NewLine();
 
 		
-			
-			/*if (ImGui::CollapsingHeader("vertexData"))
-			{
-				ImGui::SliderFloat3("translate", &transform.translate.x, -20.0f, 20.0f);
-				ImGui::SliderAngle("rotationX", &transform.rotate.x);
-				ImGui::SliderAngle("rotationY", &transform.rotate.y);
-				ImGui::SliderAngle("rotationZ", &transform.rotate.z);
-				ImGui::SliderFloat3("scale", &transform.scale.x, 0.0f, 5.0f);
-			}
-			if (ImGui::CollapsingHeader("Lighting"))
-			{
-				ImGui::ColorEdit4("color", &directionalLightData->color.x);
-				ImGui::SliderFloat3("direction", &directionalLightData->direction.x, -1.0f, 1.0f);
-				ImGui::SliderFloat("intensity", &directionalLightData->intensity, 0.0f, 1.0f);
+			//
+			///*if (ImGui::CollapsingHeader("vertexData"))
+			//{
+			//	ImGui::SliderFloat3("translate", &transform.translate.x, -20.0f, 20.0f);
+			//	ImGui::SliderAngle("rotationX", &transform.rotate.x);
+			//	ImGui::SliderAngle("rotationY", &transform.rotate.y);
+			//	ImGui::SliderAngle("rotationZ", &transform.rotate.z);
+			//	ImGui::SliderFloat3("scale", &transform.scale.x, 0.0f, 5.0f);
+			//}
+			//if (ImGui::CollapsingHeader("Lighting"))
+			//{
+			//	ImGui::ColorEdit4("color", &directionalLightData->color.x);
+			//	ImGui::SliderFloat3("direction", &directionalLightData->direction.x, -1.0f, 1.0f);
+			//	ImGui::SliderFloat("intensity", &directionalLightData->intensity, 0.0f, 1.0f);
 
-			}
+			//}
 
-			if (ImGui::CollapsingHeader("UVTransform"))
-			{
-				ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
-				ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
-				ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
-			}*/
+			//if (ImGui::CollapsingHeader("UVTransform"))
+			//{
+			//	ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
+			//	ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
+			//	ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
+			//}*/
 
-			if (ImGui::CollapsingHeader("sprite"))
-			{
-				ImGui::Checkbox("FilipX", &isFilipX);
-				ImGui::Checkbox("FilipY", &isFilipY);
-				ImGui::SliderFloat2("textureLeftTop", &textureLeftTop.x, 0.0f, 1000.0f);
-				ImGui::SliderFloat2("textureSize", &textureSize.x, 0.0f, 1500.0f);
-			}
-			
+			//if (ImGui::CollapsingHeader("sprite"))
+			//{
+			//	ImGui::Checkbox("FilipX", &isFilipX);
+			//	ImGui::Checkbox("FilipY", &isFilipY);
+			//	ImGui::SliderFloat2("textureLeftTop", &textureLeftTop.x, 0.0f, 1000.0f);
+			//	ImGui::SliderFloat2("textureSize", &textureSize.x, 0.0f, 1500.0f);
+			//}
+			//
 
-			if (ImGui::CollapsingHeader("cameraManager"))
-			{
-				ImGui::Text("activeIndex:(%d)", activeIndex);
-				ImGui::SliderFloat3("rotate1", &camera1Rotate.x, -5.0f, 5.0f);
-				ImGui::SliderFloat3("position1", &camera1Position.x, -50.0f, 50.0f);
-				ImGui::SliderFloat3("rotate2", &camera2Rotate.x, -5.0f, 5.0f);
-				ImGui::SliderFloat3("position2", &camera2Position.x, -50.0f, 50.0f);
-			}
+			//if (ImGui::CollapsingHeader("cameraManager"))
+			//{
+			//	ImGui::Text("activeIndex:(%d)", activeIndex);
+			//	ImGui::SliderFloat3("rotate1", &camera1Rotate.x, -5.0f, 5.0f);
+			//	ImGui::SliderFloat3("position1", &camera1Position.x, -50.0f, 50.0f);
+			//	ImGui::SliderFloat3("rotate2", &camera2Rotate.x, -5.0f, 5.0f);
+			//	ImGui::SliderFloat3("position2", &camera2Position.x, -50.0f, 50.0f);
+			//}
 
-			ImGui::End();
+			//ImGui::End();
 
 
-			//ゲームの処理が終わり描画処理に入る前にImGuiの内部コマンドを生成する
-			ImGui::Render();
+			////ゲームの処理が終わり描画処理に入る前にImGuiの内部コマンドを生成する
+			//ImGui::Render();  ここまで9章
 
 
 			/*worldMatrix = MyMath::MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
@@ -965,8 +965,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 
 			
-			//実際のcommandListのImGuiの描画コマンドを積む
-			ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
+			//実際のcommandListのImGuiの描画コマンドを積む  ここも9章
+			//ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
 
 
 			dxCommon->PostDraw();
@@ -979,9 +979,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	TextureManager::GetInstance()->Finalize();
 
 	//ImGuiの終了処理。
-	ImGui_ImplDX12_Shutdown();
+	/*ImGui_ImplDX12_Shutdown();   ここもも9章
 	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
+	ImGui::DestroyContext();*/
 
 	// 入力解放
 	delete input;
