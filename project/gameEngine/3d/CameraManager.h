@@ -4,6 +4,10 @@
 #include <vector>
 #include <memory>
 
+#include <limits>
+#undef max
+#undef min
+
 class CameraManager
 {
 public:
@@ -18,10 +22,10 @@ public:
 
     // カメラの削除
     // シーンの変更時等に呼び出す
-    void RemoveCamera(int index);
+    void RemoveCamera(uint32_t index);
 
     // アクティブカメラを設定
-    void SetActiveCamera(int index);
+    void SetActiveCamera(uint32_t index);
 
     // アクティブカメラの取得
     std::shared_ptr<Camera> GetActiveCamera() const;
@@ -42,7 +46,7 @@ private:
 
 private:
     std::vector<std::shared_ptr<Camera>> cameras_;  // カメラのリスト
-    uint32_t activeCameraIndex_ = -1;                   // アクティブなカメラのインデックス
+    uint32_t activeCameraIndex_ = ::std::numeric_limits<uint32_t>::max();
 };
 
 

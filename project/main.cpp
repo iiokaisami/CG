@@ -929,7 +929,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			//コマンドを積み込んで確定させる
 
 
-			
+			srvManager->PreDraw();
 
 			dxCommon->PreDraw();
 

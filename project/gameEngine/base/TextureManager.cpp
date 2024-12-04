@@ -55,7 +55,7 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	TextureData& textureData = textureDatas[filePath];
 
 	textureData.metadata = mipImages.GetMetadata();
-	textureData.resource = dxCommon_->CreateTextureResource(dxCommon_->GetDevice(), textureData.metadata);
+	textureData.resource = dxCommon_->CreateTextureResource(textureData.metadata);
 	textureData.intermediate = dxCommon_->UploadTextureData(textureData.resource, mipImages);
 	dxCommon_->CommandPass();
 

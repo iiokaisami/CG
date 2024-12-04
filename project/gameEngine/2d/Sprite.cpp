@@ -19,7 +19,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 	materialResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(Material));
 	transformationMatrixResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(TransformationMatrix));
 
-	TextureManager::GetInstance()->LoadTexture(/*textureFilePath_*/textureFilePath);
+	TextureManager::GetInstance()->LoadTexture(textureFilePath_);
 	//リソースの先頭アドレスから使う
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 	//使用するリソースのサイズは頂点６つ分のサイズ
@@ -64,7 +64,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 	};
 
 	// 単位行列を書き込んでおく
-	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(/*textureFilePath_*/textureFilePath);
+	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath_);
 
 	AdjustTextureSize();
 }
