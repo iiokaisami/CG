@@ -682,7 +682,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
-	bool useMonsterBall = true;
+	//bool useMonsterBall = true;  imgui関連の変数の為コメントアウト
 
 	bool isFilipX = false;
 	bool isFilipY = false;
