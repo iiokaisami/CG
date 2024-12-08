@@ -971,7 +971,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//ウィンドウの設定
 	HWND hwnd = CreateWindow(
 		wc.lpszClassName,		//利用するクラス名
-		L"CG2",					//タイトルバーの文字
+		L"LE2B_02_イイオカ_イサミ",					//タイトルバーの文字
 		WS_OVERLAPPEDWINDOW,	//よく見るウィンドウスタイル
 		CW_USEDEFAULT,			//表示X座標(WindowsOSに任せる)
 		CW_USEDEFAULT,			//表示Y座標(WindowsOSに任せる)
@@ -1933,10 +1933,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart()
 	);
 
-	
-	bool useMonsterBall = true;
-
-
 	// エミッタの初期化
 	Emitter emitter{};
 	emitter.transform.translate = { 0.0f,0.0f,0.0f };
@@ -2015,7 +2011,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			ImGui::Text("camera");
 			ImGui::SliderFloat3("cameraPosition", &cameraTransform.translate.x, -100.0f, 100.0f);
-			ImGui::Checkbox("useMonsterBall", &useMonsterBall);
 			ImGui::Checkbox("useBillboard", &useBillboard);
 
 			//改行
@@ -2026,33 +2021,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::ColorEdit4("color", &materialData->color.x);
 			}
 
-			if (ImGui::CollapsingHeader("vertexData"))
-			{
-				ImGui::SliderFloat3("translate", &transform.translate.x, -20.0f, 20.0f);
-				ImGui::SliderAngle("rotationX", &transform.rotate.x);
-				ImGui::SliderAngle("rotationY", &transform.rotate.y);
-				ImGui::SliderAngle("rotationZ", &transform.rotate.z);
-				ImGui::SliderFloat3("scale", &transform.scale.x, 0.0f, 5.0f);
-			}
-			if (ImGui::CollapsingHeader("vertexDataSprite"))
-			{
-				ImGui::SliderFloat3("translate", &transformSprite.translate.x, -20.0f, 20.0f);
-				ImGui::SliderFloat3("scale", &transformSprite.scale.x, 0.0f, 5.0f);
-			}
-			/*if (ImGui::CollapsingHeader("Lighting"))
-			{
-				ImGui::ColorEdit4("color", &directionalLightData->color.x);
-				ImGui::SliderFloat3("direction", &directionalLightData->direction.x, -1.0f, 1.0f);
-				ImGui::SliderFloat("intensity", &directionalLightData->intensity, 0.0f, 1.0f);
-
-			}*/
-
-			if (ImGui::CollapsingHeader("UVTransform"))
-			{
-				ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
-				ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
-				ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
-			}
+			
 
 			if (ImGui::Button("Add Particle"))
 			{
