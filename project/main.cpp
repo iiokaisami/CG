@@ -7,7 +7,6 @@
 #include <DirectXMath.h>
 #include <fstream>
 #include <sstream>
-#include <imgui.h>
 
 #include "Input.h"
 #include "WinApp.h"
@@ -22,7 +21,15 @@
 #include "Model.h"
 #include "ModelManager.h"
 #include "SrvManager.h"
+
+#ifdef _DEBUG
+
 #include "ImGuiManager.h"
+#include "imgui/imgui.h"
+
+#endif // _DEBUG
+
+
 
 /// <summary>
 ///  dxCommmon->CompileShader
@@ -210,7 +217,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Object3dCommon* object3dCommon = nullptr;
 	ModelCommon* modelCommon = nullptr;
 	SrvManager* srvManager = nullptr;
-	ImGuiManager* imGuiManager = nullptr;
 
 	// WindowsAPIの初期化
 	winApp = new WinApp();
@@ -239,8 +245,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	srvManager = new SrvManager();
 	srvManager->Initialize(dxCommon);
 
+#ifdef _DEBUG
+
+	ImGuiManager* imGuiManager = nullptr;
 	imGuiManager = new ImGuiManager();
-	imGuiManager->Initialize(winApp,dxCommon);
+	imGuiManager->Initialize(winApp, dxCommon);
+
+#endif // _DEBUG
+
 
 	// テクスチャマネージャーの初期化
 	TextureManager::GetInstance()->Initialize(dxCommon,srvManager);
@@ -705,8 +717,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		else
 		{
+
+#ifdef _DEBUG
 			// ImGui開始
 			imGuiManager->Begin();
+
+#endif // _DEBUG
+
+			
 
 			// 入力の更新
 			input->Update();
@@ -719,6 +737,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			////ゲームの処理		更新処理
 
+
+#ifdef _DEBUG
 
 
 			//ImGui
@@ -753,6 +773,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderFloat3("position2", &camera2Position.x, -50.0f, 50.0f);
 			}
 
+#endif // _DEBUG
 
 
 			/*worldMatrix = MyMath::MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
@@ -882,9 +903,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			sprite->SetSize(size);*/
 
 
-
+#ifdef _DEBUG
 			// ImGui終了
 			imGuiManager->End();
+#endif // _DEBUG
+
+			
 
 			//ゲームの処理		描画処理
 
@@ -937,9 +961,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			//実際のcommandListのImGuiの描画コマンドを積む  ここも9章
 			//ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
 
-
+#ifdef _DEBUG
 			// ImGui描画
 			imGuiManager->Draw();
+#endif // _DEBUG
+
 
 			dxCommon->PostDraw();
 
@@ -1001,9 +1027,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// SRVマネージャー解放
 	delete srvManager;
 
+
+
+#ifdef _DEBUG
 	// ImGuiManager解放
 	imGuiManager->Finalize();
 	delete imGuiManager;
+#endif // _DEBUG
+
+	
 
 
 
