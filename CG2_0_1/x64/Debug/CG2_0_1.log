@@ -1,0 +1,12 @@
+﻿  main.cpp
+C:\Users\k023g\Desktop\CG2\CG2_0_1\main.cpp(2113,15): warning C4456: 'worldMatrixInstancing' を宣言すると、以前のローカル宣言が隠蔽されます
+      C:\Users\k023g\Desktop\CG2\CG2_0_1\main.cpp(1971,12):
+      'worldMatrixInstancing' の宣言を確認してください
+  
+C:\Users\k023g\Desktop\CG2\CG2_0_1\main.cpp(1139,17): warning C4189: 'descriptorSizeDSV': ローカル変数が初期化されましたが、参照されていません
+C:\Users\k023g\Desktop\CG2\CG2_0_1\main.cpp(1971,12): warning C4101: 'worldMatrixInstancing': ローカル変数は 1 度も使われていません。
+C:\Users\k023g\Desktop\CG2\CG2_0_1\main.cpp(1967,6): warning C4189: 'blendMode': ローカル変数が初期化されましたが、参照されていません
+  LINK : 前回のインクリメンタル リンクで C:\Users\k023g\Desktop\CG2\CG2_0_1\x64\Debug\CG2_0_1.exe が見つからなかったか、ビルドされませんでした。フル リンクを行います。
+  CG2_0_1.vcxproj -> C:\Users\k023g\Desktop\CG2\CG2_0_1\x64\Debug\CG2_0_1.exe
+          1 個のファイルをコピーしました。
+          1 個のファイルをコピーしました。
