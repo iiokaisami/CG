@@ -16,6 +16,8 @@
 //	instance = nullptr;
 //}
 
+
+
 void Object3dCommon::Initialize(DirectXCommon* dxCommon)
 {
 	dxCommon_ = dxCommon;
