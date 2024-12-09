@@ -1,14 +1,13 @@
 #include <Windows.h>
 
 #include <format>
-
 #include <cassert>
-
 #include <numbers>
 #include <vector>
 #include <DirectXMath.h>
 #include <fstream>
 #include <sstream>
+#include <imgui.h>
 
 #include "Input.h"
 #include "WinApp.h"
@@ -618,6 +617,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 	//////////////////////////////////////
+	Vector2 position{};
+
 	std::vector<Sprite*> sprites;
 	for (uint32_t i = 0; i < 1; ++i)
 	{
@@ -630,11 +631,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		sprites.push_back(sprite);
 
-		//Vector2 position = sprite->GetPosition();
+		position = sprite->GetPosition();
 		// 座標を変更する
-		//position.x = 100.0f * sprites.size();
-		//// 変更を反映する
-		//sprite->SetPosition(position);
+		position.x = 100.0f;
+		position.y = 100.0f;
+		// 変更を反映する
+		sprite->SetPosition(position);
 
 		Vector2 size = sprite->GetSize();
 		size.x = 370.0f;
@@ -682,10 +684,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
-
-
-	//bool useMonsterBall = true;  imgui関連の変数の為コメントアウト
-
 	bool isFilipX = false;
 	bool isFilipY = false;
 
@@ -718,80 +716,43 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				OutputDebugStringA("Hit 0\n");
 			}
 
-			//フレームの先頭でImGuiに、ここからフレームが始まる旨を告げる  以下9章でやる
-			//ImGui_ImplDX12_NewFrame();
-			//ImGui_ImplWin32_NewFrame();
-			//ImGui::NewFrame();
-
-
 
 			////ゲームの処理		更新処理
 
 
 
-			////ImGui
+			//ImGui
 
 
-			//ImGui::Begin("Setting");
+			// 次のウィンドウのサイズを設定 (幅 400, 高さ 300)
+			ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
+							// ウィンドウの開始
+			if (ImGui::Begin("My Window")) {
+				// ウィンドウの内容
+				ImGui::SliderFloat2("position", &position.x, -500.0f, 1000.0f);
+			}
+			// ウィンドウの終了
+			ImGui::End();
+			
 
-			//ImGui::Text("camera");
-			////ImGui::SliderFloat3("cameraPosition", &cameraTransform.translate.x, -100.0f, 0.0f);
-			//ImGui::Checkbox("useMonsterBall", &useMonsterBall);
-			//
-			//
+			if (ImGui::CollapsingHeader("sprite"))
+			{
+				ImGui::Checkbox("FilipX", &isFilipX);
+				ImGui::Checkbox("FilipY", &isFilipY);
+				ImGui::SliderFloat2("textureLeftTop", &textureLeftTop.x, 0.0f, 1000.0f);
+				ImGui::SliderFloat2("textureSize", &textureSize.x, 0.0f, 1500.0f);
+			}
+			
 
+			if (ImGui::CollapsingHeader("cameraManager"))
+			{
+				ImGui::Text("activeIndex:(%d)", activeIndex);
+				ImGui::SliderFloat3("rotate1", &camera1Rotate.x, -5.0f, 5.0f);
+				ImGui::SliderFloat3("position1", &camera1Position.x, -50.0f, 50.0f);
+				ImGui::SliderFloat3("rotate2", &camera2Rotate.x, -5.0f, 5.0f);
+				ImGui::SliderFloat3("position2", &camera2Position.x, -50.0f, 50.0f);
+			}
 
-			////改行
-			//ImGui::NewLine();
-
-		
-			//
-			///*if (ImGui::CollapsingHeader("vertexData"))
-			//{
-			//	ImGui::SliderFloat3("translate", &transform.translate.x, -20.0f, 20.0f);
-			//	ImGui::SliderAngle("rotationX", &transform.rotate.x);
-			//	ImGui::SliderAngle("rotationY", &transform.rotate.y);
-			//	ImGui::SliderAngle("rotationZ", &transform.rotate.z);
-			//	ImGui::SliderFloat3("scale", &transform.scale.x, 0.0f, 5.0f);
-			//}
-			//if (ImGui::CollapsingHeader("Lighting"))
-			//{
-			//	ImGui::ColorEdit4("color", &directionalLightData->color.x);
-			//	ImGui::SliderFloat3("direction", &directionalLightData->direction.x, -1.0f, 1.0f);
-			//	ImGui::SliderFloat("intensity", &directionalLightData->intensity, 0.0f, 1.0f);
-
-			//}
-
-			//if (ImGui::CollapsingHeader("UVTransform"))
-			//{
-			//	ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
-			//	ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
-			//	ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
-			//}*/
-
-			//if (ImGui::CollapsingHeader("sprite"))
-			//{
-			//	ImGui::Checkbox("FilipX", &isFilipX);
-			//	ImGui::Checkbox("FilipY", &isFilipY);
-			//	ImGui::SliderFloat2("textureLeftTop", &textureLeftTop.x, 0.0f, 1000.0f);
-			//	ImGui::SliderFloat2("textureSize", &textureSize.x, 0.0f, 1500.0f);
-			//}
-			//
-
-			//if (ImGui::CollapsingHeader("cameraManager"))
-			//{
-			//	ImGui::Text("activeIndex:(%d)", activeIndex);
-			//	ImGui::SliderFloat3("rotate1", &camera1Rotate.x, -5.0f, 5.0f);
-			//	ImGui::SliderFloat3("position1", &camera1Position.x, -50.0f, 50.0f);
-			//	ImGui::SliderFloat3("rotate2", &camera2Rotate.x, -5.0f, 5.0f);
-			//	ImGui::SliderFloat3("position2", &camera2Position.x, -50.0f, 50.0f);
-			//}
-
-			//ImGui::End();
-
-
-			////ゲームの処理が終わり描画処理に入る前にImGuiの内部コマンドを生成する
-			//ImGui::Render();  ここまで9章
 
 
 			/*worldMatrix = MyMath::MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
@@ -885,6 +846,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			for (Sprite* sprite : sprites)
 			{
 				sprite->Update();
+				sprite->SetPosition(position);
 				sprite->SetFlipX(isFilipX);
 				sprite->SetFlipY(isFilipY);
 				sprite->SetTextureLeftTop(textureLeftTop);
