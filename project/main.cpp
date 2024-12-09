@@ -773,14 +773,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderFloat3("position2", &camera2Position.x, -50.0f, 50.0f);
 			}
 
-			if (ImGui::CollapsingHeader("cameraManager"))
-			{
-				ImGui::Text("activeIndex:(%d)", activeIndex);
-				ImGui::SliderFloat3("rotate1", &camera1Rotate.x, -5.0f, 5.0f);
-				ImGui::SliderFloat3("position1", &camera1Position.x, -50.0f, 50.0f);
-				ImGui::SliderFloat3("rotate2", &camera2Rotate.x, -5.0f, 5.0f);
-				ImGui::SliderFloat3("position2", &camera2Position.x, -50.0f, 50.0f);
-			}
 
 #endif // _DEBUG
 
