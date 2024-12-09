@@ -158,7 +158,7 @@ public:
 
 	void CommandPass();
 
-	//-----------ゲッター----------//
+	public: // ゲッター
 
 	// デバイス
 	Microsoft::WRL::ComPtr<ID3D12Device> GetDevice() { return device_; }
@@ -174,6 +174,10 @@ public:
 	D3D12_VIEWPORT GetViewport() { return viewport_; }
 	// シザー矩形
 	D3D12_RECT GetScissorRect() { return scissorRect_; }
+	// バックバッファの数を取得
+	size_t GetBackBufferCount() const { return backBuffers_.size(); }
+	// swapChainDescを取得
+	DXGI_SWAP_CHAIN_DESC1 GetSwapChainDesc() { return swapChainDesc_; }
 
 private:
 

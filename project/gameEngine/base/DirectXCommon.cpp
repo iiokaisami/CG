@@ -413,7 +413,7 @@ void DirectXCommon::CreateDXCompiler()
 void DirectXCommon::InitializeImGui()
 {
 	//ImGuiの初期化
-	IMGUI_CHECKVERSION();
+	/*IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(winApp_->GetHwnd());
@@ -424,7 +424,7 @@ void DirectXCommon::InitializeImGui()
 		srvDescriptorHeap_.Get(),
 		srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(),
 		srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart()
-	);
+	);*/
 }
 
 void DirectXCommon::PreDraw()

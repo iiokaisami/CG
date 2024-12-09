@@ -23,6 +23,7 @@
 #include "Model.h"
 #include "ModelManager.h"
 #include "SrvManager.h"
+#include "ImGuiManager.h"
 
 /// <summary>
 ///  dxCommmon->CompileShader
@@ -210,6 +211,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Object3dCommon* object3dCommon = nullptr;
 	ModelCommon* modelCommon = nullptr;
 	SrvManager* srvManager = nullptr;
+	ImGuiManager* imGuiManager = nullptr;
 
 	// WindowsAPIの初期化
 	winApp = new WinApp();
@@ -238,6 +240,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	srvManager = new SrvManager();
 	srvManager->Initialize(dxCommon);
 
+	imGuiManager = new ImGuiManager();
+	imGuiManager->Initialize(winApp,dxCommon);
 
 	// テクスチャマネージャーの初期化
 	TextureManager::GetInstance()->Initialize(dxCommon,srvManager);
@@ -703,6 +707,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		else
 		{
+			// ImGui開始
+			imGuiManager->Begin();
 
 			// 入力の更新
 			input->Update();
@@ -915,6 +921,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
+			// ImGui終了
+			imGuiManager->End();
+
 			//ゲームの処理		描画処理
 
 
@@ -966,6 +975,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			//実際のcommandListのImGuiの描画コマンドを積む  ここも9章
 			//ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
 
+
+			// ImGui描画
+			imGuiManager->Draw();
 
 			dxCommon->PostDraw();
 
@@ -1027,6 +1039,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// SRVマネージャー解放
 	delete srvManager;
 
+	// ImGuiManager解放
+	imGuiManager->Finalize();
+	delete imGuiManager;
 
 
 
