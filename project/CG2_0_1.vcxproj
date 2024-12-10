@@ -104,6 +104,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="gameEngine\audio\Audio.cpp" />
     <ClCompile Include="gameEngine\3d\CameraManager.cpp" />
     <ClCompile Include="gameEngine\3d\Camera.cpp" />
     <ClCompile Include="gameEngine\base\D3DResourceLeakChecker.cpp" />
@@ -129,6 +130,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="gameEngine\base\SrvManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="gameEngine\audio\Audio.h" />
     <ClInclude Include="gameEngine\3d\CameraManager.h" />
     <ClInclude Include="gameEngine\3d\Camera.h" />
     <ClInclude Include="gameEngine\base\D3DResourceLeakChecker.h" />

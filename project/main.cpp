@@ -7,6 +7,7 @@
 #include <DirectXMath.h>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 #include "Input.h"
 #include "WinApp.h"
@@ -21,6 +22,8 @@
 #include "Model.h"
 #include "ModelManager.h"
 #include "SrvManager.h"
+#include "Audio.h"
+
 
 #ifdef _DEBUG
 
@@ -217,6 +220,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Object3dCommon* object3dCommon = nullptr;
 	ModelCommon* modelCommon = nullptr;
 	SrvManager* srvManager = nullptr;
+	Audio* audio = nullptr;
+
 
 	// WindowsAPIの初期化
 	winApp = new WinApp();
@@ -244,6 +249,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// SRVマネージャーの初期化
 	srvManager = new SrvManager();
 	srvManager->Initialize(dxCommon);
+
+	// Audioの初期化
+	audio = new Audio();
+
+	if(!audio->LoadSound("BGM",L"BGM.wav")or
+		!audio->LoadSound("Fanfare", L"fanfare.wav") or
+		!audio->LoadSound("Mokugyo", L"mokugyo.wav"))
+	{
+		std::cerr << "Failed to load sound files." << std::endl;
+		return -1;
+	}
 
 #ifdef _DEBUG
 
@@ -702,7 +718,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Vector2 textureLeftTop{};
 	Vector2 textureSize{ 500.0f ,500.0f};
 
-	
+	// Audio関連変数	
+	struct SoundState
+	{
+		bool loop = false;  // ループ再生フラグ
+		bool play = false;  // 再生フラグ
+	};
+	std::unordered_map<std::string, SoundState> soundStates = {
+		{"BGM", {}},
+		{"Fanfare", {}},
+		{"Mokugyo", {}}
+	};
+
+
 
 	//メインループ
 	//ウィンドウのxボタンが押されるまでループ
@@ -772,6 +800,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderFloat3("rotate2", &camera2Rotate.x, -5.0f, 5.0f);
 				ImGui::SliderFloat3("position2", &camera2Position.x, -50.0f, 50.0f);
 			}
+
+			// 各音声の制御を追加
+			//for (auto& [soundName, state] : soundStates) {
+			//	ImGui::Text("%s", soundName.c_str());
+
+			//	// ループ再生の切り替え
+			//	if (ImGui::Checkbox(("Loop " + soundName).c_str(), &state.loop)) {
+			//		if (state.play) {
+			//			audio->Stop(soundName); // 既存の再生を停止
+			//			audio->Play(soundName, state.loop); // 再生し直す
+			//		}
+			//	}
+
+			//	// 再生ボタン
+			//	if (ImGui::Button(("Play " + soundName).c_str())) {
+			//		if (!state.play) {
+			//			audio->Play(soundName, state.loop); // 再生
+			//			state.play = true;
+			//		}
+			//	}
+
+			//	// 停止ボタン
+			//	if (ImGui::Button(("Stop " + soundName).c_str())) {
+			//		audio->Stop(soundName); // 停止
+			//		state.play = false;
+			//	}
+
+			//	ImGui::Separator();
+			//}
 
 #endif // _DEBUG
 
@@ -958,9 +1015,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 
 			
-			//実際のcommandListのImGuiの描画コマンドを積む  ここも9章
-			//ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
-
 #ifdef _DEBUG
 			// ImGui描画
 			imGuiManager->Draw();
@@ -976,10 +1030,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// テクスチャマネージャーの終了
 	TextureManager::GetInstance()->Finalize();
 
-	//ImGuiの終了処理。
-	/*ImGui_ImplDX12_Shutdown();   ここもも9章
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();*/
 
 	// 入力解放
 	delete input;
@@ -1027,7 +1077,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// SRVマネージャー解放
 	delete srvManager;
 
-
+	// Audio解放
+	delete audio;
 
 #ifdef _DEBUG
 	// ImGuiManager解放
