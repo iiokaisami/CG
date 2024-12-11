@@ -1,7 +1,9 @@
 #include "Audio.h"
 
+#include <filesystem>
 #include <fstream>
 #include <stdexcept>
+#include <iostream>
 
 Audio::Audio()
 {
@@ -36,9 +38,18 @@ Audio::~Audio()
 
 bool Audio::LoadSound(const std::string& soundName, const std::wstring& filePath)
 {
+    // ファイルパスからディレクトリとファイル名を抽出
+    //std::filesystem::path path(filePath);
+    //std::string directory = "resources/audio" + path.parent_path().string();   
+    //std::wstring wDirectory = std::wstring(directory.begin(), directory.end()); // directory を std::wstring に変換
+    //std::wstring fileName = path.filename().wstring(); // ファイル名だけを抽出
+
+    //std::wstring fullPath = path.wstring();
+
     SoundData soundData;
-    if (!LoadWavFile(filePath, soundData))
+    if (!LoadWavFile(/*wDirectory,fileName*/filePath, soundData))
     {
+        //std::wcerr << L"Failed to load sound: " << fullPath << std::endl;
         return false;
     }
     soundDataMap_[soundName] = std::move(soundData);
@@ -50,6 +61,7 @@ void Audio::Play(const std::string& soundName, bool loop)
     auto it = soundDataMap_.find(soundName);
     if (it == soundDataMap_.end())
     {
+        std::cerr << "Sound not found: " << soundName << std::endl;
         return; // サウンドが存在しない
     }
 
@@ -57,8 +69,10 @@ void Audio::Play(const std::string& soundName, bool loop)
 
     // ソースボイスを作成
     IXAudio2SourceVoice* sourceVoice = nullptr;
-    if (FAILED(xAudio2_->CreateSourceVoice(&sourceVoice, &soundData.format))) 
+    HRESULT hr = xAudio2_->CreateSourceVoice(&sourceVoice, &soundData.format);
+    if (FAILED(hr))
     {
+        std::cerr << "Failed to create source voice. Error: " << std::hex << hr << std::endl;
         return;
     }
 
@@ -69,15 +83,18 @@ void Audio::Play(const std::string& soundName, bool loop)
     buffer.Flags = XAUDIO2_END_OF_STREAM;
     buffer.LoopCount = loop ? XAUDIO2_LOOP_INFINITE : 0;
 
-    if (FAILED(sourceVoice->SubmitSourceBuffer(&buffer))) 
+    hr = sourceVoice->SubmitSourceBuffer(&buffer);
+    if (FAILED(hr))
     {
-        sourceVoice->DestroyVoice();
+        std::cerr << "Failed to submit source buffer. Error: " << std::hex << hr << std::endl;
         return;
     }
 
     // 再生開始
-    if (FAILED(sourceVoice->Start(0))) 
+    hr = sourceVoice->Start(0);
+    if (FAILED(hr))
     {
+        std::cerr << "Failed to start playback. Error: " << std::hex << hr << std::endl;
         sourceVoice->DestroyVoice();
         return;
     }
@@ -88,8 +105,10 @@ void Audio::Play(const std::string& soundName, bool loop)
 void Audio::Stop(const std::string& soundName)
 {
     auto it = sourceVoices_.find(soundName);
-    if (it != sourceVoices_.end()) {
-        for (auto* sourceVoice : it->second) {
+    if (it != sourceVoices_.end()) 
+    {
+        for (auto* sourceVoice : it->second)
+        {
             sourceVoice->Stop(0);
             sourceVoice->DestroyVoice();
         }
@@ -100,8 +119,10 @@ void Audio::Stop(const std::string& soundName)
 
 void Audio::StopAll()
 {
-    for (auto& [soundName, voices] : sourceVoices_) {
-        for (auto* sourceVoice : voices) {
+    for (auto& [soundName, voices] : sourceVoices_)
+    {
+        for (auto* sourceVoice : voices) 
+        {
             sourceVoice->Stop(0);
             sourceVoice->DestroyVoice();
         }
@@ -109,17 +130,44 @@ void Audio::StopAll()
     sourceVoices_.clear();
 }
 
-bool Audio::LoadWavFile(const std::wstring& filePath, SoundData& soundData)
+void Audio::SetVolume(const std::string& soundName, float volume)
 {
-    std::ifstream file(filePath, std::ios::binary);
-    if (!file) {
+    auto it = sourceVoices_.find(soundName);
+    if (it != sourceVoices_.end())
+    {
+        for (auto* sourceVoice : it->second)
+        {
+            // 音量を設定（0.0f から 1.0f の範囲）
+            sourceVoice->SetVolume(volume);
+        }
+    }
+}
+
+void Audio::SetMasterVolume(float volume)
+{
+    // マスターボイスの音量設定（0.0f から 1.0f の範囲）
+    masteringVoice_->SetVolume(volume);
+}
+
+bool Audio::LoadWavFile(/*const std::wstring& directoryPath,*/ const std::wstring& filePath, SoundData& soundData)
+{
+
+    /*std::wstring fullPath = directoryPath + L"/" + filePath;
+    std::wcout << L"Loading WAV file from path: " << fullPath << std::endl;*/
+
+    std::ifstream file(/*directoryPath + L"/" +*/ filePath, std::ios::binary);
+    if (!file)
+    {
+       // std::wcerr << L"File not found: " << fullPath << std::endl;
         return false; // ファイルが見つからない
     }
 
     // RIFF チャンクを確認
     char riff[4];
     file.read(riff, 4);
-    if (std::memcmp(riff, "RIFF", 4) != 0) {
+    if (std::memcmp(riff, "RIFF", 4) != 0)
+    {
+        //std::wcerr << L"Invalid RIFF header in file: " << fullPath << std::endl;
         return false;
     }
 

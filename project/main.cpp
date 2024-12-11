@@ -205,6 +205,121 @@ private:
 //
 
 
+/////////////////////////////////////音音音
+
+	 // チャンクヘッダ
+struct ChunkHeader {
+	char id[4];		 // チャンク毎のID
+	int32_t size;	 // チャンクサイズ
+};
+
+// RIFFヘッダチャンク
+struct RiffHeader {
+	ChunkHeader chunk;	// "RIFF"
+	char type[4];		// "WAVE"
+};
+
+// FMTチャンク
+struct FormatChunk {
+	ChunkHeader chunk;	// "fmt"
+	WAVEFORMATEX fmt;	// 波形フォーマット
+};
+
+struct SoundData
+{
+	WAVEFORMATEX wfex;
+	BYTE* pBuffer;
+	unsigned int buffersize;
+};
+
+SoundData SoundLoadWave(const char* filename)
+{
+	std::ifstream file;
+	file.open(filename, std::ios_base::binary);
+
+	assert(file.is_open());
+
+	RiffHeader riff;
+	file.read((char*)&riff, sizeof(riff));
+
+	if (strncmp(riff.chunk.id, "RIFF", 4) != 0)
+	{
+		assert(0);
+	}
+
+	if (strncmp(riff.type, "WAVE", 4) != 0)
+	{
+		assert(0);
+	}
+
+	FormatChunk format = {};
+
+	file.read((char*)&format, sizeof(ChunkHeader));
+	if (strncmp(format.chunk.id, "fmt", 4) != 0)
+	{
+		std::cerr << "Invalid WAV file: Missing 'fmt ' chunk" << std::endl;
+		return 0;
+		//assert(0);
+	}
+
+	assert(format.chunk.size <= sizeof(format.fmt));
+	file.read((char*)&format.fmt, format.chunk.size);
+
+	ChunkHeader data;
+	file.read((char*)&data, sizeof(data));
+
+	if (strncmp(data.id, "JUNK", 4) == 0)
+	{
+		file.seekg(data.size, std::ios_base::cur);
+
+		file.read((char*)&data, sizeof(data));
+	}
+
+	if (strncmp(data.id, "data", 4) != 0)
+	{
+		assert(0);
+	}
+
+	char* pBudder = new char[data.size];
+	file.read(pBudder, data.size);
+
+	file.close();
+
+	SoundData soundData = {};
+
+	soundData.wfex = format.fmt;
+	soundData.pBuffer = reinterpret_cast<BYTE*>(pBudder);
+	soundData.buffersize = data.size;
+
+	return soundData;
+
+}
+
+void SoundUnload(SoundData* soundData)
+{
+	delete[] soundData->pBuffer;
+
+	soundData->pBuffer = 0;
+	soundData->buffersize = 0;
+	soundData->wfex = {};
+}
+
+void SoundPalyWave(IXAudio2* xAudio2, const SoundData& soundData)
+{
+	HRESULT result;
+
+	IXAudio2SourceVoice* pSourceVoice = nullptr;
+	result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundData.wfex);
+	assert(SUCCEEDED(result));
+
+	XAUDIO2_BUFFER buf{};
+	buf.pAudioData = soundData.pBuffer;
+	buf.AudioBytes = soundData.buffersize;
+	buf.Flags = XAUDIO2_END_OF_STREAM;
+
+	result = pSourceVoice->SubmitSourceBuffer(&buf);
+	result = pSourceVoice->Start();
+}
 
 //Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -253,9 +368,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// Audioの初期化
 	audio = new Audio();
 
-	if(!audio->LoadSound("BGM",L"BGM.wav")or
-		!audio->LoadSound("Fanfare", L"fanfare.wav") or
-		!audio->LoadSound("Mokugyo", L"mokugyo.wav"))
+	if (!audio->LoadSound("BGM", L"resources/audio/BGM.wav") or
+		!audio->LoadSound("Fanfare", L"resources/audio/fanfare.wav") or
+		!audio->LoadSound("Mokugyo", L"resources/audio/mokugyo.wav"))
 	{
 		std::cerr << "Failed to load sound files." << std::endl;
 		return -1;
@@ -721,15 +836,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// Audio関連変数	
 	struct SoundState
 	{
-		bool loop = false;  // ループ再生フラグ
-		bool play = false;  // 再生フラグ
+		bool loop = false;   // ループ再生フラグ
+		bool play = false;   // 再生フラグ
+		float volume = 1.0f; // 音量 (0.0f - 1.0f)
 	};
 	std::unordered_map<std::string, SoundState> soundStates = {
 		{"BGM", {}},
 		{"Fanfare", {}},
 		{"Mokugyo", {}}
 	};
+	
+	/////////////////////////////////////音音音
 
+	ComPtr<IXAudio2> xAudio2;
+	IXAudio2MasteringVoice* masterVoice;
+
+	auto result = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
+
+	result = xAudio2->CreateMasteringVoice(&masterVoice);
+
+	SoundData soundData1 = SoundLoadWave("resources/Alarm01.wav");
+
+	SoundPalyWave(xAudio2.Get(), soundData1);
+	////////////////////////////////////
 
 
 	//メインループ
@@ -802,33 +931,41 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 
 			// 各音声の制御を追加
-			//for (auto& [soundName, state] : soundStates) {
-			//	ImGui::Text("%s", soundName.c_str());
+			for (auto& [soundName, state] : soundStates) {
+				ImGui::Text("%s", soundName.c_str());
 
-			//	// ループ再生の切り替え
-			//	if (ImGui::Checkbox(("Loop " + soundName).c_str(), &state.loop)) {
-			//		if (state.play) {
-			//			audio->Stop(soundName); // 既存の再生を停止
-			//			audio->Play(soundName, state.loop); // 再生し直す
-			//		}
-			//	}
+				// ループ再生の切り替え
+				if (ImGui::Checkbox(("Loop " + soundName).c_str(), &state.loop)) {
+					if (state.play) {
+						audio->Stop(soundName); // 既存の再生を停止
+						audio->Play(soundName, state.loop); // 再生し直す
+					}
+				}
 
-			//	// 再生ボタン
-			//	if (ImGui::Button(("Play " + soundName).c_str())) {
-			//		if (!state.play) {
-			//			audio->Play(soundName, state.loop); // 再生
-			//			state.play = true;
-			//		}
-			//	}
+				// 再生ボタン
+				if (ImGui::Button(("Play " + soundName).c_str())) {
+					if (!state.play) {
+						audio->Play(soundName, state.loop); // 再生
+						state.play = true;
+					}
+				}
 
-			//	// 停止ボタン
-			//	if (ImGui::Button(("Stop " + soundName).c_str())) {
-			//		audio->Stop(soundName); // 停止
-			//		state.play = false;
-			//	}
+				// 停止ボタン
+				if (ImGui::Button(("Stop " + soundName).c_str())) {
+					audio->Stop(soundName); // 停止
+					state.play = false;
+				}
 
-			//	ImGui::Separator();
-			//}
+				// 音量スライダーを追加
+				float volume = state.volume; // 現在の音量を取得
+				if (ImGui::SliderFloat(("Volume " + soundName).c_str(), &volume, 0.0f, 1.0f)) {
+					// 音量が変更された場合
+					state.volume = volume;
+					audio->SetVolume(soundName, volume); // 音量を変更
+				}
+
+				ImGui::Separator();
+			}
 
 #endif // _DEBUG
 
@@ -1079,6 +1216,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// Audio解放
 	delete audio;
+
+	//////////////////////音音音
+	xAudio2.Reset();
+	SoundUnload(&soundData1);
+	
+
+
+
 
 #ifdef _DEBUG
 	// ImGuiManager解放

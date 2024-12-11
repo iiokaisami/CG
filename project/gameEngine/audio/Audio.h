@@ -27,6 +27,9 @@ public:
     // 全サウンド停止
     void StopAll();
 
+    // 音量の設定
+    void SetVolume(const std::string& soundName, float volume); // サウンドごとの音量
+    void SetMasterVolume(float volume); // マスターボイスの音量
 
 private: // 構造体
 
@@ -57,7 +60,7 @@ private: // 構造体
 private:
 
     // WAV ファイル読み込み関数
-    bool LoadWavFile(const std::wstring& filePath, SoundData& soundData);
+    bool LoadWavFile(/*const std::wstring& directoryPath,*/ const std::wstring& filePath, SoundData& soundData);
 
     // 解放用関数
     void Release();
