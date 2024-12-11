@@ -618,7 +618,6 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateBufferResource(size_
 {
 	HRESULT result = S_FALSE;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> bufferResource = nullptr;
 	//頂点リソース用のヒープ設定
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -636,9 +635,11 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateBufferResource(size_
 	//バッファの場合はこれにする決まり
 	bufferResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> bufferResource = nullptr;
 	result = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &bufferResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&bufferResource));
 	assert(SUCCEEDED(result));
-	result;
+
 	return bufferResource;
 }
 
