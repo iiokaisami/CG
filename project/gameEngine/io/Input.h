@@ -11,6 +11,22 @@ using namespace Microsoft::WRL;
 
 class Input
 {
+#pragma region シングルトンインスタンス
+private:
+	static Input* instance;
+
+	Input() = default;
+	~Input() = default;
+	Input(Input&) = delete;
+	Input& operator = (Input&) = delete;
+
+public:
+	// シングルトンインスタンスの取得
+	static Input* GetInstance();
+	// 終了
+	void Finalize();
+#pragma endregion シングルトンインスタンス
+
 public:
 
 	// namespace省略

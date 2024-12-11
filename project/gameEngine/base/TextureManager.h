@@ -43,7 +43,7 @@ public: // ゲッター
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(const std::string& filePath);
 
 
-private:
+private: // 構造体
 
 	// テクスチャ1枚分のデータ
 	struct TextureData 
@@ -55,6 +55,8 @@ private:
 		D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU;
 		D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
 	};
+
+private:
 
 	// テクスチャデータ
 	std::unordered_map<std::string,TextureData> textureDatas;

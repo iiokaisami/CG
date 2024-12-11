@@ -2,6 +2,7 @@
 
 #include <cassert>
 
+
 const uint32_t SrvManager::kMaxSRVCount_ = 512;
 
 void SrvManager::Initialize(DirectXCommon* dxCommon)
@@ -85,4 +86,28 @@ void SrvManager::PreDraw()
 void SrvManager::SetGraphicsRootDescriptorTable(UINT RootParameterIndex, uint32_t srvIndex)
 {
 	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(RootParameterIndex, GetGPUDescriptorHandle(srvIndex));
+}
+
+uint32_t SrvManager::LoadTexture(const std::string& textureFilePath)
+{
+	// テクスチャが既にロードされているか確認
+	if (textureIndices_.find(textureFilePath) != textureIndices_.end()) {
+		return textureIndices_[textureFilePath];
+	}
+
+	// テクスチャリソースの読み込み
+	ID3D12Resource* textureResource = nullptr;
+	TextureLoader::LoadFromFile(dxCommon_->GetDevice(), textureFilePath, &textureResource);
+	if (!textureResource) {
+		throw std::runtime_error("Failed to load texture: " + textureFilePath);
+	}
+
+	// SRV作成
+	uint32_t srvIndex = Allocate();
+	CreateSRVforTexture2D(srvIndex, textureResource, textureResource->GetDesc().Format, textureResource->GetDesc().MipLevels);
+
+	// インデックスをキャッシュに保存
+	textureIndices_[textureFilePath] = srvIndex;
+
+	return srvIndex;
 }

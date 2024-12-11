@@ -24,6 +24,9 @@ public:
 
 	void PreDraw();
 
+	// テクスチャ読み込み
+	uint32_t LoadTexture(const std::string& textureFilePath);
+
 public: // セッター
 
 	void SetGraphicsRootDescriptorTable(UINT RootParameterIndex, uint32_t srvIndex);
@@ -41,5 +44,8 @@ private:
 
 	// 次に使用するSRVインデックス
 	uint32_t useIndex_ = 0;
+
+	// テクスチャキャッシュ
+	std::unordered_map<std::string, uint32_t> textureIndices_;
 };
 

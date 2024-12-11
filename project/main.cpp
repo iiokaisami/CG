@@ -214,7 +214,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	WinApp* winApp = nullptr;
 	DirectXCommon* dxCommon = nullptr;
 	SpriteCommon* spriteCommon = nullptr;
-	Object3dCommon* object3dCommon = nullptr;
 	ModelCommon* modelCommon = nullptr;
 	SrvManager* srvManager = nullptr;
 
@@ -231,8 +230,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	spriteCommon->Initialize(dxCommon);
 
 	// 3Dオブジェクト共通部の初期化
-	object3dCommon = new Object3dCommon;
-	object3dCommon->Initialize(dxCommon);
+	Object3dCommon::GetInstance()->Initialize(dxCommon);
 
 	// モデル共通部分の初期化
 	modelCommon = new ModelCommon();
@@ -290,10 +288,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 	// ポインタ
-	Input* input = nullptr;
-
-	input = new Input();
-	input->Initialize(winApp);
+	Input::GetInstance()->Initialize(winApp);
 
 
 	//VertexResourceを生成する
@@ -399,7 +394,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	cameraManager.SetActiveCamera(0);
 	uint32_t activeIndex = cameraManager.GetActiveIndex();
 
-	object3dCommon->SetDefaultCamera(cameraManager.GetActiveCamera());
+	Object3dCommon::GetInstance()->SetDefaultCamera(cameraManager.GetActiveCamera());
 
 
 	//////////////////////////////////////
@@ -423,14 +418,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	for (uint32_t i = 0; i < 2; ++i) {
 		Object3d* object = new Object3d();
 		if (i == 0) {
-			//object->Initialize("plane.obj");
-			object->Initialize(object3dCommon);
-			object->SetModel("plane.obj");
+			object->Initialize("plane.obj");
 		}
 		if (i == 1) {
-			//object->Initialize("axis.obj");
-			object->Initialize(object3dCommon);
-			object->SetModel("axis.obj");
+			object->Initialize("axis.obj");
 		}
 
 		Vector3 position;
@@ -667,8 +658,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);*/
 
 	//SRVを制作するDescriptorHeapの場所を決める
-	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+	/*D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();*/
 
 	////先頭はImGuiが使っているのでその次を使う
 	//textureSrvHandleCPU.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -727,9 +718,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			
 
 			// 入力の更新
-			input->Update();
+			Input::GetInstance()->Update();
 			// 数字の0キーが押されていたら
-			if (input->TriggerKey(DIK_0))
+			if (Input::GetInstance()->TriggerKey(DIK_0))
 			{
 				OutputDebugStringA("Hit 0\n");
 			}
@@ -790,7 +781,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			cameraManager.UpdateAll();
 
 			// ENTER押してカメラ切り替え
-			if (input->TriggerKey(DIK_RETURN))
+			if (Input::GetInstance()->TriggerKey(DIK_RETURN))
 			{
 				if (cameraManager.GetActiveIndex() == 0)
 				{
@@ -929,11 +920,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			// 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
 			//Object3dCommon::GetInstance()->CommonDrawSetting();
-			object3dCommon->CommonDrawSetting();
+			Object3dCommon::GetInstance()->CommonDrawSetting();
 
 			for (Object3d* object3d : object3ds)
 			{
-				object3d->Draw(textureSrvHandleGPU);
+				object3d->Draw();
 			}
 
 			//いざ描画
@@ -954,7 +945,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			for (Sprite* sprite : sprites)
 			{
-				sprite->Draw(textureSrvHandleGPU);
+				sprite->Draw();
 			}
 
 			
@@ -982,7 +973,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	ImGui::DestroyContext();*/
 
 	// 入力解放
-	delete input;
+	Input::GetInstance()->Finalize();
 	
 	// WindowsAPIの終了処理
 	winApp->Finalize();
@@ -1002,8 +993,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	}
 
 	// 3Dオブジェクト共通部解放
-	//Object3dCommon::GetInstance()->Finalize();
-	delete object3dCommon;
+	Object3dCommon::GetInstance()->Finalize();
 
 	// 3Dオブジェクト解放
 	for (Object3d* object3d : object3ds)
