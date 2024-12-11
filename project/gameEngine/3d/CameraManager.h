@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <limits>
+
 #undef max
 #undef min
 
@@ -46,7 +47,7 @@ private:
 
 private:
     std::vector<std::shared_ptr<Camera>> cameras_;  // カメラのリスト
-    uint32_t activeCameraIndex_ = ::std::numeric_limits<uint32_t>::max();  // アクティブなカメラのインデックス (無効値を設定
+    uint32_t activeCameraIndex_ = ::std::numeric_limits<uint32_t>::max();  // アクティブなカメラのインデックス (無効値を設定)
 };
 
 

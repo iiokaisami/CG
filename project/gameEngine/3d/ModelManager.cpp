@@ -29,17 +29,16 @@ void ModelManager::Initialize(DirectXCommon* dxCommon)
 
 void ModelManager::LoadModel(const std::string& filePath)
 {
-	// 読み込み済みモデルを検索
-	if (models.contains(filePath)) {
-		// 読み込み済みなら早期 return
-		return;
-	}
-
 	// ファイルパスからディレクトリとファイル名を抽出
 	std::filesystem::path path(filePath);
 	std::string directory = "resources/models/" + path.parent_path().string();
 	std::string fileName = path.filename().string(); // ファイル名だけを抽出
 
+	// 読み込み済みモデルを検索
+	if (models.contains(filePath)) {
+		// 読み込み済みなら早期 return
+		return;
+	}
 
 	// ディレクトリが存在しない場合は "resources/models" をデフォルトに
 	if (directory.empty()) {

@@ -64,7 +64,7 @@ void DirectXCommon::Initialize(WinApp* winApp)
 	CreateDXCompiler();
 	
 	// ImGuiの初期化
-	InitializeImGui();
+	//InitializeImGui(); 9章でやる
 
 	//FenceのSignalを待つためのイベントを作成する
 	fenceEvent_ = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -413,7 +413,7 @@ void DirectXCommon::CreateDXCompiler()
 void DirectXCommon::InitializeImGui()
 {
 	//ImGuiの初期化
-	IMGUI_CHECKVERSION();
+	/*IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(winApp_->GetHwnd());
@@ -424,7 +424,7 @@ void DirectXCommon::InitializeImGui()
 		srvDescriptorHeap_.Get(),
 		srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(),
 		srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart()
-	);
+	);*/
 }
 
 void DirectXCommon::PreDraw()
@@ -472,8 +472,8 @@ void DirectXCommon::PreDraw()
 	//描画用のDescriptorHeapの設定
 	//もろもろの描画処理が終わったタイミングでImGuiの描画コマンドを積む
 	//Guiは画面の最前面に映すので、一番最後の描画として行う
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { srvDescriptorHeap_ };
-	commandList_->SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
+	//Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { srvDescriptorHeap_ };
+	//commandList_->SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
 
 	commandList_->RSSetViewports(1, &viewport_);
 	commandList_->RSSetScissorRects(1, &scissorRect_);
@@ -642,7 +642,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateBufferResource(size_
 	return bufferResource;
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device, const DirectX::TexMetadata& metadata)
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateTextureResource( const DirectX::TexMetadata& metadata)
 {
 	HRESULT result = S_FALSE;
 
@@ -661,7 +661,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateTextureResource(Micr
 
 	//resourceの生成
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
-	result = device->CreateCommittedResource(
+	result = device_->CreateCommittedResource(
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,

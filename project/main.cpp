@@ -1,9 +1,7 @@
 #include <Windows.h>
 
 #include <format>
-
 #include <cassert>
-
 #include <numbers>
 #include <vector>
 #include <DirectXMath.h>
@@ -22,6 +20,16 @@
 #include "ModelCommon.h"
 #include "Model.h"
 #include "ModelManager.h"
+#include "SrvManager.h"
+
+#ifdef _DEBUG
+
+#include "ImGuiManager.h"
+#include "imgui/imgui.h"
+
+#endif // _DEBUG
+
+
 
 /// <summary>
 ///  dxCommmon->CompileShader
@@ -208,6 +216,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SpriteCommon* spriteCommon = nullptr;
 	Object3dCommon* object3dCommon = nullptr;
 	ModelCommon* modelCommon = nullptr;
+	SrvManager* srvManager = nullptr;
 
 	// WindowsAPIの初期化
 	winApp = new WinApp();
@@ -216,9 +225,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// DirectXの初期化
 	dxCommon = new DirectXCommon();
 	dxCommon->Initialize(winApp);
-
-	// テクスチャマネージャーの初期化
-	TextureManager::GetInstance()->Initialize(dxCommon);
 
 	// スプライト共通部分の初期化
 	spriteCommon = new SpriteCommon();
@@ -234,6 +240,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// 3Dモデルマネージャーの初期化
 	ModelManager::GetInstance()->Initialize(dxCommon);
+
+	// SRVマネージャーの初期化
+	srvManager = new SrvManager();
+	srvManager->Initialize(dxCommon);
+
+#ifdef _DEBUG
+
+	ImGuiManager* imGuiManager = nullptr;
+	imGuiManager = new ImGuiManager();
+	imGuiManager->Initialize(winApp, dxCommon);
+
+#endif // _DEBUG
+
+
+	// テクスチャマネージャーの初期化
+	TextureManager::GetInstance()->Initialize(dxCommon,srvManager);
+
 
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 	hr;
@@ -606,23 +629,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 	//////////////////////////////////////
+	Vector2 position{};
+
 	std::vector<Sprite*> sprites;
 	for (uint32_t i = 0; i < 1; ++i)
 	{
 		Sprite* sprite = new Sprite();
 		if (i == 0 || i == 3) {
-		sprite->Initialize(spriteCommon, "resources/uvChecker.png");
+		sprite->Initialize(spriteCommon, "uvChecker.png");
 		}
 		else {
-			sprite->Initialize(spriteCommon, "resources/monsterBall.png");
+			sprite->Initialize(spriteCommon, "monsterBall.png");
 		}
 		sprites.push_back(sprite);
 
-		//Vector2 position = sprite->GetPosition();
+		position = sprite->GetPosition();
 		// 座標を変更する
-		//position.x = 100.0f * sprites.size();
-		//// 変更を反映する
-		//sprite->SetPosition(position);
+		position.x = 100.0f;
+		position.y = 100.0f;
+		// 変更を反映する
+		sprite->SetPosition(position);
 
 		Vector2 size = sprite->GetSize();
 		size.x = 370.0f;
@@ -652,8 +678,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
-	
-
 	//metadata2をもとにSRVの設定
 	/*D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc2{};
 	srvDesc2.Format = metadata2.format;
@@ -671,10 +695,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//device->CreateShaderResourceView(textureResource2.Get(), &srvDesc2, textureSrvHandleCPU2);
 
 
-
-
-
-	bool useMonsterBall = true;
 
 	bool isFilipX = false;
 	bool isFilipY = false;
@@ -698,6 +718,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		else
 		{
 
+#ifdef _DEBUG
+			// ImGui開始
+			imGuiManager->Begin();
+
+#endif // _DEBUG
+
+			
+
 			// 入力の更新
 			input->Update();
 			// 数字の0キーが押されていたら
@@ -706,56 +734,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				OutputDebugStringA("Hit 0\n");
 			}
 
-			//フレームの先頭でImGuiに、ここからフレームが始まる旨を告げる
-			ImGui_ImplDX12_NewFrame();
-			ImGui_ImplWin32_NewFrame();
-			ImGui::NewFrame();
+
+			////ゲームの処理		更新処理
 
 
-
-			//ゲームの処理		更新処理
-
+#ifdef _DEBUG
 
 
 			//ImGui
 
 
-			ImGui::Begin("Setting");
-
-			ImGui::Text("camera");
-			//ImGui::SliderFloat3("cameraPosition", &cameraTransform.translate.x, -100.0f, 0.0f);
-			ImGui::Checkbox("useMonsterBall", &useMonsterBall);
-			
-			
-
-
-			//改行
-			ImGui::NewLine();
-
-		
-			
-			/*if (ImGui::CollapsingHeader("vertexData"))
-			{
-				ImGui::SliderFloat3("translate", &transform.translate.x, -20.0f, 20.0f);
-				ImGui::SliderAngle("rotationX", &transform.rotate.x);
-				ImGui::SliderAngle("rotationY", &transform.rotate.y);
-				ImGui::SliderAngle("rotationZ", &transform.rotate.z);
-				ImGui::SliderFloat3("scale", &transform.scale.x, 0.0f, 5.0f);
+			// 次のウィンドウのサイズを設定 (幅 400, 高さ 300)
+			ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
+							// ウィンドウの開始
+			if (ImGui::Begin("My Window")) {
+				// ウィンドウの内容
+				ImGui::SliderFloat2("position", &position.x, -500.0f, 1000.0f);
 			}
-			if (ImGui::CollapsingHeader("Lighting"))
-			{
-				ImGui::ColorEdit4("color", &directionalLightData->color.x);
-				ImGui::SliderFloat3("direction", &directionalLightData->direction.x, -1.0f, 1.0f);
-				ImGui::SliderFloat("intensity", &directionalLightData->intensity, 0.0f, 1.0f);
-
-			}
-
-			if (ImGui::CollapsingHeader("UVTransform"))
-			{
-				ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
-				ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
-				ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
-			}*/
+			// ウィンドウの終了
+			ImGui::End();
+			
 
 			if (ImGui::CollapsingHeader("sprite"))
 			{
@@ -775,11 +773,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderFloat3("position2", &camera2Position.x, -50.0f, 50.0f);
 			}
 
-			ImGui::End();
 
-
-			//ゲームの処理が終わり描画処理に入る前にImGuiの内部コマンドを生成する
-			ImGui::Render();
+#endif // _DEBUG
 
 
 			/*worldMatrix = MyMath::MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
@@ -873,6 +868,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			for (Sprite* sprite : sprites)
 			{
 				sprite->Update();
+				sprite->SetPosition(position);
 				sprite->SetFlipX(isFilipX);
 				sprite->SetFlipY(isFilipY);
 				sprite->SetTextureLeftTop(textureLeftTop);
@@ -908,6 +904,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			sprite->SetSize(size);*/
 
 
+#ifdef _DEBUG
+			// ImGui終了
+			imGuiManager->End();
+#endif // _DEBUG
+
+			
 
 			//ゲームの処理		描画処理
 
@@ -921,7 +923,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			//コマンドを積み込んで確定させる
 
 
-			
+			srvManager->PreDraw();
 
 			dxCommon->PreDraw();
 
@@ -957,8 +959,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 
 			
-			//実際のcommandListのImGuiの描画コマンドを積む
-			ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
+			//実際のcommandListのImGuiの描画コマンドを積む  ここも9章
+			//ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
+
+#ifdef _DEBUG
+			// ImGui描画
+			imGuiManager->Draw();
+#endif // _DEBUG
 
 
 			dxCommon->PostDraw();
@@ -971,9 +978,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	TextureManager::GetInstance()->Finalize();
 
 	//ImGuiの終了処理。
-	ImGui_ImplDX12_Shutdown();
+	/*ImGui_ImplDX12_Shutdown();   ここもも9章
 	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
+	ImGui::DestroyContext();*/
 
 	// 入力解放
 	delete input;
@@ -1017,6 +1024,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// カメラ解放
 	cameraManager.RemoveCamera(0);
 	cameraManager.RemoveCamera(1);
+
+	// SRVマネージャー解放
+	delete srvManager;
+
+
+
+#ifdef _DEBUG
+	// ImGuiManager解放
+	imGuiManager->Finalize();
+	delete imGuiManager;
+#endif // _DEBUG
+
+	
+
+
 
 	//CloseHandle(fenceEvent);
 	
