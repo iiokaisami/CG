@@ -9,6 +9,30 @@
 #include "SrvManager.h"
 #include "Particle.h"
 
+// 構造体(Emitterでも使いたい)
+struct MaterialData
+{
+	std::string textureFilePath;
+	uint32_t textureIndex = 0;
+};
+
+struct ParticleForGPU
+{
+	Matrix4x4 WVP;
+	Matrix4x4 world;
+	Vector4 color;
+};
+
+struct ParticleGroup
+{
+	MaterialData materialData;
+	std::list<Particle> particleList;
+	uint32_t srvIndex;
+	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource;
+	uint32_t kNumMaxInstance;
+	ParticleForGPU* instancingData;
+};
+
 class ParticleManager
 {
 public:
@@ -33,7 +57,7 @@ public:
 
 	void Emit(const std::string name, const Vector3& position, uint32_t count);
 
-private: // 構造体、関数
+private: // 構造体
 
 	struct Transform
 	{
@@ -48,14 +72,7 @@ private: // 構造体、関数
 		Vector2 texcoord;
 		Vector3 normal;
 	};
-
-	struct MaterialData
-	{
-		std::string textureFilePath;
-		uint32_t textureIndex = 0;
-	};
-
-
+	
 	struct ModelData
 	{
 		std::vector<VertexData> vertices;
@@ -68,23 +85,6 @@ private: // 構造体、関数
 		int32_t enableLighting;
 		float padding[3];
 		Matrix4x4 uvTransform;
-	};
-
-	struct ParticleForGPU 
-	{
-		Matrix4x4 WVP;
-		Matrix4x4 world;
-		Vector4 color;
-	};
-
-	struct ParticleGroup
-	{
-		MaterialData materialData;
-		std::list<Particle> particleList;
-		uint32_t srvIndex;
-		Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource;
-		uint32_t kNumMaxInstance;
-		ParticleForGPU* instancingData;
 	};
 
 	struct AABB
