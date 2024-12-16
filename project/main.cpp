@@ -294,16 +294,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
-	/// パーティクルテスト///
-
-	ParticleManager::GetInstance()->Initialize(dxCommon, srvManager);
-	ParticleGroup smokeGroup;
-
-	// 乱数エンジン
-	std::random_device rd;
-	std::mt19937 randomEngine(rd());
-
-	/////////////////////////
+	
 
 
 
@@ -716,25 +707,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Vector2 textureLeftTop{};
 	Vector2 textureSize{ 500.0f ,500.0f};
 
-	/// パーティクルテスト///
-
-	for (int i = 0; i < 5; ++i)
-	{
-		Particle smokeParticle;
-		smokeParticle.transform.translate = Vector3(i * 1.0f, 0.0f, 0.0f);
-		smokeGroup.particleList.push_back(smokeParticle);
-	}
-	// パーティクルグループを登録
-	std::unordered_map<std::string, ParticleGroup> particleGroups;
-	particleGroups["Smoke"] = smokeGroup;
-	// ParticleEmitter の作成 (発生間隔を 0.5 秒に設定)
-	ParticleEmitter emitter(randomEngine, particleGroups, 0.5f);
-	// シミュレーションループ
-	float simulationTime = 0.0f; // シミュレーションの経過時間
-	float deltaTime = 0.1f;      // フレームごとの時間 (例: 0.1秒)
-
-	///////////////////////////
-
+	
 
 	//メインループ
 	//ウィンドウのxボタンが押されるまでループ
@@ -877,21 +850,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			
 			
-			/// パーティクルテスト///
-
-			std::cout << "Simulation Time: " << simulationTime << " seconds" << std::endl;
-
-			// エミッタの更新
-			emitter.Update(deltaTime);
-
-			// パーティクルマネージャの更新
-			ParticleManager::GetInstance()->Update();
-
-			// 時間を進める
-			simulationTime += deltaTime;
-
-
-			////////////////////////
+			
 
 
 			/*Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransformSprite.scale);
@@ -984,12 +943,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			//commandList->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
 
 
-			/// パーティクルテスト///
-
-			// パーティクルの描画 (ParticleManager の Draw 関数を利用)
-			ParticleManager::GetInstance()->Draw();
-
-			/////////////////////////
+			
 
 
 			spriteCommon->CommonDrawSetting();
