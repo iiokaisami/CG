@@ -22,6 +22,14 @@
 #include "ModelManager.h"
 #include "SrvManager.h"
 
+/// パーティクルテスト///
+
+#include "ParticleManager.h"
+#include "ParticleEmitter.h"
+#include <iostream>
+
+/////////////////////////
+
 #ifdef _DEBUG
 
 #include "ImGuiManager.h"
@@ -242,6 +250,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// SRVマネージャーの初期化
 	srvManager = new SrvManager();
 	srvManager->Initialize(dxCommon);
+
+
+
+	/// パーティクルテスト///
+	
+	ParticleManager* particleManager = ParticleManager::GetInstance();
+	ParticleGroup smokeGroup;
+
+	// 乱数エンジン
+	std::random_device rd;
+	std::mt19937 randomEngine(rd());
+
+	/////////////////////////
+	
+
 
 #ifdef _DEBUG
 
@@ -693,7 +716,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Vector2 textureLeftTop{};
 	Vector2 textureSize{ 500.0f ,500.0f};
 
-	
+	/// パーティクルテスト///
+
+	for (int i = 0; i < 5; ++i)
+	{
+		Particle smokeParticle;
+		smokeParticle.transform.translate = Vector3(i * 1.0f, 0.0f, 0.0f);
+		smokeGroup.particleList.push_back(smokeParticle);
+	}
+	// パーティクルグループを登録
+	std::unordered_map<std::string, ParticleGroup> particleGroups;
+	particleGroups["Smoke"] = smokeGroup;
+	// ParticleEmitter の作成 (発生間隔を 0.5 秒に設定)
+	ParticleEmitter emitter(randomEngine, particleGroups, 0.5f);
+	// シミュレーションループ
+	float simulationTime = 0.0f; // シミュレーションの経過時間
+	float deltaTime = 0.1f;      // フレームごとの時間 (例: 0.1秒)
+
+	///////////////////////////
+
 
 	//メインループ
 	//ウィンドウのxボタンが押されるまでループ
@@ -765,17 +806,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 
 #endif // _DEBUG
-
-
-			/*worldMatrix = MyMath::MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
-			cameraMatrix = MyMath::MakeAffineMatrix(cameraTransform.scale, cameraTransform.rotate, cameraTransform.translate);
-			viewMatrix = MyMath::Inverse(cameraMatrix);
-			projectionMatrix = MyMath::MakePerspectiveFovMatrix(0.45f, float(WinApp::kClientWidth) / float(WinApp::kClientHeight), 0.1f, 100.0f);
-			worldViewProjectionMatrix = MyMath::Multiply(worldMatrix, MyMath::Multiply(viewMatrix, projectionMatrix));
-			wvpData->WVP = worldViewProjectionMatrix;
-			wvpData->World = worldMatrix;*/
-			
-			
+		
 
 			// カメラマネージャーのテスト
 			cameraManager.UpdateAll();
@@ -846,7 +877,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			
 			
+			/// パーティクルテスト///
 
+			std::cout << "Simulation Time: " << simulationTime << " seconds" << std::endl;
+
+			// エミッタの更新
+			emitter.Update(deltaTime);
+
+			// パーティクルマネージャの更新
+			particleManager->Update(deltaTime);
+
+			// 時間を進める
+			simulationTime += deltaTime;
+
+
+			////////////////////////
 
 
 			/*Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransformSprite.scale);
@@ -939,6 +984,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			//commandList->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
 
 
+			/// パーティクルテスト///
+
+			// パーティクルの描画 (ParticleManager の Draw 関数を利用)
+			particleManager->Draw();
+
+			/////////////////////////
 
 
 			spriteCommon->CommonDrawSetting();
@@ -947,10 +998,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{
 				sprite->Draw();
 			}
-
-			
-			//実際のcommandListのImGuiの描画コマンドを積む  ここも9章
-			//ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
 
 #ifdef _DEBUG
 			// ImGui描画
@@ -966,11 +1013,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	
 	// テクスチャマネージャーの終了
 	TextureManager::GetInstance()->Finalize();
-
-	//ImGuiの終了処理。
-	/*ImGui_ImplDX12_Shutdown();   ここもも9章
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();*/
 
 	// 入力解放
 	Input::GetInstance()->Finalize();

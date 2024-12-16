@@ -37,6 +37,13 @@ class ParticleManager
 {
 public:
 
+	static ParticleManager* GetInstance()
+	{
+		static ParticleManager instance;  // インスタンスを1回だけ作成
+		return &instance;
+	}
+
+
 	// 初期化
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
@@ -100,6 +107,8 @@ private: // 構造体
 	};
 
 private:
+
+	ParticleManager() = default;  // コンストラクタはプライベート
 
 	DirectXCommon* dxCommon_ = nullptr;
 

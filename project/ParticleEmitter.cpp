@@ -2,11 +2,14 @@
 
 ParticleEmitter::ParticleEmitter
 (
-    std::mt19937 randomEngine,
-    std::unordered_map<std::string, ParticleGroup>& particleGroups, 
+    std::mt19937 randomEngine, 
+    std::unordered_map<std::string, ParticleGroup>& particleGroups,
     float emissionInterval
 )
-    : randomEngine_(randomEngine), particleGroups_(particleGroups), emissionInterval_(emissionInterval), nextEmissionTime_(0.0f)
+    : randomEngine_(randomEngine), 
+    particleGroups_(particleGroups),
+    emissionInterval_(emissionInterval), 
+    nextEmissionTime_(0.0f)
 {
 }
 
@@ -21,15 +24,10 @@ void ParticleEmitter::Update(float deltaTime)
         // パーティクルを発生させる
         for (auto& group : particleGroups_)
         {
-            // 各パーティクルの処理
-            for (auto it = particleGroups_.particleList.begin(); it != particleGroup.particleList.end();)
-            {
-                Particle& particle = *it;
-                ParticleGroup& particleGroup = group.second;
+            ParticleGroup& particleGroup = group.second;
 
-                // Emit関数を呼び出してパーティクルを発生
-                Emit(group.first, particleGroup.transform.translate, 10); // 例として10個のパーティクルを発生させる
-            }
+            // Emit関数を呼び出してパーティクルを発生
+            Emit(group.first, particleGroup.particleList.front().transform.translate, 10); // 例として10個のパーティクルを発生させる
         }
 
         // 次回発生時刻を設定

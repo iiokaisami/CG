@@ -15,7 +15,7 @@ public:
 	ParticleEmitter
 	(
 		std::mt19937 randomEngine,
-		std::unordered_map<std::string, ParticleGroup> particleGroups, 
+		std::unordered_map<std::string, ParticleGroup>& particleGroups, 
 		float emissionInterval
 	);
 
