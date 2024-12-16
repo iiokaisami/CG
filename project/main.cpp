@@ -253,16 +253,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
-	/// パーティクルテスト///
 	
-	ParticleManager* particleManager = ParticleManager::GetInstance();
-	ParticleGroup smokeGroup;
-
-	// 乱数エンジン
-	std::random_device rd;
-	std::mt19937 randomEngine(rd());
-
-	/////////////////////////
 	
 
 
@@ -303,7 +294,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
-	
+	/// パーティクルテスト///
+
+	ParticleManager::GetInstance()->Initialize(dxCommon, srvManager);
+	ParticleGroup smokeGroup;
+
+	// 乱数エンジン
+	std::random_device rd;
+	std::mt19937 randomEngine(rd());
+
+	/////////////////////////
 
 
 
@@ -885,7 +885,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			emitter.Update(deltaTime);
 
 			// パーティクルマネージャの更新
-			particleManager->Update(deltaTime);
+			ParticleManager::GetInstance()->Update();
 
 			// 時間を進める
 			simulationTime += deltaTime;
@@ -987,7 +987,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			/// パーティクルテスト///
 
 			// パーティクルの描画 (ParticleManager の Draw 関数を利用)
-			particleManager->Draw();
+			ParticleManager::GetInstance()->Draw();
 
 			/////////////////////////
 

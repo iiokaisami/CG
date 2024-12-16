@@ -5,11 +5,13 @@
 #include <vector>
 #include <random>
 
+#include "Object3dCommon.h"
+
 void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
 	dxCommon_ = dxCommon;
 	srvManager_ = srvManager;
-
+    object3dCommon_ = Object3dCommon::GetInstance();
 	// ランダムエンジンの初期化
     randomEngine_ = std::mt19937{ std::random_device{}() };
 
@@ -79,6 +81,8 @@ void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager
     accelerationField_.acceleration = { 15.0f,0.0f,0.0f };
     accelerationField_.area.min = { -1.0f,-1.0f,-1.0f };
     accelerationField_.area.max = { 1.0f,1.0f,1.0f };
+
+    camera_ = object3dCommon_->GetDefaultCamera();
 }
 
 void ParticleManager::CreatePipeline()
@@ -289,14 +293,13 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     particleGroups[name] = std::move(newGroup);
 }
 
-void ParticleManager::Update(const Matrix4x4& viewMatrix, const Matrix4x4& projectionMatrix)
+void ParticleManager::Update()
 {
     for (auto& group : particleGroups)
     {
         ParticleGroup& particleGroup = group.second;
 
-        // ビュー行列とプロジェクション行列をカメラから取得
-        Matrix4x4 viewProjectionMatrix = viewMatrix * projectionMatrix;
+       
 
         // 各パーティクルの処理
         for (auto it = particleGroup.particleList.begin(); it != particleGroup.particleList.end();)
@@ -320,15 +323,23 @@ void ParticleManager::Update(const Matrix4x4& viewMatrix, const Matrix4x4& proje
             // 時間経過を加算
             particle.currentTime += kDeltaTime_;
 
-            // ワールド行列を計算（位置、回転、スケール）
+            // ビュー行列とプロジェクション行列をカメラから取得
             Matrix4x4 worldMatrix = MakeAffineMatrix(particle.transform.scale, particle.transform.rotate, particle.transform.translate);
+            Matrix4x4 worldViewProjectionMatrix;
 
-            // ワールドビュー・プロジェクション行列を合成
-            Matrix4x4 wvpMatrix = worldMatrix * viewProjectionMatrix;
+            if (camera_)
+            {
+                const Matrix4x4& viewProjectionMatrix = camera_->GetViewProjectionMatrix();
+                worldViewProjectionMatrix = (worldMatrix * viewProjectionMatrix);
+            }
+            else
+            {
+                worldViewProjectionMatrix = worldMatrix;
+            }
 
             // インスタンシング用データ1コ分の書き込み
             uint32_t instanceIndex = static_cast<uint32_t>(std::distance(particleGroup.particleList.begin(), it));
-            particleGroup.instancingData[instanceIndex].WVP = wvpMatrix;
+            particleGroup.instancingData[instanceIndex].WVP = worldViewProjectionMatrix;
             particleGroup.instancingData[instanceIndex].world = worldMatrix;
             particleGroup.instancingData[instanceIndex].color = particle.color;
 

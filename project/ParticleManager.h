@@ -8,6 +8,9 @@
 #include "DirectXCommon.h"
 #include "SrvManager.h"
 #include "Particle.h"
+#include "CameraManager.h"
+
+class Object3dCommon;
 
 // 構造体(Emitterでも使いたい)
 struct MaterialData
@@ -57,12 +60,16 @@ public:
 	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath);
 
 	// 更新
-	void Update(const Matrix4x4& viewMatrix, const Matrix4x4& projectionMatrix);
+	void Update();
 
 	// 描画
 	void Draw();
 
 	void Emit(const std::string name, const Vector3& position, uint32_t count);
+
+public: // セッター
+
+	void SetCamera(std::shared_ptr<Camera> camera) { camera_ = camera; }
 
 private: // 構造体
 
@@ -113,6 +120,10 @@ private:
 	DirectXCommon* dxCommon_ = nullptr;
 
 	SrvManager* srvManager_ = nullptr;
+
+	Object3dCommon* object3dCommon_ = nullptr;
+
+	std::shared_ptr<Camera> camera_ = nullptr;
 
 	// 頂点バッファ関連
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexBuffer_;
