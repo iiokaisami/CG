@@ -1,6 +1,8 @@
 #pragma once
 
 #include <unordered_map>
+#include <random> 
+#include <TextureManager.h>
 
 #include "MyMath.h"
 #include "DirectXCommon.h"
@@ -21,7 +23,15 @@ public:
 	void CreateRootSignature();
 
 	// パーティクルグループの生成
-	void CreateParticleGlroup(const std::string name, const std::string textureFilePath);
+	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath);
+
+	// 更新
+	void Update(const Matrix4x4& viewMatrix, const Matrix4x4& projectionMatrix);
+
+	// 描画
+	void Draw();
+
+	void Emit(const std::string name, const Vector3& position, uint32_t count);
 
 private: // 構造体、関数
 
@@ -73,8 +83,20 @@ private: // 構造体、関数
 		std::list<Particle> particleList;
 		uint32_t srvIndex;
 		Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource;
-		const uint32_t kNumMaxInstance;
+		uint32_t kNumMaxInstance;
 		ParticleForGPU* instancingData;
+	};
+
+	struct AABB
+	{
+		Vector3 min;//!<最小点
+		Vector3 max;//!< 最大点
+	};
+
+	struct AccelerationField 
+	{
+		Vector3 acceleration; //!< 加速度
+		AABB area;            //!< 範囲
 	};
 
 private:
@@ -115,5 +137,10 @@ private:
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs_[3] = {};
 
 	std::unordered_map<std::string, ParticleGroup> particleGroups;
+
+
+	AccelerationField accelerationField_;
+
+	const float kDeltaTime_ = 1.0f / 60.0f;
 };
 
