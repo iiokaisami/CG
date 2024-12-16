@@ -24,7 +24,7 @@ public:
 	void Update();
 
 	// 描画
-	void Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU);
+	void Draw();
 
 
 	//-----------ゲッター----------//

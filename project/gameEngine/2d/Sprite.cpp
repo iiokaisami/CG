@@ -136,9 +136,8 @@ void Sprite::Update()
 	
 }
 
-void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU)
+void Sprite::Draw()
 {
-	textureSrvHandleGPU;
 
 	// Spriteの描画。変更が必要なものだけ変更する
 	spriteCommon_->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
