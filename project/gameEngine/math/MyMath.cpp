@@ -306,3 +306,50 @@ Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	result.z /= w;
 	return result;
 }
+
+float Lerp(const float& v1, const float& v2, float t)
+{
+	float result;
+	result = v1 + t * (v2 - v1);
+	return result;
+}
+
+Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t)
+{
+	Vector3 result;
+	result = (v1 + (t * (v2 - v1)));
+	return result;
+}
+
+Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t)
+{
+
+	Vector3 Nv1 = Normalize(v1);
+	Vector3 Nv2 = Normalize(v2);
+
+	float dot = Dot(Nv1, Nv2);
+
+	dot = (std::min)(dot, 1.0f);
+	float theta = std::acos(dot);
+	float sinTheta = std::sin(theta);
+	float sinThetaFrom = std::sin((1 - t) * theta);
+	float sinThetaTo = std::sin(t * theta);
+
+	Vector3 man;
+
+	if (sinTheta < 1.0e-5) {
+		man = Nv1;
+	}
+	else {
+		man = (1 / sinTheta) * ((sinThetaFrom * Nv1) + (sinThetaTo * Nv2));
+	}
+
+	float length1 = Length(v1);
+	float length2 = Length(v2);
+
+	float length = Lerp(length1, length2, t);
+
+	man = length * man;
+
+	return man;
+}

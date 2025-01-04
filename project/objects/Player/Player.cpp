@@ -55,30 +55,56 @@ void Player::Update()
         return false;
         });
 
+
+    Vector3 playerForward = { std::sinf(rotation_.y), 0.f, std::cosf(rotation_.y) };
+    Vector3 playerRight = { std::cosf(rotation_.y), 0.f, -std::sinf(rotation_.y) };
+
     moveVelocity_ = {};
 
     // 移動処理
     if (Input::GetInstance()->PushKey(DIK_W))
     {
-        moveVelocity_.z += moveSpeed_;
+        moveVelocity_ += playerForward * moveSpeed_;
+       // moveVelocity_.z += moveSpeed_;
     }
     if (Input::GetInstance()->PushKey(DIK_S))
     {
-        moveVelocity_.z += -moveSpeed_;
+        moveVelocity_ += -playerForward * moveSpeed_;
+        //moveVelocity_.z += -moveSpeed_;
     }
     if (Input::GetInstance()->PushKey(DIK_A))
     {
-        moveVelocity_.x += -moveSpeed_;
+        moveVelocity_ += -playerRight * moveSpeed_;
+        //moveVelocity_.x += -moveSpeed_;
     }
     if (Input::GetInstance()->PushKey(DIK_D))
     {
-        moveVelocity_.x += moveSpeed_;
+        moveVelocity_ += playerRight * moveSpeed_;
+        //moveVelocity_.x += moveSpeed_;
     }
 
     position_ += moveVelocity_;
 
     // モデルに座標をセット
     object_->SetPosition(position_);
+    object_->SetRotate(rotation_);
+
+
+    // マウス移動
+    //rotation_.x -= mousePosDiff_.y * 0.001f;
+    //rotation_.y -= mousePosDiff_.x * 0.001f;
+    //if (rotation_.x > 1.57f) rotation_.x = 1.57f;
+    //if (rotation_.x < -1.57f) rotation_.x = -1.57f;
+
+    CalcCursorMove();
+    if (Input::GetInstance()->PushKey(DIK_RIGHT))
+    {
+        rotation_.y -= mousePosDiff_.x * 0.00005f;
+    }
+    if (Input::GetInstance()->PushKey(DIK_LEFT))
+    {
+        rotation_.y += mousePosDiff_.x * 0.00005f;
+    }
 
     CameraFollow();
 
@@ -168,4 +194,5 @@ void Player::CalcCursorMove()
         static_cast<float>(960 - mousePosCurrent.x),
         static_cast<float>(540 - mousePosCurrent.y)
     };
+
 }

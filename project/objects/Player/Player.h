@@ -40,6 +40,10 @@ public: // セッター
 
     void SetCamera(std::shared_ptr<Camera> camera) { camera_ = camera; }
 
+public: // ゲッター
+
+    Vector3 GetPosition() { return position_; }
+
 private:
 
     std::shared_ptr<Camera> camera_ = nullptr;
