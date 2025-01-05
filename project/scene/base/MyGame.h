@@ -2,9 +2,9 @@
 
 #include "../base/Framework.h"
 
-#include "../objects/Player/Player.h"
-#include "../objects/Enemy/Enemy.h"
-#include "../objects/Skydome/Skydome.h"
+#include "../scene/base/BaseScene.h"
+#include "../scene/scene/GamePlayScene.h"
+#include "../scene/scene/TitleScene.h"
 
 
 class MyGame : public Framework
@@ -35,6 +35,7 @@ private:
 	Vector3 camera2Rotate{};
 	Vector3 camera2Position{};
 
+	
 
 	/*std::vector<Object3d*>object3ds;
 
@@ -48,14 +49,6 @@ private:
 
 	Vector2 textureLeftTop{};
 	Vector2 textureSize{ 500.0f ,500.0f };
-
-
-
-	// ゲームで使うモデル
-	std::unique_ptr<Player> pPlayer_ = nullptr;
-	//std::list<std::unique_ptr<Enemy>> pEnemy_;
-	std::unique_ptr<Enemy> pEnemy_;
-	std::unique_ptr<Skydome> pSkydome_ = nullptr;
 	
 };
 

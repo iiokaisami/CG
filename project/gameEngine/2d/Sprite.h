@@ -18,13 +18,14 @@ class Sprite
 public:
 
 	// 初期化
-	void Initialize(SpriteCommon* spriteCommon, std::string textureFilePath);
+	void Initialize(std::string textureFilePath,
+		Vector2 position, Vector4 color = { (1) , (1), (1), (1) }, Vector2 anchorpoint = { 0.0f,0.0f });
 
 	// 更新
 	void Update();
 
 	// 描画
-	void Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU);
+	void Draw();
 
 
 	//-----------ゲッター----------//

@@ -107,6 +107,7 @@ void Player::Update()
     }
 
     CameraFollow();
+    camera_->Update();
 
     CalcCursorMove();
 

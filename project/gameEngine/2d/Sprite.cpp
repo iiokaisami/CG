@@ -4,9 +4,10 @@
 
 #include <fstream>
 
-void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
+void Sprite::Initialize(std::string textureFilePath,
+	Vector2 position, Vector4 color, Vector2 anchorpoint)
 {
-	spriteCommon_ = spriteCommon;
+	spriteCommon_ = SpriteCommon::GetInstance();
 
 	std::ifstream file;
 	// 基本パスを指定（"Resources/images/"）
@@ -67,6 +68,10 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath_);
 
 	AdjustTextureSize();
+
+	SetPosition(position);
+	SetColor(color);
+	SetAnchorPoint(anchorpoint);
 }
 
 void Sprite::Update()
@@ -136,9 +141,8 @@ void Sprite::Update()
 	
 }
 
-void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU)
+void Sprite::Draw()
 {
-	textureSrvHandleGPU;
 
 	// Spriteの描画。変更が必要なものだけ変更する
 	spriteCommon_->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);

@@ -53,8 +53,11 @@ void Framework::Initialize()
 	srvManager = new SrvManager();
 	srvManager->Initialize(dxCommon);
 
+	// シーンマネージャ
+	sceneManager_ = SceneManager::GetInstance();
+
 	// スプライト共通部分の初期化
-	spriteCommon = new SpriteCommon();
+	spriteCommon = SpriteCommon::GetInstance();
 	spriteCommon->Initialize(dxCommon);
 
 	// テクスチャマネージャー
@@ -93,8 +96,11 @@ void Framework::Finalize()
 	// SRVマネージャー解放
 	delete srvManager;
 
+	sceneManager_->Finalize();
+	delete sceneFactory_;
+
 	// スプライト共通部分解放
-	delete spriteCommon;
+	spriteCommon->Finalize();
 
 	textureManager->Finalize();
 
@@ -111,6 +117,9 @@ void Framework::Finalize()
 
 void Framework::Update()
 {
+	// シーンマネージャーの更新
+	sceneManager_->Update();
+
 	// 入力更新
 	input->Update();
 }

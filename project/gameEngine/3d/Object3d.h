@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Camera.h"
 #include "MyMath.h"
 #include "TextureManager.h"
-#include "CameraManager.h"
 
 class Object3dCommon;
 class Model;

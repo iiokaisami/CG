@@ -1,9 +1,18 @@
 #include "MyGame.h"
 
+#include "SceneFactory.h"
+
 void MyGame::Initialize()
 {
 
 	Framework::Initialize();
+
+	// シーンマネージャに最初のシーンをセット
+	sceneFactory_ = new SceneFactory();
+	SceneManager::GetInstance()->SetSceneFactory(sceneFactory_);
+
+	// 最初のシーンを設定
+	SceneManager::GetInstance()->ChangeScene("TITLE");
 
 	//// デバイス
 	//Microsoft::WRL::ComPtr<ID3D12Device> device = dxCommon->GetDevice();
@@ -50,24 +59,6 @@ void MyGame::Initialize()
 	activeIndex = cameraManager.GetActiveIndex();
 
 	Object3dCommon::GetInstance()->SetDefaultCamera(cameraManager.GetActiveCamera());
-
-
-	///////////////////////////////////////////////////
-	// Player
-	pPlayer_ = std::make_unique<Player>();
-	pPlayer_->Initialize();
-	pPlayer_->SetCamera(cameraManager.GetActiveCamera());
-
-	// Enemy
-	pEnemy_ = std::make_unique<Enemy>();
-	pEnemy_->Initialize();
-	pEnemy_->SetPlayerPosition(pPlayer_->GetPosition());
-
-	// Skydome
-	pSkydome_ = std::make_unique<Skydome>();
-	pSkydome_->Initialize();
-
-	//////////////////////////////////////////////////
 
 
 	ModelManager::GetInstance()->LoadModel("plane.obj");
@@ -134,19 +125,10 @@ void MyGame::Initialize()
 	//D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU2 = dxCommon->GetCPUDescriptorHandle(srvDescriptorHeap, descriptorSizeSRV, 2);
 	//D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU2 = dxCommon->GetGPUDescriptorHandle(srvDescriptorHeap, descriptorSizeSRV, 2);
 
-
-
 }
 
 void MyGame::Finalize()
 {
-	//////////////////////////////////////////
-
-	pPlayer_->Finalize();
-	pEnemy_->Finalize();
-	pSkydome_->Finalize();
-
-	/////////////////////////////////////////
 
 
 	// スプライト解放
@@ -187,7 +169,6 @@ void MyGame::Update()
 
 
 	Framework::Update();
-
 
 	
 	// 数字の0キーが押されていたら
@@ -348,20 +329,6 @@ void MyGame::Update()
 	size.y += 0.1f;
 	sprite->SetSize(size);*/
 
-	////////////////////////////////////////////////////
-
-	pPlayer_->Update();
-	pEnemy_->SetPlayerPosition(pPlayer_->GetPosition());
-	pEnemy_->Update();
-	pSkydome_->Update();
-
-	//pSkydome_->SetCamera(cameraManager.GetActiveCamera());
-
-	////////////////////////////////////////////////////
-
-
-
-
 }
 
 void MyGame::Draw()
@@ -380,16 +347,7 @@ void MyGame::Draw()
 	// 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
 	object3dCommon->CommonDrawSetting();
 
-	////////////////////////////////////////////////
-
-	// 天球描画
-	pSkydome_->Draw();
-	// プレーヤー描画
-	pPlayer_->Draw();
-	// 敵描画
-	pEnemy_->Draw();
-
-	///////////////////////////////////////////////
+	sceneManager_->Draw();
 
 	//for (Object3d* object3d : object3ds)
 	//{

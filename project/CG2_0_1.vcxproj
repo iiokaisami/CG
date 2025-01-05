@@ -104,7 +104,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="scene\scene\GameClearScene.cpp" />
+    <ClCompile Include="scene\scene\GameOverScene.cpp" />
+    <ClCompile Include="scene\base\SceneFactory.cpp" />
+    <ClCompile Include="scene\base\SceneManager.cpp" />
+    <ClCompile Include="scene\base\BaseScene.cpp" />
     <ClCompile Include="gameEngine\base\Framework.cpp" />
+    <ClCompile Include="scene\scene\GamePlayScene.cpp" />
     <ClCompile Include="scene\base\MyGame.cpp" />
     <ClCompile Include="objects\Enemy\Enemy.cpp" />
     <ClCompile Include="objects\Player\Bullet\PlayerBullet.cpp" />
@@ -134,9 +140,17 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="gameEngine\base\SrvManager.cpp" />
     <ClCompile Include="objects\Player\Player.cpp" />
     <ClCompile Include="objects\Skydome\Skydome.cpp" />
+    <ClCompile Include="scene\scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="scene\scene\GameClearScene.h" />
+    <ClInclude Include="scene\scene\GameOverScene.h" />
+    <ClInclude Include="scene\base\SceneFactory.h" />
+    <ClInclude Include="scene\base\AbstractSceneFactory.h" />
+    <ClInclude Include="scene\base\SceneManager.h" />
+    <ClInclude Include="scene\base\BaseScene.h" />
     <ClInclude Include="gameEngine\base\Framework.h" />
+    <ClInclude Include="scene\scene\GamePlayScene.h" />
     <ClInclude Include="scene\base\MyGame.h" />
     <ClInclude Include="objects\Enemy\Enemy.h" />
     <ClInclude Include="objects\Player\Bullet\PlayerBullet.h" />
@@ -165,6 +179,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="objects\Player\Player.h" />
     <ClInclude Include="objects\Skydome\Skydome.h" />
+    <ClInclude Include="scene\scene\TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

@@ -5,6 +5,7 @@
 
 #include <Object3d.h>
 #include <Sprite.h>
+#include <Framework.h>
 
 class Player : public GameObject
 {
