@@ -15,13 +15,25 @@ void Enemy::Initialize()
 
     // 仮置き
     object_->SetScale({ 0.5f,1.0f,0.5f });
+
+    collisionManager_ = CollisionManager::GetInstance();
+
+    objectName_ = "Enemy";
+
+    collider_.SetOwner(this);
+    collider_.SetColliderID(objectName_);
+    collider_.SetShapeData(&aabb_);
+    collider_.SetShape(Shape::AABB);
+    collider_.SetAttribute(collisionManager_->GetNewAttribute(collider_.GetColliderID()));
+    collider_.SetOnCollisionTrigger(std::bind(&Enemy::OnCollision, this));
+    collisionManager_->RegisterCollider(&collider_);
 }
 
 void Enemy::Finalize()
 {
     // 各解放処理
 
-
+    collisionManager_->DeleteCollider(&collider_);
 }
 
 void Enemy::Update()
@@ -50,6 +62,10 @@ void Enemy::Update()
     object_->SetRotate(rotation_);
     object_->SetPosition(position_);
 
+    aabb_.min = position_ - object_->GetScale();
+    aabb_.max = position_ + object_->GetScale();
+    aabb_.max.y += 1.0f;
+    collider_.SetPosition(position_);
 }
 
 void Enemy::Draw()
@@ -63,4 +79,20 @@ void Enemy::Draw2d()
 
 void Enemy::Attack()
 {
+}
+
+void Enemy::OnCollision()
+{
+   /* if (hp_ > 0)
+    {
+        hp_ -= 1;
+    }
+    else
+    {
+        if (isDead_ == false)
+        {
+            isBossDeadMoment_ = true;
+        }
+        isDead_ = true;
+    }*/
 }

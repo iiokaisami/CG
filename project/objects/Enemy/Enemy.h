@@ -2,6 +2,8 @@
 
 #include "../GameObject/GameObject.h"
 #include "../math/MyMath.h"
+#include "../collider/Collider.h"
+#include "../collider/CollisionManager.h"
 
 #include <Object3d.h>
 #include <Sprite.h>
@@ -30,6 +32,10 @@ public:
     // 攻撃
     void Attack();
 
+private: // 衝突判定
+
+    void OnCollision();
+
 public: // セッター
 
     void SetPlayerPosition(Vector3 _playerPosition) { playerPosition_ = _playerPosition; }
@@ -40,6 +46,10 @@ private:
 
     // 3Dオブジェクト
     std::unique_ptr<Object3d> object_ = nullptr;
+
+    CollisionManager* collisionManager_ = nullptr;
+    Collider collider_;
+    AABB aabb_;
 
     // 移動速度
     Vector3 moveVelocity_{};

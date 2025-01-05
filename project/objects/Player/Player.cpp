@@ -2,6 +2,7 @@
 
 #include <ModelManager.h>
 
+#include "../collider/CollisionManager.h"
 #include "Input.h"
 
 void Player::Initialize()
@@ -17,6 +18,19 @@ void Player::Initialize()
 
     // 仮置き
     object_->SetScale({ 0.2f,0.2f,0.2f });
+
+	// 衝突判定
+    collisionManager_ = CollisionManager::GetInstance();
+
+    objectName_ = "Player";
+
+    collider_.SetOwner(this);
+    collider_.SetColliderID(objectName_);
+    collider_.SetShapeData(&aabb_);
+    collider_.SetShape(Shape::AABB);
+    collider_.SetAttribute(collisionManager_->GetNewAttribute(collider_.GetColliderID()));
+    collider_.SetOnCollisionTrigger(std::bind(&Player::OnCollisionTrigger, this, std::placeholders::_1));
+    collisionManager_->RegisterCollider(&collider_);
 }
 
 void Player::Finalize()
@@ -36,6 +50,8 @@ void Player::Finalize()
         }
         return false;
         });
+
+    collisionManager_->DeleteCollider(&collider_);
 }
 
 void Player::Update()
@@ -113,6 +129,10 @@ void Player::Update()
 
     Attack();
 
+    aabb_.min = position_ - object_->GetScale();
+    aabb_.max = position_ + object_->GetScale();
+    collider_.SetPosition(position_);
+
     // 弾更新
     for (auto& bullet : bullets_) {
         bullet->Update();
@@ -156,7 +176,7 @@ void Player::Attack()
             newBullet->SetVelocity(bulletVelocity);
 
             newBullet->RunSetMask();
-           // collider_.SetMask(collisionManager_->GetNewMask(collider_.GetColliderID(), "PlayerBullet"));
+            collider_.SetMask(collisionManager_->GetNewMask(collider_.GetColliderID(), "PlayerBullet"));
 
             // 弾を登録する
             bullets_.push_back(newBullet);
@@ -196,4 +216,17 @@ void Player::CalcCursorMove()
         static_cast<float>(540 - mousePosCurrent.y)
     };
 
+}
+
+void Player::OnCollisionTrigger(const Collider* _other)
+{
+    _other;
+    /*if (_other->GetColliderID() != "BossMoon" && !isHit_ && hp_ > 0)
+    {
+        hp_ -= 1;
+    }
+    if (hp_ <= 0)
+    {
+        isDeadMoment_ = true;
+    }*/
 }

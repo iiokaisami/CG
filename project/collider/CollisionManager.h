@@ -89,7 +89,7 @@ private:
     bool IsCollision(const Sphere* _sphere1, const Sphere* _sphere2);
     bool IsCollision(const OBB* _obb1, const OBB* _obb2);
 
-    bool IsCollision(const OBB& _obb, const Sphere& _sphere);
+   // bool IsCollision(const OBB& _obb, const Sphere& _sphere);
 
     float ProjectOntoAxis(const OBB* _obb, const Vector3& axis);
     bool OverlapOnAxis(const OBB* _obb1, const OBB* _obb2, const Vector3& axis);

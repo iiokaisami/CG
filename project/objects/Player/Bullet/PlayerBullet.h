@@ -5,6 +5,9 @@
 #include <Object3d.h>
 #include <memory>
 
+#include "../collider/Collider.h"
+#include "../collider/CollisionManager.h"
+
 class PlayerBullet : public GameObject
 {
 public:
@@ -55,4 +58,8 @@ private: // メンバ変数
 	//デスグラフ
 	bool isDead_ = false;
 
+	// 衝突判定用
+	CollisionManager* collisionManager_ = nullptr;
+	Collider collider_;
+	AABB aabb_;
 };

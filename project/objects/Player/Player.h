@@ -3,6 +3,8 @@
 #include "../GameObject/GameObject.h"
 #include "./Bullet/PlayerBullet.h"
 
+#include "../Collider/Collider.h"
+
 #include <Object3d.h>
 #include <Sprite.h>
 #include <Framework.h>
@@ -37,6 +39,10 @@ public:
     // マウス視点
     void CalcCursorMove();
 
+private: // 衝突判定
+
+    void OnCollisionTrigger(const Collider* _other);
+
 public: // セッター
 
     void SetCamera(std::shared_ptr<Camera> camera) { camera_ = camera; }
@@ -70,8 +76,13 @@ private:
     bool cursorLock_ = false;
 
     // 発射クールタイム
-    const int                   kShootCoolDownFrame_ = 15;
+    const int kShootCoolDownFrame_ = 15;
     // 弾のクールタイム
-    int                         countCoolDownFrame_ = 0; 
+    int countCoolDownFrame_ = 0; 
+
+    // 当たり判定関係
+    CollisionManager* collisionManager_ = nullptr;
+    Collider collider_;
+    AABB aabb_;
 };
 
