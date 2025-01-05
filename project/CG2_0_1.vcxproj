@@ -104,6 +104,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="collider\CollisionManager.cpp" />
+    <ClCompile Include="collider\Collider.cpp" />
+    <ClCompile Include="GamePlayState\GamePlayState.cpp" />
+    <ClCompile Include="GamePlayState\PlayStateFirst.cpp" />
+    <ClCompile Include="GamePlayState\PlayStateSecond.cpp" />
+    <ClCompile Include="GamePlayState\PlayStateThird.cpp" />
     <ClCompile Include="scene\scene\GameClearScene.cpp" />
     <ClCompile Include="scene\scene\GameOverScene.cpp" />
     <ClCompile Include="scene\base\SceneFactory.cpp" />
@@ -143,6 +149,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="scene\scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="collider\CollisionManager.h" />
+    <ClInclude Include="collider\Collider.h" />
+    <ClInclude Include="GamePlayState\GamePlayState.h" />
+    <ClInclude Include="GamePlayState\PlayStateFirst.h" />
+    <ClInclude Include="GamePlayState\PlayStateSecond.h" />
+    <ClInclude Include="GamePlayState\PlayStateThird.h" />
     <ClInclude Include="scene\scene\GameClearScene.h" />
     <ClInclude Include="scene\scene\GameOverScene.h" />
     <ClInclude Include="scene\base\SceneFactory.h" />
@@ -180,6 +192,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="objects\Player\Player.h" />
     <ClInclude Include="objects\Skydome\Skydome.h" />
     <ClInclude Include="scene\scene\TitleScene.h" />
+    <ClInclude Include="collider\Shape.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

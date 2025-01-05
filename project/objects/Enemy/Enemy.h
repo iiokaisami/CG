@@ -30,9 +30,11 @@ public:
     // 攻撃
     void Attack();
 
-public:
+public: // セッター
 
     void SetPlayerPosition(Vector3 _playerPosition) { playerPosition_ = _playerPosition; }
+
+	void SetPosition(Vector3 _position) { position_ = _position; }
 
 private:
 

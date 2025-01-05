@@ -10,9 +10,6 @@ void Enemy::Initialize()
     object_ = std::make_unique<Object3d>();
     object_->Initialize("cube.obj");
 
-    position_ = { 0.0f,0.0f,10.0f };
-    object_->SetPosition(position_);
-
     moveVelocity_ = { 0.1f,0.1f,0.0f };
     object_->SetRotate(rotation_);
 

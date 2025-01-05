@@ -1,0 +1,7 @@
+// コマンド,Time,Position
+WAIT,10,,
+POSITION,0,0,-10
+WAIT,10,,
+POSITION,5,0,-10
+WAIT,10,,
+POSITION,-5,0,-10
