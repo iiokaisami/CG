@@ -40,25 +40,25 @@ void MyGame::Initialize()
 	//cameraManager = CameraManager::GetInstance();
 
 	// カメラの作成
-	camera1 = std::make_shared<Camera>();
-	camera2 = std::make_shared<Camera>();
+	//camera1 = std::make_shared<Camera>();
+	//camera2 = std::make_shared<Camera>();
 
-	camera1Rotate = camera1->GetRotate();
-	camera1Position = camera1->GetPosition();
-	camera1Position.z = -5.0f;
-	camera2Rotate = camera2->GetRotate();
-	camera2Position = camera2->GetPosition();
-	camera2Position.z = -10.0f;
+	//camera1Rotate = camera1->GetRotate();
+	//camera1Position = camera1->GetPosition();
+	//camera1Position.z = -5.0f;
+	//camera2Rotate = camera2->GetRotate();
+	//camera2Position = camera2->GetPosition();
+	//camera2Position.z = -10.0f;
 
-	// カメラの追加
-	cameraManager.AddCamera(camera1);
-	cameraManager.AddCamera(camera2);
+	//// カメラの追加
+	//cameraManager.AddCamera(camera1);
+	//cameraManager.AddCamera(camera2);
 
-	// アクティブカメラの設定
-	cameraManager.SetActiveCamera(0);
-	activeIndex = cameraManager.GetActiveIndex();
+	//// アクティブカメラの設定
+	//cameraManager.SetActiveCamera(0);
+	//activeIndex = cameraManager.GetActiveIndex();
 
-	Object3dCommon::GetInstance()->SetDefaultCamera(cameraManager.GetActiveCamera());
+	//Object3dCommon::GetInstance()->SetDefaultCamera(cameraManager.GetActiveCamera());
 
 
 	ModelManager::GetInstance()->LoadModel("plane.obj");
@@ -145,8 +145,8 @@ void MyGame::Finalize()
 	}*/
 
 	// カメラ解放
-	cameraManager.RemoveCamera(0);
-	cameraManager.RemoveCamera(1);
+	/*cameraManager.RemoveCamera(0);
+	cameraManager.RemoveCamera(1);*/
 
 
 
@@ -207,51 +207,51 @@ void MyGame::Update()
 	}
 
 
-	if (ImGui::CollapsingHeader("cameraManager"))
+	/*if (ImGui::CollapsingHeader("cameraManager"))
 	{
 		ImGui::Text("activeIndex:(%d)", activeIndex);
 		ImGui::SliderFloat3("rotate1", &camera1Rotate.x, -5.0f, 5.0f);
 		ImGui::SliderFloat3("position1", &camera1Position.x, -50.0f, 50.0f);
 		ImGui::SliderFloat3("rotate2", &camera2Rotate.x, -5.0f, 5.0f);
 		ImGui::SliderFloat3("position2", &camera2Position.x, -50.0f, 50.0f);
-	}
+	}*/
 
 
 #endif // _DEBUG
 
 
-	// カメラマネージャーのテスト
-	cameraManager.UpdateAll();
+	//// カメラマネージャーのテスト
+	//cameraManager.UpdateAll();
 
-	// ENTER押してカメラ切り替え
-	if (input->TriggerKey(DIK_RETURN))
-	{
-		if (cameraManager.GetActiveIndex() == 0)
-		{
-			cameraManager.SetActiveCamera(1);
+	//// ENTER押してカメラ切り替え
+	//if (input->TriggerKey(DIK_RETURN))
+	//{
+	//	if (cameraManager.GetActiveIndex() == 0)
+	//	{
+	//		cameraManager.SetActiveCamera(1);
 
-		}
-		else if (cameraManager.GetActiveIndex() == 1)
-		{
-			cameraManager.SetActiveCamera(0);
+	//	}
+	//	else if (cameraManager.GetActiveIndex() == 1)
+	//	{
+	//		cameraManager.SetActiveCamera(0);
 
-		}
-	}
-	// 稼働中のカメラインデックス
-	activeIndex = cameraManager.GetActiveIndex();
+	//	}
+	//}
+	//// 稼働中のカメラインデックス
+	//activeIndex = cameraManager.GetActiveIndex();
 
-	camera1->SetRotate(camera1Rotate);
-	camera1->SetPosition(camera1Position);
-	camera2->SetRotate(camera2Rotate);
-	camera2->SetPosition(camera2Position);
+	//camera1->SetRotate(camera1Rotate);
+	//camera1->SetPosition(camera1Position);
+	//camera2->SetRotate(camera2Rotate);
+	//camera2->SetPosition(camera2Position);
 
-	// アクティブカメラの情報を取得
-	auto activeCamera = cameraManager.GetActiveCamera();
-	if (activeCamera)
-	{
-		auto viewMatrix = activeCamera->GetViewMatrix();
-		// viewMatrix を使った処理
-	}
+	//// アクティブカメラの情報を取得
+	//auto activeCamera = cameraManager.GetActiveCamera();
+	//if (activeCamera)
+	//{
+	//	auto viewMatrix = activeCamera->GetViewMatrix();
+	//	// viewMatrix を使った処理
+	//}
 
 
 

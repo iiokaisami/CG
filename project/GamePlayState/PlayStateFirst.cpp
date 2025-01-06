@@ -21,7 +21,7 @@ void PlayStateFirst::Update()
 	}
 
 	// ステート切り替え
-	if (Input::GetInstance()->TriggerKey(DIK_L))
+	if (/*Input::GetInstance()->TriggerKey(DIK_L) or */pPlayScene_->GetIsEnemyPhaseChange())
 	{
 		// ステート遷移
 		pPlayScene_->ChangeState(std::make_unique<PlayStateSecond>(pPlayScene_));

@@ -25,8 +25,11 @@ void Enemy::Initialize()
     collider_.SetShapeData(&aabb_);
     collider_.SetShape(Shape::AABB);
     collider_.SetAttribute(collisionManager_->GetNewAttribute(collider_.GetColliderID()));
-    collider_.SetOnCollisionTrigger(std::bind(&Enemy::OnCollision, this));
+    collider_.SetOnCollisionTrigger(std::bind(&Enemy::OnCollision, this, std::placeholders::_1));
     collisionManager_->RegisterCollider(&collider_);
+
+    hp_ = 15;
+	isDead_ = false;
 }
 
 void Enemy::Finalize()
@@ -58,6 +61,18 @@ void Enemy::Update()
     moveVelocity_ /= 20.0f;
     position_ += moveVelocity_;
 
+	// デスモーション
+    if (isDeadMotion_)
+    {
+        rotation_ = Lerp(rotation_, deadRotation_, 0.1f);
+    }
+
+    //デス
+    if (rotation_.z >= 1.4f)
+    {
+        isDead_ = true;
+    }
+
     // モデルに座標をセット
     object_->SetRotate(rotation_);
     object_->SetPosition(position_);
@@ -77,22 +92,50 @@ void Enemy::Draw2d()
 {
 }
 
+void Enemy::ImGuiDraw()
+{
+	ImGui::Begin("Enemy");
+	ImGui::SliderFloat3("rotate", &rotation_.x, -10.0f, 10.0f);
+	ImGui::End();
+}
+
 void Enemy::Attack()
 {
 }
 
-void Enemy::OnCollision()
+void Enemy::EnemyCollision(Vector3 _position)
 {
-   /* if (hp_ > 0)
+	// 自分の位置から相手の位置のベクトル
+	Vector3 toEnemy = _position - position_;
+	
+    if (toEnemy.x > toEnemy.z)
     {
-        hp_ -= 1;
+		moveVelocity_.x = -toEnemy.x / 5;
+        position_ += moveVelocity_;
+		object_->SetPosition(position_);
     }
     else
     {
-        if (isDead_ == false)
-        {
-            isBossDeadMoment_ = true;
-        }
-        isDead_ = true;
-    }*/
+		moveVelocity_.z = -toEnemy.z / 5;
+        position_ += moveVelocity_;
+		object_->SetPosition(position_);
+    }
+
+	object_->SetPosition(position_);
+}
+
+void Enemy::OnCollision(const Collider* _other)
+{
+    if (_other->GetColliderID() == "Enemy")
+    {
+        EnemyCollision(_other->GetPosition());
+    }
+    else if (hp_ > 0 && _other->GetColliderID() != "Player")
+    {
+        hp_ -= 1;
+    }
+	else if (hp_ <= 0)
+    {  
+		isDeadMotion_ = true;
+    }
 }

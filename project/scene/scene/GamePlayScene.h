@@ -10,6 +10,7 @@
 #include "../objects/Player/Player.h"
 #include "../objects/Enemy/Enemy.h"
 #include "../objects/Skydome/Skydome.h"
+#include "../objects/Ground/Ground.h"
 
 class GamePlayScene : public BaseScene
 {
@@ -54,9 +55,18 @@ public: // ゲッター
 	// 敵
 	std::list<Enemy*>& GetEnemy() { return pEnemy_; }
 
+	// 敵フェーズ切り替え
+	bool GetIsEnemyPhaseChange() { return isEnemyPhaseChange_; }
+
+public: // セッター
+
+	// クリアフラグ
+	void SetClearFlag(bool _isClear) { isClear_ = _isClear; }
+
 private:
 
 	CameraManager& cameraManager = CameraManager::GetInstance();
+	std::shared_ptr<Camera> camera_ = std::make_shared<Camera>();
 	CollisionManager* collisionManager_ = nullptr; // 衝突判定マネージャ
 
 	// 2Dスプライト
@@ -69,6 +79,7 @@ private:
 	std::unique_ptr<Player> pPlayer_ = nullptr;
 	//std::unique_ptr<Enemy> pEnemy_;
 	std::unique_ptr<Skydome> pSkydome_ = nullptr;
+	std::unique_ptr<Ground> pGround_ = nullptr;
 	std::list<Enemy*> pEnemy_;
 
 	// 敵の位置
@@ -77,8 +88,17 @@ private:
 	bool isEnemyWaiting_ = true;
 	// 敵待機タイマー
 	int32_t enemyWaitingTimer_ = 9;
+	// 敵の数
+	int32_t enemyCount_ = 0;
+	// 敵フェーズ切り替え
+	bool isEnemyPhaseChange_ = false;
+	// 敵フェーズ切り替えインターバル
+	int32_t enemyPhaseChangeInterval_ = 120;
 
 	// ステート
 	std::unique_ptr<GamePlayState> pState_ = nullptr;
+
+	bool isClear_ = false;
+
 };
 

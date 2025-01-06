@@ -1,5 +1,11 @@
 #pragma once
 
+#include <d3d12.h>
+#include <numbers>
+#include <string>
+#include <vector>
+#include <wrl.h>
+
 #include "Camera.h"
 #include "MyMath.h"
 #include "TextureManager.h"

@@ -18,4 +18,10 @@ void PlayStateThird::Update()
 		enemy->SetPlayerPosition(pPlayScene_->GetPlayerPos());
 		enemy->Update();
 	}
+
+	// ステート切り替え
+	if (pPlayScene_->GetIsEnemyPhaseChange())
+	{
+		pPlayScene_->SetClearFlag(true);
+	}
 }

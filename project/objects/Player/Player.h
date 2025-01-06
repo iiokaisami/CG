@@ -30,6 +30,8 @@ public:
 
     void Draw2d();
 
+	void ImGuiDraw();
+
     // 攻撃
     void Attack();
 
@@ -51,6 +53,8 @@ public: // ゲッター
 
     Vector3 GetPosition() { return position_; }
 
+	bool IsDead() const { return isDead_; }
+
 private:
 
     std::shared_ptr<Camera> camera_ = nullptr;
@@ -63,7 +67,7 @@ private:
 
     // 移動速度
     Vector3 moveVelocity_ = {};
-    float moveSpeed_ = 0.05f;
+    float moveSpeed_ = 0.08f;
 
     // 追尾カメラ
     Vector3 cameraRotate_ = { 0.3f, 0.0f, 0.0f };
@@ -75,6 +79,8 @@ private:
     bool cursorVisible_ = true;
     bool cursorLock_ = false;
 
+	Vector2 rotateSpeed_ = { 0.015f, 0.015f };
+
     // 発射クールタイム
     const int kShootCoolDownFrame_ = 15;
     // 弾のクールタイム
@@ -84,5 +90,10 @@ private:
     CollisionManager* collisionManager_ = nullptr;
     Collider collider_;
     AABB aabb_;
+
+	
+	bool isHit_ = false;
+    uint32_t hitInterval_ = 30;
+	bool isDead_ = false;
 };
 

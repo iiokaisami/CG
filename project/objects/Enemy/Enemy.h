@@ -29,12 +29,21 @@ public:
 
     void Draw2d();
 
+	void ImGuiDraw();
+
     // 攻撃
     void Attack();
 
+	// 敵同士が衝突したときの処理
+	void EnemyCollision(Vector3 _position);
+
 private: // 衝突判定
 
-    void OnCollision();
+    void OnCollision(const Collider* _other);
+
+public: // ゲッター
+    
+	bool IsDead() const { return isDead_; }
 
 public: // セッター
 
@@ -55,7 +64,11 @@ private:
     Vector3 moveVelocity_{};
     float moveSpeed_ = 0.05f;
     
+	// プレイヤーの位置
     Vector3 playerPosition_{};
-
+	
+	bool isDead_ = false;
+	bool isDeadMotion_ = false;
+	Vector3 deadRotation_ = { 0.0f,0.0f,1.5f };
 };
 

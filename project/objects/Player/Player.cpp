@@ -4,6 +4,7 @@
 
 #include "../collider/CollisionManager.h"
 #include "Input.h"
+using namespace std;
 
 void Player::Initialize()
 {
@@ -13,7 +14,7 @@ void Player::Initialize()
     object_ = std::make_unique<Object3d>();
     object_->Initialize("plane.obj");
 
-    position_ = { 0.0f,0.0f,0.0f };
+    position_ = { 0.0f,0.5f,0.0f };
     object_->SetPosition(position_);
 
     // 仮置き
@@ -31,6 +32,9 @@ void Player::Initialize()
     collider_.SetAttribute(collisionManager_->GetNewAttribute(collider_.GetColliderID()));
     collider_.SetOnCollisionTrigger(std::bind(&Player::OnCollisionTrigger, this, std::placeholders::_1));
     collisionManager_->RegisterCollider(&collider_);
+
+    hp_ = 5;
+    isDead_ = false;
 }
 
 void Player::Finalize()
@@ -101,6 +105,24 @@ void Player::Update()
 
     position_ += moveVelocity_;
 
+    // 移動制限
+    if (position_.x <= 0)
+    {
+        position_.x = max(position_.x, -100.0f);
+    }
+    else if (position_.x >= 0)
+    {
+        position_.x = min(position_.x, 100.0f);
+    }
+    if (position_.z <= 0)
+    {
+        position_.z = max(position_.z, -100.0f);
+    }
+    else if (position_.z >= 0)
+    {
+        position_.z = min(position_.z, 100.0f);
+    }
+
     // モデルに座標をセット
     object_->SetPosition(position_);
     object_->SetRotate(rotation_);
@@ -109,25 +131,33 @@ void Player::Update()
     // マウス移動
     //rotation_.x -= mousePosDiff_.y * 0.001f;
     //rotation_.y -= mousePosDiff_.x * 0.001f;
-    //if (rotation_.x > 1.57f) rotation_.x = 1.57f;
-    //if (rotation_.x < -1.57f) rotation_.x = -1.57f;
+    if (rotation_.x > 1.57f) rotation_.x = 1.57f;
+    if (rotation_.x < -1.57f) rotation_.x = -1.57f;
 
-    CalcCursorMove();
+    
     if (Input::GetInstance()->PushKey(DIK_RIGHT))
     {
-        rotation_.y -= mousePosDiff_.x * 0.00005f;
+        //rotation_.y -= mousePosDiff_.x * 0.00005f;
+		rotation_.y += rotateSpeed_.y;
     }
     if (Input::GetInstance()->PushKey(DIK_LEFT))
     {
-        rotation_.y += mousePosDiff_.x * 0.00005f;
+       //rotation_.y += mousePosDiff_.x * 0.00005f;
+		rotation_.y -= rotateSpeed_.y;
     }
 
     CameraFollow();
     camera_->Update();
 
-    CalcCursorMove();
+    //CalcCursorMove();
+
 
     Attack();
+
+	if (hitInterval_ > 0)
+	{
+		hitInterval_--;
+	}
 
     aabb_.min = position_ - object_->GetScale();
     aabb_.max = position_ + object_->GetScale();
@@ -153,6 +183,15 @@ void Player::Draw()
 
 void Player::Draw2d()
 {
+}
+
+void Player::ImGuiDraw()
+{
+	ImGui::Begin("Player");
+	
+    ImGui::SliderFloat3("pos", &position_.x, -100.0f, 100.0f);
+
+	ImGui::End();
 }
 
 void Player::Attack()
@@ -221,12 +260,13 @@ void Player::CalcCursorMove()
 void Player::OnCollisionTrigger(const Collider* _other)
 {
     _other;
-    /*if (_other->GetColliderID() != "BossMoon" && !isHit_ && hp_ > 0)
+    if (/*_other->GetColliderID() != "BossMoon" && !isHit_ &&*/ hp_ > 0 && hitInterval_ == 0)
     {
         hp_ -= 1;
+		hitInterval_ = 30;
     }
     if (hp_ <= 0)
     {
-        isDeadMoment_ = true;
-    }*/
+        isDead_ = true;
+    }
 }

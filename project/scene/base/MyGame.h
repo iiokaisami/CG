@@ -26,14 +26,14 @@ public:
 private:
 
 
-    CameraManager& cameraManager = CameraManager::GetInstance();
+   /* CameraManager& cameraManager = CameraManager::GetInstance();
     std::shared_ptr<Camera> camera1 = std::make_shared<Camera>();
     std::shared_ptr<Camera> camera2 = std::make_shared<Camera>();
 	uint32_t activeIndex = 0;
 	Vector3 camera1Rotate{};
 	Vector3 camera1Position{};
 	Vector3 camera2Rotate{};
-	Vector3 camera2Position{};
+	Vector3 camera2Position{};*/
 
 	
 

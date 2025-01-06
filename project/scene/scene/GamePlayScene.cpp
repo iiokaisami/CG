@@ -9,6 +9,13 @@ void GamePlayScene::Initialize()
 	collisionManager_ = CollisionManager::GetInstance();
 	collisionManager_->Initialize();
 
+	camera_ = std::make_shared<Camera>();
+	camera_->SetRotate({ 0.3f,0.0f,0.0f });
+	camera_->SetPosition({ 0.0f,4.0f,-10.0f });
+	Object3dCommon::GetInstance()->SetDefaultCamera(camera_);
+	cameraManager.AddCamera(camera_);
+	cameraManager.SetActiveCamera(0);
+
 	for (uint32_t i = 0; i < 1; ++i)
 	{
 		Sprite* sprite = new Sprite();
@@ -38,7 +45,11 @@ void GamePlayScene::Initialize()
 	pSkydome_ = std::make_unique<Skydome>();
 	pSkydome_->Initialize();
 
+	// 床
+	pGround_ = std::make_unique<Ground>();
+	pGround_->Initialize();
 
+	enemyPhaseChangeInterval_ = 120;
 }
 
 void GamePlayScene::Finalize()
@@ -53,7 +64,12 @@ void GamePlayScene::Finalize()
 	{
 		enemy->Finalize();
 	}
+
 	pSkydome_->Finalize();
+
+	pGround_->Finalize();
+
+	cameraManager.RemoveCamera(0);
 }
 
 void GamePlayScene::Update()
@@ -74,19 +90,52 @@ void GamePlayScene::Update()
 	
 	pSkydome_->Update();
 
-	//pSkydome_->SetCamera(cameraManager.GetActiveCamera());
+	pGround_->Update();
+
+#ifdef _DEBUG
+
+	pPlayer_->ImGuiDraw();
+	for (auto& enemy : pEnemy_)
+	{
+		enemy->ImGuiDraw();
+	}
+
+#endif // _DEBUG
+
 
 	// 当たり判定チェック
 	collisionManager_->CheckAllCollision();
 
+	// デスフラグの立った敵を削除
+	pEnemy_.remove_if([this](Enemy* enemy) {
+		if (enemy->IsDead()) {
+			enemy->Finalize();
+			delete enemy;
+			enemyCount_--;
+			return true;
+		}
+		return false;
+		});
 
-	if (Input::GetInstance()->TriggerKey(DIK_P))
+	if (enemyPhaseChangeInterval_ > 0)
+	{
+		isEnemyPhaseChange_ = false;
+		enemyPhaseChangeInterval_--;
+	}
+	else if (enemyCount_ <= 0)
+	{
+		// ステート遷移
+		isEnemyPhaseChange_ = true;
+		enemyPhaseChangeInterval_ = 120;
+	}
+
+	if (/*Input::GetInstance()->TriggerKey(DIK_P) or*/ isClear_)
 	{
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMECLEAR");
 	}
 
-	if (Input::GetInstance()->TriggerKey(DIK_O))
+	if (/*Input::GetInstance()->TriggerKey(DIK_O) or*/ pPlayer_->IsDead() )
 	{
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
@@ -109,6 +158,8 @@ void GamePlayScene::Draw()
 	
 	// 天球描画
 	pSkydome_->Draw();
+	// 床描画
+	pGround_->Draw();
 	// プレーヤー描画
 	pPlayer_->Draw();
 	// 敵描画
@@ -122,12 +173,15 @@ void GamePlayScene::EnemyInit()
 {
 	Enemy* newEnemy = new Enemy();
 
-	newEnemy->Initialize();
 	newEnemy->SetPosition(enemyPosition_);
+	newEnemy->Initialize();
 	newEnemy->SetPlayerPosition(pPlayer_->GetPosition());
 
 	// 敵を登録する
 	pEnemy_.push_back(newEnemy);
+
+	// 敵出現カウント
+	enemyCount_++;
 }
 
 void GamePlayScene::LoadEnemyPopData1()
