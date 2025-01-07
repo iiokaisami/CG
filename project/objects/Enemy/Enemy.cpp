@@ -31,7 +31,7 @@ void Enemy::Initialize()
     collider_.SetOnCollisionTrigger(std::bind(&Enemy::OnCollision, this, std::placeholders::_1));
     collisionManager_->RegisterCollider(&collider_);
 
-    hp_ = 15;
+    hp_ = 10;
 	isDead_ = false;
 
 	// hpBar
@@ -109,7 +109,7 @@ void Enemy::Update()
     object_->SetScale(scale_);
 
 	// hpBarの位置をセット
-	hpBar_->SetRatio((float)(hp_ + 0.1f) / 15.0f);
+	hpBar_->SetRatio((float)(hp_ + 0.1f) / 10.0f);
     hpBar_->SetPosition({ position_.x,position_.y + 1.5f,position_.z });
     hpBar_->SetRotation(rotation_);
 
