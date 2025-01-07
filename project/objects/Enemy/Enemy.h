@@ -2,8 +2,8 @@
 
 #include "../GameObject/GameObject.h"
 #include "../math/MyMath.h"
-#include "../collider/Collider.h"
-#include "../collider/CollisionManager.h"
+#include "../../collider/Collider.h"
+#include "../../collider/CollisionManager.h"
 #include "../HPBar/HPBar.h"
 
 #include <Object3d.h>

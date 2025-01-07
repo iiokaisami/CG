@@ -5,8 +5,8 @@
 #include <Object3d.h>
 #include <memory>
 
-#include "../collider/Collider.h"
-#include "../collider/CollisionManager.h"
+#include "../../collider/Collider.h"
+#include "../../collider/CollisionManager.h"
 
 class PlayerBullet : public GameObject
 {

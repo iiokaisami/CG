@@ -3,7 +3,7 @@
 #include <Framework.h>
 #include <vector>
 
-#include "../scene/base/BaseScene.h"
+#include "../../scene/base/BaseScene.h"
 
 class GameOverScene : public BaseScene
 {

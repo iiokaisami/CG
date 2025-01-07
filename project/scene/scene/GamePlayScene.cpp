@@ -1,8 +1,8 @@
 #include "GamePlayScene.h"
 
-#include "../GamePlayState/PlayStateFirst.h"
-#include "../GamePlayState/PlayStateSecond.h"
-#include "../GamePlayState/PlayStateThird.h"
+#include "../../GamePlayState/PlayStateFirst.h"
+#include "../../GamePlayState/PlayStateSecond.h"
+#include "../../GamePlayState/PlayStateThird.h"
 
 void GamePlayScene::Initialize()
 {
@@ -20,7 +20,7 @@ void GamePlayScene::Initialize()
 	{
 		Sprite* sprite = new Sprite();
 		if (i == 0 || i == 3) {
-			sprite->Initialize("uvChecker.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+			sprite->Initialize("Play/gameUI.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
 		}
 		else {
 			sprite->Initialize("monsterBall.png", { 10,10 }, { 1,1,1,1 }, { 0,0 });
@@ -28,8 +28,7 @@ void GamePlayScene::Initialize()
 		sprites.push_back(sprite);
 
 		Vector2 size = sprite->GetSize();
-		size.x = 370.0f;
-		size.y = 370.0f;
+		
 		sprite->SetSize(size);
 	}
 
@@ -77,11 +76,7 @@ void GamePlayScene::Update()
 	for (Sprite* sprite : sprites)
 	{
 		sprite->Update();
-		//sprite->SetPosition(position);
-		//sprite->SetFlipX(isFilipX);
-		//sprite->SetFlipY(isFilipY);
-		//sprite->SetTextureLeftTop(textureLeftTop);
-		//sprite->SetTextureSize(textureSize);
+		
 	}
 
 	pPlayer_->Update();
@@ -144,17 +139,9 @@ void GamePlayScene::Update()
 
 void GamePlayScene::Draw()
 {
-	// 描画前処理(Sprite)
-	SpriteCommon::GetInstance()->CommonDrawSetting();
 
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
-
-	//for (Sprite* sprite : sprites)
-	//{
-	//	//sprite->Draw(textureSrvHandleGPU);
-	//}
-	 
 	
 	// 天球描画
 	pSkydome_->Draw();
@@ -168,6 +155,14 @@ void GamePlayScene::Draw()
 		enemy->Draw();
 	}
 
+	// 描画前処理(Sprite)
+	SpriteCommon::GetInstance()->CommonDrawSetting();
+
+
+	for (Sprite* sprite : sprites)
+	{
+		sprite->Draw();
+	}
 }
 
 void GamePlayScene::EnemyInit()

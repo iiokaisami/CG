@@ -2,9 +2,9 @@
 
 #include "../base/Framework.h"
 
-#include "../scene/base/BaseScene.h"
-#include "../scene/scene/GamePlayScene.h"
-#include "../scene/scene/TitleScene.h"
+#include "../../scene/base/BaseScene.h"
+#include "../../scene/scene/GamePlayScene.h"
+#include "../../scene/scene/TitleScene.h"
 
 
 class MyGame : public Framework

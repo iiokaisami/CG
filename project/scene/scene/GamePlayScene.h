@@ -2,15 +2,15 @@
 
 #include <Framework.h>
 
-#include "../scene/base/BaseScene.h"
-#include "../GamePlayState/GamePlayState.h"
+#include "../../scene/base/BaseScene.h"
+#include "../../GamePlayState/GamePlayState.h"
 
-#include "../collider/CollisionManager.h"
+#include "../../collider/CollisionManager.h"
 
-#include "../objects/Player/Player.h"
-#include "../objects/Enemy/Enemy.h"
-#include "../objects/Skydome/Skydome.h"
-#include "../objects/Ground/Ground.h"
+#include "../../objects/Player/Player.h"
+#include "../../objects/Enemy/Enemy.h"
+#include "../../objects/Skydome/Skydome.h"
+#include "../../objects/Ground/Ground.h"
 
 class GamePlayScene : public BaseScene
 {

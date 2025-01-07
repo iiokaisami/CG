@@ -24,8 +24,8 @@
 #include "SrvManager.h"
 #include "CameraManager.h"
 
-#include "../scene/base/SceneManager.h"
-#include "../scene/base/SceneFactory.h"                                                                               
+#include "../../scene/base/SceneManager.h"
+#include "../../scene/base/SceneFactory.h"                                                                               
 
 #ifdef _DEBUG
 

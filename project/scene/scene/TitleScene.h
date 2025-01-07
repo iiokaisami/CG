@@ -5,7 +5,7 @@
 #include <MyMath.h>
 #include <Object3d.h>
 
-#include "../scene/base/BaseScene.h"
+#include "../../scene/base/BaseScene.h"
 
 class TitleScene : public BaseScene
 {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../scene/base/BaseScene.h"
-#include "../scene/base/AbstractSceneFactory.h"
+#include "../../scene/base/BaseScene.h"
+#include "../../scene/base/AbstractSceneFactory.h"
 
 class SceneManager
 {

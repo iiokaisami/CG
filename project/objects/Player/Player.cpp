@@ -2,7 +2,7 @@
 
 #include <ModelManager.h>
 
-#include "../collider/CollisionManager.h"
+#include "../../collider/CollisionManager.h"
 #include "Input.h"
 using namespace std;
 
@@ -10,6 +10,7 @@ void Player::Initialize()
 {
 	// --- 3Dオブジェクト ---
 	ModelManager::GetInstance()->LoadModel("player/Player.obj");
+
 
     object_ = std::make_unique<Object3d>();
     object_->Initialize("Player.obj");

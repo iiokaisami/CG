@@ -4,7 +4,7 @@
 #include "./Bullet/PlayerBullet.h"
 #include "../HPBar/HPBar.h"
 
-#include "../Collider/Collider.h"
+#include "../../Collider/Collider.h"
 
 #include <Object3d.h>
 #include <Sprite.h>
