@@ -9,10 +9,10 @@ using namespace std;
 void Player::Initialize()
 {
 	// --- 3Dオブジェクト ---
-	ModelManager::GetInstance()->LoadModel("plane.obj");
+	ModelManager::GetInstance()->LoadModel("player/Player.obj");
 
     object_ = std::make_unique<Object3d>();
-    object_->Initialize("plane.obj");
+    object_->Initialize("Player.obj");
 
     position_ = { 0.0f,0.5f,0.0f };
     object_->SetPosition(position_);
@@ -35,6 +35,11 @@ void Player::Initialize()
 
     hp_ = 5;
     isDead_ = false;
+
+	hpBar_ = std::make_unique<HPBar>();
+    hpBar_->LoadBar("HPBar.obj", { position_.x,position_.y  + 0.3f ,position_.z });
+	hpBar_->Initialize();
+    hpBar_->SetScale({ 0.3f,0.05f,0.05f });
 }
 
 void Player::Finalize()
@@ -60,7 +65,7 @@ void Player::Finalize()
 
 void Player::Update()
 {
-
+	hpBar_->Update();
     object_->Update();
 
     //デスフラグの立った弾を削除
@@ -108,25 +113,29 @@ void Player::Update()
     // 移動制限
     if (position_.x <= 0)
     {
-        position_.x = max(position_.x, -100.0f);
+        position_.x = max(position_.x, -290.0f);
     }
     else if (position_.x >= 0)
     {
-        position_.x = min(position_.x, 100.0f);
+        position_.x = min(position_.x, 290.0f);
     }
     if (position_.z <= 0)
     {
-        position_.z = max(position_.z, -100.0f);
+        position_.z = max(position_.z, -290.0f);
     }
     else if (position_.z >= 0)
     {
-        position_.z = min(position_.z, 100.0f);
+        position_.z = min(position_.z, 290.0f);
     }
 
     // モデルに座標をセット
     object_->SetPosition(position_);
     object_->SetRotate(rotation_);
 
+	// hpBarの位置をセット
+	hpBar_->SetRatio((hp_ + 0.1f) / 5.0f);
+    hpBar_->SetPosition({ position_.x,position_.y + 0.8f ,position_.z });
+    hpBar_->SetRotation(rotation_);
 
     // マウス移動
     //rotation_.x -= mousePosDiff_.y * 0.001f;
@@ -172,13 +181,18 @@ void Player::Update()
 
 void Player::Draw()
 {
-    object_->Draw();
+    if (!((hitInterval_ <= 29 && hitInterval_ >= 20) or ( hitInterval_ <= 9 && hitInterval_ >= 1 )))
+    {
+        object_->Draw();
+    }
 
     // 弾描画
     for (auto& bullet : bullets_)
     {
         bullet->Draw();
     }
+
+	hpBar_->Draw();
 }
 
 void Player::Draw2d()
@@ -189,7 +203,7 @@ void Player::ImGuiDraw()
 {
 	ImGui::Begin("Player");
 	
-    ImGui::SliderFloat3("pos", &position_.x, -100.0f, 100.0f);
+    ImGui::SliderFloat3("pos", &position_.x, -290.0f, 290.0f);
 
 	ImGui::End();
 }

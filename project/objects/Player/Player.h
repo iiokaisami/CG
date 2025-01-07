@@ -2,6 +2,7 @@
 
 #include "../GameObject/GameObject.h"
 #include "./Bullet/PlayerBullet.h"
+#include "../HPBar/HPBar.h"
 
 #include "../Collider/Collider.h"
 
@@ -62,6 +63,8 @@ private:
     // 3Dオブジェクト
     std::unique_ptr<Object3d> object_ = nullptr;
 
+	std::unique_ptr<HPBar> hpBar_ = nullptr;
+
     // 弾
     std::list<PlayerBullet*>    bullets_ = {};
 
@@ -93,7 +96,7 @@ private:
 
 	
 	bool isHit_ = false;
-    uint32_t hitInterval_ = 30;
+    uint32_t hitInterval_ = 0;
 	bool isDead_ = false;
 };
 

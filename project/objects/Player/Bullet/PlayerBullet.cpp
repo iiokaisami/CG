@@ -6,10 +6,10 @@ void PlayerBullet::Initialize()
 {
 
 	// --- 3Dオブジェクト ---
-	ModelManager::GetInstance()->LoadModel("cube.obj");
+	ModelManager::GetInstance()->LoadModel("player/bullet/Bullet.obj");
 
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("cube.obj");
+	object_->Initialize("Bullet.obj");
 
 
 	// 仮置き
@@ -42,7 +42,9 @@ void PlayerBullet::Update()
 	object_->Update();
 
 	object_->SetPosition(position_);
+	object_->SetRotate(rotation_);
 
+	rotation_.y += 1.0f;
 	position_ += velocity_;
 
 	aabb_.min = position_ - object_->GetScale();

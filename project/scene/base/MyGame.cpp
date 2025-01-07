@@ -188,23 +188,23 @@ void MyGame::Update()
 
 
 			// 次のウィンドウのサイズを設定 (幅 400, 高さ 300)
-	ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
-	// ウィンドウの開始
-	if (ImGui::Begin("My Window")) {
-		// ウィンドウの内容
-		ImGui::SliderFloat2("position", &position.x, -500.0f, 1000.0f);
-	}
-	// ウィンドウの終了
-	ImGui::End();
+	//ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
+	//// ウィンドウの開始
+	//if (ImGui::Begin("My Window")) {
+	//	// ウィンドウの内容
+	//	ImGui::SliderFloat2("position", &position.x, -500.0f, 1000.0f);
+	//}
+	//// ウィンドウの終了
+	//ImGui::End();
 
 
-	if (ImGui::CollapsingHeader("sprite"))
-	{
-		ImGui::Checkbox("FilipX", &isFilipX);
-		ImGui::Checkbox("FilipY", &isFilipY);
-		ImGui::SliderFloat2("textureLeftTop", &textureLeftTop.x, 0.0f, 1000.0f);
-		ImGui::SliderFloat2("textureSize", &textureSize.x, 0.0f, 1500.0f);
-	}
+	//if (ImGui::CollapsingHeader("sprite"))
+	//{
+	//	ImGui::Checkbox("FilipX", &isFilipX);
+	//	ImGui::Checkbox("FilipY", &isFilipY);
+	//	ImGui::SliderFloat2("textureLeftTop", &textureLeftTop.x, 0.0f, 1000.0f);
+	//	ImGui::SliderFloat2("textureSize", &textureSize.x, 0.0f, 1500.0f);
+	//}
 
 
 	/*if (ImGui::CollapsingHeader("cameraManager"))

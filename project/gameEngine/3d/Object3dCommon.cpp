@@ -114,7 +114,7 @@ void Object3dCommon::CreateRootSignature()
 
 	// RasterizerStateの設定
 	// 裏面(時計回り)の表示の有無 (NONE / BACK)
-	rasterizerDesc_.CullMode = D3D12_CULL_MODE_NONE;            //かみじengineの.hみて
+	rasterizerDesc_.CullMode = D3D12_CULL_MODE_NONE;
 	// 塗りつぶすかどうか
 	rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;
 
@@ -129,6 +129,7 @@ void Object3dCommon::CreateRootSignature()
 	depthStencilDesc_.DepthEnable = true;
 	depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+	depthStencilDesc_.StencilEnable = FALSE;
 }
 
 void Object3dCommon::CreateGraphicsPipeline()

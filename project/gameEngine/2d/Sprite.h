@@ -50,6 +50,8 @@ public:
 
 	void SetColor(const Vector4& color) { materialData_->color = color; }
 
+	void SetColorChange(const Vector4& color);
+
 	void SetSize(const Vector2& size) { size_ = size; }
 
 	void SetAnchorPoint(const Vector2& anchorPoint) { anchorPoint_ = anchorPoint; }
@@ -153,6 +155,6 @@ private:
 	// テクスチャ切り出しサイズ
 	Vector2 textureSize_ = { 100.0f,100.0f };
 
-	
+	Vector4 color_{};
 };
 

@@ -72,6 +72,8 @@ void Sprite::Initialize(std::string textureFilePath,
 	SetPosition(position);
 	SetColor(color);
 	SetAnchorPoint(anchorpoint);
+
+	color_ = color;
 }
 
 void Sprite::Update()
@@ -93,6 +95,12 @@ void Sprite::Update()
 	{
 		top = -top;
 		bottom = -bottom;
+	}
+
+	// 色と透明度を更新
+	if (materialData_ != nullptr)
+	{
+		materialData_->color = color_;
 	}
 
 	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath_);
@@ -161,6 +169,15 @@ void Sprite::Draw()
 	spriteCommon_->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 
 
+}
+
+void Sprite::SetColorChange(const Vector4& color)
+{
+	color_ = color;
+	if (materialData_ != nullptr)
+	{
+		materialData_->color = color_;
+	}
 }
 
 void Sprite::AdjustTextureSize()

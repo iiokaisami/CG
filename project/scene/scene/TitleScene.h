@@ -2,6 +2,8 @@
 
 #include <Framework.h>
 #include <vector>
+#include <MyMath.h>
+#include <Object3d.h>
 
 #include "../scene/base/BaseScene.h"
 
@@ -23,8 +25,23 @@ public:
 
 private:
 
+	CameraManager& cameraManager = CameraManager::GetInstance();
+	std::shared_ptr<Camera> camera_ = std::make_shared<Camera>();
+
 	// 2Dスプライト
 	std::vector<Sprite*>sprites = {};
+
+	// 3Dオブジェクト
+	//std::vector<Object3d*> object3ds = {};
+
+	// 透明チェック
+	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
+
+	Vector3 oPosition_ = { 0.0f,2.0f,0.0f };
+	Vector3 moveOPosition_ = { 0.0f,3.0f,0.0f };
+
+	Vector3 oPosition2_ = { 0.0f,2.0f,0.0f };
+	Vector3 moveOPosition2_ = { 0.0f,3.0f,0.0f };
 
 };
 

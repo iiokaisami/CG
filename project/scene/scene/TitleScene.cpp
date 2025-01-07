@@ -1,41 +1,112 @@
 #include "TitleScene.h"
 
+#include <ModelManager.h>
+
 void TitleScene::Initialize()
 {
-	for (uint32_t i = 0; i < 1; ++i)
+	camera_ = std::make_shared<Camera>();
+	camera_->SetRotate({ 0.3f,0.0f,0.0f });
+	camera_->SetPosition({ 0.0f,4.0f,-20.0f });
+	Object3dCommon::GetInstance()->SetDefaultCamera(camera_);
+	cameraManager.AddCamera(camera_);
+	cameraManager.SetActiveCamera(0);
+
+	// --- 3Dオブジェクト ---
+	//ModelManager::GetInstance()->LoadModel("cube.obj");
+
+	/*for (uint32_t i = 0; i < 1; ++i) 
+	{
+		Object3d* object = new Object3d();
+		if (i == 0) 
+		{
+			object->Initialize("cube.obj");
+		}
+		position_ = { 0.0f,4.0f,10.0f };
+		object->SetPosition(position_);
+
+		object->SetScale({ 1.2f,1.2f,1.2f });
+
+		object3ds.push_back(object);
+	}*/
+
+	for (uint32_t i = 0; i < 4; ++i)
 	{
 		Sprite* sprite = new Sprite();
-		if (i == 0 || i == 3) {
-			sprite->Initialize("uvChecker.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		if (i == 0 ) {
+			sprite->Initialize("Title/Logo.png", { 0,0 }, color_, { 0,0 });
 		}
-		else {
-			sprite->Initialize("monsterBall.png", { 10,10 }, { 1,1,1,1 }, { 0,0 });
+		else if(i == 1)
+		{
+			sprite->Initialize("Title/UI.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+		else if (i == 2)
+		{
+			sprite->Initialize("Title/obake.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+		else if (i == 3)
+		{
+			sprite->Initialize("Title/obake2.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
 		}
 		sprites.push_back(sprite);
 
-		Vector2 size = sprite->GetSize();
+		/*Vector2 size = sprite->GetSize();
 		size.x = 370.0f;
 		size.y = 370.0f;
-		sprite->SetSize(size);
+		sprite->SetSize(size);*/
 	}
 }
 
 void TitleScene::Finalize()
 {
+	/*for (auto& obj : object3ds) {
+		delete obj;
+	}*/
+
 	for (Sprite* sprite : sprites)
 	{
 		delete sprite;
 	}
+
+
+	cameraManager.RemoveCamera(0);
 }
 
 void TitleScene::Update()
 {
+	/*for (auto& obj : object3ds) {
+		obj->Update();
+		obj->SetPosition(position_);
+	}*/
+	
+
 	for (Sprite* sprite : sprites)
 	{
 		sprite->Update();
+
+		sprite->SetColor(color_);
+
 	}
 
-	if (Input::GetInstance()->TriggerKey(DIK_P))
+	
+
+#ifdef _DEBUG
+
+	// 透明度の更新
+
+	ImGui::Begin("TitleScene");
+
+	ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
+
+
+	ImGui::End();
+
+#endif // _DEBUG
+
+
+	
+	
+
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 	{
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
@@ -44,6 +115,16 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
+	// 描画前処理(Object)
+	Object3dCommon::GetInstance()->CommonDrawSetting();
+
+	/*for (auto& obj : object3ds) {
+		obj->Draw();
+	}*/
+
+	// 描画前処理(Sprite)
+	SpriteCommon::GetInstance()->CommonDrawSetting();
+
 	for (Sprite* sprite : sprites)
 	{
 		sprite->Draw();

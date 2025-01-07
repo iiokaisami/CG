@@ -167,6 +167,7 @@ void GamePlayScene::Draw()
 	{
 		enemy->Draw();
 	}
+
 }
 
 void GamePlayScene::EnemyInit()

@@ -4,6 +4,7 @@
 #include "../math/MyMath.h"
 #include "../collider/Collider.h"
 #include "../collider/CollisionManager.h"
+#include "../HPBar/HPBar.h"
 
 #include <Object3d.h>
 #include <Sprite.h>
@@ -56,6 +57,8 @@ private:
     // 3Dオブジェクト
     std::unique_ptr<Object3d> object_ = nullptr;
 
+	std::unique_ptr<HPBar> hpBar_ = nullptr;
+
     CollisionManager* collisionManager_ = nullptr;
     Collider collider_;
     AABB aabb_;
@@ -67,8 +70,13 @@ private:
 	// プレイヤーの位置
     Vector3 playerPosition_{};
 	
+    // 死亡
 	bool isDead_ = false;
 	bool isDeadMotion_ = false;
-	Vector3 deadRotation_ = { 0.0f,0.0f,1.5f };
+	Vector3 deadScale_ = { 0.0f,0.0f,0.0f };
+
+    // 出現
+	bool isPopMotion_ = true;
+	Vector3 popScale_ = { 0.5f,0.8f,0.5f };
 };
 
