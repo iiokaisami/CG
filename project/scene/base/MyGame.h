@@ -55,6 +55,10 @@ public:
 	// 描画	
 	void Draw();
 
+public:
+
+	bool IsEndRequest() const { return endRequest_; }
+
 private:
 
 
@@ -72,7 +76,8 @@ private:
 
 #endif // _DEBUG
 
-
+	// ゲーム終了フラグ
+	bool endRequest_ = false;
 
 	Vector2 position{};
 
