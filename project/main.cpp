@@ -1,6 +1,5 @@
 #include "scene/base/MyGame.h"
 
-
 //Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
@@ -28,7 +27,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// ゲームの終了
 	game.Finalize();
-	
 	
 	return 0;
 }

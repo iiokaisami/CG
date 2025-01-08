@@ -87,17 +87,16 @@ void MyGame::Initialize()
 
 	// カメラマネージャーテスト
 
-	auto& cameraManager = CameraManager::GetInstance();
 
 	// カメラの作成
-	auto camera1 = std::make_shared<Camera>();
-	auto camera2 = std::make_shared<Camera>();
+	camera1 = std::make_shared<Camera>();
+	camera2 = std::make_shared<Camera>();
 
-	Vector3 camera1Rotate = camera1->GetRotate();
-	Vector3 camera1Position = camera1->GetPosition();
+	camera1Rotate = camera1->GetRotate();
+	camera1Position = camera1->GetPosition();
 	camera1Position.z = -5.0f;
-	Vector3 camera2Rotate = camera2->GetRotate();
-	Vector3 camera2Position = camera2->GetPosition();
+	camera2Rotate = camera2->GetRotate();
+	camera2Position = camera2->GetPosition();
 	camera2Position.z = -10.0f;
 
 	// カメラの追加
@@ -106,7 +105,7 @@ void MyGame::Initialize()
 
 	// アクティブカメラの設定
 	cameraManager.SetActiveCamera(0);
-	uint32_t activeIndex = cameraManager.GetActiveIndex();
+	activeIndex = cameraManager.GetActiveIndex();
 
 	Object3dCommon::GetInstance()->SetDefaultCamera(cameraManager.GetActiveCamera());
 
@@ -115,27 +114,27 @@ void MyGame::Initialize()
 
 
 
-	//ModelManager::GetInstance()->LoadModel("plane.obj");
-	//ModelManager::GetInstance()->LoadModel("axis.obj");
+	ModelManager::GetInstance()->LoadModel("plane.obj");
+	ModelManager::GetInstance()->LoadModel("axis.obj");
 
-	//// 3Dオブジェクトの初期化
-	//std::vector<Object3d*>object3ds;
+	// 3Dオブジェクトの初期化
+	
 
-	//for (uint32_t i = 0; i < 2; ++i) {
-	//	Object3d* object = new Object3d();
-	//	if (i == 0) {
-	//		object->Initialize("plane.obj");
-	//	}
-	//	if (i == 1) {
-	//		object->Initialize("axis.obj");
-	//	}
+	for (uint32_t i = 0; i < 2; ++i) {
+		Object3d* object = new Object3d();
+		if (i == 0) {
+			object->Initialize("plane.obj");
+		}
+		if (i == 1) {
+			object->Initialize("axis.obj");
+		}
 
-	//	Vector3 position;
-	//	position.x = i * 2.0f;
-	//	object->SetPosition(position);
+		Vector3 position;
+		position.x = i * 2.0f;
+		object->SetPosition(position);
 
-	//	object3ds.push_back(object);
-	//}
+		object3ds.push_back(object);
+	}
 
 
 
@@ -146,7 +145,7 @@ void MyGame::Initialize()
 	//////////////////////////////////////
 	
 
-	std::vector<Sprite*> sprites;
+	
 	for (uint32_t i = 0; i < 1; ++i)
 	{
 		Sprite* sprite = new Sprite();
@@ -252,33 +251,25 @@ void MyGame::Finalize()
 
 void MyGame::Update()
 {
-	// Windowsのメッセージ処理
-	if (winApp->ProcessMessage())
-	{
-		// ゲームループを抜ける
-		break;
-	}
-	else
-	{
 
 #ifdef _DEBUG
-		// ImGui開始
-		imGuiManager->Begin();
+	// ImGui開始
+	imGuiManager->Begin();
 
 #endif // _DEBUG
 
 
 
-		// 入力の更新
-		Input::GetInstance()->Update();
-		// 数字の0キーが押されていたら
-		if (Input::GetInstance()->TriggerKey(DIK_0))
-		{
-			OutputDebugStringA("Hit 0\n");
-		}
+	// 入力の更新
+	Input::GetInstance()->Update();
+	// 数字の0キーが押されていたら
+	if (Input::GetInstance()->TriggerKey(DIK_0))
+	{
+		OutputDebugStringA("Hit 0\n");
+	}
 
 
-		////ゲームの処理		更新処理
+	////ゲームの処理		更新処理
 
 
 #ifdef _DEBUG
@@ -288,152 +279,142 @@ void MyGame::Update()
 
 
 			// 次のウィンドウのサイズを設定 (幅 400, 高さ 300)
-		ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
-		// ウィンドウの開始
-		if (ImGui::Begin("My Window")) {
-			// ウィンドウの内容
-			ImGui::SliderFloat2("position", &position.x, -500.0f, 1000.0f);
-		}
-		// ウィンドウの終了
-		ImGui::End();
+	ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
+	// ウィンドウの開始
+	if (ImGui::Begin("My Window")) {
+		// ウィンドウの内容
+		ImGui::SliderFloat2("position", &position.x, -500.0f, 1000.0f);
+	}
+	// ウィンドウの終了
+	ImGui::End();
 
 
-		if (ImGui::CollapsingHeader("sprite"))
-		{
-			ImGui::Checkbox("FilipX", &isFilipX);
-			ImGui::Checkbox("FilipY", &isFilipY);
-			ImGui::SliderFloat2("textureLeftTop", &textureLeftTop.x, 0.0f, 1000.0f);
-			ImGui::SliderFloat2("textureSize", &textureSize.x, 0.0f, 1500.0f);
-		}
-
-
-		if (ImGui::CollapsingHeader("cameraManager"))
-		{
-			ImGui::Text("activeIndex:(%d)", activeIndex);
-			ImGui::SliderFloat3("rotate1", &camera1Rotate.x, -5.0f, 5.0f);
-			ImGui::SliderFloat3("position1", &camera1Position.x, -50.0f, 50.0f);
-			ImGui::SliderFloat3("rotate2", &camera2Rotate.x, -5.0f, 5.0f);
-			ImGui::SliderFloat3("position2", &camera2Position.x, -50.0f, 50.0f);
-		}
+	if (ImGui::CollapsingHeader("sprite"))
+	{
+		ImGui::Checkbox("FilipX", &isFilipX);
+		ImGui::Checkbox("FilipY", &isFilipY);
+		ImGui::SliderFloat2("textureLeftTop", &textureLeftTop.x, 0.0f, 1000.0f);
+		ImGui::SliderFloat2("textureSize", &textureSize.x, 0.0f, 1500.0f);
+	}
 
 
 #endif // _DEBUG
 
 
-		// カメラマネージャーのテスト
-		cameraManager.UpdateAll();
+	// カメラマネージャーのテスト
+	cameraManager.UpdateAll();
 
-		// ENTER押してカメラ切り替え
-		if (Input::GetInstance()->TriggerKey(DIK_RETURN))
+	// ENTER押してカメラ切り替え
+	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
+	{
+		if (cameraManager.GetActiveIndex() == 0)
 		{
-			if (cameraManager.GetActiveIndex() == 0)
-			{
-				cameraManager.SetActiveCamera(1);
+			cameraManager.SetActiveCamera(1);
 
-			}
-			else if (cameraManager.GetActiveIndex() == 1)
-			{
-				cameraManager.SetActiveCamera(0);
-
-			}
 		}
-		// 稼働中のカメラインデックス
-		activeIndex = cameraManager.GetActiveIndex();
-
-		camera1->SetRotate(camera1Rotate);
-		camera1->SetPosition(camera1Position);
-		camera2->SetRotate(camera2Rotate);
-		camera2->SetPosition(camera2Position);
-
-		// アクティブカメラの情報を取得
-		auto activeCamera = cameraManager.GetActiveCamera();
-		if (activeCamera)
+		else if (cameraManager.GetActiveIndex() == 1)
 		{
-			auto viewMatrix = activeCamera->GetViewMatrix();
-			// viewMatrix を使った処理
+			cameraManager.SetActiveCamera(0);
+
 		}
+	}
+	// 稼働中のカメラインデックス
+	activeIndex = cameraManager.GetActiveIndex();
+
+	camera1->SetRotate(camera1Rotate);
+	camera1->SetPosition(camera1Position);
+	camera2->SetRotate(camera2Rotate);
+	camera2->SetPosition(camera2Position);
+
+	// アクティブカメラの情報を取得
+	auto activeCamera = cameraManager.GetActiveCamera();
+	if (activeCamera)
+	{
+		auto viewMatrix = activeCamera->GetViewMatrix();
+		// viewMatrix を使った処理
+	}
 
 
 
 
 
 
-		uint32_t i = 1;
-		for (Object3d* object3d : object3ds)
+	uint32_t i = 1;
+	for (Object3d* object3d : object3ds)
+	{
+		object3d->Update();
+
+
+		Vector3 pos{}, pos2{}, rotate{}, rotate2{};
+
+		pos2 = { 1.0f,-1.0f,1.0f };
+
+		if (i == 1)
 		{
-			object3d->Update();
-
-
-			Vector3 pos{}, pos2{}, rotate{}, rotate2{};
-
-			pos2 = { 1.0f,-1.0f,1.0f };
-
-			if (i == 1)
-			{
-				rotate = object3d->GetRotate();
-				rotate.y += 0.1f;
-				object3d->SetPosition(pos);
-				object3d->SetRotate(rotate);
-			}
-			else
-			{
-				rotate2 = object3d->GetRotate();
-				rotate2.z += 0.05f;
-				object3d->SetPosition(pos2);
-				object3d->SetRotate(rotate2);
-			}
-			i++;
-
-			// カメラ切り替え
-			object3d->SetCamera(cameraManager.GetActiveCamera());
+			rotate = object3d->GetRotate();
+			rotate.y += 0.1f;
+			object3d->SetPosition(pos);
+			object3d->SetRotate(rotate);
 		}
-
-
-
-
-
-		for (Sprite* sprite : sprites)
+		else
 		{
-			sprite->Update();
-			sprite->SetPosition(position);
-			sprite->SetFlipX(isFilipX);
-			sprite->SetFlipY(isFilipY);
-			sprite->SetTextureLeftTop(textureLeftTop);
-			sprite->SetTextureSize(textureSize);
+			rotate2 = object3d->GetRotate();
+			rotate2.z += 0.05f;
+			object3d->SetPosition(pos2);
+			object3d->SetRotate(rotate2);
 		}
+		i++;
 
-		//// 現在の座標を変数で受ける
-		//Vector2 position = sprite->GetPosition();
-		//// 座標を変更する
-		//position.x += 0.1f;
-		//position.y += 0.1f;
-		//// 変更を反映する
-		//sprite->SetPosition(position);
+		// カメラ切り替え
+		object3d->SetCamera(cameraManager.GetActiveCamera());
+	}
 
-		// 角度を変化させるテスト
-		/*float rotation = sprite->GetRotation();
-		rotation += 0.01f;
-		sprite->SetRotation(rotation);*/
 
-		//// 色を変化させるテスト
-		//Vector4 color = sprite->GetColor();
-		//color.x += 0.01f;
-		//if (color.x > 1.0f) 
-		//{
-		//	color.x -= 1.0f;
-		//}
-		//sprite->SetColor(color);
 
-		// サイズを変化させるテスト
-		/*Vector2 size = sprite->GetSize();
-		size.x += 0.1f;
-		size.y += 0.1f;
-		sprite->SetSize(size);*/
+
+
+	for (Sprite* sprite : sprites)
+	{
+		sprite->Update();
+		sprite->SetPosition(position);
+		sprite->SetFlipX(isFilipX);
+		sprite->SetFlipY(isFilipY);
+		sprite->SetTextureLeftTop(textureLeftTop);
+		sprite->SetTextureSize(textureSize);
+	}
+
+	//// 現在の座標を変数で受ける
+	//Vector2 position = sprite->GetPosition();
+	//// 座標を変更する
+	//position.x += 0.1f;
+	//position.y += 0.1f;
+	//// 変更を反映する
+	//sprite->SetPosition(position);
+
+	// 角度を変化させるテスト
+	/*float rotation = sprite->GetRotation();
+	rotation += 0.01f;
+	sprite->SetRotation(rotation);*/
+
+	//// 色を変化させるテスト
+	//Vector4 color = sprite->GetColor();
+	//color.x += 0.01f;
+	//if (color.x > 1.0f) 
+	//{
+	//	color.x -= 1.0f;
+	//}
+	//sprite->SetColor(color);
+
+	// サイズを変化させるテスト
+	/*Vector2 size = sprite->GetSize();
+	size.x += 0.1f;
+	size.y += 0.1f;
+	sprite->SetSize(size);*/
 
 
 #ifdef _DEBUG
-		// ImGui終了
-		imGuiManager->End();
+	// ImGui終了
+	imGuiManager->End();
 #endif // _DEBUG
 
 }
