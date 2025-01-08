@@ -1,108 +1,20 @@
 #pragma once
 
-#include <Windows.h>
+#include "Framework.h"
 
-#include <format>
-#include <cassert>
-#include <numbers>
-#include <vector>
-#include <DirectXMath.h>
-#include <fstream>
-#include <sstream>
-
-#include "Input.h"
-#include "WinApp.h"
-#include "DirectXCommon.h"
-#include "SpriteCommon.h"
-#include "Sprite.h"
-#include "MyMath.h"
-#include "TextureManager.h"
-#include "Object3dCommon.h"
-#include "Object3d.h"
-#include "ModelCommon.h"
-#include "Model.h"
-#include "ModelManager.h"
-#include "SrvManager.h"
-
-/// パーティクルテスト///
-
-#include "../ParticleManager.h"
-#include "../ParticleEmitter.h"
-#include <iostream>
-
-/////////////////////////
-
-#ifdef _DEBUG
-
-#include "../ImGuiManager.h"
-#include "../imgui/imgui.h"
-
-#endif // _DEBUG
-
-class MyGame
+class MyGame : public Framework
 {
 public:
 
 	// 初期化
-	void Initialize();
+	void Initialize() override;
 
 	// 終了
-	void Finalize();
+	void Finalize() override;
 
 	// 更新
-	void Update();
+	void Update() override;
 
 	// 描画	
-	void Draw();
-
-public:
-
-	bool IsEndRequest() const { return endRequest_; }
-
-private:
-
-
-	// ポインタ
-	WinApp* winApp = nullptr;
-	DirectXCommon* dxCommon = nullptr;
-	SpriteCommon* spriteCommon = nullptr;
-	ModelCommon* modelCommon = nullptr;
-	SrvManager* srvManager = nullptr;
-
-
-#ifdef _DEBUG
-
-	ImGuiManager* imGuiManager = nullptr;
-
-#endif // _DEBUG
-
-	// ゲーム終了フラグ
-	bool endRequest_ = false;
-
-
-
-	std::vector<Sprite*> sprites;
-	std::vector<Object3d*>object3ds;
-
-
-	 CameraManager& cameraManager = CameraManager::GetInstance();
-  std::shared_ptr<Camera> camera1 = std::make_shared<Camera>();
-  std::shared_ptr<Camera> camera2 = std::make_shared<Camera>();
-  uint32_t activeIndex = 0;
-  Vector3 camera1Rotate{};
-  Vector3 camera1Position{};
-  Vector3 camera2Rotate{};
-  Vector3 camera2Position{};
-
-
-	Vector2 position{};
-
-
-	bool isFilipX = false;
-	bool isFilipY = false;
-
-	Vector2 textureLeftTop{};
-	Vector2 textureSize{ 500.0f ,500.0f };
-
+	void Draw() override;
 };
-
