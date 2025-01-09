@@ -28,9 +28,9 @@ private:
     
     uint32_t activeIndex = 0;
 	Vector3 camera1Rotate = { 0.0f,0.0f,0.0f };
-	Vector3 camera1Position = { 0.0f,0.0f,0.0f };
+	Vector3 camera1Position = { 0.0f,4.0f,0.0f };
 	Vector3 camera2Rotate = { 0.0f,0.0f,0.0f };
-	Vector3 camera2Position = { 0.0f,0.0f,0.0f };
+	Vector3 camera2Position = { 0.0f,4.0f,0.0f };
 	
 	// 2Dスプライト
 	std::vector<Sprite*>sprites = {};

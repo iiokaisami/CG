@@ -15,9 +15,11 @@ void GamePlayScene::Initialize()
 
 	camera1Rotate = camera1->GetRotate();
 	camera1Position = camera1->GetPosition();
+	camera1Position.y = 4.0f;
 	camera1Position.z = -5.0f;
 	camera2Rotate = camera2->GetRotate();
 	camera2Position = camera2->GetPosition();
+	camera2Position.y = 4.0f;
 	camera2Position.z = -10.0f;
 
 	// カメラの追加
@@ -102,7 +104,7 @@ void GamePlayScene::Update()
 	cameraManager.UpdateAll();
 
 	// ENTER押してカメラ切り替え
-	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 	{
 		if (cameraManager.GetActiveIndex() == 0)
 		{
@@ -169,10 +171,15 @@ void GamePlayScene::Update()
 
 	// 透明度の更新
 
-	ImGui::Begin("TitleScene");
+	ImGui::Begin("PlayScene");
 
 	ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
 
+	ImGui::SliderFloat3("camera1Position", &camera1Position.x, -100.0f, 100.0f);
+	ImGui::SliderFloat3("camera1Rotate", &camera1Rotate.x, -10.0f, 10.0f);
+
+	ImGui::SliderFloat3("camera2Position", &camera2Position.x, -100.0f, 100.0f);
+	ImGui::SliderFloat3("camera2Rotate", &camera2Rotate.x, -10.0f, 10.0f);
 
 	ImGui::End();
 
