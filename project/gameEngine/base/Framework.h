@@ -29,7 +29,7 @@
 #include "../../ParticleEmitter.h"
 
 #include "../../scene/base/SceneManager.h"
-//#include "../scene/base/SceneFactory.h"   
+#include "../scene/base/SceneFactory.h"   
 
 #ifdef _DEBUG
 
@@ -70,7 +70,7 @@ protected:
 	SrvManager* srvManager = nullptr;
 
 	SceneManager* sceneManager_ = nullptr;
-	//AbstractSceneFactory* sceneFactory_ = nullptr;
+	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 
 	SpriteCommon* spriteCommon = nullptr;

@@ -2,6 +2,8 @@
 
 #include "Framework.h"
 
+#include "SceneFactory.h"
+
 class MyGame : public Framework
 {
 public:

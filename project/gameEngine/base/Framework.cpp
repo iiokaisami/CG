@@ -97,7 +97,7 @@ void Framework::Finalize()
 	delete srvManager;
 
 	sceneManager_->Finalize();
-	//delete sceneFactory_;
+	delete sceneFactory_;
 
 	// スプライト共通部分解放
 	spriteCommon->Finalize();
