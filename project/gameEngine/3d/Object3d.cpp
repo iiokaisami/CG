@@ -7,13 +7,11 @@
 #include "Model.h"
 #include "ModelManager.h"
 
-void Object3d::Initialize(Object3dCommon* object3dCommon/* const std::string& filePath */)
+void Object3d::Initialize(const std::string& filePath)
 {
-	object3dCommon_ = object3dCommon;
-
-	//object3dCommon_ = Object3dCommon::GetInstance();
-	//// モデルを設定
-	//SetModel(filePath);
+	object3dCommon_ = Object3dCommon::GetInstance();
+	// モデルを設定
+	SetModel(filePath);
 
 	// 座標変換行列リソースを作る
 	CreateTransformationMatrixData();
@@ -47,9 +45,8 @@ void Object3d::Update()
 	transformationMatrixData_->World = worldMatrix;
 }
 
-void Object3d::Draw(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU)
+void Object3d::Draw()
 {
-	textureSrvHandleGPU;
 	// TransformationMatrixCBufferの場所を設定
 	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
 	// 平行光源CBufferの場所を設定

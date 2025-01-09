@@ -1,3 +1,4 @@
+
 #pragma once
 #include <d3d12.h>
 #include "../../externals/DirectXTex/d3dx12.h"
@@ -7,6 +8,22 @@
 
 class SpriteCommon
 {
+#pragma region シングルトンインスタンス
+private:
+	static SpriteCommon* instance;
+
+	SpriteCommon() = default;
+	~SpriteCommon() = default;
+	SpriteCommon(SpriteCommon&) = delete;
+	SpriteCommon& operator = (SpriteCommon&) = delete;
+
+public:
+	// シングルトンインスタンスの取得
+	static SpriteCommon* GetInstance();
+	// 終了
+	void Finalize();
+#pragma endregion シングルトンインスタンス
+
 public:
 
 	// 初期化
@@ -51,8 +68,8 @@ private:
 
 	//RootSignature作成
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
-	
+
 	//PSOを生成する
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
-	
+
 };
