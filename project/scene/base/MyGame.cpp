@@ -7,6 +7,12 @@ void MyGame::Initialize()
 
 	Framework::Initialize();
 
+	// シーンマネージャに最初のシーンをセット
+	//sceneFactory_ = new SceneFactory();
+	//SceneManager::GetInstance()->SetSceneFactory(sceneFactory_);
+
+	// 最初のシーンを設定
+	//SceneManager::GetInstance()->ChangeScene("TITLE");
 
 	//////////////////////////////////////
 
@@ -145,8 +151,7 @@ void MyGame::Draw()
 
 	dxCommon->PreDraw();
 
-
-
+	sceneManager_->Draw();
 
 #ifdef _DEBUG
 	// ImGui描画

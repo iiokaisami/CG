@@ -54,7 +54,7 @@ void Framework::Initialize()
 	srvManager->Initialize(dxCommon);
 
 	// シーンマネージャ
-	//sceneManager_ = SceneManager::GetInstance();
+	sceneManager_ = SceneManager::GetInstance();
 
 	// スプライト共通部分の初期化
 	spriteCommon = SpriteCommon::GetInstance();
@@ -96,7 +96,7 @@ void Framework::Finalize()
 	// SRVマネージャー解放
 	delete srvManager;
 
-	//sceneManager_->Finalize();
+	sceneManager_->Finalize();
 	//delete sceneFactory_;
 
 	// スプライト共通部分解放
@@ -118,7 +118,7 @@ void Framework::Finalize()
 void Framework::Update()
 {
 	// シーンマネージャーの更新
-	//sceneManager_->Update();
+	sceneManager_->Update();
 
 	// 入力更新
 	input->Update();

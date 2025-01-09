@@ -1,5 +1,7 @@
 #pragma once
 
+class SceneManager;
+
 class BaseScene
 {
 public:
@@ -20,11 +22,10 @@ public:
 
 public:
 
-    //virtual void SetSceneManager(SceneManager* sceneManager) { sceneManager_ = sceneManager; }
+    virtual void SetSceneManager(SceneManager* sceneManager) { sceneManager_ = sceneManager; }
 
 protected:
 
     // シーンマネージャ
-    //SceneManager* sceneManager_ = nullptr;
+    SceneManager* sceneManager_ = nullptr;
 };
-
