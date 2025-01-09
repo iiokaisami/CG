@@ -22,5 +22,20 @@ public:
 	
 	// 描画
 	void Draw() override;
+
+private:
+
+	CameraManager& cameraManager = CameraManager::GetInstance();
+	std::shared_ptr<Camera> camera_ = std::make_shared<Camera>();
+
+	// 2Dスプライト
+	std::vector<Sprite*>sprites = {};
+
+	// 3Dオブジェクト
+	//std::vector<Object3d*> object3ds = {};
+
+	// 透明チェック
+	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
+
 };
 

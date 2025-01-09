@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <d3d12.h>
@@ -18,7 +19,8 @@ class Sprite
 public:
 
 	// 初期化
-	void Initialize(SpriteCommon* spriteCommon, std::string textureFilePath);
+	void Initialize(std::string textureFilePath,
+		Vector2 position, Vector4 color = { (1) , (1), (1), (1) }, Vector2 anchorpoint = { 0.0f,0.0f });
 
 	// 更新
 	void Update();
@@ -48,6 +50,8 @@ public:
 	void SetRotation(float rotation) { rotation_ = rotation; }
 
 	void SetColor(const Vector4& color) { materialData_->color = color; }
+
+	void SetColorChange(const Vector4& color);
 
 	void SetSize(const Vector2& size) { size_ = size; }
 
@@ -120,7 +124,7 @@ private:
 	// バッファリソースの使い道を補足するバッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
-	
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> textureResource_;
 	Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource_;
 
@@ -152,6 +156,5 @@ private:
 	// テクスチャ切り出しサイズ
 	Vector2 textureSize_ = { 100.0f,100.0f };
 
-	
+	Vector4 color_{};
 };
-

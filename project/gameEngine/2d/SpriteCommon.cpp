@@ -30,7 +30,7 @@ void SpriteCommon::Initialize(DirectXCommon* dxCommon)
 	descriptorRange_[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRange_[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	
+
 	//DepthStencilStateの設定
 	//Depthの機能を有効化する
 	depthStencilDesc_.DepthEnable = true;
@@ -64,6 +64,13 @@ void SpriteCommon::Initialize(DirectXCommon* dxCommon)
 	//BlendStateの設定
 	//すべての色要素を書き込む
 	blendDesc_.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	blendDesc_.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc_.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blendDesc_.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	blendDesc_.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	blendDesc_.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc_.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc_.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
 
 
 	//RasterizerStateの設定
@@ -87,7 +94,7 @@ void SpriteCommon::Initialize(DirectXCommon* dxCommon)
 void SpriteCommon::CreateRootSignature()
 {
 	HRESULT result = S_FALSE;
-	
+
 
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
