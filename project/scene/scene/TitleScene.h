@@ -1,18 +1,26 @@
 #pragma once
-class TitleScene
+
+#include <Framework.h>
+#include <vector>
+#include <MyMath.h>
+#include <Object3d.h>
+
+#include "../base/BaseScene.h"
+
+class TitleScene : public BaseScene
 {
 public:
 
 	// 初期化
-	void Initialize();
+	void Initialize() override;
 	
 	// 終了
-	void Finalize();
+	void Finalize() override;
 	
 	// 更新
-	void Update();
+	void Update() override;
 	
 	// 描画
-	void Draw();
+	void Draw() override;
 };
 

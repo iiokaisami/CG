@@ -1,19 +1,23 @@
 #pragma once
 
-class GamePlayScene
+#include <Framework.h>
+
+#include "../base/BaseScene.h"
+
+class GamePlayScene : public BaseScene
 {
 public:
 
 	// 初期化
-	void Initialize();
+	void Initialize() override;
 
 	// 終了
-	void Finalize();
+	void Finalize() override;
 
 	// 更新
-	void Update();
+	void Update() override;
 
 	// 描画
-	void Draw();	
+	void Draw() override;
 };
 
