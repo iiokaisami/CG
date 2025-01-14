@@ -44,6 +44,13 @@ void TitleScene::Initialize()
 		size.y = 370.0f;
 		sprite->SetSize(size);*/
 	}
+
+	// --- サウンド ---
+	soundData_ = Audio::GetInstance()->LoadWav("fanfare.wav");
+	Audio::GetInstance()->PlayWave(soundData_, false, 0.2f);
+	soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
+	Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
+
 }
 
 void TitleScene::Finalize()
@@ -57,6 +64,8 @@ void TitleScene::Finalize()
 		delete sprite;
 	}
 
+	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData_);
+	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData2_);
 
 	cameraManager.RemoveCamera(0);
 }
@@ -97,6 +106,15 @@ void TitleScene::Update()
 	{
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_Q))
+	{
+		Audio::GetInstance()->SoundStop(soundData_);
+	}
+	if (Input::GetInstance()->TriggerKey(DIK_E))
+	{
+		Audio::GetInstance()->SoundStop(soundData2_);
 	}
 }
 

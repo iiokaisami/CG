@@ -37,5 +37,8 @@ private:
 	// 透明チェック
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 
+	// サウンド
+	SoundData soundData_;
+	SoundData soundData2_;
 };
 

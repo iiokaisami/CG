@@ -23,7 +23,7 @@
 #include "Model.h"
 #include "ModelManager.h"
 #include "SrvManager.h"
-
+#include "Audio.h"
 
 #include "../../ParticleManager.h"
 #include "../../ParticleEmitter.h"
@@ -67,6 +67,7 @@ protected:
 	WinApp* winApp = nullptr;
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
+	Audio* audio = nullptr;
 	SrvManager* srvManager = nullptr;
 
 	SceneManager* sceneManager_ = nullptr;

@@ -1,187 +1,182 @@
 #include "Audio.h"
+#include <cassert>
 
-#include <filesystem>
-#include <fstream>
-#include <stdexcept>
-#include <iostream>
+Audio* Audio::instance = nullptr;
 
-Audio::Audio()
+Audio* Audio::GetInstance()
 {
-    // XAudio2 を初期化
-    if (FAILED(XAudio2Create(&xAudio2_, 0, XAUDIO2_DEFAULT_PROCESSOR)))
-    {
-        throw std::runtime_error("Failed to initialize XAudio2");
-    }
-
-    // マスターボイスを作成
-    if (FAILED(xAudio2_->CreateMasteringVoice(&masteringVoice_))) 
-    {
-        throw std::runtime_error("Failed to create mastering voice");
-    }
+	if (instance == nullptr) 
+	{
+		instance = new Audio;
+	}
+	return instance;
 }
 
-Audio::~Audio()
+void Audio::Finalize()
 {
-    StopAll();
-    Release();
-    
-    if (masteringVoice_)
-    {
-        masteringVoice_->DestroyVoice();
-    }
- 
-    if (xAudio2_)
-    {
-        xAudio2_->Release();
-    }
+	if (masterVoice_) {
+		masterVoice_->DestroyVoice();
+		masterVoice_ = nullptr;
+	}
+
+	delete instance;
+	instance = nullptr;
 }
 
-bool Audio::LoadSound(const std::string& soundName, const std::wstring& filePath)
+void Audio::Initialize()
 {
-    // ファイルパスからディレクトリとファイル名を抽出
-    //std::filesystem::path path(filePath);
-    //std::string directory = "resources/audio" + path.parent_path().string();   
-    //std::wstring wDirectory = std::wstring(directory.begin(), directory.end()); // directory を std::wstring に変換
-    //std::wstring fileName = path.filename().wstring(); // ファイル名だけを抽出
-
-    //std::wstring fullPath = path.wstring();
-
-    SoundData soundData;
-    if (!LoadWavFile(/*wDirectory,fileName*/filePath, soundData))
-    {
-        //std::wcerr << L"Failed to load sound: " << fullPath << std::endl;
-        return false;
-    }
-    soundDataMap_[soundName] = std::move(soundData);
-    return true;
+	// xAudio生成
+	hr = XAudio2Create(&xAudio2_, 0, XAUDIO2_DEFAULT_PROCESSOR);
+	// マスターボイス生成
+	hr = xAudio2_->CreateMasteringVoice(&masterVoice_);
 }
 
-void Audio::Play(const std::string& soundName, bool loop)
+SoundData Audio::LoadWav(const char* filename)
 {
-    auto it = soundDataMap_.find(soundName);
-    if (it == soundDataMap_.end())
-    {
-        std::cerr << "Sound not found: " << soundName << std::endl;
-        return; // サウンドが存在しない
-    }
+	std::ifstream file;
+	// 基本パスを指定（"resources/audio/"）
+	std::string basePath = "resources/audio/";
+	std::string fullPath = basePath + filename;
 
-    SoundData& soundData = it->second;
+	// .wavファイルをバイナリモードで展開
+	file.open(fullPath.c_str(), std::ios_base::binary);
+	// ファイル展開失敗時
+	assert(file.is_open());
 
-    // ソースボイスを作成
-    IXAudio2SourceVoice* sourceVoice = nullptr;
-    HRESULT hr = xAudio2_->CreateSourceVoice(&sourceVoice, &soundData.format);
-    if (FAILED(hr))
-    {
-        std::cerr << "Failed to create source voice. Error: " << std::hex << hr << std::endl;
-        return;
-    }
+	// RIFFヘッダーの読み込み
+	RiffHeader riff;
+	file.read((char*)&riff, sizeof(riff));
+	// ファイルがRIFFかチェック
+	if (strncmp(riff.chunk.id, "RIFF", 4) != 0) 
+	{
+		assert(0);
+	}
+	// タイプがWAVEかチェック
+	if (strncmp(riff.type, "WAVE", 4) != 0) 
+	{
+		assert(0);
+	}
 
-    // 再生するバッファをキューに追加
-    XAUDIO2_BUFFER buffer = {};
-    buffer.AudioBytes = static_cast<UINT32>(soundData.buffer.size());
-    buffer.pAudioData = soundData.buffer.data();
-    buffer.Flags = XAUDIO2_END_OF_STREAM;
-    buffer.LoopCount = loop ? XAUDIO2_LOOP_INFINITE : 0;
+	// チャンクのループを開始
+	ChunkHeader chunkHeader;
+	FormatChunk format = {};
+	while (file.read((char*)&chunkHeader, sizeof(chunkHeader))) {
+		// チャンクIDが "fmt" か確認
+		if (strncmp(chunkHeader.id, "fmt ", 4) == 0) {
+			// Formatチャンクのサイズを確認、データを読み込む
+			assert(chunkHeader.size <= sizeof(format.fmt));
 
-    hr = sourceVoice->SubmitSourceBuffer(&buffer);
-    if (FAILED(hr))
-    {
-        std::cerr << "Failed to submit source buffer. Error: " << std::hex << hr << std::endl;
-        return;
-    }
+			format.chunk = chunkHeader; // チャンクヘッダーをコピー
+			file.read((char*)&format.fmt, chunkHeader.size); // fmtのデータを読み込み
 
-    // 再生開始
-    hr = sourceVoice->Start(0);
-    if (FAILED(hr))
-    {
-        std::cerr << "Failed to start playback. Error: " << std::hex << hr << std::endl;
-        sourceVoice->DestroyVoice();
-        return;
-    }
+			break;
+		}
+		else {
+			// 次のチャンクに移動
+			file.seekg(chunkHeader.size, std::ios_base::cur);
+		}
+	}
 
-    sourceVoices_[soundName].push_back(sourceVoice);
+	// "fmt"チャンクが見つからなかった場合のエラーとしてだす
+	if (strncmp(format.chunk.id, "fmt ", 4) != 0) {
+		assert(0);
+	}
+
+
+	// Dataチャンクの読み込みとスキップ処理
+	ChunkHeader data;
+	while (file.read((char*)&data, sizeof(data))) {
+		if (strncmp(data.id, "data", 4) == 0) {
+			break; // "data" チャンクを見つけたらループを抜ける
+		}
+		else {
+			// 現在のチャンクが "data" でない場合、そのサイズ分シーク
+			file.seekg(data.size, std::ios_base::cur);
+		}
+	}
+
+
+	if (strncmp(data.id, "data", 4) != 0) {
+		assert(0);
+	}
+
+	// Dataチャンクのデータ部（波形データの読み込み）
+	char* pBuffer = new char[data.size];
+	file.read(pBuffer, data.size);
+
+	// Wavファイルを閉じる
+	file.close();
+
+
+	// returnする為のデータ
+	SoundData soundData = {};
+
+	soundData.wfex = format.fmt;
+	soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer);
+	soundData.bufferSize = data.size;
+
+	return soundData;
 }
 
-void Audio::Stop(const std::string& soundName)
+void Audio::SoundUnload(Microsoft::WRL::ComPtr<IXAudio2> xAudio2, SoundData* soundData)
 {
-    auto it = sourceVoices_.find(soundName);
-    if (it != sourceVoices_.end()) 
-    {
-        for (auto* sourceVoice : it->second)
-        {
-            sourceVoice->Stop(0);
-            sourceVoice->DestroyVoice();
-        }
-        it->second.clear();
-        sourceVoices_.erase(it);
-    }
+	if (soundData->sourceVoice) {
+		soundData->sourceVoice->Stop();
+		soundData->sourceVoice->FlushSourceBuffers();
+		soundData->sourceVoice->DestroyVoice();
+		soundData->sourceVoice = nullptr;
+	}
+
+	// 音声データ解放
+	xAudio2.Reset();
+
+	delete[] soundData->pBuffer;
+
+	soundData->pBuffer = 0;
+	soundData->bufferSize = 0;
+	soundData->wfex = {};
 }
 
-void Audio::StopAll()
+void Audio::PlayWave(const SoundData& soundData, bool loop, float volume)
 {
-    for (auto& [soundName, voices] : sourceVoices_)
-    {
-        for (auto* sourceVoice : voices) 
-        {
-            sourceVoice->Stop(0);
-            sourceVoice->DestroyVoice();
-        }
-    }
-    sourceVoices_.clear();
+	// 波形フォーマットをもとにSourceVoiceの生成
+    hr = xAudio2_->CreateSourceVoice(const_cast<IXAudio2SourceVoice**>(&soundData.sourceVoice), &soundData.wfex);
+	assert(SUCCEEDED(hr));
+
+	// 再生する波形データの設定
+	XAUDIO2_BUFFER buf{};
+	buf.pAudioData = soundData.pBuffer;
+	buf.AudioBytes = soundData.bufferSize;
+	buf.Flags = XAUDIO2_END_OF_STREAM;
+
+	// ボリュームを設定
+	soundData.sourceVoice->SetVolume(volume);
+
+	// "loop" がtrueの場合ループさせる
+	if (loop) {
+		buf.LoopCount = XAUDIO2_LOOP_INFINITE; // 無限ループ
+	}
+
+	// 波形データの再生
+	hr = soundData.sourceVoice->SubmitSourceBuffer(&buf);
+	hr = soundData.sourceVoice->Start();
 }
 
-void Audio::SetVolume(const std::string& soundName, float volume)
+void Audio::SoundStop(SoundData& soundData)
 {
-    auto it = sourceVoices_.find(soundName);
-    if (it != sourceVoices_.end())
-    {
-        for (auto* sourceVoice : it->second)
-        {
-            // 音量を設定（0.0f から 1.0f の範囲）
-            sourceVoice->SetVolume(volume);
-        }
-    }
+	if (soundData.sourceVoice) {
+		soundData.sourceVoice->Stop();
+		soundData.sourceVoice->FlushSourceBuffers();
+		soundData.sourceVoice->DestroyVoice();
+		soundData.sourceVoice = nullptr;
+	}
 }
 
-void Audio::SetMasterVolume(float volume)
+void Audio::SetVolume(SoundData& soundData, float volume)
 {
-    // マスターボイスの音量設定（0.0f から 1.0f の範囲）
-    masteringVoice_->SetVolume(volume);
-}
+	// 0.0f ~ 1.0f の範囲で音量を設定
+	hr = soundData.sourceVoice->SetVolume(volume);
 
-bool Audio::LoadWavFile(/*const std::wstring& directoryPath,*/ const std::wstring& filePath, SoundData& soundData)
-{
-
-    /*std::wstring fullPath = directoryPath + L"/" + filePath;
-    std::wcout << L"Loading WAV file from path: " << fullPath << std::endl;*/
-
-    std::ifstream file(/*directoryPath + L"/" +*/ filePath, std::ios::binary);
-    if (!file)
-    {
-       // std::wcerr << L"File not found: " << fullPath << std::endl;
-        return false; // ファイルが見つからない
-    }
-
-    // RIFF チャンクを確認
-    char riff[4];
-    file.read(riff, 4);
-    if (std::memcmp(riff, "RIFF", 4) != 0)
-    {
-        //std::wcerr << L"Invalid RIFF header in file: " << fullPath << std::endl;
-        return false;
-    }
-
-    file.seekg(22); // WAVEFORMATEX 構造体が始まるオフセット
-    file.read(reinterpret_cast<char*>(&soundData.format), sizeof(WAVEFORMATEX));
-
-    file.seekg(44); // データチャンクが始まるオフセット
-    soundData.buffer.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
-
-    return true;
-}
-
-void Audio::Release()
-{
-    soundDataMap_.clear();
-    StopAll();
+	// 失敗時にエラーを出力
+	assert(SUCCEEDED(hr) && "Failed to set volume");
 }

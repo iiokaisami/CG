@@ -104,6 +104,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="gameEngine\audio\Audio.cpp" />
+    <ClCompile Include="gameEngine\math\Quaternion.cpp" />
     <ClCompile Include="scene\base\SceneFactory.cpp" />
     <ClCompile Include="scene\base\SceneManager.cpp" />
     <ClCompile Include="scene\base\BaseScene.cpp" />
@@ -139,6 +141,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="scene\scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="gameEngine\audio\Audio.h" />
+    <ClInclude Include="gameEngine\math\Quaternion.h" />
     <ClInclude Include="scene\base\SceneFactory.h" />
     <ClInclude Include="scene\base\AbstractSceneFactory.h" />
     <ClInclude Include="scene\base\SceneManager.h" />
