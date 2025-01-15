@@ -5,7 +5,7 @@
 #include <MyMath.h>
 #include <Object3d.h>
 
-#include "../../scene/base/BaseScene.h"
+#include "../base/BaseScene.h"
 
 class TitleScene : public BaseScene
 {
@@ -13,13 +13,13 @@ public:
 
 	// 初期化
 	void Initialize() override;
-
+	
 	// 終了
 	void Finalize() override;
-
+	
 	// 更新
 	void Update() override;
-
+	
 	// 描画
 	void Draw() override;
 
@@ -43,5 +43,8 @@ private:
 	Vector3 oPosition2_ = { 0.0f,2.0f,0.0f };
 	Vector3 moveOPosition2_ = { 0.0f,3.0f,0.0f };
 
+	// サウンド
+	SoundData soundData_;
+	SoundData soundData2_;
 };
 

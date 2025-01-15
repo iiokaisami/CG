@@ -53,6 +53,10 @@ void Framework::Initialize()
 	srvManager = new SrvManager();
 	srvManager->Initialize(dxCommon);
 
+	// オーディオ
+	audio = Audio::GetInstance();
+	audio->Initialize();
+
 	// シーンマネージャ
 	sceneManager_ = SceneManager::GetInstance();
 
@@ -98,6 +102,8 @@ void Framework::Finalize()
 
 	sceneManager_->Finalize();
 	delete sceneFactory_;
+
+	audio->Finalize();
 
 	// スプライト共通部分解放
 	spriteCommon->Finalize();

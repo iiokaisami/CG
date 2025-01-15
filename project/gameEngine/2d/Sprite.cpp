@@ -52,13 +52,13 @@ void Sprite::Initialize(std::string textureFilePath,
 	materialData_->uvTransform = MakeIdentity4x4();
 
 	//書き込むためのアドレス
-	transformationMatrixResource_->Map(0,nullptr,reinterpret_cast<void**>(&transformationMatrixData_));
+	transformationMatrixResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData_));
 	//単位行列を書き込んでおく
 	transformationMatrixData_->World = MakeIdentity4x4();
 	transformationMatrixData_->WVP = MakeIdentity4x4();
 
-	
-	transform_={
+
+	transform_ = {
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f}
@@ -105,7 +105,7 @@ void Sprite::Update()
 
 	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath_);
 	float tex_left = textureLeftTop_.x / metadata.width;
-	float tex_right = (textureLeftTop_.x + textureSize_.x)/ metadata.width;
+	float tex_right = (textureLeftTop_.x + textureSize_.x) / metadata.width;
 	float tex_top = textureLeftTop_.y / metadata.height;
 	float tex_bottom = (textureLeftTop_.y + textureSize_.y) / metadata.height;
 
@@ -134,8 +134,8 @@ void Sprite::Update()
 	indexData_[3] = 1;		indexData_[4] = 3;		indexData_[5] = 2;
 
 
-	transform_.translate = { position_.x,position_.y ,0.0f};
-	transform_.rotate = { 0.0f,0.0f,rotation_};
+	transform_.translate = { position_.x,position_.y ,0.0f };
+	transform_.rotate = { 0.0f,0.0f,rotation_ };
 	transform_.scale = { size_.x,size_.y,1.0f };
 
 
@@ -146,7 +146,7 @@ void Sprite::Update()
 	transformationMatrixData_->WVP = worldViewProjectionMatrixSprite;
 	transformationMatrixData_->World = worldMatrixSprite;
 
-	
+
 }
 
 void Sprite::Draw()

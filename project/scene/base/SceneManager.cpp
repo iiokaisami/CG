@@ -40,14 +40,14 @@ void SceneManager::Update()
         scene_->Initialize();
     }
 
-	// 実行中シーンを更新する
-	scene_->Update();
+    // 実行中シーンを更新する
+    scene_->Update();
 }
 
 void SceneManager::Draw()
 {
-	// 実行中シーンを描画する
-	scene_->Draw();
+    // 実行中シーンを描画する
+    scene_->Draw();
 }
 
 void SceneManager::ChangeScene(const std::string& sceneName)

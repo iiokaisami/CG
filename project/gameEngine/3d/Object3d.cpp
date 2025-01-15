@@ -10,10 +10,12 @@
 void Object3d::Initialize(const std::string& filePath)
 {
 	object3dCommon_ = Object3dCommon::GetInstance();
-
-	object3dCommon_ = Object3dCommon::GetInstance();
 	// モデルを設定
 	SetModel(filePath);
+
+	//object3dCommon_ = Object3dCommon::GetInstance();
+	//// モデルを設定
+	//SetModel(filePath);
 
 	// 座標変換行列リソースを作る
 	CreateTransformationMatrixData();

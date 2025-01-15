@@ -22,13 +22,10 @@ public:
 
 public:
 
-	virtual void SetSceneManager(SceneManager* sceneManager) { sceneManager_ = sceneManager; }
+    virtual void SetSceneManager(SceneManager* sceneManager) { sceneManager_ = sceneManager; }
 
-private:
 protected:
 
-	// シーンマネージャ
-	SceneManager* sceneManager_ = nullptr;
-
+    // シーンマネージャ
+    SceneManager* sceneManager_ = nullptr;
 };
-

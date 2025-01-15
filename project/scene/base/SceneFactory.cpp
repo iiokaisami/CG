@@ -7,7 +7,7 @@
 
 BaseScene* SceneFactory::CreateScene(const std::string& sceneName)
 {
-	// 次のシーンを生成
+	// ���̃V�[���𐶐�
 	BaseScene* newScene = nullptr;
 
 	if (sceneName == "TITLE") {

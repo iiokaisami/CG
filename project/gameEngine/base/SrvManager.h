@@ -24,12 +24,28 @@ public:
 
 	void PreDraw();
 
+	// テクスチャ読み込み
+	uint32_t LoadTexture(const std::string& textureFilePath);
+
+public: // ゲッター
+
+	// SRVのCPUディスクリプタハンドルを取得
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCpuHandle(uint32_t srvIndex) const 
+	{
+		if (srvIndex >= kMaxSRVCount_) {
+			throw std::out_of_range("Invalid SRV index");
+		}
+		D3D12_CPU_DESCRIPTOR_HANDLE handle = descriptorHeap_->GetCPUDescriptorHandleForHeapStart();
+		handle.ptr += descriptorSize_ * srvIndex;
+		return handle;
+	}
+
 public: // セッター
 
 	void SetGraphicsRootDescriptorTable(UINT RootParameterIndex, uint32_t srvIndex);
 
 private:
-	
+
 	DirectXCommon* dxCommon_ = nullptr;
 
 	// 最大SRV数(最大テクスチャ数)
@@ -41,5 +57,8 @@ private:
 
 	// 次に使用するSRVインデックス
 	uint32_t useIndex_ = 0;
+
+	// テクスチャキャッシュ
+	std::unordered_map<std::string, uint32_t> textureIndices_;
 };
 

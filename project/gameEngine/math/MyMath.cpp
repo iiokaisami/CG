@@ -114,6 +114,54 @@ Matrix4x4 MakeRotateZMatrix(float radian) {
 
 	return result;
 }
+// 任意軸回転行列
+Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle)
+{
+	Vector3 normalizedAxis = Normalize(axis);
+	float x = normalizedAxis.x;
+	float y = normalizedAxis.y;
+	float z = normalizedAxis.z;
+	float cosAngle = cos(angle);
+	float sinAngle = sin(angle);
+	float oneMinusCos = 1.0f - cosAngle;
+
+	Matrix4x4 rotationMatrix = {
+	  cosAngle + x * x * oneMinusCos,       x * y * oneMinusCos + z * sinAngle, x * z * oneMinusCos - y * sinAngle, 0.0f,
+	  y * x * oneMinusCos - z * sinAngle,   cosAngle + y * y * oneMinusCos,     y * z * oneMinusCos + x * sinAngle, 0.0f,
+	  z * x * oneMinusCos + y * sinAngle,   z * y * oneMinusCos - x * sinAngle, cosAngle + z * z * oneMinusCos,     0.0f,
+	  0.0f,                                 0.0f,                               0.0f,                               1.0f
+	};
+
+	return rotationMatrix;
+}
+// ベクトルからベクトルへの変換行列
+Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to)
+{
+	Vector3 fromNormalized = Normalize(from);
+	Vector3 toNormalized = Normalize(to);
+	float dotProduct = Dot(fromNormalized, toNormalized);
+
+	// from と to が平行または反平行の場合の特別な処理
+	if (dotProduct > 0.9999f) {
+		// from と to が同じ方向を向いている場合、単位行列を返す
+		return Matrix4x4{
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		};
+	}
+	else if (dotProduct < -0.9999f) {
+		// from と to が反対方向を向いている場合、任意の垂直ベクトルを軸として180度回転行列を作成
+		Vector3 orthogonalAxis = (fabs(fromNormalized.x) > fabs(fromNormalized.z)) ? Vector3{ -fromNormalized.y, fromNormalized.x, 0.0f } : Vector3{ 0.0f, -fromNormalized.z, fromNormalized.y };
+		orthogonalAxis = Normalize(orthogonalAxis);
+		return MakeRotateAxisAngle(orthogonalAxis, 3.14159265358979323846f); // 180度回転
+	}
+
+	Vector3 axis = Cross(fromNormalized, toNormalized);
+	float angle = acos(dotProduct);
+	return MakeRotateAxisAngle(axis, angle);
+}
 // アフィン変換行列
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
 	Matrix4x4 result;

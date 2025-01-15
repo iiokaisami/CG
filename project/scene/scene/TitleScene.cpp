@@ -14,10 +14,10 @@ void TitleScene::Initialize()
 	// --- 3Dオブジェクト ---
 	//ModelManager::GetInstance()->LoadModel("cube.obj");
 
-	/*for (uint32_t i = 0; i < 1; ++i) 
+	/*for (uint32_t i = 0; i < 1; ++i)
 	{
 		Object3d* object = new Object3d();
-		if (i == 0) 
+		if (i == 0)
 		{
 			object->Initialize("cube.obj");
 		}
@@ -54,19 +54,28 @@ void TitleScene::Initialize()
 		size.y = 370.0f;
 		sprite->SetSize(size);*/
 	}
+
+	// --- サウンド ---
+	soundData_ = Audio::GetInstance()->LoadWav("fanfare.wav");
+	Audio::GetInstance()->PlayWave(soundData_, false, 0.2f);
+	soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
+	Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
+
 }
 
 void TitleScene::Finalize()
 {
 	/*for (auto& obj : object3ds) {
-		delete obj;
-	}*/
+	delete obj;
+}*/
 
 	for (Sprite* sprite : sprites)
 	{
 		delete sprite;
 	}
 
+	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData_);
+	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData2_);
 
 	cameraManager.RemoveCamera(0);
 }
@@ -77,7 +86,7 @@ void TitleScene::Update()
 		obj->Update();
 		obj->SetPosition(position_);
 	}*/
-	
+
 
 	for (Sprite* sprite : sprites)
 	{
@@ -87,7 +96,7 @@ void TitleScene::Update()
 
 	}
 
-	
+
 
 #ifdef _DEBUG
 
@@ -110,6 +119,15 @@ void TitleScene::Update()
 	{
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_Q))
+	{
+		Audio::GetInstance()->SoundStop(soundData_);
+	}
+	if (Input::GetInstance()->TriggerKey(DIK_E))
+	{
+		Audio::GetInstance()->SoundStop(soundData2_);
 	}
 }
 

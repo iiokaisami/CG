@@ -8,6 +8,7 @@
 #include <DirectXMath.h>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 #include "Input.h"
 #include "WinApp.h"
@@ -22,10 +23,14 @@
 #include "Model.h"
 #include "ModelManager.h"
 #include "SrvManager.h"
+#include "Audio.h"
 #include "CameraManager.h"
 
+#include "../../ParticleManager.h"
+#include "../../ParticleEmitter.h"
+
 #include "../../scene/base/SceneManager.h"
-#include "../../scene/base/SceneFactory.h"                                                                               
+#include "../../scene/base/SceneFactory.h"   
 
 #ifdef _DEBUG
 
@@ -44,14 +49,14 @@ public:
 
 	// 初期化
 	virtual void Initialize();
-
+	
 	// 終了
 	virtual void Finalize();
-
+	
 	// 更新
 	virtual void Update();
-
-	// 描画
+	
+	// 描画	
 	virtual void Draw() = 0;
 
 	// 終了フラグのチェック
@@ -63,6 +68,7 @@ protected:
 	WinApp* winApp = nullptr;
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
+	Audio* audio = nullptr;
 	SrvManager* srvManager = nullptr;
 
 	SceneManager* sceneManager_ = nullptr;
@@ -79,7 +85,4 @@ protected:
 	ImGuiManager* imGuiManager = nullptr;
 
 #endif // _DEBUG
-
-	
-
 };

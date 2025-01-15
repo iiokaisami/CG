@@ -9,4 +9,3 @@ public:
 	// シーン生成
 	BaseScene* CreateScene(const std::string& sceneName) override;
 };
-

@@ -30,7 +30,7 @@ void SpriteCommon::Initialize(DirectXCommon* dxCommon)
 	descriptorRange_[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRange_[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	
+
 	//DepthStencilStateの設定
 	//Depthの機能を有効化する
 	depthStencilDesc_.DepthEnable = true;
@@ -94,7 +94,7 @@ void SpriteCommon::Initialize(DirectXCommon* dxCommon)
 void SpriteCommon::CreateRootSignature()
 {
 	HRESULT result = S_FALSE;
-	
+
 
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;

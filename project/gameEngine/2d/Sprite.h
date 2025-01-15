@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <d3d12.h>
@@ -123,7 +124,7 @@ private:
 	// バッファリソースの使い道を補足するバッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
-	
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> textureResource_;
 	Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource_;
 
@@ -157,4 +158,3 @@ private:
 
 	Vector4 color_{};
 };
-

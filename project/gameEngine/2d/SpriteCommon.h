@@ -1,3 +1,4 @@
+
 #pragma once
 #include <d3d12.h>
 #include "../../externals/DirectXTex/d3dx12.h"
@@ -67,8 +68,8 @@ private:
 
 	//RootSignature作成
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
-	
+
 	//PSOを生成する
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
-	
+
 };
