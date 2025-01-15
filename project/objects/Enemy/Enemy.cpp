@@ -54,13 +54,13 @@ void Enemy::Update()
     object_->Update();
 
     // 敵弾から自キャラへのベクトルを計算
-    Vector3 toPlayer = playerPosition_ - position_;
+    toPlayer_ = playerPosition_ - position_;
 
     // ベクトルを正規化する
-    toPlayer = Normalize(toPlayer);
+    toPlayer_ = Normalize(toPlayer_);
     moveVelocity_ = Normalize(moveVelocity_);
     // 球面線形補間により、今の速度と自キャラへのベクトルを内挿し、新たな速度とする
-    moveVelocity_ = 1.0f * (Slerp(moveVelocity_, toPlayer, 0.1f));
+    moveVelocity_ = 1.0f * (Slerp(moveVelocity_, toPlayer_, 0.1f));
 
 
     // 進行方向に見た目の回転を合わせる
@@ -176,6 +176,10 @@ void Enemy::OnCollision(const Collider* _other)
     {
         EnemyCollision(_other->GetPosition());
     }
+	else if (_other->GetColliderID() == "Player")
+	{
+        moveVelocity_ = -toPlayer_;
+	}
     else if (hp_ > 0 && _other->GetColliderID() != "Player")
     {
         hp_ -= 1;

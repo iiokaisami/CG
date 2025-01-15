@@ -50,11 +50,15 @@ public: // セッター
 
     void SetCamera(std::shared_ptr<Camera> camera) { camera_ = camera; }
 
+	void SetEnemyPosition(Vector3 _enemyPosition) { enemyPosition_ = _enemyPosition; }
+
 public: // ゲッター
 
     Vector3 GetPosition() { return position_; }
 
 	bool IsDead() const { return isDead_; }
+
+	bool IsHit() const { return isHit_; }
 
 private:
 
@@ -71,6 +75,10 @@ private:
     // 移動速度
     Vector3 moveVelocity_ = {};
     float moveSpeed_ = 0.08f;
+
+	//  エネミーの位置
+	Vector3 enemyPosition_ = {};
+	Vector3 toEnemy_ = {};
 
     // 追尾カメラ
     Vector3 cameraRotate_ = { 0.3f, 0.0f, 0.0f };

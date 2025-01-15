@@ -69,6 +69,7 @@ private:
     
 	// プレイヤーの位置
     Vector3 playerPosition_{};
+	Vector3 toPlayer_{};
 	
     // 死亡
 	bool isDead_ = false;

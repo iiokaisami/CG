@@ -30,12 +30,14 @@ public:
 
 	void LoadBar(const std::string _textureFilePath,Vector3 _position);
 
-public:
+public: // セッター
 
+	// 比率の設定
 	void SetRatio(float _ratio) { ratio_ = _ratio; }
 
+	// 位置の設定
 	void SetPosition(Vector3 _position) { position_ = _position; }
-
+	
 private:
 
 	std::unique_ptr<Object3d> barObject_ = nullptr;

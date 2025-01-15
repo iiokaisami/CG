@@ -32,8 +32,27 @@ std::shared_ptr<Camera> CameraManager::GetActiveCamera() const {
     return nullptr;
 }
 
-void CameraManager::UpdateAll() {
-    for (auto& camera : cameras_) {
+void CameraManager::UpdateAll(float deltaTime)
+{
+    for (auto& camera : cameras_)
+    {
+        if (deltaTime > 0.0f)
+        {
+            camera->UpdateShake(deltaTime);
+        }
         camera->Update();
     }
+}
+
+void CameraManager::ShakeSpecificCamera(uint32_t index, float duration, float magnitude)
+{
+    if (index < cameras_.size()) 
+    {
+        cameras_[index]->StartShake(duration, magnitude);
+    }
+}
+
+void CameraManager::StartShakeActiveCamera(float duration, float magnitude)
+{
+    ShakeSpecificCamera(activeCameraIndex_, duration, magnitude);
 }

@@ -14,6 +14,10 @@ void GamePlayScene::Initialize()
 	camera_->SetPosition({ 0.0f,4.0f,-10.0f });
 	Object3dCommon::GetInstance()->SetDefaultCamera(camera_);
 	cameraManager.AddCamera(camera_);
+	camera2_ = std::make_shared<Camera>();
+	camera2_->SetRotate({ 0.3f,0.0f,0.0f });
+	camera2_->SetPosition({ 0.0f,4.0f,-10.0f });
+	cameraManager.AddCamera(camera2_);
 	cameraManager.SetActiveCamera(0);
 
 	for (uint32_t i = 0; i < 1; ++i)
@@ -69,6 +73,7 @@ void GamePlayScene::Finalize()
 	pGround_->Finalize();
 
 	cameraManager.RemoveCamera(0);
+	cameraManager.RemoveCamera(1);
 }
 
 void GamePlayScene::Update()
@@ -90,16 +95,49 @@ void GamePlayScene::Update()
 #ifdef _DEBUG
 
 	pPlayer_->ImGuiDraw();
+	
 	for (auto& enemy : pEnemy_)
 	{
 		enemy->ImGuiDraw();
 	}
+
+	ImGui::Begin("GamePlayScene");
+
+	ImGui::Text("EnemyCount : %d", enemyCount_);
+
+	ImGui::Text("HIT Position : %.0f", hitPosition_.x);
+	ImGui::Text("HIT Position : %.0f", hitPosition_.y);
+	ImGui::Text("HIT Position : %.0f", hitPosition_.z);
+
+	ImGui::End();
 
 #endif // _DEBUG
 
 
 	// 当たり判定チェック
 	collisionManager_->CheckAllCollision();
+
+	// プレイヤーがダメージを受けたときにカメラをシェイク
+	if (pPlayer_->IsHit())
+	{
+		// プレイヤーとカメラの紐づけを解く
+		//pPlayer_->SetCamera(camera2_);
+
+		// camera2_をアクティブにしてシェイク
+		cameraManager.SetActiveCamera(1);
+		cameraManager.StartShakeActiveCamera(0.2f, 0.3f); // 小規模のシェイク
+	}
+
+	// カメラの更新
+	cameraManager.UpdateAll(0.016f); // 例としてフレームレートを60FPSと仮定
+
+	// シェイクが終わったら元のカメラに戻す
+	if (!camera2_->IsShaking())
+	{
+		cameraManager.SetActiveCamera(0);
+		pPlayer_->SetCamera(cameraManager.GetActiveCamera());
+	}
+
 
 	// デスフラグの立った敵を削除
 	pEnemy_.remove_if([this](Enemy* enemy) {
@@ -124,13 +162,13 @@ void GamePlayScene::Update()
 		enemyPhaseChangeInterval_ = 120;
 	}
 
-	if (/*Input::GetInstance()->TriggerKey(DIK_P) or*/ isClear_)
+	if (isClear_)
 	{
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMECLEAR");
 	}
 
-	if (/*Input::GetInstance()->TriggerKey(DIK_O) or*/ pPlayer_->IsDead())
+	if (pPlayer_->IsDead())
 	{
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMEOVER");

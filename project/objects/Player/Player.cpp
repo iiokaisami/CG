@@ -38,7 +38,7 @@ void Player::Initialize()
     isDead_ = false;
 
 	hpBar_ = std::make_unique<HPBar>();
-    hpBar_->LoadBar("HPBar.obj", { position_.x,position_.y  + 0.3f ,position_.z });
+    hpBar_->LoadBar("HPBar.obj", { position_.x,position_.y + 0.3f ,position_.z + 0.3f });
 	hpBar_->Initialize();
     hpBar_->SetScale({ 0.3f,0.05f,0.05f });
 }
@@ -81,32 +81,37 @@ void Player::Update()
         return false;
         });
 
-
     Vector3 playerForward = { std::sinf(rotation_.y), 0.f, std::cosf(rotation_.y) };
     Vector3 playerRight = { std::cosf(rotation_.y), 0.f, -std::sinf(rotation_.y) };
 
-    moveVelocity_ = {};
+    // ノックバック
+    if (!(hitInterval_ <= 30 && hitInterval_ >= 15))
+    {
+		isHit_ = false;
 
-    // 移動処理
-    if (Input::GetInstance()->PushKey(DIK_W))
-    {
-        moveVelocity_ += playerForward * moveSpeed_;
-       // moveVelocity_.z += moveSpeed_;
-    }
-    if (Input::GetInstance()->PushKey(DIK_S))
-    {
-        moveVelocity_ += -playerForward * moveSpeed_;
-        //moveVelocity_.z += -moveSpeed_;
-    }
-    if (Input::GetInstance()->PushKey(DIK_A))
-    {
-        moveVelocity_ += -playerRight * moveSpeed_;
-        //moveVelocity_.x += -moveSpeed_;
-    }
-    if (Input::GetInstance()->PushKey(DIK_D))
-    {
-        moveVelocity_ += playerRight * moveSpeed_;
-        //moveVelocity_.x += moveSpeed_;
+        moveVelocity_ = {};
+
+        // 移動処理
+        if (Input::GetInstance()->PushKey(DIK_W))
+        {
+            moveVelocity_ += playerForward * moveSpeed_;
+            // moveVelocity_.z += moveSpeed_;
+        }
+        if (Input::GetInstance()->PushKey(DIK_S))
+        {
+            moveVelocity_ += -playerForward * moveSpeed_;
+            //moveVelocity_.z += -moveSpeed_;
+        }
+        if (Input::GetInstance()->PushKey(DIK_A))
+        {
+            moveVelocity_ += -playerRight * moveSpeed_;
+            //moveVelocity_.x += -moveSpeed_;
+        }
+        if (Input::GetInstance()->PushKey(DIK_D))
+        {
+            moveVelocity_ += playerRight * moveSpeed_;
+            //moveVelocity_.x += moveSpeed_;
+        }
     }
 
     position_ += moveVelocity_;
@@ -135,7 +140,7 @@ void Player::Update()
 
 	// hpBarの位置をセット
 	hpBar_->SetRatio((hp_ + 0.1f) / 5.0f);
-    hpBar_->SetPosition({ position_.x,position_.y + 0.8f ,position_.z });
+    hpBar_->SetPosition({ position_.x,position_.y + 0.705f ,position_.z});
     hpBar_->SetRotation(rotation_);
 
     // マウス移動
@@ -275,8 +280,12 @@ void Player::CalcCursorMove()
 void Player::OnCollisionTrigger(const Collider* _other)
 {
     _other;
-    if (/*_other->GetColliderID() != "BossMoon" && !isHit_ &&*/ hp_ > 0 && hitInterval_ == 0)
+    if (hp_ > 0 && hitInterval_ <= 0)
     {
+		isHit_ = true;
+		toEnemy_ = position_ - _other->GetPosition();
+		moveVelocity_.x = toEnemy_.x / 5;
+        moveVelocity_.z = toEnemy_.z / 5;
         hp_ -= 1;
 		hitInterval_ = 30;
     }

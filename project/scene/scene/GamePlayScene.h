@@ -64,10 +64,13 @@ public: // セッター
 	// クリアフラグ
 	void SetClearFlag(bool _isClear) { isClear_ = _isClear; }
 
+	void SetHitPosition(Vector3 _hitPosition) { hitPosition_ = _hitPosition; }
+
 private:
 
 	CameraManager& cameraManager = CameraManager::GetInstance();
 	std::shared_ptr<Camera> camera_ = std::make_shared<Camera>();
+	std::shared_ptr<Camera> camera2_ = std::make_shared<Camera>();
 	CollisionManager* collisionManager_ = nullptr; // 衝突判定マネージャ
 
 	// 2Dスプライト
@@ -95,6 +98,9 @@ private:
 	bool isEnemyPhaseChange_ = false;
 	// 敵フェーズ切り替えインターバル
 	int32_t enemyPhaseChangeInterval_ = 120;
+	
+	// 衝突位置
+	Vector3 hitPosition_{};
 
 	// ステート
 	std::unique_ptr<GamePlayState> pState_ = nullptr;
