@@ -7,19 +7,23 @@
 
 BaseScene* SceneFactory::CreateScene(const std::string& sceneName)
 {
-	// ���̃V�[���𐶐�
+	// 次のシーンを生成
 	BaseScene* newScene = nullptr;
 
-	if (sceneName == "TITLE") {
+	if (sceneName == "TITLE") 
+	{
 		newScene = new TitleScene();
 	}
-	if (sceneName == "GAMEPLAY") {
+	if (sceneName == "GAMEPLAY") 
+	{
 		newScene = new GamePlayScene();
 	}
-	if (sceneName == "GAMECLEAR") {
+	if (sceneName == "GAMECLEAR") 
+	{
 		newScene = new GameClearScene();
 	}
-	if (sceneName == "GAMEOVER") {
+	if (sceneName == "GAMEOVER") 
+	{
 		newScene = new GameOverScene();
 	}
 

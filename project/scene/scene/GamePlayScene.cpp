@@ -52,11 +52,11 @@ void GamePlayScene::Initialize()
 }
 
 void GamePlayScene::Finalize()
+{
+	for (Sprite* sprite : sprites)
 	{
-	for (Sprite* sprite : sprites) 
-		{
 		delete sprite;
-		}
+	}
 
 	pPlayer_->Finalize();
 	for (auto& enemy : pEnemy_)
@@ -69,20 +69,20 @@ void GamePlayScene::Finalize()
 	pGround_->Finalize();
 
 	cameraManager.RemoveCamera(0);
-	}
+}
 
 void GamePlayScene::Update()
-	{
+{
 	for (Sprite* sprite : sprites)
 	{
 		sprite->Update();
 
-		}
+	}
 
 	pPlayer_->Update();
 
 	pState_->Update();
-	
+
 	pSkydome_->Update();
 
 	pGround_->Update();
@@ -108,12 +108,12 @@ void GamePlayScene::Update()
 			delete enemy;
 			enemyCount_--;
 			return true;
-}
+		}
 		return false;
 		});
 
 	if (enemyPhaseChangeInterval_ > 0)
-{
+	{
 		isEnemyPhaseChange_ = false;
 		enemyPhaseChangeInterval_--;
 	}
@@ -130,11 +130,11 @@ void GamePlayScene::Update()
 		SceneManager::GetInstance()->ChangeScene("GAMECLEAR");
 	}
 
-	if (/*Input::GetInstance()->TriggerKey(DIK_O) or*/ pPlayer_->IsDead() )
+	if (/*Input::GetInstance()->TriggerKey(DIK_O) or*/ pPlayer_->IsDead())
 	{
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
-}
+	}
 }
 
 void GamePlayScene::Draw()
@@ -142,7 +142,7 @@ void GamePlayScene::Draw()
 
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
-	
+
 	// 天球描画
 	pSkydome_->Draw();
 	// 床描画
@@ -178,7 +178,7 @@ void GamePlayScene::EnemyInit()
 
 	// 敵出現カウント
 	enemyCount_++;
-	}
+}
 
 void GamePlayScene::LoadEnemyPopData1()
 {
@@ -195,7 +195,7 @@ void GamePlayScene::LoadEnemyPopData1()
 }
 
 void GamePlayScene::LoadEnemyPopData2()
-	{
+{
 	//ファイルを開く
 	std::ifstream file;
 	file.open("resources/csv/EnemyPop2.csv");
@@ -209,7 +209,7 @@ void GamePlayScene::LoadEnemyPopData2()
 }
 
 void GamePlayScene::LoadEnemyPopData3()
-		{
+{
 	//ファイルを開く
 	std::ifstream file;
 	file.open("resources/csv/EnemyPop3.csv");
@@ -220,10 +220,10 @@ void GamePlayScene::LoadEnemyPopData3()
 
 	//ファイルを閉じる
 	file.close();
-		}
+}
 
 void GamePlayScene::UpdateEnemyPopCommands1()
-		{
+{
 	//待機処理
 	if (isEnemyWaiting_)
 	{
@@ -235,7 +235,7 @@ void GamePlayScene::UpdateEnemyPopCommands1()
 			isEnemyWaiting_ = false;
 		}
 		return;
-		}
+	}
 
 	//1行分の文字列を入れる変数
 	std::string line;
@@ -253,18 +253,12 @@ void GamePlayScene::UpdateEnemyPopCommands1()
 		if (word.find("//") == 0) {
 			//コメント行を飛ばす
 			continue;
-	}
-	// 稼働中のカメラインデックス
-	activeIndex = cameraManager.GetActiveIndex();
+		}
 
-	camera1->SetRotate(camera1Rotate);
-	camera1->SetPosition(camera1Position);
-	camera2->SetRotate(camera2Rotate);
-	camera2->SetPosition(camera2Position);
 
 		// POSITONコマンド
 		if (word.find("POSITION") == 0)
-	{
+		{
 
 			// X座標
 			getline(line_stream, word, ',');
@@ -277,13 +271,13 @@ void GamePlayScene::UpdateEnemyPopCommands1()
 			// Z座標
 			getline(line_stream, word, ',');
 			float z = (float)atoi(word.c_str());
-			
+
 			enemyPosition_ = { x,y,z };
 
 			// 敵発生
 			EnemyInit();
-			
-	}
+
+		}
 		// WAITコマンド
 		else if (word.find("WAIT") == 0)
 		{
@@ -297,10 +291,6 @@ void GamePlayScene::UpdateEnemyPopCommands1()
 			isEnemyWaiting_ = true;
 			enemyWaitingTimer_ = waitTime;
 
-	uint32_t i = 1;
-	for (Object3d* object3d : object3ds)
-	{
-		object3d->Update();
 
 
 			//コマンドループを抜ける
@@ -322,7 +312,7 @@ void GamePlayScene::UpdateEnemyPopCommands2()
 			isEnemyWaiting_ = false;
 		}
 		return;
-		}
+	}
 
 	//1行分の文字列を入れる変数
 	std::string line;
@@ -340,7 +330,7 @@ void GamePlayScene::UpdateEnemyPopCommands2()
 		if (word.find("//") == 0) {
 			//コメント行を飛ばす
 			continue;
-	}
+		}
 
 
 		// POSITONコマンド
@@ -378,7 +368,6 @@ void GamePlayScene::UpdateEnemyPopCommands2()
 			isEnemyWaiting_ = true;
 			enemyWaitingTimer_ = waitTime;
 
-#endif // _DEBUG
 
 
 			//コマンドループを抜ける
@@ -391,11 +380,11 @@ void GamePlayScene::UpdateEnemyPopCommands3()
 {
 	//待機処理
 	if (isEnemyWaiting_)
-{
+	{
 		enemyWaitingTimer_--;
 
 		if (enemyWaitingTimer_ <= 0)
-	{
+		{
 			//待機完了
 			isEnemyWaiting_ = false;
 		}
@@ -418,7 +407,7 @@ void GamePlayScene::UpdateEnemyPopCommands3()
 		if (word.find("//") == 0) {
 			//コメント行を飛ばす
 			continue;
-	}
+		}
 
 
 		// POSITONコマンド
@@ -445,7 +434,7 @@ void GamePlayScene::UpdateEnemyPopCommands3()
 		}
 		// WAITコマンド
 		else if (word.find("WAIT") == 0)
-	{
+		{
 
 			getline(line_stream, word, ',');
 
@@ -462,7 +451,7 @@ void GamePlayScene::UpdateEnemyPopCommands3()
 			break;
 		}
 	}
-	}
+}
 
 void GamePlayScene::ChangeState(std::unique_ptr<GamePlayState> _pState)
 {
