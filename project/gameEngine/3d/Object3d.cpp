@@ -19,6 +19,8 @@ void Object3d::Initialize(const std::string& filePath)
 	// 平行光源リソースを作る
 	CreateDirectionalLight();
 
+	// カメラリソースを作る
+	CreateCamera();
 
 	// Transform変数を作る
 	transform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,4.0f,-10.0f} };
@@ -84,4 +86,14 @@ void Object3d::CreateDirectionalLight()
 	directionalLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
 	directionalLightData_->direction = Normalize({ 0.0f,-1.0f,0.0f });
 	directionalLightData_->intensity = 1.0f;
+}
+
+void Object3d::CreateCamera()
+{
+	// カメラリソースを作る
+	cameraResource_ = object3dCommon_->GetDxCommon()->CreateBufferResource(sizeof(CameraForGPU));
+	//書き込むためのアドレス
+	cameraResource_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
+	//デフォルト値は以下のようにしておく
+	cameraData_->worldPosition = camera_->GetPosition();
 }

@@ -27,12 +27,15 @@ private:
 
 	CameraManager& cameraManager = CameraManager::GetInstance();
 	std::shared_ptr<Camera> camera_ = std::make_shared<Camera>();
+	Vector3 cameraPosition_{};
+	Vector3 cameraRotate_{};
 
 	// 2Dスプライト
-	std::vector<Sprite*>sprites = {};
+	//std::vector<Sprite*>sprites = {};
 
 	// 3Dオブジェクト
-	//std::vector<Object3d*> object3ds = {};
+	std::vector<Object3d*> object3ds = {};
+	Vector3 position_{};
 
 	// 透明チェック
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };

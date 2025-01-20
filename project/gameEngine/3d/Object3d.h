@@ -7,6 +7,7 @@
 class Object3dCommon;
 class Model;
 
+
 class Object3d
 {
 public:
@@ -64,11 +65,20 @@ private:
 		Vector3 translate;
 	};
 
+	struct CameraForGPU
+	{
+		Vector3 worldPosition;
+	};
+
+
 	// 座標変換行列データ生成
 	void CreateTransformationMatrixData();
 
 	// 平行光源生成
 	void CreateDirectionalLight();
+
+	// カメラ
+	void CreateCamera();
 
 private:
 
@@ -82,11 +92,15 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource_{};
 	// 平行光源リソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_{};
+	// カメラリソース
+	Microsoft::WRL::ComPtr<ID3D12Resource> cameraResource_{};
+
 
 	//// バッファリソース内のデータを指すポインタ
 	TransformationMatrix* transformationMatrixData_ = nullptr;
 	DirectionalLight* directionalLightData_ = nullptr;
-	
+	CameraForGPU* cameraData_ = nullptr;
+
 	//// バッファリソースの使い道を補足するバッファビュー
 	//D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 

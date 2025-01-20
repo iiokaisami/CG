@@ -168,9 +168,6 @@ void SpriteCommon::CreateGraphicsPipeline()
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc_;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-
-
-
 	//書き込むRTVの情報
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -178,9 +175,25 @@ void SpriteCommon::CreateGraphicsPipeline()
 	graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	//どのように画面に色を打ち込むかの設定（気にしなくていい）
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
+
+	graphicsPipelineStateDesc.SampleDesc.Quality = 0; // 追加
+
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
+	graphicsPipelineStateDesc.NodeMask = 0; // 追加
+	graphicsPipelineStateDesc.CachedPSO = {}; // 追加
+	graphicsPipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE; // 追加
+
+
 	//実際に生成
 	result = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_));
+	if (FAILED(result)) {
+		// エラーメッセージを出力
+		std::stringstream ss;
+		ss << "Failed to create graphics pipeline state. HRESULT: " << std::hex << result;
+		Logger::Log(ss.str().c_str());
+		exit(EXIT_FAILURE); // プログラムを終了
+	}
 	assert(SUCCEEDED(result));
 
 	// カリングしない（裏面も表示させる）
