@@ -100,7 +100,7 @@ void SpriteCommon::CreateRootSignature()
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	//RootParameter作成。複数設定できるので配列。今回は結果１つだけなので長さ１の配列
-	D3D12_ROOT_PARAMETER rootParameters[4] = {};
+	D3D12_ROOT_PARAMETER rootParameters[5] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;		//PixelShaderで使う
 	rootParameters[0].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
@@ -118,6 +118,12 @@ void SpriteCommon::CreateRootSignature()
 	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters[3].Descriptor.RegisterSpace = 0;
 	rootParameters[3].Descriptor.ShaderRegister = 1;
+
+	// 新しいCBVを追加
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[4].Descriptor.RegisterSpace = 0;
+	rootParameters[4].Descriptor.ShaderRegister = 2;
 
 	//Smaplerの設定
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
@@ -175,25 +181,10 @@ void SpriteCommon::CreateGraphicsPipeline()
 	graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	//どのように画面に色を打ち込むかの設定（気にしなくていい）
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
-
-	graphicsPipelineStateDesc.SampleDesc.Quality = 0; // 追加
-
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-
-	graphicsPipelineStateDesc.NodeMask = 0; // 追加
-	graphicsPipelineStateDesc.CachedPSO = {}; // 追加
-	graphicsPipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE; // 追加
-
 
 	//実際に生成
 	result = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_));
-	if (FAILED(result)) {
-		// エラーメッセージを出力
-		std::stringstream ss;
-		ss << "Failed to create graphics pipeline state. HRESULT: " << std::hex << result;
-		Logger::Log(ss.str().c_str());
-		exit(EXIT_FAILURE); // プログラムを終了
-	}
 	assert(SUCCEEDED(result));
 
 	// カリングしない（裏面も表示させる）
