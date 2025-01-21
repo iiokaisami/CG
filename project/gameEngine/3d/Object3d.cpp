@@ -19,13 +19,13 @@ void Object3d::Initialize(const std::string& filePath)
 	// 平行光源リソースを作る
 	CreateDirectionalLight();
 
-	// カメラリソースを作る
-	CreateCamera();
-
 	// Transform変数を作る
 	transform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,4.0f,-10.0f} };
 
 	camera_ = object3dCommon_->GetDefaultCamera();
+
+	// カメラリソースを作る
+	CreateCamera();
 }
 
 void Object3d::Update()
@@ -53,6 +53,8 @@ void Object3d::Draw()
 	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
 	// 平行光源CBufferの場所を設定
 	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_->GetGPUVirtualAddress());
+	// カメラCBufferの場所を設定
+	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(4, cameraResource_->GetGPUVirtualAddress());
 
 	if (model_)
 	{
@@ -95,5 +97,5 @@ void Object3d::CreateCamera()
 	//書き込むためのアドレス
 	cameraResource_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
 	//デフォルト値は以下のようにしておく
-	cameraData_->worldPosition = camera_->GetPosition();
+	cameraData_->worldPosition = camera_->GetPosition(); // ここカメラセットしてない
 }
