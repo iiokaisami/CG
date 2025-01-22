@@ -45,6 +45,19 @@ void Object3d::Update()
 
 	transformationMatrixData_->WVP = worldViewProjectionMatrix;
 	transformationMatrixData_->World = worldMatrix;
+
+#ifdef _DEBUG
+
+
+	ImGui::Begin("Object3d");
+
+	ImGui::SliderFloat3("position", &cameraData_->worldPosition.x, -50.0f, 50.0f);
+
+	ImGui::End();
+
+#endif // _DEBUG
+
+
 }
 
 void Object3d::Draw()
