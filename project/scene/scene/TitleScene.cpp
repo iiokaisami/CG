@@ -2,6 +2,8 @@
 
 #include <ModelManager.h>
 
+#include "../../Easing.h"
+
 void TitleScene::Initialize()
 {
 	camera_ = std::make_shared<Camera>();
@@ -29,7 +31,7 @@ void TitleScene::Initialize()
 		object3ds.push_back(object);
 	}*/
 
-	for (uint32_t i = 0; i < 4; ++i)
+	for (uint32_t i = 0; i < 5; ++i)
 	{
 		Sprite* sprite = new Sprite();
 		if (i == 0 ) {
@@ -47,6 +49,10 @@ void TitleScene::Initialize()
 		{
 			sprite->Initialize("Title/obake2.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
 		}
+		else if (i == 4)
+		{
+			sprite->Initialize("uvChecker.png", { startPosition_.x,startPosition_.y }, { 1,1,1,1 }, { 0,0 });
+		}
 		sprites.push_back(sprite);
 
 		/*Vector2 size = sprite->GetSize();
@@ -61,6 +67,10 @@ void TitleScene::Initialize()
 	soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
 	Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
 
+	isSceneChange_ = false;
+	isScreenHide_ = false;
+	movePosition_ = { 0.0f,0.0f,0.0f };
+	t = 0.0f;
 }
 
 void TitleScene::Finalize()
@@ -117,18 +127,35 @@ void TitleScene::Update()
 
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 	{
+		isSceneChange_ = true;
+	}
+
+	if (isSceneChange_)
+	{
+		movePosition_ = Lerp(startPosition_, endPosition_, EaseOutQuint(t));
+		
+		sprites[4]->SetPosition({ movePosition_.x,movePosition_.y});
+
+		if (t >= 1.0f)
+		{
+			isScreenHide_ = true;
+		}
+	}
+
+	if (isScreenHide_)
+	{
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	}
 
-	if (Input::GetInstance()->TriggerKey(DIK_Q))
+	/*if (Input::GetInstance()->TriggerKey(DIK_Q))
 	{
 		Audio::GetInstance()->SoundStop(soundData_);
 	}
 	if (Input::GetInstance()->TriggerKey(DIK_E))
 	{
 		Audio::GetInstance()->SoundStop(soundData2_);
-	}
+	}*/
 }
 
 void TitleScene::Draw()

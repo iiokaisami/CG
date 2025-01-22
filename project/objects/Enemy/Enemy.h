@@ -79,5 +79,10 @@ private:
     // 出現
 	bool isPopMotion_ = true;
 	Vector3 popScale_ = { 0.5f,0.8f,0.5f };
+
+	// ヒット
+	bool isHit_ = false;
+	int32_t hitInterval_ = 0;
+
 };
 

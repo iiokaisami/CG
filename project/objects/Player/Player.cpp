@@ -187,10 +187,8 @@ void Player::Update()
 
 void Player::Draw()
 {
-    if (!((hitInterval_ <= 29 && hitInterval_ >= 20) or ( hitInterval_ <= 9 && hitInterval_ >= 1 )))
-    {
-        object_->Draw();
-    }
+    object_->Draw();
+
 
     // 弾描画
     for (auto& bullet : bullets_)
@@ -198,7 +196,7 @@ void Player::Draw()
         bullet->Draw();
     }
 
-	hpBar_->Draw();
+    hpBar_->Draw();
 }
 
 void Player::Draw2d()
@@ -286,7 +284,7 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		toEnemy_ = position_ - _other->GetPosition();
 		moveVelocity_.x = toEnemy_.x / 5;
         moveVelocity_.z = toEnemy_.z / 5;
-        hp_ -= 1;
+       // hp_ -= 1;
 		hitInterval_ = 30;
     }
     if (hp_ <= 0)

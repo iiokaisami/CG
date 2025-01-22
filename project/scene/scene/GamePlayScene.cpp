@@ -53,6 +53,10 @@ void GamePlayScene::Initialize()
 	pGround_->Initialize();
 
 	enemyPhaseChangeInterval_ = 120;
+
+	isSceneChange_ = false;
+	isScreenHide_ = false;
+	t = 0.0f;
 }
 
 void GamePlayScene::Finalize()
@@ -66,11 +70,14 @@ void GamePlayScene::Finalize()
 	for (auto& enemy : pEnemy_)
 	{
 		enemy->Finalize();
+		delete enemy;
 	}
 
 	pSkydome_->Finalize();
+	pSkydome_.reset();
 
 	pGround_->Finalize();
+	pGround_.reset();
 
 	cameraManager.RemoveCamera(0);
 	cameraManager.RemoveCamera(1);
@@ -124,8 +131,8 @@ void GamePlayScene::Update()
 		//pPlayer_->SetCamera(camera2_);
 
 		// camera2_をアクティブにしてシェイク
-		cameraManager.SetActiveCamera(1);
-		cameraManager.StartShakeActiveCamera(0.2f, 0.3f); // 小規模のシェイク
+		//cameraManager.SetActiveCamera(1);
+		cameraManager.StartShakeActiveCamera(0.2f, 0.1f); // 小規模のシェイク
 	}
 
 	// カメラの更新

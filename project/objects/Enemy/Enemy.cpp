@@ -56,26 +56,42 @@ void Enemy::Update()
     // 敵弾から自キャラへのベクトルを計算
     toPlayer_ = playerPosition_ - position_;
 
-    // ベクトルを正規化する
-    toPlayer_ = Normalize(toPlayer_);
-    moveVelocity_ = Normalize(moveVelocity_);
-    // 球面線形補間により、今の速度と自キャラへのベクトルを内挿し、新たな速度とする
-    moveVelocity_ = 1.0f * (Slerp(moveVelocity_, toPlayer_, 0.1f));
-
-
-    // 進行方向に見た目の回転を合わせる
-    // Y軸周り角度(θy)
-    if (!isDeadMotion_)
+    // ノックバックする間移動出来ない
+    if (!(hitInterval_ > 0))
     {
-        rotation_.y = std::atan2(moveVelocity_.x, moveVelocity_.z);
+        // ベクトルを正規化する
+        toPlayer_ = Normalize(toPlayer_);
+        moveVelocity_ = Normalize(moveVelocity_);
+        // 球面線形補間により、今の速度と自キャラへのベクトルを内挿し、新たな速度とする
+        moveVelocity_ = 1.0f * (Slerp(moveVelocity_, toPlayer_, 0.1f));
+
+        // 進行方向に見た目の回転を合わせる
+        // Y軸周り角度(θy)
+        if (!isDeadMotion_)
+        {
+            rotation_.y = std::atan2(moveVelocity_.x, moveVelocity_.z);
+            rotation_.x = 0.0f;
+        }
+
+        moveVelocity_ /= 20.0f;
+    }
+    else if (!isDeadMotion_)
+    {
+        rotation_.y = std::atan2(-moveVelocity_.x, -moveVelocity_.z);
     }
 
+  
+
     // 座標を移動させる(フレーム分の移動量を足しこむ)
-    moveVelocity_ /= 20.0f;
     if (!isPopMotion_)
     {
 		moveVelocity_.y = 0.0f;
         position_ += moveVelocity_;
+    }
+
+    if (hitInterval_ > 0)
+    {
+        hitInterval_--;
     }
 
 	// ポップモーション
@@ -139,7 +155,8 @@ void Enemy::ImGuiDraw()
 
 	ImGui::SliderFloat3("rotate", &rotation_.x, -10.0f, 10.0f);
     ImGui::SliderFloat3(" scale", &scale_.x, -10.0f, 10.0f);
-   
+	ImGui::SliderFloat3("pos", &position_.x, -200.0f,200.0f);
+
 	ImGui::End();
 
 	hpBar_->ImGuiDraw();
@@ -182,6 +199,10 @@ void Enemy::OnCollision(const Collider* _other)
 	}
     else if (hp_ > 0 && _other->GetColliderID() != "Player")
     {
+		isHit_ = true;
+        moveVelocity_.x = -toPlayer_.x;
+        moveVelocity_.z = -toPlayer_.z;
+		hitInterval_ = 7;
         hp_ -= 1;
     }
 	else if (hp_ <= 0)

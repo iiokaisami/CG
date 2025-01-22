@@ -106,6 +106,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="collider\Collider.cpp" />
     <ClCompile Include="collider\CollisionManager.cpp" />
+    <ClCompile Include="Easing.cpp" />
     <ClCompile Include="gameEngine\audio\Audio.cpp" />
     <ClCompile Include="gameEngine\math\Quaternion.cpp" />
     <ClCompile Include="GamePlayState\GamePlayState.cpp" />
@@ -159,6 +160,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="collider\Collider.h" />
     <ClInclude Include="collider\CollisionManager.h" />
     <ClInclude Include="collider\Shape.h" />
+    <ClInclude Include="Easing.h" />
     <ClInclude Include="gameEngine\audio\Audio.h" />
     <ClInclude Include="gameEngine\math\Quaternion.h" />
     <ClInclude Include="GamePlayState\GamePlayState.h" />

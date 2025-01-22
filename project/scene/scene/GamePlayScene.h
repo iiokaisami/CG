@@ -107,4 +107,11 @@ private:
 
 	bool isClear_ = false;
 
+	// シーン切り替えフラグ
+	bool isSceneChange_ = false;
+	bool isScreenHide_ = false;
+	Vector3 startPosition_ = { -1280.0f,0.0f,0.0f };
+	Vector3 endPosition_ = { 0.0f,0.0f,0.0f };
+	Vector3 movePosition_{};
+	float t = 0.0f;
 };
