@@ -23,8 +23,7 @@ void Object3dCommon::Initialize(DirectXCommon* dxCommon)
 	dxCommon_ = dxCommon;
 	device_ = dxCommon_->GetDevice();
 	commandList_ = dxCommon_->GetCommandList();
-
-
+	
 
 	CreateGraphicsPipeline();
 }
@@ -57,13 +56,11 @@ void Object3dCommon::CreateRootSignature()
 
 	rootParameters_[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters_[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	rootParameters_[3].Descriptor.RegisterSpace = 0;
 	rootParameters_[3].Descriptor.ShaderRegister = 1;
 
 	// 新しいCBVを追加
 	rootParameters_[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters_[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	rootParameters_[4].Descriptor.RegisterSpace = 0;
 	rootParameters_[4].Descriptor.ShaderRegister = 2;
 
 	descriptionRootSignature_.pParameters = rootParameters_;					//ルートパラメータ配列へのポインタ

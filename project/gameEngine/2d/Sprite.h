@@ -90,6 +90,8 @@ private: // 構造体、関数
 		int32_t enableLighting;
 		float padding[3];
 		Matrix4x4 uvTransform;
+		float shininess;
+		int phongReflection;
 	};
 
 	struct TransformationMatrix
@@ -104,6 +106,9 @@ private:
 	// spriteCommon
 	SpriteCommon* spriteCommon_ = nullptr;
 	std::string textureFilePath_;
+
+	// 定数バッファの宣言
+	Microsoft::WRL::ComPtr<ID3D12Resource> constantBuffer_;
 
 	// バッファリソース
 	//スプライト用の頂点リソースを作る

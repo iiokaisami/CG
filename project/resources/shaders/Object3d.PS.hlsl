@@ -4,9 +4,11 @@ struct Material
 {
     float4 color;
     int enableLighting;
+    float3 padding1;
     float4x4 uvTransform;
     float shininess;
-    int phonRedlection;
+    int phongReflection;
+    float2 padding2;
 };
 
 struct DirectionalLight
@@ -50,7 +52,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     {
         output.color = gMaterial.color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity;
     }
-    else if (gMaterial.phonRedlection != 0)
+    else if (gMaterial.phongReflection != 0)
     {
         output.color.rgb = diffuse + specular;
         output.color.a = gMaterial.color.a * textureColor.a;

@@ -158,6 +158,15 @@ public:
 
 	void CommandPass();
 
+	// 定数バッファの生成
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateConstantBuffer(size_t sizeInBytes);
+
+	// 定数バッファのマッピング
+	void MapConstantBuffer(Microsoft::WRL::ComPtr<ID3D12Resource> constantBuffer, void** mappedData);
+
+	// 定数バッファのアンマッピング
+	void UnmapConstantBuffer(Microsoft::WRL::ComPtr<ID3D12Resource> constantBuffer);
+
 	public: // ゲッター
 
 	// デバイス

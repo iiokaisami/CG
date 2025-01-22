@@ -20,6 +20,9 @@ void Sprite::Initialize(std::string textureFilePath,
 	materialResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(Material));
 	transformationMatrixResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(TransformationMatrix));
 
+	// 定数バッファの作成
+	constantBuffer_ = spriteCommon_->GetDxCommon()->CreateConstantBuffer(sizeof(Material));
+
 	TextureManager::GetInstance()->LoadTexture(textureFilePath_);
 	//リソースの先頭アドレスから使う
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
@@ -44,12 +47,23 @@ void Sprite::Initialize(std::string textureFilePath,
 
 	//書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
+
+
+	// 定数バッファのマッピング
+	void* mappedData = nullptr;
+	spriteCommon_->GetDxCommon()->MapConstantBuffer(constantBuffer_, &mappedData);
+
+
 	// マテリアルデータにデータの初期値を書き込む
 	//色を変える
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	//Lightingを有効にする
+	// Lightingを有効にする
 	materialData_->enableLighting = false;
 	materialData_->uvTransform = MakeIdentity4x4();
+	// Shininessを設定
+	materialData_->shininess = 0.5f;
+	// PhongReflectionを設定
+	materialData_->phongReflection = true;
 
 	//書き込むためのアドレス
 	transformationMatrixResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData_));
@@ -57,6 +71,8 @@ void Sprite::Initialize(std::string textureFilePath,
 	transformationMatrixData_->World = MakeIdentity4x4();
 	transformationMatrixData_->WVP = MakeIdentity4x4();
 
+	// 定数バッファのアンマッピング
+	spriteCommon_->GetDxCommon()->UnmapConstantBuffer(constantBuffer_);
 
 	transform_ = {
 		{1.0f,1.0f,1.0f},
