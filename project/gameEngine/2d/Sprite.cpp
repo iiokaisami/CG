@@ -20,9 +20,6 @@ void Sprite::Initialize(std::string textureFilePath,
 	materialResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(Material));
 	transformationMatrixResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(TransformationMatrix));
 
-	// 定数バッファの作成
-	constantBuffer_ = spriteCommon_->GetDxCommon()->CreateConstantBuffer(sizeof(Material));
-
 	TextureManager::GetInstance()->LoadTexture(textureFilePath_);
 	//リソースの先頭アドレスから使う
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
@@ -49,11 +46,6 @@ void Sprite::Initialize(std::string textureFilePath,
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 
 
-	// 定数バッファのマッピング
-	void* mappedData = nullptr;
-	spriteCommon_->GetDxCommon()->MapConstantBuffer(constantBuffer_, &mappedData);
-
-
 	// マテリアルデータにデータの初期値を書き込む
 	//色を変える
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -70,9 +62,6 @@ void Sprite::Initialize(std::string textureFilePath,
 	//単位行列を書き込んでおく
 	transformationMatrixData_->World = MakeIdentity4x4();
 	transformationMatrixData_->WVP = MakeIdentity4x4();
-
-	// 定数バッファのアンマッピング
-	spriteCommon_->GetDxCommon()->UnmapConstantBuffer(constantBuffer_);
 
 	transform_ = {
 		{1.0f,1.0f,1.0f},

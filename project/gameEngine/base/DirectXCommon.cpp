@@ -627,7 +627,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateBufferResource(size_
 	D3D12_RESOURCE_DESC bufferResourceDesc{};
 	//バッファリソース。テクスチャの場合はまた別の設定をする
 	bufferResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	bufferResourceDesc.Width = sizeInBytes;
+	bufferResourceDesc.Width = (sizeInBytes + 255) & ~255;
 	//バッファの場合はこれらは１にする決まり
 	bufferResourceDesc.Height = 1;
 	bufferResourceDesc.DepthOrArraySize = 1;
@@ -786,51 +786,6 @@ void DirectXCommon::CommandPass()
 	assert(SUCCEEDED(result));
 	result = commandList_->Reset(commandAllocator_.Get(), nullptr);
 	assert(SUCCEEDED(result));
-}
-
-Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateConstantBuffer(size_t sizeInBytes)
-{
-	HRESULT result = S_FALSE;
-
-	// 定数バッファ用のヒーププロパティ
-	D3D12_HEAP_PROPERTIES heapProperties{};
-	heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
-
-	// 定数バッファのリソースディスクリプション
-	D3D12_RESOURCE_DESC resourceDesc{};
-	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	resourceDesc.Width = (sizeInBytes + 255) & ~255; // 256バイトアラインメント
-	resourceDesc.Height = 1;
-	resourceDesc.DepthOrArraySize = 1;
-	resourceDesc.MipLevels = 1;
-	resourceDesc.SampleDesc.Count = 1;
-	resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-
-	Microsoft::WRL::ComPtr<ID3D12Resource> constantBuffer;
-	result = device_->CreateCommittedResource(
-		&heapProperties,
-		D3D12_HEAP_FLAG_NONE,
-		&resourceDesc,
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constantBuffer)
-	);
-	assert(SUCCEEDED(result));
-
-	return constantBuffer;
-}
-
-void DirectXCommon::MapConstantBuffer(Microsoft::WRL::ComPtr<ID3D12Resource> constantBuffer, void** mappedData)
-{
-    D3D12_RANGE readRange{ 0, 0 };
-    HRESULT result = constantBuffer->Map(0, &readRange, mappedData);
-    assert(SUCCEEDED(result));
-}
-
-void DirectXCommon::UnmapConstantBuffer(Microsoft::WRL::ComPtr<ID3D12Resource> constantBuffer)
-{
-	D3D12_RANGE writtenRange{ 0, 0 };
-	constantBuffer->Unmap(0, &writtenRange);
 }
 
 void DirectXCommon::InitializeFixFPS()

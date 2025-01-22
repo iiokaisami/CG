@@ -17,14 +17,14 @@ void TitleScene::Initialize()
 	camera_->SetRotate(cameraRotate_);
 
 	// --- 3Dオブジェクト ---
-	ModelManager::GetInstance()->LoadModel("multiMesh.obj");
+	ModelManager::GetInstance()->LoadModel("sphere.obj");
 
 	for (uint32_t i = 0; i < 1; ++i)
 	{
 		Object3d* object = new Object3d();
 		if (i == 0)
 		{
-			object->Initialize("multiMesh.obj");
+			object->Initialize("sphere.obj");
 		}
 		position_ = { 0.0f,0.0f,5.0f };
 		object->SetPosition(position_);

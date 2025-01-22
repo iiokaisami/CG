@@ -4,11 +4,9 @@ struct Material
 {
     float4 color;
     int enableLighting;
-    float3 padding1;
     float4x4 uvTransform;
     float shininess;
     int phongReflection;
-    float2 padding2;
 };
 
 struct DirectionalLight

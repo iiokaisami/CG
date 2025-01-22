@@ -48,6 +48,8 @@ private: // 構造体、関数
 		int32_t enableLighting;
 		float padding[3];
 		Matrix4x4 uvTransform;
+		float shininess;
+		int32_t phongReflection;
 	};
 
 	//mtlファイルを読む関数
