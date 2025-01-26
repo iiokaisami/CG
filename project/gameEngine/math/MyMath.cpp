@@ -276,6 +276,13 @@ Matrix4x4 Transpose(const Matrix4x4& m) {
 	}
 	return result;
 }
+// 逆転置行列
+Matrix4x4 InverseTranspose(const Matrix4x4& m)
+{
+	Matrix4x4 result = Inverse(m);
+	result = Transpose(result);
+	return result;
+}
 // 単位行列の作成
 Matrix4x4 MakeIdentity4x4() {
 	Matrix4x4 result;

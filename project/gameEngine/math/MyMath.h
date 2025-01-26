@@ -57,6 +57,8 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 Matrix4x4 Inverse(const Matrix4x4& m);
 // 転置行列
 Matrix4x4 Transpose(const Matrix4x4& m);
+// 逆転置行列
+Matrix4x4 InverseTranspose(const Matrix4x4& m);
 // 単位行列の作成
 Matrix4x4 MakeIdentity4x4();
 

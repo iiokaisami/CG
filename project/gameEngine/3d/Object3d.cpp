@@ -93,6 +93,7 @@ void Object3d::CreateTransformationMatrixData()
 	//単位行列を書き込んでおく
 	transformationMatrixData_->World = MakeIdentity4x4();
 	transformationMatrixData_->WVP = MakeIdentity4x4();
+	transformationMatrixData_->WorldInvTranspose = InverseTranspose(transformationMatrixData_->World);
 }
 
 void Object3d::CreateDirectionalLight()
