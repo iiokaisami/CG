@@ -11,6 +11,8 @@ public:
 
 	void Initialize(ModelCommon* modelCommon, const std::string& directorypath, const std::string& filename);
 
+	void UpData();
+
 	void Draw();
 
 private: // 構造体、関数
@@ -50,6 +52,7 @@ private: // 構造体、関数
 		Matrix4x4 uvTransform;
 		float shininess;
 		int32_t phongReflection;
+		int32_t halfphongReflection;
 	};
 
 	//mtlファイルを読む関数

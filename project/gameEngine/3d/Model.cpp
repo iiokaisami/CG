@@ -25,6 +25,30 @@ void Model::Initialize(ModelCommon* modelCommon, const std::string& directorypat
 
 }
 
+void Model::UpData()
+{
+#ifdef _DEBUG
+
+	// ImGuiウィンドウを作成
+	ImGui::Begin("Material Settings");
+
+	// phongReflectionのチェックボックス
+	bool phongReflection = materialData_->phongReflection == 1;
+	if (ImGui::Checkbox("Phong Reflection", &phongReflection)) {
+		materialData_->phongReflection = phongReflection ? 1 : 0;
+	}
+
+	// halfphongReflectionのチェックボックス
+	bool halfphongReflection = materialData_->halfphongReflection == 1;
+	if (ImGui::Checkbox("Half-Phong Reflection", &halfphongReflection)) {
+		materialData_->halfphongReflection = halfphongReflection ? 1 : 0;
+	}
+
+	ImGui::End();
+
+#endif // _DEBUG
+}
+
 void Model::Draw()
 {
 	// VertexBufferViewを設定
@@ -184,5 +208,6 @@ void Model::CreateMaterialData()
 	materialData_->enableLighting = false;
 	materialData_->uvTransform = MakeIdentity4x4();
 	materialData_->shininess = 50.0f;
-	materialData_->phongReflection = true;
+	materialData_->phongReflection = false;
+	materialData_->halfphongReflection = false;
 }

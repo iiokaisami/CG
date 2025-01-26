@@ -7,6 +7,7 @@ struct Material
     float4x4 uvTransform;
     float shininess;
     int phongReflection;
+    int halfphongReflection;
 };
 
 struct DirectionalLight
@@ -53,6 +54,16 @@ PixelShaderOutput main(VertexShaderOutput input)
     else if (gMaterial.phongReflection != 0)
     {
         output.color.rgb = diffuse + specular;
+        output.color.a = gMaterial.color.a * textureColor.a;
+    }
+    else if (gMaterial.halfphongReflection != 0)
+    {
+        float3 halfVector = normalize(-gDirectionalLight.direction + toEye);
+        float NDotH = dot(normalize(input.normal), halfVector);
+        float specularPow = pow(saturate(NDotH), gMaterial.shininess);
+        float3 specular = gMaterial.color.rgb * gDirectionalLight.intensity * specularPow * float3(1.0f, 1.0f, 1.0f);
+        
+        output.color.rgb = diffuse + specularPow;
         output.color.a = gMaterial.color.a * textureColor.a;
     }
     else

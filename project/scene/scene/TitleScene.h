@@ -36,6 +36,7 @@ private:
 	// 3Dオブジェクト
 	std::vector<Object3d*> object3ds = {};
 	Vector3 position_{};
+	Vector3 scale_{};
 
 	// 透明チェック
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };

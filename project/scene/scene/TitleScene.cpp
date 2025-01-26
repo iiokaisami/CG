@@ -27,9 +27,9 @@ void TitleScene::Initialize()
 			object->Initialize("sphere.obj");
 		}
 		position_ = { 0.0f,0.0f,5.0f };
+		scale_ = { 1.0f,1.0f,1.0f };
 		object->SetPosition(position_);
-
-		object->SetScale({ 1.2f,1.2f,1.2f });
+		object->SetScale(scale_);
 
 		object3ds.push_back(object);
 	}
@@ -87,6 +87,7 @@ void TitleScene::Update()
 	{
 		obj->Update();
 		obj->SetPosition(position_);
+		obj->SetScale(scale_);
 	}
 
 
@@ -111,10 +112,7 @@ void TitleScene::Update()
 	ImGui::SliderFloat3("cameraPosition", &cameraPosition_.x, -20.0f, 20.0f);
 	ImGui::SliderFloat3("cameraRotate", &cameraRotate_.x, -3.14f, 3.14f);
 
-	for (auto& obj : object3ds)
-	{
-		//ImGui::SliderFloat3("position", &.x, -20.0f, 20.0f);
-	}
+	ImGui::SliderFloat3("scale", &scale_.x, 0.0f, 10.0f);
 
 	ImGui::End();
 

@@ -48,6 +48,7 @@ void Object3d::Update()
 
 #ifdef _DEBUG
 
+	model_->UpData();
 
 	ImGui::Begin("Object3d");
 
