@@ -8,6 +8,7 @@ struct Material
     float shininess;
     int phongReflection;
     int halfphongReflection;
+    int pointLight;
 };
 
 struct DirectionalLight
@@ -17,9 +18,17 @@ struct DirectionalLight
     float intensity;
 };
 
+struct PointLight
+{
+    float4 color;
+    float3 position;
+    float intensity;
+};
+
 ConstantBuffer<Material> gMaterial : register(b0);
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
 ConstantBuffer<Camera> gCamera : register(b2);
+ConstantBuffer<PointLight> gPointLight : register(b3);
 Texture2D<float4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
@@ -65,6 +74,11 @@ PixelShaderOutput main(VertexShaderOutput input)
         
         output.color.rgb = diffuse + specularPow;
         output.color.a = gMaterial.color.a * textureColor.a;
+    }
+    else if (gMaterial.pointLight)
+    {
+        float3 pointLigttDirection = normalize(input.worldPosition - gPointLight.position);
+        
     }
     else
     {

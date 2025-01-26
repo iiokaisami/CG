@@ -63,6 +63,11 @@ void Object3dCommon::CreateRootSignature()
 	rootParameters_[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters_[4].Descriptor.ShaderRegister = 2;
 
+	// 新しいCBVを追加
+	rootParameters_[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters_[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters_[5].Descriptor.ShaderRegister = 3;
+
 	descriptionRootSignature_.pParameters = rootParameters_;					//ルートパラメータ配列へのポインタ
 	descriptionRootSignature_.NumParameters = _countof(rootParameters_);		//配列の長さ
 

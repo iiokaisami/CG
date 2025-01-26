@@ -55,7 +55,6 @@ void Object3d::Update()
 	ImGui::Text("phongReflection");
 	ImGui::SliderFloat3("position", &cameraData_->worldPosition.x, -100.0f, 100.0f);
 
-	ImGui::Text("D");
 
 	ImGui::End();
 
@@ -72,6 +71,8 @@ void Object3d::Draw()
 	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_->GetGPUVirtualAddress());
 	// カメラCBufferの場所を設定
 	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(4, cameraResource_->GetGPUVirtualAddress());
+	// ポイントライトCBufferの場所を設定
+	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(5, pointLightResource_->GetGPUVirtualAddress());
 
 	if (model_)
 	{
