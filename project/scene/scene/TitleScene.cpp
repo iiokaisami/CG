@@ -106,10 +106,15 @@ void TitleScene::Update()
 
 	ImGui::Begin("TitleScene");
 
-	ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
+	//ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
 
 	ImGui::SliderFloat3("cameraPosition", &cameraPosition_.x, -20.0f, 20.0f);
 	ImGui::SliderFloat3("cameraRotate", &cameraRotate_.x, -3.14f, 3.14f);
+
+	for (auto& obj : object3ds)
+	{
+		//ImGui::SliderFloat3("position", &.x, -20.0f, 20.0f);
+	}
 
 	ImGui::End();
 

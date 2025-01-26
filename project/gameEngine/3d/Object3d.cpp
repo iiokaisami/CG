@@ -51,7 +51,10 @@ void Object3d::Update()
 
 	ImGui::Begin("Object3d");
 
-	ImGui::SliderFloat3("position", &cameraData_->worldPosition.x, -50.0f, 50.0f);
+	ImGui::Text("phongReflection");
+	ImGui::SliderFloat3("position", &cameraData_->worldPosition.x, -100.0f, 100.0f);
+
+	ImGui::Text("D");
 
 	ImGui::End();
 
