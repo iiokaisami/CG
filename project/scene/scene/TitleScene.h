@@ -44,5 +44,7 @@ private:
 	// サウンド
 	SoundData soundData_;
 	SoundData soundData2_;
+
+	bool isTerrainDraw = false;
 };
 

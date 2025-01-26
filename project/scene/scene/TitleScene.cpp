@@ -18,13 +18,18 @@ void TitleScene::Initialize()
 
 	// --- 3Dオブジェクト ---
 	ModelManager::GetInstance()->LoadModel("sphere.obj");
+	ModelManager::GetInstance()->LoadModel("terrain.obj");
 
-	for (uint32_t i = 0; i < 1; ++i)
+	for (uint32_t i = 0; i < 2; ++i)
 	{
 		Object3d* object = new Object3d();
 		if (i == 0)
 		{
 			object->Initialize("sphere.obj");
+		}
+		if (i == 1)
+		{
+			object->Initialize("terrain.obj");
 		}
 		position_ = { 0.0f,0.0f,5.0f };
 		scale_ = { 1.0f,1.0f,1.0f };
@@ -86,10 +91,9 @@ void TitleScene::Update()
 	for (auto& obj : object3ds) 
 	{
 		obj->Update();
-		obj->SetPosition(position_);
-		obj->SetScale(scale_);
 	}
 
+	object3ds[0]->SetScale(scale_);
 
 	/*for (Sprite* sprite : sprites)
 	{
@@ -112,7 +116,12 @@ void TitleScene::Update()
 	ImGui::SliderFloat3("cameraPosition", &cameraPosition_.x, -20.0f, 20.0f);
 	ImGui::SliderFloat3("cameraRotate", &cameraRotate_.x, -3.14f, 3.14f);
 
-	ImGui::SliderFloat3("scale", &scale_.x, 0.0f, 10.0f);
+	ImGui::SliderFloat3("sphere scale", &scale_.x, 0.0f, 10.0f);
+
+	if (ImGui::Button("Terrain Draw"))
+	{
+		isTerrainDraw = !isTerrainDraw;
+	}
 
 	ImGui::End();
 
@@ -150,6 +159,11 @@ void TitleScene::Draw()
 
 	for (auto& obj : object3ds)
 	{
-		obj->Draw();
+		//obj->Draw();
+	}
+	object3ds[0]->Draw();
+	if (isTerrainDraw)
+	{
+		object3ds[1]->Draw();
 	}
 }
