@@ -51,10 +51,10 @@ void TitleScene::Initialize()
 	//}
 
 	// --- サウンド ---
-	soundData_ = Audio::GetInstance()->LoadWav("fanfare.wav");
+	/*soundData_ = Audio::GetInstance()->LoadWav("fanfare.wav");
 	Audio::GetInstance()->PlayWave(soundData_, false, 0.2f);
 	soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
-	Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
+	Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);*/
 
 }
 
@@ -119,20 +119,20 @@ void TitleScene::Update()
 #endif // _DEBUG
 
 
-	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
-	{
-		// シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
-	}
+	//if (Input::GetInstance()->TriggerKey(DIK_RETURN))
+	//{
+	//	// シーン切り替え
+	//	SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+	//}
 
-	if (Input::GetInstance()->TriggerKey(DIK_Q))
-	{
-		Audio::GetInstance()->SoundStop(soundData_);
-	}
-	if (Input::GetInstance()->TriggerKey(DIK_E))
-	{
-		Audio::GetInstance()->SoundStop(soundData2_);
-	}
+	//if (Input::GetInstance()->TriggerKey(DIK_Q))
+	//{
+	//	Audio::GetInstance()->SoundStop(soundData_);
+	//}
+	//if (Input::GetInstance()->TriggerKey(DIK_E))
+	//{
+	//	Audio::GetInstance()->SoundStop(soundData2_);
+	//}
 }
 
 void TitleScene::Draw()
