@@ -64,11 +64,11 @@ public:
 protected:
 
 	// ポインタ
-	WinApp* winApp = nullptr;
-	DirectXCommon* dxCommon = nullptr;
+	std::unique_ptr<WinApp> winApp = nullptr;
+	std::unique_ptr<DirectXCommon> dxCommon = nullptr;
+	std::unique_ptr<SrvManager> srvManager = nullptr;
 	Input* input = nullptr;
 	Audio* audio = nullptr;
-	SrvManager* srvManager = nullptr;
 
 	SceneManager* sceneManager_ = nullptr;
 	AbstractSceneFactory* sceneFactory_ = nullptr;
@@ -81,7 +81,7 @@ protected:
 
 #ifdef _DEBUG
 
-	ImGuiManager* imGuiManager = nullptr;
+	std::unique_ptr<ImGuiManager> imGuiManager = nullptr;
 
 #endif // _DEBUG
 };

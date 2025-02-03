@@ -2,6 +2,7 @@
 
 #include <Framework.h>
 #include <vector>
+#include <memory>
 #include <MyMath.h>
 #include <Object3d.h>
 

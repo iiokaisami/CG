@@ -22,7 +22,12 @@ void MyGame::Finalize()
 		debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
 	}
 
+
+	delete sceneFactory_;
+	sceneFactory_ = nullptr;
+
 	Framework::Finalize();
+
 }
 
 void MyGame::Update()

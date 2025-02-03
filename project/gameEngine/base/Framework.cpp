@@ -38,20 +38,20 @@ void Framework::Run()
 void Framework::Initialize()
 {
 	// WindowsAPIの初期化
-	winApp = new WinApp();
+	winApp = std::make_unique<WinApp>();
 	winApp->Initialize();
 
 	// DirectXの初期化
-	dxCommon = new DirectXCommon();
-	dxCommon->Initialize(winApp);
+	dxCommon = std::make_unique<DirectXCommon>();
+	dxCommon->Initialize(winApp.get());
+
+	// SRVマネージャーの初期化
+	srvManager = std::make_unique<SrvManager>();
+	srvManager->Initialize(dxCommon.get());
 
 	// キーボード入力
 	input = Input::GetInstance();
-	input->Initialize(winApp);
-
-	// SRVマネージャーの初期化
-	srvManager = new SrvManager();
-	srvManager->Initialize(dxCommon);
+	input->Initialize(winApp.get());
 
 	// オーディオ
 	audio = Audio::GetInstance();
@@ -62,24 +62,24 @@ void Framework::Initialize()
 
 	// スプライト共通部分の初期化
 	spriteCommon = SpriteCommon::GetInstance();
-	spriteCommon->Initialize(dxCommon);
+	spriteCommon->Initialize(dxCommon.get());
 
 	// テクスチャマネージャー
 	textureManager = TextureManager::GetInstance();
-	textureManager->Initialize(dxCommon, srvManager);
+	textureManager->Initialize(dxCommon.get(), srvManager.get());
 
 	// 3Dオブジェクト
 	object3dCommon = Object3dCommon::GetInstance();
-	object3dCommon->Initialize(dxCommon);
+	object3dCommon->Initialize(dxCommon.get());
 
 	// モデル共通部分の初期化
 	modelManager = ModelManager::GetInstance();
-	modelManager->Initialize(dxCommon);
+	modelManager->Initialize(dxCommon.get());
 
 #ifdef _DEBUG
 
-	imGuiManager = new ImGuiManager();
-	imGuiManager->Initialize(winApp, dxCommon);
+	imGuiManager = std::make_unique<ImGuiManager>();
+	imGuiManager->Initialize(winApp.get(), dxCommon.get());
 
 #endif // _DEBUG
 }
@@ -89,19 +89,19 @@ void Framework::Finalize()
 	// WindowsAPIの終了処理
 	winApp->Finalize();
 	// WindowsAPI解放
-	delete winApp;
+	winApp.reset();
 	winApp = nullptr;
 
 	// DirectX解放
-	delete dxCommon;
-
-	input->Finalize();
+	dxCommon.reset();
 
 	// SRVマネージャー解放
-	delete srvManager;
+	srvManager.reset();
 
 	sceneManager_->Finalize();
 	delete sceneFactory_;
+
+	input->Finalize();
 
 	audio->Finalize();
 
@@ -117,7 +117,7 @@ void Framework::Finalize()
 #ifdef _DEBUG
 	// ImGuiManager解放
 	imGuiManager->Finalize();
-	delete imGuiManager;
+	imGuiManager.reset();
 #endif // _DEBUG
 }
 

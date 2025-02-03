@@ -72,11 +72,13 @@ void GamePlayScene::Finalize()
 	{
 		delete obj;
 	}
+	object3ds.clear();
 
 	for (Sprite* sprite : sprites)
 	{
 		delete sprite;
 	}
+	sprites.clear();
 
 	// カメラ解放
 	cameraManager.RemoveCamera(0);

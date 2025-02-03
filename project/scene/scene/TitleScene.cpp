@@ -57,12 +57,14 @@ void TitleScene::Finalize()
 {
 	/*for (auto& obj : object3ds) {
 	delete obj;
-}*/
+    }*/
+	//object3ds.clear();
 
 	for (Sprite* sprite : sprites)
 	{
 		delete sprite;
 	}
+	sprites.clear();
 
 	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData_);
 	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData2_);
