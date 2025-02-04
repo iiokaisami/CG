@@ -25,5 +25,13 @@ private:
 
 	// 2Dスプライト
 	std::vector<Sprite*>sprites = {};
+
+	// シーン切り替えフラグ
+	bool isSceneStart_ = true;
+	bool isSceneChange_ = false;
+	float alpha_ = 0.0f;
+
+	// サウンド
+	SoundData soundData_;
 };
 

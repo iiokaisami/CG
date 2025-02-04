@@ -41,6 +41,10 @@ void Player::Initialize()
     hpBar_->LoadBar("HPBar.obj", { position_.x,position_.y + 0.3f ,position_.z + 0.3f });
 	hpBar_->Initialize();
     hpBar_->SetScale({ 0.3f,0.05f,0.05f });
+
+    // --- サウンド ---
+    soundData_ = Audio::GetInstance()->LoadWav("playerDamage.wav");
+	soundData2_ = Audio::GetInstance()->LoadWav("bullet.wav");
 }
 
 void Player::Finalize()
@@ -60,6 +64,9 @@ void Player::Finalize()
         }
         return false;
         });
+
+    Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData_);
+	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData2_);
 
     collisionManager_->DeleteCollider(&collider_);
 }
@@ -238,6 +245,8 @@ void Player::Attack()
             // 弾を登録する
             bullets_.push_back(newBullet);
 
+            Audio::GetInstance()->PlayWave(soundData2_, false, 0.2f);
+
             countCoolDownFrame_ = kShootCoolDownFrame_;
         }
     }
@@ -284,8 +293,10 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		toEnemy_ = position_ - _other->GetPosition();
 		moveVelocity_.x = toEnemy_.x / 5;
         moveVelocity_.z = toEnemy_.z / 5;
-       // hp_ -= 1;
+        hp_ -= 1;
 		hitInterval_ = 30;
+
+		Audio::GetInstance()->PlayWave(soundData_, false, 0.2f);
     }
     if (hp_ <= 0)
     {

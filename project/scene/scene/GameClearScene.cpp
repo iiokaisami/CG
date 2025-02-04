@@ -2,21 +2,36 @@
 
 void GameClearScene::Initialize()
 {
-	for (uint32_t i = 0; i < 2; ++i)
+	for (uint32_t i = 0; i < 3; ++i)
 	{
 		Sprite* sprite = new Sprite();
-		if (i == 0 || i == 3) {
+		if (i == 0)
+		{
 			sprite->Initialize("Clear/BG.png", { 0,0 }, { 1,1,1,1 }, { 0,0 }); 
 		}
-		else {
+		else if(i==1) 
+		{
 			sprite->Initialize("Clear/goTitle.png", { 10,10 }, { 1,1,1,1 }, { 0,0 });
 		}
+		else
+		{
+			sprite->Initialize("black.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+
 		sprites.push_back(sprite);
 
 		Vector2 size = sprite->GetSize();
 		
 		sprite->SetSize(size);
 	}
+
+	isSceneStart_ = true;
+	isSceneChange_ = false;
+	alpha_ = 1.0f;
+
+	// --- サウンド ---
+	soundData_ = Audio::GetInstance()->LoadWav("clear.wav");
+	Audio::GetInstance()->PlayWave(soundData_, false, 0.2f);
 }
 
 void GameClearScene::Finalize()
@@ -25,6 +40,8 @@ void GameClearScene::Finalize()
 	{
 		delete sprite;
 	}
+
+	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData_);
 }
 
 void GameClearScene::Update()
@@ -34,11 +51,35 @@ void GameClearScene::Update()
 		sprite->Update();
 	}
 
-	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
+	// シーンスタート
+	if (isSceneStart_ && alpha_ > 0.1f)
 	{
-		// シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		alpha_ -= 0.01f;
+
+		if (alpha_ <= 0.1f)
+		{
+			isSceneStart_ = false;
+		}
 	}
+	// フェードスタート
+	if (Input::GetInstance()->TriggerKey(DIK_RETURN) && !isSceneStart_)
+	{
+		isSceneChange_ = true;
+	}
+	// フェード
+	if (isSceneChange_)
+	{
+		alpha_ += 0.01f;
+
+		// 画面隠れたらシーン切り替え
+		if (alpha_ >= 1.1f)
+		{
+			// シーン切り替え
+			SceneManager::GetInstance()->ChangeScene("TITLE");
+		}
+	}
+
+	sprites[2]->SetColor({ 1.0f,1.0f,1.0f,alpha_ });
 }
 
 void GameClearScene::Draw()

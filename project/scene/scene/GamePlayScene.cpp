@@ -14,21 +14,56 @@ void GamePlayScene::Initialize()
 	camera_->SetPosition({ 0.0f,4.0f,-10.0f });
 	Object3dCommon::GetInstance()->SetDefaultCamera(camera_);
 	cameraManager.AddCamera(camera_);
-	camera2_ = std::make_shared<Camera>();
-	camera2_->SetRotate({ 0.3f,0.0f,0.0f });
-	camera2_->SetPosition({ 0.0f,4.0f,-10.0f });
-	cameraManager.AddCamera(camera2_);
 	cameraManager.SetActiveCamera(0);
 
-	for (uint32_t i = 0; i < 1; ++i)
+	isSceneStart_ = true;
+	isClearSceneChange_ = false;
+	isGameOverSceneChange_ = false;
+	alpha_ = 1.0f;
+
+	for (uint32_t i = 0; i < 13; ++i)
 	{
 		Sprite* sprite = new Sprite();
-		if (i == 0 || i == 3) {
+		if (i == 0) {
 			sprite->Initialize("Play/gameUI.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
 		}
-		else {
-			sprite->Initialize("monsterBall.png", { 10,10 }, { 1,1,1,1 }, { 0,0 });
+		else if(i == 1) {
+			sprite->Initialize("black.png", { 0,0 }, { 1,1,1,alpha_ }, { 0,0 });
 		}
+		else if (i == 2) {
+			sprite->Initialize("num/enemyCount.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+		else if (i == 3) {
+			sprite->Initialize("num/0.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+		else if (i == 4) {
+			sprite->Initialize("num/1.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+		else if (i == 5) {
+			sprite->Initialize("num/2.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+		else if (i == 6) {
+			sprite->Initialize("num/3.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+		else if (i == 7) {
+			sprite->Initialize("num/4.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+		else if (i == 8) {
+			sprite->Initialize("num/5.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+		else if (i == 9) {
+			sprite->Initialize("num/6.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+		else if (i == 10) {
+			sprite->Initialize("num/7.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+		else if (i == 11) {
+			sprite->Initialize("num/8.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+		else if (i == 12) {
+			sprite->Initialize("num/9.png", { 0,0 }, { 1,1,1,1 }, { 0,0 });
+		}
+
 		sprites.push_back(sprite);
 
 		Vector2 size = sprite->GetSize();
@@ -54,9 +89,9 @@ void GamePlayScene::Initialize()
 
 	enemyPhaseChangeInterval_ = 120;
 
-	isSceneChange_ = false;
-	isScreenHide_ = false;
-	t = 0.0f;
+	// --- サウンド ---
+	soundData_ = Audio::GetInstance()->LoadWav("BGM.wav");
+	Audio::GetInstance()->PlayWave(soundData_, true, 0.2f);
 }
 
 void GamePlayScene::Finalize()
@@ -80,7 +115,8 @@ void GamePlayScene::Finalize()
 	pGround_.reset();
 
 	cameraManager.RemoveCamera(0);
-	cameraManager.RemoveCamera(1);
+
+	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData_);
 }
 
 void GamePlayScene::Update()
@@ -93,7 +129,10 @@ void GamePlayScene::Update()
 
 	pPlayer_->Update();
 
-	pState_->Update();
+	if (!isSceneStart_)
+	{
+		pState_->Update();
+	}
 
 	pSkydome_->Update();
 
@@ -116,6 +155,15 @@ void GamePlayScene::Update()
 	ImGui::Text("HIT Position : %.0f", hitPosition_.y);
 	ImGui::Text("HIT Position : %.0f", hitPosition_.z);
 
+	if (ImGui::Button("CCC"))
+	{
+		isClearSceneChange_ = true;
+	}
+	if (ImGui::Button("GGG"))
+	{
+		isGameOverSceneChange_ = true;
+	}
+
 	ImGui::End();
 
 #endif // _DEBUG
@@ -127,23 +175,11 @@ void GamePlayScene::Update()
 	// プレイヤーがダメージを受けたときにカメラをシェイク
 	if (pPlayer_->IsHit())
 	{
-		// プレイヤーとカメラの紐づけを解く
-		//pPlayer_->SetCamera(camera2_);
-
-		// camera2_をアクティブにしてシェイク
-		//cameraManager.SetActiveCamera(1);
 		cameraManager.StartShakeActiveCamera(0.2f, 0.1f); // 小規模のシェイク
 	}
 
 	// カメラの更新
 	cameraManager.UpdateAll(0.016f); // 例としてフレームレートを60FPSと仮定
-
-	// シェイクが終わったら元のカメラに戻す
-	if (!camera2_->IsShaking())
-	{
-		cameraManager.SetActiveCamera(0);
-		pPlayer_->SetCamera(cameraManager.GetActiveCamera());
-	}
 
 
 	// デスフラグの立った敵を削除
@@ -169,17 +205,52 @@ void GamePlayScene::Update()
 		enemyPhaseChangeInterval_ = 120;
 	}
 
-	if (isClear_)
+	// シーンスタート
+	if (isSceneStart_ && alpha_ > 0.1f)
 	{
-		// シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("GAMECLEAR");
+		alpha_ -= 0.01f;
+
+		if (alpha_ <= 0.1f)
+		{
+			isSceneStart_ = false;
+		}
 	}
 
+	// クリアフェードスタート
+	if (isClear_ && !isSceneStart_)
+	{
+		isClearSceneChange_ = true;
+	}
+	// クリアフェード
+	if (isClearSceneChange_)
+	{
+		alpha_ += 0.01f;
+
+		// 画面隠れたらシーン切り替え
+		if (alpha_ >= 1.1f)
+		{
+			// シーン切り替え
+			SceneManager::GetInstance()->ChangeScene("GAMECLEAR");
+		}
+	}
+
+	// ゲームオーバーフェードスタート
 	if (pPlayer_->IsDead())
 	{
-		// シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+		isGameOverSceneChange_ = true;
 	}
+	if (isGameOverSceneChange_)
+	{
+		alpha_ += 0.01f;
+		// 画面隠れたらシーン切り替え
+		if (alpha_ >= 1.1f)
+		{
+			// シーン切り替え
+			SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+		}
+	}
+
+	sprites[1]->SetColor({ 1.0f,1.0f,1.0f,alpha_ });
 }
 
 void GamePlayScene::Draw()
@@ -204,10 +275,13 @@ void GamePlayScene::Draw()
 	SpriteCommon::GetInstance()->CommonDrawSetting();
 
 
-	for (Sprite* sprite : sprites)
+	for (uint32_t i = 0; i < 3; ++i)
 	{
-		sprite->Draw();
+		sprites[i]->Draw();
 	}
+
+	sprites[enemyCount_ + 3]->Draw();
+	
 }
 
 void GamePlayScene::EnemyInit()

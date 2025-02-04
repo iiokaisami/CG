@@ -39,14 +39,10 @@ private:
 
 	// サウンド
 	SoundData soundData_;
-	SoundData soundData2_;
 
 	// シーン切り替えフラグ
+	bool isSceneStart_ = true;
 	bool isSceneChange_ = false;
-	bool isScreenHide_ = false;
-	Vector3 startPosition_ = { -1280.0f,0.0f,0.0f };
-	Vector3 endPosition_ = { 0.0f,0.0f,0.0f };
-	Vector3 movePosition_{};
-	float t = 0.0f;
+	float alpha_ = 0.0f;
 };
 

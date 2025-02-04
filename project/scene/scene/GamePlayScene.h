@@ -70,7 +70,6 @@ private:
 
 	CameraManager& cameraManager = CameraManager::GetInstance();
 	std::shared_ptr<Camera> camera_ = std::make_shared<Camera>();
-	std::shared_ptr<Camera> camera2_ = std::make_shared<Camera>();
 	CollisionManager* collisionManager_ = nullptr; // 衝突判定マネージャ
 
 	// 2Dスプライト
@@ -108,10 +107,12 @@ private:
 	bool isClear_ = false;
 
 	// シーン切り替えフラグ
-	bool isSceneChange_ = false;
-	bool isScreenHide_ = false;
-	Vector3 startPosition_ = { -1280.0f,0.0f,0.0f };
-	Vector3 endPosition_ = { 0.0f,0.0f,0.0f };
-	Vector3 movePosition_{};
-	float t = 0.0f;
+	bool isSceneStart_ = true;
+	bool isClearSceneChange_ = false;
+	bool isGameOverSceneChange_ = false;
+	float alpha_ = 0.0f;
+
+
+	// サウンド
+	SoundData soundData_;
 };

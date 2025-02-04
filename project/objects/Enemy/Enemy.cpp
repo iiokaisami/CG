@@ -31,7 +31,7 @@ void Enemy::Initialize()
     collider_.SetOnCollisionTrigger(std::bind(&Enemy::OnCollision, this, std::placeholders::_1));
     collisionManager_->RegisterCollider(&collider_);
 
-    hp_ = 10;
+    hp_ = 5;
 	isDead_ = false;
 
 	// hpBar
@@ -39,11 +39,15 @@ void Enemy::Initialize()
     hpBar_->LoadBar("EnemyHPBar.obj", { position_.x,position_.y - 0.1f,position_.z });
 	hpBar_->Initialize();
 	hpBar_->SetScale({ 1.0f,0.1f,0.1f });
+
+    // --- サウンド ---
+    soundData_ = Audio::GetInstance()->LoadWav("enemyDamage.wav");
 }
 
 void Enemy::Finalize()
 {
     // 各解放処理
+    Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData_);
 
     collisionManager_->DeleteCollider(&collider_);
 }
@@ -204,6 +208,8 @@ void Enemy::OnCollision(const Collider* _other)
         moveVelocity_.z = -toPlayer_.z;
 		hitInterval_ = 7;
         hp_ -= 1;
+
+        Audio::GetInstance()->PlayWave(soundData_, false, 0.2f);
     }
 	else if (hp_ <= 0)
     {  

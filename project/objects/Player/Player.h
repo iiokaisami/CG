@@ -106,5 +106,9 @@ private:
 	bool isHit_ = false;
     uint32_t hitInterval_ = 0;
 	bool isDead_ = false;
+
+    // サウンド
+    SoundData soundData_;
+	SoundData soundData2_;
 };
 

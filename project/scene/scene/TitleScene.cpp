@@ -31,6 +31,12 @@ void TitleScene::Initialize()
 		object3ds.push_back(object);
 	}*/
 
+
+	isSceneStart_ = true;
+	isSceneChange_ = false;
+	alpha_ = 1.0f;
+
+
 	for (uint32_t i = 0; i < 5; ++i)
 	{
 		Sprite* sprite = new Sprite();
@@ -51,7 +57,7 @@ void TitleScene::Initialize()
 		}
 		else if (i == 4)
 		{
-			sprite->Initialize("uvChecker.png", { startPosition_.x,startPosition_.y }, { 1,1,1,1 }, { 0,0 });
+			sprite->Initialize("black.png", { 0.0f,0.0f }, { 1,1,1,alpha_ }, { 0,0 });
 		}
 		sprites.push_back(sprite);
 
@@ -62,15 +68,9 @@ void TitleScene::Initialize()
 	}
 
 	// --- サウンド ---
-	soundData_ = Audio::GetInstance()->LoadWav("fanfare.wav");
-	Audio::GetInstance()->PlayWave(soundData_, false, 0.2f);
-	soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
-	Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
+	soundData_ = Audio::GetInstance()->LoadWav("BGM.wav");
+	Audio::GetInstance()->PlayWave(soundData_, true, 0.2f);
 
-	isSceneChange_ = false;
-	isScreenHide_ = false;
-	movePosition_ = { 0.0f,0.0f,0.0f };
-	t = 0.0f;
 }
 
 void TitleScene::Finalize()
@@ -85,7 +85,6 @@ void TitleScene::Finalize()
 	}
 
 	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData_);
-	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData2_);
 
 	cameraManager.RemoveCamera(0);
 }
@@ -102,9 +101,10 @@ void TitleScene::Update()
 	{
 		sprite->Update();
 
-		sprite->SetColor(color_);
-
 	}
+
+
+	sprites[4]->SetColor({ 1.0f,1.0f,1.0f,alpha_ });
 
 
 
@@ -116,37 +116,42 @@ void TitleScene::Update()
 
 	ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
 
+	ImGui::SliderFloat("alpha", &alpha_, 0.0f, 1.0f);
 
 	ImGui::End();
 
 #endif // _DEBUG
 
 
-	
-	
+	// シーンスタート
+	if (isSceneStart_ && alpha_ > 0.1f)
+	{
+		alpha_ -= 0.01f;
 
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
+		if (alpha_ <= 0.1f)
+		{
+			isSceneStart_ = false;
+		}
+	}
+	// フェードスタート
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE) && !isSceneStart_ )
 	{
 		isSceneChange_ = true;
 	}
-
+	// フェード
 	if (isSceneChange_)
 	{
-		movePosition_ = Lerp(startPosition_, endPosition_, EaseOutQuint(t));
-		
-		sprites[4]->SetPosition({ movePosition_.x,movePosition_.y});
+		alpha_ += 0.01f;
 
-		if (t >= 1.0f)
+		// 画面隠れたらシーン切り替え
+		if (alpha_ >= 1.1f)
 		{
-			isScreenHide_ = true;
+			// シーン切り替え
+			SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 		}
 	}
+	
 
-	if (isScreenHide_)
-	{
-		// シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
-	}
 
 	/*if (Input::GetInstance()->TriggerKey(DIK_Q))
 	{

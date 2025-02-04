@@ -8,6 +8,7 @@
 
 #include <Object3d.h>
 #include <Sprite.h>
+#include <Framework.h>
 
 class Enemy : public GameObject
 {
@@ -84,5 +85,7 @@ private:
 	bool isHit_ = false;
 	int32_t hitInterval_ = 0;
 
+    // サウンド
+    SoundData soundData_;
 };
 
