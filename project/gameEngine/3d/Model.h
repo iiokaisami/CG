@@ -53,6 +53,7 @@ private: // 構造体、関数
 		float shininess;
 		int32_t phongReflection;
 		int32_t halfphongReflection;
+		int32_t pointLight;
 	};
 
 	//mtlファイルを読む関数

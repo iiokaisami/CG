@@ -26,6 +26,9 @@ void Object3d::Initialize(const std::string& filePath)
 
 	// カメラリソースを作る
 	CreateCamera();
+
+	// ポイントライトリソースを作る
+	CreatePointLight();
 }
 
 void Object3d::Update()
@@ -55,6 +58,8 @@ void Object3d::Update()
 	ImGui::Text("phongReflection");
 	ImGui::SliderFloat3("position", &cameraData_->worldPosition.x, -100.0f, 100.0f);
 
+	ImGui::Text("PointLight");
+	ImGui::SliderFloat3("position", &pointLightData_->position.x, -100.0f, 100.0f);
 
 	ImGui::End();
 
@@ -116,5 +121,17 @@ void Object3d::CreateCamera()
 	//書き込むためのアドレス
 	cameraResource_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
 	//デフォルト値は以下のようにしておく
-	cameraData_->worldPosition = camera_->GetPosition(); // ここカメラセットしてない
+	cameraData_->worldPosition = camera_->GetPosition();
+}
+
+void Object3d::CreatePointLight()
+{
+	// ポイントライトリソースを作る
+	pointLightResource_ = object3dCommon_->GetDxCommon()->CreateBufferResource(sizeof(PointLight));
+	//書き込むためのアドレス
+	pointLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData_));
+	//デフォルト値は以下のようにしておく
+	pointLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
+	pointLightData_->position = { 0.0f,2.0f,0.0f };
+	pointLightData_->intensity = 1.0f;
 }

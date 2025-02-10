@@ -34,14 +34,23 @@ void Model::UpData()
 
 	// phongReflectionのチェックボックス
 	bool phongReflection = materialData_->phongReflection == 1;
-	if (ImGui::Checkbox("Phong Reflection", &phongReflection)) {
+	if (ImGui::Checkbox("Phong Reflection", &phongReflection)) 
+	{
 		materialData_->phongReflection = phongReflection ? 1 : 0;
 	}
 
 	// halfphongReflectionのチェックボックス
 	bool halfphongReflection = materialData_->halfphongReflection == 1;
-	if (ImGui::Checkbox("Half-Phong Reflection", &halfphongReflection)) {
+	if (ImGui::Checkbox("Half-Phong Reflection", &halfphongReflection)) 
+	{
 		materialData_->halfphongReflection = halfphongReflection ? 1 : 0;
+	}
+
+	// pointLightのチェックボックス
+	bool pointLight = materialData_->pointLight == 1;
+	if (ImGui::Checkbox("Point Light", &pointLight)) 
+	{
+		materialData_->pointLight = pointLight ? 1 : 0;
 	}
 
 	ImGui::End();
@@ -210,4 +219,5 @@ void Model::CreateMaterialData()
 	materialData_->shininess = 50.0f;
 	materialData_->phongReflection = false;
 	materialData_->halfphongReflection = false;
+	materialData_->pointLight = false;
 }

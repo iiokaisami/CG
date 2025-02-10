@@ -51,9 +51,8 @@ PixelShaderOutput main(VertexShaderOutput input)
     float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
     float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
     
-    float3 diffuse = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
-    
-    float3 specular = gMaterial.color.rgb * gDirectionalLight.intensity * specularPow * float3(1.0f, 1.0f, 1.0f);
+    float3 diffuseDirectionalLight = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
+    float3 specularDirectionalLight = gMaterial.color.rgb * gDirectionalLight.intensity * specularPow * float3(1.0f, 1.0f, 1.0f);
     
     
     if (gMaterial.enableLighting != 0)
@@ -62,7 +61,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     }
     else if (gMaterial.phongReflection != 0)
     {
-        output.color.rgb = diffuse + specular;
+        output.color.rgb = diffuseDirectionalLight + specularDirectionalLight;
         output.color.a = gMaterial.color.a * textureColor.a;
     }
     else if (gMaterial.halfphongReflection != 0)
@@ -72,13 +71,18 @@ PixelShaderOutput main(VertexShaderOutput input)
         float specularPow = pow(saturate(NDotH), gMaterial.shininess);
         float3 specular = gMaterial.color.rgb * gDirectionalLight.intensity * specularPow * float3(1.0f, 1.0f, 1.0f);
         
-        output.color.rgb = diffuse + specularPow;
+        output.color.rgb = diffuseDirectionalLight + specularPow;
         output.color.a = gMaterial.color.a * textureColor.a;
     }
     else if (gMaterial.pointLight)
-    {
+    { 
         float3 pointLigttDirection = normalize(input.worldPosition - gPointLight.position);
+     
+        float3 diffusePointLight = gMaterial.color.rgb * textureColor.rgb * gPointLight.color.rgb * cos * gPointLight.intensity;
+        float3 specularPointLight = gMaterial.color.rgb * gPointLight.intensity * specularPow * float3(1.0f, 1.0f, 1.0f);    
         
+        output.color.rgb = diffuseDirectionalLight + specularDirectionalLight + diffusePointLight + specularPointLight;
+
     }
     else
     {
