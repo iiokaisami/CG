@@ -5,16 +5,15 @@
 void TitleScene::Initialize()
 {
 	camera_ = std::make_shared<Camera>();
-	camera_->SetRotate({ 0.3f,0.0f,0.0f });
-	camera_->SetPosition({ 0.0f,4.0f,-20.0f });
+	camera_->SetRotate({ 0.0f,0.0f,0.0f });
+	camera_->SetPosition({ 0.0f,4.0f,-5.0f });
 	Object3dCommon::GetInstance()->SetDefaultCamera(camera_);
 	cameraManager.AddCamera(camera_);
 	cameraManager.SetActiveCamera(0);
 
 	// --- 3Dオブジェクト ---
-	//ModelManager::GetInstance()->LoadModel("cube.obj");
 
-	/*for (uint32_t i = 0; i < 1; ++i)
+	for (uint32_t i = 0; i < 1; ++i)
 	{
 		Object3d* object = new Object3d();
 		if (i == 0)
@@ -27,7 +26,7 @@ void TitleScene::Initialize()
 		object->SetScale({ 1.2f,1.2f,1.2f });
 
 		object3ds.push_back(object);
-	}*/
+	}
 
 	for (uint32_t i = 0; i < 1; ++i)
 	{
@@ -55,10 +54,11 @@ void TitleScene::Initialize()
 
 void TitleScene::Finalize()
 {
-	/*for (auto& obj : object3ds) {
+	for (auto& obj : object3ds)
+	{
 	delete obj;
-    }*/
-	//object3ds.clear();
+    }
+	object3ds.clear();
 
 	for (Sprite* sprite : sprites)
 	{
@@ -74,10 +74,13 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
-	/*for (auto& obj : object3ds) {
+	for (auto& obj : object3ds) 
+	{
 		obj->Update();
 		obj->SetPosition(position_);
-	}*/
+
+		obj->SetCamera(cameraManager.GetActiveCamera());
+	}
 
 
 	for (Sprite* sprite : sprites)
@@ -88,6 +91,7 @@ void TitleScene::Update()
 
 	}
 
+	cameraManager.UpdateAll();
 
 
 #ifdef _DEBUG
@@ -98,6 +102,7 @@ void TitleScene::Update()
 
 	ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
 
+	ImGui::SliderFloat3("position", &position_.x, -100.0f, 100.0f);
 
 	ImGui::End();
 
@@ -125,9 +130,10 @@ void TitleScene::Draw()
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
-	/*for (auto& obj : object3ds) {
+	for (auto& obj : object3ds) 
+	{
 		obj->Draw();
-	}*/
+	}
 
 	// 描画前処理(Sprite)
 	SpriteCommon::GetInstance()->CommonDrawSetting();

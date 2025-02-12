@@ -19,4 +19,15 @@ public:
 
 	// 描画	
 	void Draw() override;
+
+	// モデル読み込み
+	void LoadModel();
+
+	// サウンド読み込み
+	void LoadSound();
+
+	// サウンド
+	SoundData soundData_;
+	SoundData soundData2_;
+
 };

@@ -1,5 +1,7 @@
 #include "MyGame.h"
 
+#include <thread>
+
 void MyGame::Initialize()
 {
 	Framework::Initialize();
@@ -10,6 +12,17 @@ void MyGame::Initialize()
 
 	// 最初のシーンを設定
 	SceneManager::GetInstance()->ChangeScene("TITLE");
+
+
+
+	// モデルの読み込み処理をスレッドで実行
+	std::thread loadModelThread(&MyGame::LoadModel, this);
+	std::thread loadAudioThread(&MyGame::LoadSound, this);
+
+	// スレッドの終了を待つ
+	loadModelThread.join(); 
+	loadAudioThread.join();
+
 }
 
 void MyGame::Finalize()
@@ -58,4 +71,16 @@ void MyGame::Draw()
 
 	dxCommon->PostDraw();
 
+}
+
+void MyGame::LoadModel()
+{
+	ModelManager::GetInstance()->LoadModel("cube.obj");
+	ModelManager::GetInstance()->LoadModel("axis.obj");
+}
+
+void MyGame::LoadSound()
+{
+	soundData_ = Audio::GetInstance()->LoadWav("fanfare.wav");
+	soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
 }

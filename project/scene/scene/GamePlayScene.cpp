@@ -37,7 +37,7 @@ void GamePlayScene::Initialize()
 
 
 	// --- 3Dオブジェクト ---
-	ModelManager::GetInstance()->LoadModel("axis.obj");
+
 
 	for (uint32_t i = 0; i < 1; ++i)
 	{
@@ -182,6 +182,8 @@ void GamePlayScene::Update()
 
 	ImGui::SliderFloat3("camera2Position", &camera2Position.x, -100.0f, 100.0f);
 	ImGui::SliderFloat3("camera2Rotate", &camera2Rotate.x, -10.0f, 10.0f);
+
+	ImGui::SliderFloat3("position", &position_.x, -100.0f, 100.0f);
 
 	ImGui::End();
 
