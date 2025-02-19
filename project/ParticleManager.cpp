@@ -47,6 +47,8 @@ void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager
     bufferResourceDesc.DepthOrArraySize = 1;
     bufferResourceDesc.MipLevels = 1;
     bufferResourceDesc.SampleDesc.Count = 1;
+    bufferResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR; // ここを追加
+
 
     // 頂点リソース生成
     HRESULT hr = dxCommon_->GetDevice()->CreateCommittedResource(
@@ -265,6 +267,8 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     bufferResourceDesc.DepthOrArraySize = 1;
     bufferResourceDesc.MipLevels = 1;
     bufferResourceDesc.SampleDesc.Count = 1;
+    bufferResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR; // ここを追加
+
 
     HRESULT hr = dxCommon_->GetDevice()->CreateCommittedResource(
         &uploadHeapProperties,
