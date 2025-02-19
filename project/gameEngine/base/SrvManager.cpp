@@ -1,7 +1,8 @@
 #include "SrvManager.h"
 
 #include <cassert>
-
+#include <comdef.h> // _com_error を使用するために必要
+#include <iostream>
 
 const uint32_t SrvManager::kMaxSRVCount_ = 512;
 
@@ -133,11 +134,20 @@ uint32_t SrvManager::LoadTexture(const std::string& textureFilePath)
     );
 
     if (FAILED(hr)) {
+        _com_error err(hr);
+        std::wcerr << L"Failed to create texture resource. Error: " << err.ErrorMessage() << std::endl;
         throw std::runtime_error("Failed to create texture resource.");
     }
 
     // アップロード用ヒープの作成
     const UINT64 uploadBufferSize = GetRequiredIntermediateSize(textureResource.Get(), 0, static_cast<UINT>(metadata.mipLevels));
+ 
+    // DirectX 12 のバッファサイズの制限を確認 追加
+    const UINT64 maxBufferSize = D3D12_REQ_RESOURCE_SIZE_IN_MEGABYTES_EXPRESSION_A_TERM * 1024 * 1024; // 128MB
+    if (uploadBufferSize > maxBufferSize) {
+        throw std::runtime_error("Upload buffer size exceeds the maximum allowed size.");
+    }
+
     Microsoft::WRL::ComPtr<ID3D12Resource> textureUploadHeap;
 
     //頂点リソース用のヒープ設定
@@ -155,6 +165,12 @@ uint32_t SrvManager::LoadTexture(const std::string& textureFilePath)
     bufferResourceDesc.MipLevels = 1;
     bufferResourceDesc.SampleDesc.Count = 1;
 
+    bufferResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR; // ここを追加
+    bufferResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE; // 必要に応じてフラグを設定
+
+    if (dxCommon_ == nullptr) {
+        throw std::runtime_error("dxCommon_ is not initialized.");
+    }
 
     hr = dxCommon_->GetDevice()->CreateCommittedResource(
         &uploadHeapProperties,
@@ -166,6 +182,8 @@ uint32_t SrvManager::LoadTexture(const std::string& textureFilePath)
     );
 
     if (FAILED(hr)) {
+        _com_error err(hr);
+        std::wcerr << L"Failed to create upload heap. Error: " << err.ErrorMessage() << std::endl;
         throw std::runtime_error("Failed to create upload heap.");
     }
 
