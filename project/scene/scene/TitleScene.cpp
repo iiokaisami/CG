@@ -50,6 +50,7 @@ void TitleScene::Initialize()
 	soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
 	Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
 
+
 }
 
 void TitleScene::Finalize()
@@ -107,6 +108,8 @@ void TitleScene::Update()
 	ImGui::End();
 
 #endif // _DEBUG
+
+	
 
 
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN))

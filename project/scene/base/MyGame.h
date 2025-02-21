@@ -30,4 +30,5 @@ public:
 	SoundData soundData_;
 	SoundData soundData2_;
 
+	bool useExampleGroup_ = true;
 };

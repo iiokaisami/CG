@@ -23,6 +23,11 @@ void MyGame::Initialize()
 	loadModelThread.join(); 
 	loadAudioThread.join();
 
+	// パーティクルグループの生成
+	particleManager->CreateParticleGroup("exampleGroup", "resources/images/uvChecker.png", "plane.obj");
+	particleManager->CreateParticleGroup("secondGroup", "resources/images/monsterBall.png", "plane.obj");
+
+	useExampleGroup_ = true;
 }
 
 void MyGame::Finalize()
@@ -47,6 +52,27 @@ void MyGame::Update()
 {
 	Framework::Update();
 
+
+
+#ifdef _DEBUG
+
+	if (ImGui::CollapsingHeader("particleManager"))
+	{
+		ImGui::Checkbox("Use Example Group", &useExampleGroup_);
+	}
+
+#endif // _DEBUG
+
+
+	// パーティクルの生成
+	if (useExampleGroup_)
+	{
+		particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
+	} else
+	{
+		particleManager->Emit("secondGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
+	}
+
 }
 
 void MyGame::Draw()
@@ -62,6 +88,8 @@ void MyGame::Draw()
 	dxCommon->PreDraw();
 
 	sceneManager_->Draw();
+
+	particleManager->Draw();
 
 #ifdef _DEBUG
 	// ImGui描画
