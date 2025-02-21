@@ -233,10 +233,11 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
 	particleForGPU.world = MakeIdentity4x4();
 	particleForGPU.color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	// インスタンスのデータを登録
-    for (int i = 0; i < MaxInstanceCount; ++i)
+    std::fill(particleGroups.at(name).instancingData, particleGroups.at(name).instancingData + MaxInstanceCount, particleForGPU);
+    /* for (int i = 0; i < MaxInstanceCount; ++i)
     {
 		particleGroups.at(name).instancingData[i] = particleForGPU;
-    }
+    }*/
 
 	// インスタンス用のSRVインデックス
     particleGroups.at(name).srvIndex = srvManager_->Allocate();
@@ -274,7 +275,7 @@ void ParticleManager::Update()
 			(*it).transform.translate += (*it).velocity * kDeltaTime_;
 			// パーティクルの寿命
 			(*it).currentTime += kDeltaTime_;
-			float alpha = 1.0f - ((*it).currentTime / (*it).lifeTime);
+			//float alpha = 1.0f - ((*it).currentTime / (*it).lifeTime);
 
 			Matrix4x4 worldMatrix = MakeScaleMatrix((*it).transform.scale) * matrix * MakeTranslateMatrix((*it).transform.translate);
 			Matrix4x4 wVPMatrix = worldMatrix * viewMatrix * projectionMatrix;
