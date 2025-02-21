@@ -9,6 +9,7 @@
 #include "SrvManager.h"
 #include "Particle.h"
 #include "CameraManager.h"
+#include <Object3d.h>
 
 class Object3dCommon;
 
@@ -32,7 +33,7 @@ struct ParticleGroup
 	std::list<Particle> particleList;
 	uint32_t srvIndex;
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource;
-	uint32_t kNumMaxInstance;
+	uint32_t instanceCount;
 	ParticleForGPU* instancingData;
 };
 
@@ -40,15 +41,14 @@ class ParticleManager
 {
 public:
 
-	static ParticleManager* GetInstance()
-	{
-		static ParticleManager instance;  // インスタンスを1回だけ作成
-		return &instance;
-	}
+	static ParticleManager* GetInstance();
 
 
 	// 初期化
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
+
+	// 終了
+	void Finalize();
 
 	// パイプライン生成
 	void CreatePipeline();
@@ -57,7 +57,7 @@ public:
 	void CreateRootSignature();
 
 	// パーティクルグループの生成
-	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath);
+	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath);
 
 	// 更新
 	void Update();
@@ -66,6 +66,8 @@ public:
 	void Draw();
 
 	void Emit(const std::string name, const Vector3& position, uint32_t count);
+
+	Particle MakeNewParticle(std::mt19937& randomEngine, const Vector3& position);
 
 public: // セッター
 
@@ -113,7 +115,16 @@ private: // 構造体
 		AABB area;            //!< 範囲
 	};
 
+	// 頂点データの初期化（座標など）
+	struct Vertex {
+		float position[3];
+		float color[4];
+	};
+
 private:
+
+	//インスタンス
+	static ParticleManager* instance_;
 
 	ParticleManager() = default;  // コンストラクタはプライベート
 
@@ -144,7 +155,7 @@ private:
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
 	//BlendStateの設定
 	D3D12_BLEND_DESC blendDesc_{};
-	//RasterizerStateの設定
+	//RasterizerStateの設定 
 	D3D12_RASTERIZER_DESC rasterizerDesc_{};
 
 	//shaderをコンパイルする
@@ -162,5 +173,12 @@ private:
 	AccelerationField accelerationField_;
 
 	const float kDeltaTime_ = 1.0f / 60.0f;
-};
 
+	Transform transform_;
+	Matrix4x4 backToFrontMatrix_;
+	//modelマテリアる用のリソースを作る。今回color1つ分のサイズを用意する
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
+	//マテリアルにデータを書き込む	
+	Material* materialData_ = nullptr;
+	Model* model_ = nullptr;
+};
