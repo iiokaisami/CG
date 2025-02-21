@@ -62,7 +62,10 @@ private: // 構造体、関数
 	// マテリアルデータ生成
 	void CreateMaterialData();
 
+public: // ゲッター
 
+	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView()const { return vertexBufferView_; }
+	ModelData GetModelData() { return modelData_; }
 
 private:
 	

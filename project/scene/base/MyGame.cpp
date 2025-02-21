@@ -77,6 +77,7 @@ void MyGame::LoadModel()
 {
 	ModelManager::GetInstance()->LoadModel("cube.obj");
 	ModelManager::GetInstance()->LoadModel("axis.obj");
+	ModelManager::GetInstance()->LoadModel("plane.obj");
 }
 
 void MyGame::LoadSound()
