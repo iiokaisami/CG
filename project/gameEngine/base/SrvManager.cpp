@@ -70,9 +70,23 @@ void SrvManager::CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource*
 {
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 
-	// 各項目を埋める
-	srvDesc.Buffer.NumElements = numElements;
-	srvDesc.Buffer.StructureByteStride = structureByteStride;
+	//// 各項目を埋める
+	//srvDesc.Buffer.NumElements = numElements;
+	//srvDesc.Buffer.StructureByteStride = structureByteStride;
+
+	//srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	//srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+    //srvDesc.Texture2D.MipLevels = UINT(structureByteStride);
+
+    // 各項目を埋める
+    srvDesc.Buffer.FirstElement = 0; // FirstElementを0に設定
+    srvDesc.Buffer.NumElements = numElements;
+    srvDesc.Buffer.StructureByteStride = structureByteStride;
+    srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE; // フラグを設定
+
+    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER; // 修正: D3D12_SRV_DIMENSION_BUFFERに変更
+
 
 	dxCommon_->GetDevice()->CreateShaderResourceView(pResource, &srvDesc, GetCPUDescriptorHandle(srvIndex));
 }

@@ -99,19 +99,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// SRVマネージャーの初期化
 	srvManager = new SrvManager();
 	srvManager->Initialize(dxCommon);
-
-
-
-	/// パーティクルテスト///
-
-	// パーティクルマネージャーの初期化
-	ParticleManager* particleManager = ParticleManager::GetInstance();
-	particleManager->Initialize(dxCommon, srvManager);
-
-	// パーティクルグループの作成
-	particleManager->CreateParticleGroup("exampleGroup", "resources/images/uvChecker.png");
-
-	/////////////////////////
 	
 
 
@@ -126,6 +113,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// テクスチャマネージャーの初期化
 	TextureManager::GetInstance()->Initialize(dxCommon,srvManager);
+
+
+
+	/// パーティクルテスト///
+
+	// パーティクルマネージャーの初期化
+	ParticleManager* particleManager = ParticleManager::GetInstance();
+	particleManager->Initialize(dxCommon, srvManager);
+
+	// パーティクルグループの作成
+	particleManager->CreateParticleGroup("exampleGroup", "resources/images/uvChecker.png", "plane.obj");
+
+	particleManager->CreateParticleGroup("secondGroup", "resources/images/monsterBall.png", "plane.obj");
+
+	/////////////////////////
 
 
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
@@ -273,7 +275,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Vector2 textureLeftTop{};
 	Vector2 textureSize{ 500.0f ,500.0f};
 
-	
+	bool useExampleGroup = true; // パーティクルグループの切り替えフラグ
 
 	//メインループ
 	//ウィンドウのxボタンが押されるまでループ
@@ -342,6 +344,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				ImGui::SliderFloat3("position1", &camera1Position.x, -50.0f, 50.0f);
 				ImGui::SliderFloat3("rotate2", &camera2Rotate.x, -5.0f, 5.0f);
 				ImGui::SliderFloat3("position2", &camera2Position.x, -50.0f, 50.0f);
+			}
+
+			if (ImGui::CollapsingHeader("particleManager"))
+			{
+				ImGui::Checkbox("Use Example Group", &useExampleGroup);
 			}
 
 #endif // _DEBUG
@@ -461,7 +468,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			particleManager->Update();
 
 			// パーティクルの生成
-			particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
+			if (useExampleGroup)
+			{
+				particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
+			} else
+			{
+				particleManager->Emit("secondGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
+			}
+
+
 
 			/////////////////////////
 
