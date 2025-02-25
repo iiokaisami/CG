@@ -77,7 +77,7 @@ protected:
 	Object3dCommon* object3dCommon = nullptr;
 	ModelManager* modelManager = nullptr;
 
-	ParticleManager* particleManager = nullptr;
+	//ParticleManager* particleManager = nullptr;
 
 #ifdef _DEBUG
 

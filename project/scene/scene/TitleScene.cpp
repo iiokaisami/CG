@@ -13,49 +13,49 @@ void TitleScene::Initialize()
 
 	// --- 3Dオブジェクト ---
 
-	for (uint32_t i = 0; i < 1; ++i)
-	{
-		Object3d* object = new Object3d();
-		if (i == 0)
-		{
-			object->Initialize("cube.obj");
-		}
-		position_ = { 0.0f,4.0f,10.0f };
-		object->SetPosition(position_);
+	//for (uint32_t i = 0; i < 1; ++i)
+	//{
+	//	Object3d* object = new Object3d();
+	//	if (i == 0)
+	//	{
+	//		object->Initialize("cube.obj");
+	//	}
+	//	position_ = { 0.0f,4.0f,10.0f };
+	//	object->SetPosition(position_);
 
-		object->SetScale({ 1.2f,1.2f,1.2f });
+	//	object->SetScale({ 1.2f,1.2f,1.2f });
 
-		object3ds.push_back(object);
-	}
+	//	object3ds.push_back(object);
+	//}
 
-	for (uint32_t i = 0; i < 1; ++i)
-	{
-		Sprite* sprite = new Sprite();
-		
-		if (i == 0) {
-			sprite->Initialize("uvChecker.png", { 0,0 }, color_, { 0,0 });
-		}
-		
-		sprites.push_back(sprite);
+	//for (uint32_t i = 0; i < 1; ++i)
+	//{
+	//	Sprite* sprite = new Sprite();
+	//	
+	//	if (i == 0) {
+	//		sprite->Initialize("uvChecker.png", { 0,0 }, color_, { 0,0 });
+	//	}
+	//	
+	//	sprites.push_back(sprite);
 
-		/*Vector2 size = sprite->GetSize();
-		size.x = 370.0f;
-		size.y = 370.0f;
-		sprite->SetSize(size);*/
-	}
+	//	/*Vector2 size = sprite->GetSize();
+	//	size.x = 370.0f;
+	//	size.y = 370.0f;
+	//	sprite->SetSize(size);*/
+	//}
 
-	// --- サウンド ---
-	soundData_ = Audio::GetInstance()->LoadWav("fanfare.wav");
-	Audio::GetInstance()->PlayWave(soundData_, false, 0.2f);
-	soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
-	Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
+	//// --- サウンド ---
+	//soundData_ = Audio::GetInstance()->LoadWav("fanfare.wav");
+	//Audio::GetInstance()->PlayWave(soundData_, false, 0.2f);
+	//soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
+	//Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
 
 
 }
 
 void TitleScene::Finalize()
 {
-	for (auto& obj : object3ds)
+	/*for (auto& obj : object3ds)
 	{
 	delete obj;
     }
@@ -68,14 +68,14 @@ void TitleScene::Finalize()
 	sprites.clear();
 
 	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData_);
-	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData2_);
+	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData2_);*/
 
 	cameraManager.RemoveCamera(0);
 }
 
 void TitleScene::Update()
 {
-	for (auto& obj : object3ds) 
+	/*for (auto& obj : object3ds) 
 	{
 		obj->Update();
 		obj->SetPosition(position_);
@@ -90,7 +90,7 @@ void TitleScene::Update()
 
 		sprite->SetColor(color_);
 
-	}
+	}*/
 
 	cameraManager.UpdateAll();
 
@@ -118,14 +118,14 @@ void TitleScene::Update()
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	}
 
-	if (Input::GetInstance()->TriggerKey(DIK_Q))
+	/*if (Input::GetInstance()->TriggerKey(DIK_Q))
 	{
 		Audio::GetInstance()->SoundStop(soundData_);
 	}
 	if (Input::GetInstance()->TriggerKey(DIK_E))
 	{
 		Audio::GetInstance()->SoundStop(soundData2_);
-	}
+	}*/
 }
 
 void TitleScene::Draw()
@@ -133,16 +133,16 @@ void TitleScene::Draw()
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
-	for (auto& obj : object3ds) 
+	/*for (auto& obj : object3ds) 
 	{
 		obj->Draw();
-	}
+	}*/
 
 	// 描画前処理(Sprite)
 	SpriteCommon::GetInstance()->CommonDrawSetting();
 
-	for (Sprite* sprite : sprites)
+	/*for (Sprite* sprite : sprites)
 	{
 		sprite->Draw();
-	}
+	}*/
 }

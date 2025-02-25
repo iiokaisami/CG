@@ -77,8 +77,8 @@ void Framework::Initialize()
 	modelManager->Initialize(dxCommon.get());
 
 	// パーティクル	
-	particleManager = ParticleManager::GetInstance();
-	particleManager->Initialize(dxCommon.get(),srvManager.get());
+	//particleManager = ParticleManager::GetInstance();
+	//articleManager->Initialize(dxCommon.get(),srvManager.get());
 
 
 #ifdef _DEBUG
@@ -135,5 +135,5 @@ void Framework::Update()
 	input->Update();
 
 	// パーティクル更新
-	particleManager->Update();
+	//particleManager->Update();
 }
