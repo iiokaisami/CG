@@ -8,6 +8,10 @@
 
 #include "../base/BaseScene.h"
 
+#include "../ColliderManager.h"
+#include "../Player.h"
+#include "../Field.h"
+
 class TitleScene : public BaseScene
 {
 public:
@@ -29,19 +33,16 @@ private:
 	CameraManager& cameraManager = CameraManager::GetInstance();
 	std::shared_ptr<Camera> camera_ = std::make_shared<Camera>();
 
-	// 2Dスプライト
-	std::vector<Sprite*>sprites = {};
+	Vector3 cameraPos_ = { 0.0f,4.0f,-15.0f };
+	Vector3 cameraRot_ = { 0.0f,0.0f,0.0f };
 
-	// 3Dオブジェクト
-	std::vector<Object3d*> object3ds = {};
+	// 衝突判定マネージャ
+	CollisionManager* collisionManager_ = nullptr;
 
-	Vector3 position_ = { 0.0f,0.0f,-10.0f };
+	// プレイヤー
+	std::shared_ptr<Player> player_ = nullptr;
 
-	// 透明チェック
-	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
-
-	// サウンド
-	SoundData soundData_;
-	SoundData soundData2_;
+	// フィールド
+	std::shared_ptr<Field> field_ = nullptr;
 };
 

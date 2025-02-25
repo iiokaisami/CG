@@ -9,38 +9,24 @@
 #include "Collider.h"
 #include "GameObject.h"
 
-class Player : public GameObject
+class Field : public GameObject
 {
 public:
-	
 	void Initialize() override;
 	void Finalize() override;
 	void Update() override;
 	void Draw() override;
-
-	// 移動
-	void Move();
-
-	// 場外処理
-	void OutOfField();
-
-	// ImGui
-	void ImGuiDraw();
-
+	
 private: // 衝突判定
 
 	void OnCollisionTrigger(const Collider* _other);
 
 private:
 
-	std::unique_ptr<Object3d> player_ = nullptr;
-
+	std::unique_ptr<Object3d> field_ = nullptr;
 	// 当たり判定関係
 	CollisionManager* collisionManager_ = nullptr;
 	Collider collider_;
 	AABB aabb_;
-	bool isHit_ = false;
-	bool isGround_ = false;
 
 };
-

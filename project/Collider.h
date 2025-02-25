@@ -6,7 +6,7 @@
 #include <functional>
 #include <list>
 #include <variant>
-#include "../objects/GameObject/GameObject.h"
+#include "GameObject.h"
 #include "Shape.h"
 
 class CollisionManager;
