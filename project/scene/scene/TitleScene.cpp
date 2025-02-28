@@ -16,11 +16,16 @@ void TitleScene::Initialize()
 
 
 	// プレイヤー
-	player_ = std::make_shared<Player>();
+	player_ = std::make_unique<Player>();
 	player_->Initialize();
 
+	// 敵
+	enemy_ = std::make_unique<Enemy>();
+	enemy_->Initialize();
+	enemy_->SetPlayerPos(player_->GetPosition());
+
 	// フィールド
-	field_ = std::make_shared<Field>();
+	field_ = std::make_unique<Field>();
 	field_->Initialize();
 	field_->SetPosition({ 0.0f,-0.5f,0.0f });
 }
@@ -28,7 +33,9 @@ void TitleScene::Initialize()
 void TitleScene::Finalize()
 {
 	player_->Finalize();
+	enemy_->Finalize();
 	field_->Finalize();
+	
 	
 	cameraManager.RemoveCamera(0);
 }
@@ -43,6 +50,10 @@ void TitleScene::Update()
 
 	// プレイヤー
 	player_->Update();
+
+	// 敵
+	enemy_->SetPlayerPos(player_->GetPosition());
+	enemy_->Update();
 
 	// フィールド
 	field_->Update();
@@ -62,7 +73,14 @@ void TitleScene::Update()
 	
 	ImGui::End();
 
+	// プレイヤー
 	player_->ImGuiDraw();
+
+	// 敵
+	enemy_->ImGuiDraw();
+
+	// フィールド
+	field_->ImGuiDraw();
 
 #endif // _DEBUG
 
@@ -83,6 +101,9 @@ void TitleScene::Draw()
 
 	// プレイヤー
 	player_->Draw();
+
+	// 敵
+	enemy_->Draw();
 
 	// フィールド
 	field_->Draw();

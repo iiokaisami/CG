@@ -11,6 +11,7 @@
 #include "../ColliderManager.h"
 #include "../Player.h"
 #include "../Field.h"
+#include "../Enemy.h"
 
 class TitleScene : public BaseScene
 {
@@ -33,16 +34,19 @@ private:
 	CameraManager& cameraManager = CameraManager::GetInstance();
 	std::shared_ptr<Camera> camera_ = std::make_shared<Camera>();
 
-	Vector3 cameraPos_ = { 0.0f,4.0f,-15.0f };
-	Vector3 cameraRot_ = { 0.0f,0.0f,0.0f };
+	Vector3 cameraPos_ = { 0.0f,25.0f,-32.0f };
+	Vector3 cameraRot_ = { 0.65f,0.0f,0.0f };
 
 	// 衝突判定マネージャ
 	CollisionManager* collisionManager_ = nullptr;
 
 	// プレイヤー
-	std::shared_ptr<Player> player_ = nullptr;
+	std::unique_ptr<Player> player_ = nullptr;
+
+	// 敵
+	std::unique_ptr<Enemy> enemy_ = nullptr;
 
 	// フィールド
-	std::shared_ptr<Field> field_ = nullptr;
+	std::unique_ptr<Field> field_ = nullptr;
 };
 

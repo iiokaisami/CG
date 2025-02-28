@@ -17,6 +17,8 @@ public:
 	void Update() override;
 	void Draw() override;
 	
+	void ImGuiDraw();
+
 private: // 衝突判定
 
 	void OnCollisionTrigger(const Collider* _other);

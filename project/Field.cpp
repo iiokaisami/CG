@@ -7,7 +7,7 @@ void Field::Initialize()
 	field_ = std::make_unique<Object3d>();
 	field_->Initialize("cube.obj");
 	position_ = { 0.0f,-0.5f,0.0f };
-	scale_ = { 10.0f,1.0f,10.0f };
+	scale_ = { 1.0f,1.0f,1.0f };
 	field_->SetPosition(position_);
 	field_->SetScale(scale_);
 
@@ -35,6 +35,7 @@ void Field::Update()
 {
 	field_->Update();
 	field_->SetPosition(position_);
+	field_->SetScale(scale_);
 
 	aabb_.min = position_ - field_->GetScale();
 	aabb_.max = position_ + field_->GetScale();
@@ -45,6 +46,15 @@ void Field::Update()
 void Field::Draw()
 {
 	field_->Draw();
+}
+
+void Field::ImGuiDraw()
+{
+	ImGui::Begin("Field");
+
+	ImGui::SliderFloat3("FieldSize", &scale_.x, -20.0f, 20.0f);
+	
+	ImGui::End();
 }
 
 void Field::OnCollisionTrigger(const Collider* _other)

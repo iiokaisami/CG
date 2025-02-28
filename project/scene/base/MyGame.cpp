@@ -54,14 +54,14 @@ void MyGame::Update()
 
 
 
-#ifdef _DEBUG
-
-	if (ImGui::CollapsingHeader("particleManager"))
-	{
-		ImGui::Checkbox("Use Example Group", &useExampleGroup_);
-	}
-
-#endif // _DEBUG
+//#ifdef _DEBUG
+//
+//	if (ImGui::CollapsingHeader("particleManager"))
+//	{
+//		ImGui::Checkbox("Use Example Group", &useExampleGroup_);
+//	}
+//
+//#endif // _DEBUG
 
 
 	// パーティクルの生成
