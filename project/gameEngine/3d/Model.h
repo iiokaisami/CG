@@ -61,6 +61,7 @@ private: // 構造体、関数
 		int32_t phongReflection;
 		int32_t halfphongReflection;
 		int32_t pointLight;
+		int32_t spotLight;
 	};
 
 	//mtlファイルを読む関数

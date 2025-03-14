@@ -145,6 +145,17 @@ void TitleScene::Update()
 	}
 	
 	ImGui::Checkbox("Spot Light", &enableSpotLight);
+	if (enableSpotLight)
+	{
+		ImGui::ColorEdit3("Spot Light Color", &spotLightColor.x);
+		ImGui::SliderFloat3("Spot Light Position", &spotLightPosition.x, -20.0f, 20.0f);
+		ImGui::SliderFloat3("Spot Light Direction", &spotLightDirection.x, -1.0f, 1.0f);
+		ImGui::SliderFloat("Spot Light Intensity", &spotLightIntensity, 0.0f, 1.0f);
+		ImGui::SliderFloat("Spot Light Distance", &spotLightDistance, 0.0f, 50.0f);
+		ImGui::SliderFloat("Spot Light Decay", &spotLightDecay, 0.0f, 1.0f);
+		ImGui::SliderFloat("Spot Light Cons Angle", &spotLightConsAngle, 0.0f, 10.0f);
+		ImGui::SliderFloat("Spot Light Cos FalloffStart", &spotLightCosFalloffStart, 0.0f, 1.0f);
+	}
 
 	ImGui::End();
 
@@ -209,5 +220,15 @@ void TitleScene::SetLightSettings()
         obj->SetPointLightIntensity(pointLightIntensity);
         obj->SetPointLightRadius(pointLightRadius);
         obj->SetPointLightDecay(pointLightDecay);
-    }
+
+		obj->SetSpotLightEnable(enableSpotLight);
+		obj->SetSpotLightColor({ spotLightColor.x, spotLightColor.y, spotLightColor.z, 1.0f });
+		obj->SetSpotLightPosition(spotLightPosition);
+		obj->SetSpotLightDirection(spotLightDirection);
+		obj->SetSpotLightIntensity(spotLightIntensity);
+		obj->SetSpotLightDistance(spotLightDistance);
+		obj->SetSpotLightDecay(spotLightDecay);
+		obj->SetSpotLightConsAngle(spotLightConsAngle);
+		obj->SetSpotLightCosFalloffStart(spotLightCosFalloffStart);
+	}
 }

@@ -84,6 +84,19 @@ private:
 		bool enable;
 	};
 
+	struct SpotLight
+	{
+		Vector4 color;
+		Vector3 position;
+		Vector3 direction;
+		float intensity;
+		float distance;
+		float decay;
+		float consAngle;
+		float cosFalloffStart;
+		bool enable;
+	};
+
 public:
 
 	// 座標変換行列データ生成
@@ -126,6 +139,28 @@ public:
 	//ポイントライトのオンオフ
 	void SetPointLightEnable(bool enable) { pointLightData_->enable = enable; }
 
+	//スポットライト
+	void CreateSpotLight();
+	void SetSpotLight(const SpotLight& spotLight) { *spotLightData_ = spotLight; }
+	SpotLight GetSpotLight() { return *spotLightData_; }
+	//スポットライトの位置
+	void SetSpotLightPosition(const Vector3& position) { spotLightData_->position = position; }
+	//スポットライトの向き
+	void SetSpotLightDirection(const Vector3& direction) { spotLightData_->direction = direction; }
+	//スポットライトの色
+	void SetSpotLightColor(const Vector4& color) { spotLightData_->color = color; }
+	//スポットライトの強さ
+	void SetSpotLightIntensity(float intensity) { spotLightData_->intensity = intensity; }
+	//スポットライトの距離
+	void SetSpotLightDistance(float distance) { spotLightData_->distance = distance; }
+	//スポットライトの減衰率
+	void SetSpotLightDecay(float decay) { spotLightData_->decay = decay; }
+	//スポットライトのコーンの角度
+	void SetSpotLightConsAngle(float consAngle) { spotLightData_->consAngle = consAngle; }
+	void SetSpotLightCosFalloffStart(float cosFalloffStart) { spotLightData_->cosFalloffStart = cosFalloffStart; }
+	//スポットライトのオンオフ
+	void SetSpotLightEnable(bool enable) { spotLightData_->enable = enable; }
+
 	//ライトのオンオフ
 	void SetLighting(bool enable) { enableLighting = enable; }
 
@@ -145,6 +180,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> cameraResource_{};
 	// ポイントライトリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource_{};
+	// スポットライトリソース
+	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource_{};
 
 
 	//// バッファリソース内のデータを指すポインタ
@@ -152,9 +189,8 @@ private:
 	DirectionalLight* directionalLightData_ = nullptr;
 	CameraForGPU* cameraData_ = nullptr;
 	PointLight* pointLightData_ = nullptr;
+	SpotLight* spotLightData_ = nullptr;
 
-	//// バッファリソースの使い道を補足するバッファビュー
-	//D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
 	Transform transform_{};
 

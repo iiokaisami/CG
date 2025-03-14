@@ -190,6 +190,7 @@ void Model::CreateMaterialData()
 	materialData_->phongReflection = false;
 	materialData_->halfphongReflection = false;
 	materialData_->pointLight = false;
+	materialData_->spotLight = false;
 }
 
 void Model::SetEnableLighting(bool enable)
@@ -220,6 +221,6 @@ void Model::SetEnableSpotLight(bool enable)
 {
 	if (materialData_)
 	{
-		//materialData_->spotLight = enable ? 1 : 0;
+		materialData_->spotLight = enable ? 1 : 0;
 	}
 }

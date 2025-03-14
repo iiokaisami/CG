@@ -4,6 +4,7 @@
 #include <vector>
 #include <MyMath.h>
 #include <Object3d.h>
+#include <Vector3.h>
 
 #include "../base/BaseScene.h"
 
@@ -65,4 +66,12 @@ private:
 	float pointLightRadius = 10.0f;
 	float pointLightDecay = 1.0f;
 
+	Vector3 spotLightColor = { 1.0f, 1.0f, 1.0f };
+	Vector3 spotLightPosition = { 2.0f, 1.25f, 0.0f };
+	Vector3 spotLightDirection = Normalize({ 1.0f, 1.0f, 0.0f });
+	float spotLightIntensity = 4.0f;
+	float spotLightDistance = 7.0f;
+	float spotLightDecay = 2.0f;
+	float spotLightConsAngle = std::cos(std::numbers::pi_v<float> / 3.0f);
+	float spotLightCosFalloffStart = 1.0f;
 };
