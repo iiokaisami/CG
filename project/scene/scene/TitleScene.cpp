@@ -123,10 +123,35 @@ void TitleScene::Update()
 		isTerrainDraw = !isTerrainDraw;
 	}
 
+	// ライトの設定
+	ImGui::Checkbox("Enable Lighting", &enableLighting);
+
+	ImGui::Checkbox("Directional Light", &enableDirectionalLight);
+	if (enableDirectionalLight)
+	{
+		ImGui::ColorEdit3("Directional Light Color", &directionalLightColor.x);
+		ImGui::SliderFloat3("Directional Light Direction", &directionalLightDirection.x, -1.0f, 1.0f);
+		ImGui::SliderFloat("Directional Light Intensity", &directionalLightIntensity, 0.0f, 10.0f);
+	}
+
+	ImGui::Checkbox("Point Light", &enablePointLight);
+	if (enablePointLight)
+	{
+		ImGui::ColorEdit3("Point Light Color", &pointLightColor.x);
+		ImGui::SliderFloat3("Point Light Position", &pointLightPosition.x, -20.0f, 20.0f);
+		ImGui::SliderFloat("Point Light Intensity", &pointLightIntensity, 0.0f, 1.0f);
+		ImGui::SliderFloat("Point Light Radius", &pointLightRadius, 0.0f, 50.0f);
+		ImGui::SliderFloat("Point Light Decay", &pointLightDecay, 0.0f, 1.0f);
+	}
+	
+	ImGui::Checkbox("Spot Light", &enableSpotLight);
+
 	ImGui::End();
 
 #endif // _DEBUG
 
+	// ライトの設定
+	SetLightSettings();
 
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
 	{
@@ -166,4 +191,23 @@ void TitleScene::Draw()
 	{
 		object3ds[1]->Draw();
 	}
+}
+
+void TitleScene::SetLightSettings()
+{
+    for (auto& obj : object3ds)
+    {
+        obj->SetLighting(enableLighting);
+        obj->SetDirectionalLightEnable(enableDirectionalLight);
+        obj->SetDirectionalLightColor({ directionalLightColor.x, directionalLightColor.y, directionalLightColor.z, 1.0f });
+        obj->SetDirectionalLightDirection(directionalLightDirection);
+        obj->SetDirectionalLightIntensity(directionalLightIntensity);
+
+        obj->SetPointLightEnable(enablePointLight);
+        obj->SetPointLightColor({ pointLightColor.x, pointLightColor.y, pointLightColor.z, 1.0f });
+        obj->SetPointLightPosition(pointLightPosition);
+        obj->SetPointLightIntensity(pointLightIntensity);
+        obj->SetPointLightRadius(pointLightRadius);
+        obj->SetPointLightDecay(pointLightDecay);
+    }
 }

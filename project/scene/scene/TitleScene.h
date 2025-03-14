@@ -23,6 +23,9 @@ public:
 	// 描画
 	void Draw() override;
 
+	// ライトの設定
+	void SetLightSettings();
+
 private:
 
 	CameraManager& cameraManager = CameraManager::GetInstance();
@@ -46,5 +49,20 @@ private:
 	SoundData soundData2_;
 
 	bool isTerrainDraw = false;
-};
+	bool enableLighting = false;
+	bool enableDirectionalLight = false;
+	bool enablePointLight = false;
+	bool enableSpotLight = false;
 
+	// ライトの詳細設定用変数
+	Vector3 directionalLightColor = { 1.0f, 1.0f, 1.0f };
+	Vector3 directionalLightDirection = { 0.0f, -1.0f, 0.0f };
+	float directionalLightIntensity = 1.0f;
+
+	Vector3 pointLightColor = { 1.0f, 1.0f, 1.0f };
+	Vector3 pointLightPosition = { 0.0f, 2.0f, 0.0f };
+	float pointLightIntensity = 1.0f;
+	float pointLightRadius = 10.0f;
+	float pointLightDecay = 1.0f;
+
+};

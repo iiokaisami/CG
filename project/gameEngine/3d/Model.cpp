@@ -26,37 +26,7 @@ void Model::Initialize(ModelCommon* modelCommon, const std::string& directorypat
 }
 
 void Model::UpData()
-{
-#ifdef _DEBUG
-
-	// ImGuiウィンドウを作成
-	ImGui::Begin("Material Settings");
-
-	// phongReflectionのチェックボックス
-	bool phongReflection = materialData_->phongReflection == 1;
-	if (ImGui::Checkbox("Phong Reflection", &phongReflection)) 
-	{
-		materialData_->phongReflection = phongReflection ? 1 : 0;
-	}
-
-	// halfphongReflectionのチェックボックス
-	bool halfphongReflection = materialData_->halfphongReflection == 1;
-	if (ImGui::Checkbox("Half-Phong Reflection", &halfphongReflection)) 
-	{
-		materialData_->halfphongReflection = halfphongReflection ? 1 : 0;
-	}
-
-	// pointLightのチェックボックス
-	bool pointLight = materialData_->pointLight == 1;
-	if (ImGui::Checkbox("Point Light", &pointLight)) 
-	{
-		materialData_->pointLight = pointLight ? 1 : 0;
-	}
-
-	ImGui::End();
-
-#endif // _DEBUG
-}
+{}
 
 void Model::Draw()
 {
@@ -220,4 +190,36 @@ void Model::CreateMaterialData()
 	materialData_->phongReflection = false;
 	materialData_->halfphongReflection = false;
 	materialData_->pointLight = false;
+}
+
+void Model::SetEnableLighting(bool enable)
+{
+	if (materialData_)
+	{
+		materialData_->enableLighting = enable ? 1 : 0;
+	}
+}
+
+void Model::SetEnableDirectionalLight(bool enable)
+{
+	if (materialData_)
+	{
+		materialData_->phongReflection = enable ? 1 : 0;
+	}
+}
+
+void Model::SetEnablePointLight(bool enable)
+{
+	if (materialData_)
+	{
+		materialData_->pointLight = enable ? 1 : 0;
+	}
+}
+
+void Model::SetEnableSpotLight(bool enable)
+{
+	if (materialData_)
+	{
+		//materialData_->spotLight = enable ? 1 : 0;
+	}
 }

@@ -36,6 +36,13 @@ void Object3d::Update()
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 	Matrix4x4 worldViewProjectionMatrix;
 	
+	model_->SetEnableLighting(enableLighting);
+	model_->SetEnableDirectionalLight(directionalLightData_->enable);
+	model_->SetEnablePointLight(pointLightData_->enable);
+	//model_->SetEnableSpotLight(enableSpotLight);
+
+
+
 	if (camera_)
 	{
 		const Matrix4x4& viewProjectionMatrix = camera_->GetViewProjectionMatrix();
@@ -59,7 +66,7 @@ void Object3d::Update()
 	ImGui::SliderFloat3("position", &cameraData_->worldPosition.x, -100.0f, 100.0f);
 
 	ImGui::Text("PointLight");
-	ImGui::SliderFloat3("position", &pointLightData_->position.x, -100.0f, 100.0f);
+	//ImGui::SliderFloat3("position", &pointLightData_->position.x, -100.0f, 100.0f);
 
 	ImGui::End();
 
@@ -88,6 +95,7 @@ void Object3d::Draw()
 void Object3d::SetModel(const std::string& filePath)
 {
 	model_ = ModelManager::GetInstance()->FindModel(filePath);
+	modelFilePath_ = filePath;
 }
 
 void Object3d::CreateTransformationMatrixData()
@@ -112,6 +120,7 @@ void Object3d::CreateDirectionalLight()
 	directionalLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
 	directionalLightData_->direction = Normalize({ 0.0f,-1.0f,0.0f });
 	directionalLightData_->intensity = 1.0f;
+	directionalLightData_->enable = false;
 }
 
 void Object3d::CreateCamera()
@@ -132,6 +141,14 @@ void Object3d::CreatePointLight()
 	pointLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData_));
 	//デフォルト値は以下のようにしておく
 	pointLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
-	pointLightData_->position = { 0.0f,2.0f,0.0f };
+	pointLightData_->position = { 0.0f,0.0f,0.0f };
 	pointLightData_->intensity = 1.0f;
+	pointLightData_->radius = 10.0f;
+	pointLightData_->decay = 1.0f;
+	pointLightData_->enable = false;
+}
+
+std::string Object3d::GetModel() const
+{
+	return modelFilePath_;
 }

@@ -15,6 +15,13 @@ public:
 
 	void Draw();
 
+public: // セッター
+
+	void SetEnableLighting(bool enable);
+	void SetEnableDirectionalLight(bool enable);
+	void SetEnablePointLight(bool enable);
+	void SetEnableSpotLight(bool enable);
+
 private: // 構造体、関数
 
 	struct Transform
@@ -67,7 +74,6 @@ private: // 構造体、関数
 
 	// マテリアルデータ生成
 	void CreateMaterialData();
-
 
 
 private:

@@ -43,6 +43,8 @@ public: // ゲッター
 
 	const Vector3& GetPosition() const { return transform_.translate; }
 
+	std::string GetModel() const;
+
 private:
 
 	struct TransformationMatrix
@@ -57,6 +59,7 @@ private:
 		Vector4 color;
 		Vector3 direction;
 		float intensity;
+		bool enable;
 	};
 
 	struct Transform
@@ -76,20 +79,55 @@ private:
 		Vector4 color;
 		Vector3 position;
 		float intensity;
+		float radius;
+		float decay;
+		bool enable;
 	};
 
+public:
 
 	// 座標変換行列データ生成
 	void CreateTransformationMatrixData();
 
 	// 平行光源生成
 	void CreateDirectionalLight();
+	// 平行光源
+	void SetDirectionalLight(const DirectionalLight& directionalLight) { *directionalLightData_ = directionalLight; }
+	DirectionalLight GetDirectionalLight() { return *directionalLightData_; }
+	// 平行光源向のき
+	void SetDirectionalLightDirection(const Vector3& direction) { directionalLightData_->direction = direction; }
+	// 平行光源の色
+	void SetDirectionalLightColor(const Vector4& color) { directionalLightData_->color = color; }
+	// 平行光源の強さ
+	void SetDirectionalLightIntensity(float intensity) { directionalLightData_->intensity = intensity; }
+	// ライトオンオフ
+	void SetDirectionalLightEnable(bool enable) { directionalLightData_->enable = enable; }
 
 	// カメラ
 	void CreateCamera();
 
 	// ポイントライト
 	void CreatePointLight();
+	//ポイントライト
+	void SetPointLight(const PointLight& pointLight) { *pointLightData_ = pointLight; }
+	PointLight GetPointLight() { return *pointLightData_; }
+	//ポイントライトの位置
+	void SetPointLightPosition(const Vector3& position) { pointLightData_->position = position; }
+	//ポイントライトの色
+	void SetPointLightColor(const Vector4& color) { pointLightData_->color = color; }
+	//ポイントライトの強さ
+	void SetPointLightIntensity(float intensity) { pointLightData_->intensity = intensity; }
+	//ポイントライトの半径
+	void SetPointLightRadius(float radius) { pointLightData_->radius = radius; }
+	float GetPointLightRadius() { return pointLightData_->radius; }
+	//ポイントライトの減衰率
+	void SetPointLightDecay(float decay) { pointLightData_->decay = decay; }
+	float GetPointLightDecay() { return pointLightData_->decay; }
+	//ポイントライトのオンオフ
+	void SetPointLightEnable(bool enable) { pointLightData_->enable = enable; }
+
+	//ライトのオンオフ
+	void SetLighting(bool enable) { enableLighting = enable; }
 
 private:
 
@@ -119,5 +157,10 @@ private:
 	//D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
 	Transform transform_{};
+
+	//ライトのオンオフ
+	bool enableLighting = false;
+
+	std::string modelFilePath_;
 };
 

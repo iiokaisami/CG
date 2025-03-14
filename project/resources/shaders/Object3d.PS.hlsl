@@ -23,6 +23,8 @@ struct PointLight
     float4 color;
     float3 position;
     float intensity;
+    float radius;
+    float decay;
 };
 
 ConstantBuffer<Material> gMaterial : register(b0);
@@ -76,12 +78,30 @@ PixelShaderOutput main(VertexShaderOutput input)
     }
     else if (gMaterial.pointLight)
     { 
-        float3 pointLigttDirection = normalize(input.worldPosition - gPointLight.position);
-     
-        float3 diffusePointLight = gMaterial.color.rgb * textureColor.rgb * gPointLight.color.rgb * cos * gPointLight.intensity;
-        float3 specularPointLight = gMaterial.color.rgb * gPointLight.intensity * specularPow * float3(1.0f, 1.0f, 1.0f);    
+        // ポイントライト
+        float3 diffusePointLight = { 0.0f, 0.0f, 0.0f };
+        float3 specularPointLight = { 0.0f, 0.0f, 0.0f };
         
-        output.color.rgb = diffuseDirectionalLight + specularDirectionalLight + diffusePointLight + specularPointLight;
+        //光源から物体への方向
+        float3 pointLightDirection = normalize(input.worldPosition - gPointLight.position);
+        //反射の計算
+        float3 toEye = normalize(gCamera.worldPosition - input.worldPosition);
+        float3 reflectLight = reflect(pointLightDirection, normalize(input.normal));
+        float3 halfVector = normalize(-pointLightDirection + toEye);
+        float NdotH = dot(normalize(input.normal), halfVector);
+        float specularPow = pow(saturate(NdotH), gMaterial.shininess);
+            
+        float NdotL = dot(normalize(input.normal), -pointLightDirection);
+        float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
+        float distance = length(gPointLight.position - input.worldPosition); //ポイントライトへの距離
+        float factor = pow(saturate(-distance / gPointLight.radius + 1.0f), gPointLight.decay);
+        //拡散反射
+        diffusePointLight += gMaterial.color.rgb * textureColor.rgb * gPointLight.color.rgb * cos * gPointLight.intensity * factor;
+        //鏡面反射
+        float3 specularColor = { 1.0f, 1.0f, 1.0f }; //この値はMaterialで変えられるようになるとよい。
+        specularPointLight += gPointLight.color.rgb * gPointLight.intensity * specularPow * specularColor * factor;
+    
+        output.color.rgb = diffusePointLight + specularPointLight;
 
     }
     else
