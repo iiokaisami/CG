@@ -31,6 +31,9 @@ public:
 	// 初期化
 	void Initialize(WinApp* winApp);
 
+	void ReportLiveObjects();
+	void Finalize();
+
 	/// <summary>
 	/// デバイスの初期化
 	/// </summary>

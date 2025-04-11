@@ -77,6 +77,11 @@ private: // 構造体、関数
 	void CreateMaterialData();
 
 
+public: // ゲッター
+
+	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView()const { return vertexBufferView_; }
+	ModelData GetModelData() { return modelData_; }
+
 private:
 	
 	ModelCommon* modelCommon_ = nullptr;

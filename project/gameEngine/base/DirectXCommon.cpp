@@ -73,6 +73,23 @@ void DirectXCommon::Initialize(WinApp* winApp)
 	
 }
 
+void DirectXCommon::ReportLiveObjects()
+{
+	Microsoft::WRL::ComPtr<IDXGIDebug1> debug;
+	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug))))
+	{
+		debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+	}
+}
+
+void DirectXCommon::Finalize()
+{
+	// 既存のリソース解放処理
+
+   // Report live objects
+	ReportLiveObjects();
+}
+
 void DirectXCommon::InitializeDevice()
 {
 	HRESULT result = S_FALSE;
