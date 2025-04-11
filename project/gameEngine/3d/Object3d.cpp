@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <numbers>
 
 #include "Object3dCommon.h"
 #include "Model.h"
@@ -19,11 +20,19 @@ void Object3d::Initialize(const std::string& filePath)
 	// 平行光源リソースを作る
 	CreateDirectionalLight();
 
-
 	// Transform変数を作る
 	transform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,4.0f,-10.0f} };
 
 	camera_ = object3dCommon_->GetDefaultCamera();
+
+	// カメラリソースを作る
+	CreateCamera();
+
+	// ポイントライトリソースを作る
+	CreatePointLight();
+
+	// スポットライトリソースを作る
+	CreateSpotLight();
 }
 
 void Object3d::Update()
@@ -31,6 +40,13 @@ void Object3d::Update()
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 	Matrix4x4 worldViewProjectionMatrix;
 	
+	model_->SetEnableLighting(enableLighting);
+	model_->SetEnableDirectionalLight(directionalLightData_->enable);
+	model_->SetEnablePointLight(pointLightData_->enable);
+	model_->SetEnableSpotLight(spotLightData_->enable);
+
+
+
 	if (camera_)
 	{
 		const Matrix4x4& viewProjectionMatrix = camera_->GetViewProjectionMatrix();
@@ -51,6 +67,12 @@ void Object3d::Draw()
 	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
 	// 平行光源CBufferの場所を設定
 	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_->GetGPUVirtualAddress());
+	// カメラCBufferの場所を設定
+	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(4, cameraResource_->GetGPUVirtualAddress());
+	// ポイントライトCBufferの場所を設定
+	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(5, pointLightResource_->GetGPUVirtualAddress());
+	// スポットライトCBufferの場所を設定
+	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(6, spotLightResource_->GetGPUVirtualAddress());
 
 	if (model_)
 	{
@@ -61,6 +83,7 @@ void Object3d::Draw()
 void Object3d::SetModel(const std::string& filePath)
 {
 	model_ = ModelManager::GetInstance()->FindModel(filePath);
+	modelFilePath_ = filePath;
 }
 
 void Object3d::CreateTransformationMatrixData()
@@ -72,6 +95,7 @@ void Object3d::CreateTransformationMatrixData()
 	//単位行列を書き込んでおく
 	transformationMatrixData_->World = MakeIdentity4x4();
 	transformationMatrixData_->WVP = MakeIdentity4x4();
+	transformationMatrixData_->WorldInvTranspose = InverseTranspose(transformationMatrixData_->World);
 }
 
 void Object3d::CreateDirectionalLight()
@@ -84,4 +108,53 @@ void Object3d::CreateDirectionalLight()
 	directionalLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
 	directionalLightData_->direction = Normalize({ 0.0f,-1.0f,0.0f });
 	directionalLightData_->intensity = 1.0f;
+	directionalLightData_->enable = false;
+}
+
+void Object3d::CreateCamera()
+{
+	// カメラリソースを作る
+	cameraResource_ = object3dCommon_->GetDxCommon()->CreateBufferResource(sizeof(CameraForGPU));
+	//書き込むためのアドレス
+	cameraResource_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
+	//デフォルト値は以下のようにしておく
+	cameraData_->worldPosition = camera_->GetPosition();
+}
+
+void Object3d::CreatePointLight()
+{
+	// ポイントライトリソースを作る
+	pointLightResource_ = object3dCommon_->GetDxCommon()->CreateBufferResource(sizeof(PointLight));
+	// 書き込むためのアドレス
+	pointLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData_));
+	// デフォルト値は以下のようにしておく
+	pointLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
+	pointLightData_->position = { 0.0f,0.0f,0.0f };
+	pointLightData_->intensity = 1.0f;
+	pointLightData_->radius = 10.0f;
+	pointLightData_->decay = 1.0f;
+	pointLightData_->enable = false;
+}
+
+void Object3d::CreateSpotLight()
+{
+	// スポットライトリソースを作る
+	spotLightResource_ = object3dCommon_->GetDxCommon()->CreateBufferResource(sizeof(SpotLight));
+	// 書き込むためのアドレス
+	spotLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&spotLightData_));
+	// デフォルト値は以下のようにしておく
+	spotLightData_->color = { 1.0f,1.0f,1.0f,1.0f };
+	spotLightData_->position = { 2.0f,1.25f,0.0f };
+	spotLightData_->intensity = 4.0f;
+	spotLightData_->direction = Normalize({ 0.0f,-1.0f,0.0f });
+	spotLightData_->distance = 7.0f;
+	spotLightData_->decay = 2.0f;
+	spotLightData_->consAngle = std::cos(std::numbers::pi_v<float> / 3.0f);
+	spotLightData_->cosFalloffStart = 1.0f;
+	spotLightData_->enable = false;
+}
+
+std::string Object3d::GetModel() const
+{
+	return modelFilePath_;
 }

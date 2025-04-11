@@ -31,6 +31,9 @@ public:
 	// 初期化
 	void Initialize(WinApp* winApp);
 
+	void ReportLiveObjects();
+	void Finalize();
+
 	/// <summary>
 	/// デバイスの初期化
 	/// </summary>
@@ -158,7 +161,8 @@ public:
 
 	void CommandPass();
 
-	public: // ゲッター
+
+public: // ゲッター
 
 	// デバイス
 	Microsoft::WRL::ComPtr<ID3D12Device> GetDevice() { return device_; }

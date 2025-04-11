@@ -88,7 +88,7 @@ private: // 構造体
 		Vector2 texcoord;
 		Vector3 normal;
 	};
-	
+
 	struct ModelData
 	{
 		std::vector<VertexData> vertices;
@@ -109,7 +109,7 @@ private: // 構造体
 		Vector3 max;//!< 最大点
 	};
 
-	struct AccelerationField 
+	struct AccelerationField
 	{
 		Vector3 acceleration; //!< 加速度
 		AABB area;            //!< 範囲

@@ -21,10 +21,10 @@ ParticleManager* ParticleManager::GetInstance()
 
 void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
-	dxCommon_ = dxCommon;
-	srvManager_ = srvManager;
+    dxCommon_ = dxCommon;
+    srvManager_ = srvManager;
     object3dCommon_ = Object3dCommon::GetInstance();
-	// ランダムエンジンの初期化
+    // ランダムエンジンの初期化
     randomEngine_ = std::mt19937{ std::random_device{}() };
 
     // パイプライン生成
@@ -91,15 +91,15 @@ void ParticleManager::CreatePipeline()
 
 void ParticleManager::CreateRootSignature()
 {
-	HRESULT result = S_FALSE;
+    HRESULT result = S_FALSE;
 
-	//ディスクリプタレンジの生成
+    //ディスクリプタレンジの生成
     descriptorRange_[0].BaseShaderRegister = 0;
     descriptorRange_[0].NumDescriptors = 1;
     descriptorRange_[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
     descriptorRange_[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	descriptionRootSignature_.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+    descriptionRootSignature_.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	//RootParameter作成。複数設定できるので配列。今回は結果１つだけなので長さ１の配列
     D3D12_ROOT_PARAMETER rootParameter[3] = {};
@@ -120,8 +120,8 @@ void ParticleManager::CreateRootSignature()
     descriptionRootSignature_.pParameters = rootParameter;
     descriptionRootSignature_.NumParameters = _countof(rootParameter);
 
-	//Smaplerの設定
-	staticSamplers_[0].Filter = D3D12_FILTER_MIN_MAG_POINT_MIP_LINEAR;
+    //Smaplerの設定
+    staticSamplers_[0].Filter = D3D12_FILTER_MIN_MAG_POINT_MIP_LINEAR;
     staticSamplers_[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
     staticSamplers_[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
     staticSamplers_[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -150,28 +150,28 @@ void ParticleManager::CreateRootSignature()
     assert(SUCCEEDED(result));
 
 
-	// InputLayoutの設定
-	inputElementDescs_[0].SemanticName = "POSITION";
-	inputElementDescs_[0].SemanticIndex = 0;
-	inputElementDescs_[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	inputElementDescs_[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+    // InputLayoutの設定
+    inputElementDescs_[0].SemanticName = "POSITION";
+    inputElementDescs_[0].SemanticIndex = 0;
+    inputElementDescs_[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+    inputElementDescs_[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-	inputElementDescs_[1].SemanticName = "TEXCOORD";
-	inputElementDescs_[1].SemanticIndex = 0;
-	inputElementDescs_[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-	inputElementDescs_[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+    inputElementDescs_[1].SemanticName = "TEXCOORD";
+    inputElementDescs_[1].SemanticIndex = 0;
+    inputElementDescs_[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+    inputElementDescs_[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-	inputElementDescs_[2].SemanticName = "NORMAL";
-	inputElementDescs_[2].SemanticIndex = 0;
-	inputElementDescs_[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	inputElementDescs_[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+    inputElementDescs_[2].SemanticName = "NORMAL";
+    inputElementDescs_[2].SemanticIndex = 0;
+    inputElementDescs_[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+    inputElementDescs_[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-	inputLayoutDesc_.pInputElementDescs = inputElementDescs_;
-	inputLayoutDesc_.NumElements = _countof(inputElementDescs_);
+    inputLayoutDesc_.pInputElementDescs = inputElementDescs_;
+    inputLayoutDesc_.NumElements = _countof(inputElementDescs_);
 
-	// BlendStateの設定
-	// 全ての色要素を書き込む
-	blendDesc_.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+    // BlendStateの設定
+    // 全ての色要素を書き込む
+    blendDesc_.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
     blendDesc_.RenderTarget[0].BlendEnable = TRUE;
     blendDesc_.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;//zero
     blendDesc_.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
@@ -180,17 +180,17 @@ void ParticleManager::CreateRootSignature()
     blendDesc_.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
     blendDesc_.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
 
-	// RasterizerStateの設定
-	// 裏面(時計回り)の表示の有無 (NONE / BACK)
-	rasterizerDesc_.CullMode = D3D12_CULL_MODE_NONE;
-	// 塗りつぶすかどうか
-	rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;
+    // RasterizerStateの設定
+    // 裏面(時計回り)の表示の有無 (NONE / BACK)
+    rasterizerDesc_.CullMode = D3D12_CULL_MODE_NONE;
+    // 塗りつぶすかどうか
+    rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;
 
-	// Shaderをコンパイル 
-	vertexShaderBlob_ = dxCommon_->CompileShader(L"resources/shaders/Particle.VS.hlsl", L"vs_6_0");
-	assert(vertexShaderBlob_ != nullptr);
-	pixelShaderBlob_ = dxCommon_->CompileShader(L"resources/shaders/Particle.PS.hlsl", L"ps_6_0");
-	assert(pixelShaderBlob_ != nullptr);
+    // Shaderをコンパイル 
+    vertexShaderBlob_ = dxCommon_->CompileShader(L"resources/shaders/Particle.VS.hlsl", L"vs_6_0");
+    assert(vertexShaderBlob_ != nullptr);
+    pixelShaderBlob_ = dxCommon_->CompileShader(L"resources/shaders/Particle.PS.hlsl", L"ps_6_0");
+    assert(pixelShaderBlob_ != nullptr);
 
 	// DepthStencilStateの設定
 	// Depthの機能を有効化
@@ -244,6 +244,24 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
 	// srvを生成
     srvManager_->CreateSRVforStructuredBuffer(particleGroups.at(name).srvIndex, particleGroups.at(name).instancingResource.Get(), MaxInstanceCount, sizeof(ParticleForGPU));
 
+    // SRVを生成（StructuredBuffer用設定）
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+    srvDesc.Buffer.FirstElement = 0;
+    srvDesc.Buffer.NumElements = kNumMaxInstance;
+    srvDesc.Buffer.StructureByteStride = sizeof(ParticleForGPU);
+    srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+    srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+
+    dxCommon_->GetDevice()->CreateShaderResourceView(
+        newGroup.instancingResource.Get(),
+        &srvDesc,
+        srvManager_->GetCpuHandle(srvIndex)
+    );
+
+    // コンテナに登録
+    particleGroups[name] = std::move(newGroup);
 }
 
 void ParticleManager::Update()

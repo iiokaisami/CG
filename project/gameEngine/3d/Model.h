@@ -11,7 +11,16 @@ public:
 
 	void Initialize(ModelCommon* modelCommon, const std::string& directorypath, const std::string& filename);
 
+	void UpData();
+
 	void Draw();
+
+public: // セッター
+
+	void SetEnableLighting(bool enable);
+	void SetEnableDirectionalLight(bool enable);
+	void SetEnablePointLight(bool enable);
+	void SetEnableSpotLight(bool enable);
 
 private: // 構造体、関数
 
@@ -48,6 +57,11 @@ private: // 構造体、関数
 		int32_t enableLighting;
 		float padding[3];
 		Matrix4x4 uvTransform;
+		float shininess;
+		int32_t phongReflection;
+		int32_t halfphongReflection;
+		int32_t pointLight;
+		int32_t spotLight;
 	};
 
 	//mtlファイルを読む関数
@@ -61,6 +75,7 @@ private: // 構造体、関数
 
 	// マテリアルデータ生成
 	void CreateMaterialData();
+
 
 public: // ゲッター
 

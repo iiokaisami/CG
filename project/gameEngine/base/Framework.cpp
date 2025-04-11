@@ -81,6 +81,10 @@ void Framework::Initialize()
 	particleManager->Initialize(dxCommon.get(),srvManager.get());
 
 
+	// パーティクル	
+	particleManager = ParticleManager::GetInstance();
+	particleManager->Initialize(dxCommon, srvManager);
+
 #ifdef _DEBUG
 
 	imGuiManager = std::make_unique<ImGuiManager>();

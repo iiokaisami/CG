@@ -25,6 +25,9 @@ void Model::Initialize(ModelCommon* modelCommon, const std::string& directorypat
 
 }
 
+void Model::UpData()
+{}
+
 void Model::Draw()
 {
 	// VertexBufferViewを設定
@@ -183,4 +186,41 @@ void Model::CreateMaterialData()
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData_->enableLighting = false;
 	materialData_->uvTransform = MakeIdentity4x4();
+	materialData_->shininess = 50.0f;
+	materialData_->phongReflection = false;
+	materialData_->halfphongReflection = false;
+	materialData_->pointLight = false;
+	materialData_->spotLight = false;
+}
+
+void Model::SetEnableLighting(bool enable)
+{
+	if (materialData_)
+	{
+		materialData_->enableLighting = enable ? 1 : 0;
+	}
+}
+
+void Model::SetEnableDirectionalLight(bool enable)
+{
+	if (materialData_)
+	{
+		materialData_->phongReflection = enable ? 1 : 0;
+	}
+}
+
+void Model::SetEnablePointLight(bool enable)
+{
+	if (materialData_)
+	{
+		materialData_->pointLight = enable ? 1 : 0;
+	}
+}
+
+void Model::SetEnableSpotLight(bool enable)
+{
+	if (materialData_)
+	{
+		materialData_->spotLight = enable ? 1 : 0;
+	}
 }

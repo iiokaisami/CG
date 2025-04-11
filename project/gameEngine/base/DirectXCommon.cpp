@@ -73,6 +73,23 @@ void DirectXCommon::Initialize(WinApp* winApp)
 	
 }
 
+void DirectXCommon::ReportLiveObjects()
+{
+	Microsoft::WRL::ComPtr<IDXGIDebug1> debug;
+	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug))))
+	{
+		debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+	}
+}
+
+void DirectXCommon::Finalize()
+{
+	// 既存のリソース解放処理
+
+   // Report live objects
+	ReportLiveObjects();
+}
+
 void DirectXCommon::InitializeDevice()
 {
 	HRESULT result = S_FALSE;
@@ -627,7 +644,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateBufferResource(size_
 	D3D12_RESOURCE_DESC bufferResourceDesc{};
 	//バッファリソース。テクスチャの場合はまた別の設定をする
 	bufferResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	bufferResourceDesc.Width = sizeInBytes;
+	bufferResourceDesc.Width = (sizeInBytes + 255) & ~255;
 	//バッファの場合はこれらは１にする決まり
 	bufferResourceDesc.Height = 1;
 	bufferResourceDesc.DepthOrArraySize = 1;

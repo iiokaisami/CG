@@ -1,7 +1,8 @@
 #include "SrvManager.h"
 
 #include <cassert>
-
+#include <comdef.h>
+#include <iostream>
 
 const uint32_t SrvManager::kMaxSRVCount_ = 512;
 

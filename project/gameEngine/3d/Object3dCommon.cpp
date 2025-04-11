@@ -23,8 +23,7 @@ void Object3dCommon::Initialize(DirectXCommon* dxCommon)
 	dxCommon_ = dxCommon;
 	device_ = dxCommon_->GetDevice();
 	commandList_ = dxCommon_->GetCommandList();
-
-
+	
 
 	CreateGraphicsPipeline();
 }
@@ -57,8 +56,22 @@ void Object3dCommon::CreateRootSignature()
 
 	rootParameters_[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters_[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	rootParameters_[3].Descriptor.RegisterSpace = 0;
 	rootParameters_[3].Descriptor.ShaderRegister = 1;
+
+	// 新しいCBVを追加
+	rootParameters_[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters_[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters_[4].Descriptor.ShaderRegister = 2;
+
+	// 新しいCBVを追加
+	rootParameters_[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters_[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters_[5].Descriptor.ShaderRegister = 3;
+
+	// 新しいCBVを追加
+	rootParameters_[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters_[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters_[6].Descriptor.ShaderRegister = 4;
 
 	descriptionRootSignature_.pParameters = rootParameters_;					//ルートパラメータ配列へのポインタ
 	descriptionRootSignature_.NumParameters = _countof(rootParameters_);		//配列の長さ
@@ -162,6 +175,7 @@ void Object3dCommon::CreateGraphicsPipeline()
 	//どのように画面に色を打ち込むかの設定（気にしなくていい）
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
 	//実際に生成
 	result = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_));
 	assert(SUCCEEDED(result));

@@ -11,6 +11,11 @@ void TitleScene::Initialize()
 	cameraManager.AddCamera(camera_);
 	cameraManager.SetActiveCamera(0);
 
+	cameraPosition_ = { 0.0f,4.0f,-10.0f };
+	cameraRotate_ = { 0.3f,0.0f,0.0f };
+	camera_->SetPosition(cameraPosition_);
+	camera_->SetRotate(cameraRotate_);
+
 	// --- 3Dオブジェクト ---
 
 	for (uint32_t i = 0; i < 1; ++i)
@@ -18,12 +23,16 @@ void TitleScene::Initialize()
 		Object3d* object = new Object3d();
 		if (i == 0)
 		{
-			object->Initialize("cube.obj");
+			object->Initialize("sphere.obj");
 		}
-		position_ = { 0.0f,4.0f,10.0f };
+		if (i == 1)
+		{
+			object->Initialize("terrain.obj");
+		}
+		position_ = { 0.0f,0.0f,5.0f };
+		scale_ = { 1.0f,1.0f,1.0f };
 		object->SetPosition(position_);
-
-		object->SetScale({ 1.2f,1.2f,1.2f });
+		object->SetScale(scale_);
 
 		object3ds.push_back(object);
 	}
@@ -38,11 +47,11 @@ void TitleScene::Initialize()
 		
 		sprites.push_back(sprite);
 
-		/*Vector2 size = sprite->GetSize();
-		size.x = 370.0f;
-		size.y = 370.0f;
-		sprite->SetSize(size);*/
-	}
+	//	/*Vector2 size = sprite->GetSize();
+	//	size.x = 370.0f;
+	//	size.y = 370.0f;
+	//	sprite->SetSize(size);*/
+	//}
 
 	// --- サウンド ---
 	soundData_ = Audio::GetInstance()->LoadWav("fanfare.wav");
@@ -61,7 +70,7 @@ void TitleScene::Finalize()
     }
 	object3ds.clear();
 
-	for (Sprite* sprite : sprites)
+	/*for (Sprite* sprite : sprites)
 	{
 		delete sprite;
 	}
@@ -83,14 +92,15 @@ void TitleScene::Update()
 		obj->SetCamera(cameraManager.GetActiveCamera());
 	}
 
+	object3ds[0]->SetScale(scale_);
 
-	for (Sprite* sprite : sprites)
+	/*for (Sprite* sprite : sprites)
 	{
 		sprite->Update();
 
 		sprite->SetColor(color_);
 
-	}
+	}*/
 
 	cameraManager.UpdateAll();
 
@@ -101,7 +111,28 @@ void TitleScene::Update()
 
 	ImGui::Begin("TitleScene");
 
-	ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
+	//ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
+
+	ImGui::SliderFloat3("cameraPosition", &cameraPosition_.x, -20.0f, 20.0f);
+	ImGui::SliderFloat3("cameraRotate", &cameraRotate_.x, -3.14f, 3.14f);
+
+	ImGui::SliderFloat3("sphere scale", &scale_.x, 0.0f, 10.0f);
+
+	if (ImGui::Button("Terrain Draw"))
+	{
+		isTerrainDraw = !isTerrainDraw;
+	}
+
+	// ライトの設定
+	ImGui::Checkbox("Enable Lighting", &enableLighting);
+
+	ImGui::Checkbox("Directional Light", &enableDirectionalLight);
+	if (enableDirectionalLight)
+	{
+		ImGui::ColorEdit3("Directional Light Color", &directionalLightColor.x);
+		ImGui::SliderFloat3("Directional Light Direction", &directionalLightDirection.x, -1.0f, 1.0f);
+		ImGui::SliderFloat("Directional Light Intensity", &directionalLightIntensity, 0.0f, 10.0f);
+	}
 
 	ImGui::SliderFloat3("position", &position_.x, -100.0f, 100.0f);
 
@@ -130,6 +161,14 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
+	// 描画前処理(Sprite)
+	SpriteCommon::GetInstance()->CommonDrawSetting();
+
+	/*for (Sprite* sprite : sprites)
+	{
+		sprite->Draw();
+	}*/
+
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
@@ -138,11 +177,21 @@ void TitleScene::Draw()
 		obj->Draw();
 	}
 
-	// 描画前処理(Sprite)
-	SpriteCommon::GetInstance()->CommonDrawSetting();
+        obj->SetPointLightEnable(enablePointLight);
+        obj->SetPointLightColor({ pointLightColor.x, pointLightColor.y, pointLightColor.z, 1.0f });
+        obj->SetPointLightPosition(pointLightPosition);
+        obj->SetPointLightIntensity(pointLightIntensity);
+        obj->SetPointLightRadius(pointLightRadius);
+        obj->SetPointLightDecay(pointLightDecay);
 
-	for (Sprite* sprite : sprites)
-	{
-		sprite->Draw();
+		obj->SetSpotLightEnable(enableSpotLight);
+		obj->SetSpotLightColor({ spotLightColor.x, spotLightColor.y, spotLightColor.z, 1.0f });
+		obj->SetSpotLightPosition(spotLightPosition);
+		obj->SetSpotLightDirection(spotLightDirection);
+		obj->SetSpotLightIntensity(spotLightIntensity);
+		obj->SetSpotLightDistance(spotLightDistance);
+		obj->SetSpotLightDecay(spotLightDecay);
+		obj->SetSpotLightConsAngle(spotLightConsAngle);
+		obj->SetSpotLightCosFalloffStart(spotLightCosFalloffStart);
 	}
 }
