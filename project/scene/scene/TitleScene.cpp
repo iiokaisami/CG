@@ -193,10 +193,10 @@ void TitleScene::Draw()
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
-	for (auto& obj : object3ds)
-	{
+	//for (auto& obj : object3ds)
+	//{
 		//obj->Draw();
-	}
+	//}
 	object3ds[0]->Draw();
 	if (isTerrainDraw)
 	{
