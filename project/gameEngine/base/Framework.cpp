@@ -83,7 +83,7 @@ void Framework::Initialize()
 
 	// パーティクル	
 	particleManager = ParticleManager::GetInstance();
-	particleManager->Initialize(dxCommon, srvManager);
+	particleManager->Initialize(dxCommon.get(), srvManager.get());
 
 #ifdef _DEBUG
 
