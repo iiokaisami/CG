@@ -25,7 +25,6 @@
 #include "SrvManager.h"
 #include "Audio.h"
 
-#include "../../ParticleManager.h"
 #include "../../ParticleEmitter.h"
 
 #include "../../scene/base/SceneManager.h"
@@ -78,6 +77,8 @@ protected:
 	TextureManager* textureManager = nullptr;
 	Object3dCommon* object3dCommon = nullptr;
 	ModelManager* modelManager = nullptr;
+
+	ParticleManager* particleManager = nullptr;
 
 #ifdef _DEBUG
 

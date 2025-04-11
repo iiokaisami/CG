@@ -76,6 +76,10 @@ void Framework::Initialize()
 	modelManager = ModelManager::GetInstance();
 	modelManager->Initialize(dxCommon);
 
+	// パーティクル	
+	particleManager = ParticleManager::GetInstance();
+	particleManager->Initialize(dxCommon, srvManager);
+
 #ifdef _DEBUG
 
 	imGuiManager = new ImGuiManager();
@@ -128,4 +132,7 @@ void Framework::Update()
 
 	// 入力更新
 	input->Update();
+
+	// パーティクル更新
+	particleManager->Update();
 }

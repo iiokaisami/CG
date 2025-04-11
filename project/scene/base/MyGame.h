@@ -19,4 +19,8 @@ public:
 
 	// 描画	
 	void Draw() override;
+
+private:
+
+	bool useExampleGroup_ = true;
 };
