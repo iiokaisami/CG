@@ -279,7 +279,11 @@ void ParticleManager::Update()
             // アルファ値をパーティクルの色に適用
             (*it).color.w = alpha; 
 
-            Matrix4x4 worldMatrix = MakeScaleMatrix((*it).transform.scale) * matrix * MakeTranslateMatrix((*it).transform.translate);
+            Matrix4x4 worldMatrix = MakeScaleMatrix((*it).transform.scale)  *
+                MakeRotateXMatrix((*it).transform.rotate.x) *
+                MakeRotateYMatrix((*it).transform.rotate.y) * 
+                MakeRotateZMatrix((*it).transform.rotate.z) * 
+                matrix * MakeTranslateMatrix((*it).transform.translate);
             Matrix4x4 wVPMatrix = worldMatrix * viewMatrix * projectionMatrix;
 
             if (count < Particlegroup.instanceCount)
@@ -289,6 +293,7 @@ void ParticleManager::Update()
                 Particlegroup.instancingData[count].color = it->color;
                 ++count;
             }
+           
 
             // 次のパーティクルへ
             ++it;
@@ -343,9 +348,9 @@ void ParticleManager::Emit(const std::string name, const Vector3& position, uint
     for (uint32_t i = 0; i < count; ++i)
     {
         // 新しいパーティクルを追加
-        particleGroups.at(name).particleList.push_back(MakeNewParticle(randomEngine_, position));
+        //particleGroups.at(name).particleList.push_back(MakeNewParticle(randomEngine_, position));
     
-        //particleGroups.at(name).particleList.push_back(MakeTestParticle(randomEngine_, position));
+        particleGroups.at(name).particleList.push_back(MakeTestParticle(randomEngine_, position));
     }
     // パーティクルグループのインスタンス数を更新
     particleGroups.at(name).instanceCount = count;
@@ -362,7 +367,7 @@ Particle ParticleManager::MakeNewParticle(std::mt19937& randomEngine, const Vect
     Vector3 randomTranslate = { distribution(randomEngine),distribution(randomEngine),distribution(randomEngine) };
 
     newParticle.transform.scale = { 1.0f,1.0f,1.0f };
-    newParticle.transform.translate = position /*+ randomTranslate*/;
+    newParticle.transform.translate = position + randomTranslate;
     newParticle.velocity = { distribution(randomEngine),distribution(randomEngine),distribution(randomEngine) };
     newParticle.color = { distColor(randomEngine),distColor(randomEngine),distColor(randomEngine),1.0f };
     newParticle.lifeTime = distLifeTime(randomEngine);
@@ -373,15 +378,17 @@ Particle ParticleManager::MakeNewParticle(std::mt19937& randomEngine, const Vect
 
 Particle ParticleManager::MakeTestParticle(std::mt19937& randomEngine, const Vector3& translate)
 {
-	std::uniform_real_distribution<float>distRotate(std::numbers::pi_v<float>, std::numbers::pi_v<float>);
-	std::uniform_real_distribution<float>distScale(0.5f, 1.5f);
+    std::uniform_real_distribution<float> distScale(0.5f, 1.5f); // スケールの範囲
+    std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>); // 回転の範囲
+    std::uniform_real_distribution<float> distVelocity(-1.0f, 1.0f); // 速度の範囲
+
 
     Particle particle;
 
-    particle.transform.scale = { 0.03f, distScale(randomEngine), 1.0f};
-    particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine)};
+    particle.transform.scale = { 0.15f, distScale(randomEngine), 1.0f};
+    particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
     particle.transform.translate = translate;
-    particle.velocity = { 0.0f, 0.0f, 0.0f };
+    particle.velocity = {0.0f,0.0f,0.0f};
     particle.color = { 1.0f, 1.0f, 1.0f, 1.0f };
     particle.lifeTime = 1.0f;
     particle.currentTime = 0.0f;

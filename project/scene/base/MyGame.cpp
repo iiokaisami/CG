@@ -67,7 +67,7 @@ void MyGame::Update()
 	// パーティクルの生成
 	if (useExampleGroup_)
 	{
-		particleManager->Emit("exampleGroup", Vector3(0.0f, -1.0f, 0.0f), 10);
+		particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 3);
 	} else
 	{
 		//particleManager->Emit("secondGroup", Vector3(0.0f, 0.0f, 0.0f), 10);

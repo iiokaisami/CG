@@ -17,9 +17,10 @@ public:
     Vector4 color;
     float lifeTime;
     float currentTime;
+    float cooldownTime;
 
     Particle()
-        : velocity(0.0f, 0.0f, 0.0f), color(1.0f, 1.0f, 1.0f, 1.0f), lifeTime(1.0f), currentTime(0.0f)
+		: velocity(0.0f, 0.0f, 0.0f), color(1.0f, 1.0f, 1.0f, 1.0f), lifeTime(1.0f), currentTime(0.0f), cooldownTime(0.0f)
     {
         transform.scale = Vector3(1.0f, 1.0f, 1.0f);
         transform.rotate = Vector3(0.0f, 0.0f, 0.0f);
