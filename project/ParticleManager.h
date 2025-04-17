@@ -69,6 +69,8 @@ public:
 
 	Particle MakeNewParticle(std::mt19937& randomEngine, const Vector3& position);
 
+	Particle MakeTestParticle(std::mt19937& randomEngine, const Vector3& translate);
+
 public: // セッター
 
 	void SetCamera(std::shared_ptr<Camera> camera) { camera_ = camera; }
