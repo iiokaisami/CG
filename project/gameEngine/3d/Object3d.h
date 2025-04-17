@@ -192,6 +192,7 @@ private:
 	SpotLight* spotLightData_ = nullptr;
 
 
+
 	Transform transform_{};
 
 	//ライトのオンオフ
