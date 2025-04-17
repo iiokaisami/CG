@@ -198,7 +198,7 @@ void TitleScene::Draw()
 	//{
 		//obj->Draw();
 	//}
-	//object3ds[0]->Draw();
+	object3ds[0]->Draw();
 	if (isTerrainDraw)
 	{
 		object3ds[1]->Draw();

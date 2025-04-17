@@ -59,15 +59,20 @@ void MyGame::Update()
 	if (ImGui::CollapsingHeader("particleManager"))
 	{
 		ImGui::Checkbox("Use Example Group", &useExampleGroup_);
+	
+		if (ImGui::Button("AddParticle"))
+		{
+			particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 3);
+		}
 	}
 
 #endif // _DEBUG
 
-
+	
 	// パーティクルの生成
 	if (useExampleGroup_)
 	{
-		particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 3);
+		/*particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 3);*/
 	} else
 	{
 		//particleManager->Emit("secondGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
