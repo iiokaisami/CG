@@ -385,7 +385,7 @@ Particle ParticleManager::MakeTestParticle(std::mt19937& randomEngine, const Vec
 
     Particle particle;
 
-    particle.transform.scale = { 0.15f, distScale(randomEngine), 1.0f};
+    particle.transform.scale = { 0.1f, distScale(randomEngine), 1.0f};
     particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
     particle.transform.translate = translate;
     particle.velocity = {0.0f,0.0f,0.0f};
