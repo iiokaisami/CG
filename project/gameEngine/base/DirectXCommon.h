@@ -34,6 +34,11 @@ public:
 	void ReportLiveObjects();
 	void Finalize();
 
+	struct Vector4
+	{
+		float x, y, z, w;
+	};
+
 	/// <summary>
 	/// デバイスの初期化
 	/// </summary>
@@ -161,6 +166,11 @@ public:
 
 	void CommandPass();
 
+	///---CG5---///
+	
+	// 
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device,int32_t width, int32_t height, DXGI_FORMAT format, const Vector4& clearColor);
+
 
 public: // ゲッター
 
@@ -242,6 +252,10 @@ private:
 
 	// スワップチェーンリソース
 	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChainResources_;
+
+	// レンダーテクスチャ
+	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource_ = nullptr;
+	D3D12_CPU_DESCRIPTOR_HANDLE renderTextureRTVHandle_ = {};
 
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence_ = nullptr;
 	uint64_t fenceValue_ = 0;
