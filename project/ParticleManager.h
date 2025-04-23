@@ -3,13 +3,14 @@
 #include <unordered_map>
 #include <random> 
 #include <TextureManager.h>
+#include <Object3d.h>
+#include <numbers>
 
 #include "MyMath.h"
 #include "DirectXCommon.h"
 #include "SrvManager.h"
 #include "Particle.h"
 #include "CameraManager.h"
-#include <Object3d.h>
 
 class Object3dCommon;
 
@@ -57,7 +58,7 @@ public:
 	void CreateRootSignature();
 
 	// パーティクルグループの生成
-	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath);
+	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, bool isMakeRing = false);
 
 	// 更新
 	void Update();
@@ -70,6 +71,8 @@ public:
 	Particle MakeNewParticle(std::mt19937& randomEngine, const Vector3& position);
 
 	Particle MakeTestParticle(std::mt19937& randomEngine, const Vector3& translate);
+
+	void MakeRing();
 
 public: // セッター
 

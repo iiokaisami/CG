@@ -24,7 +24,7 @@ void MyGame::Initialize()
 	loadAudioThread.join();
 
 	// パーティクルグループの生成
-	particleManager->CreateParticleGroup("exampleGroup", "resources/images/circle2.png", "plane.obj");
+	particleManager->CreateParticleGroup("exampleGroup", "resources/images/gradationLine.png", "plane.obj",true);
 	//particleManager->CreateParticleGroup("secondGroup", "resources/images/monsterBall.png", "plane.obj");
 
 	useExampleGroup_ = true;

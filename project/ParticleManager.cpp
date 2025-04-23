@@ -123,7 +123,7 @@ void ParticleManager::CreateRootSignature()
     //Smaplerの設定
     staticSamplers_[0].Filter = D3D12_FILTER_MIN_MAG_POINT_MIP_LINEAR;
     staticSamplers_[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-    staticSamplers_[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+    staticSamplers_[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
     staticSamplers_[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
     staticSamplers_[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
     staticSamplers_[0].MaxLOD = D3D12_FLOAT32_MAX;
@@ -199,7 +199,7 @@ void ParticleManager::CreateRootSignature()
     depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 }
 
-void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath)
+void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, bool isMakeRing)
 {
     ModelManager::GetInstance()->LoadModel(modelFilePath);
 
@@ -243,6 +243,12 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     // srvを生成
     srvManager_->CreateSRVforStructuredBuffer(particleGroups.at(name).srvIndex, particleGroups.at(name).instancingResource.Get(), MaxInstanceCount, sizeof(ParticleForGPU));
 
+   
+    if (isMakeRing)
+    {
+        // リングの頂点データを生成
+        MakeRing();
+    }
 }
 
 void ParticleManager::Update()
@@ -390,8 +396,34 @@ Particle ParticleManager::MakeTestParticle(std::mt19937& randomEngine, const Vec
     particle.transform.translate = translate;
     particle.velocity = {0.0f,0.0f,0.0f};
     particle.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    particle.lifeTime = 1.0f;
+    particle.lifeTime = 10.0f;
     particle.currentTime = 0.0f;
 
     return particle;
+}
+
+void ParticleManager::MakeRing()
+{
+    const uint32_t kRingDivide = 32; // 分割数
+    const float kOuterRadius = 1.0f; // 外側の半径
+    const float kInnerRadius = 0.5f; // 内側の半径
+    const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);
+
+    for (uint32_t index = 0; index < kRingDivide; ++index)
+    {
+        float sin = std::sin(index * radianPerDivide);
+        float cos = std::cos(index * radianPerDivide);
+        float sinNext = std::sin((index + 1) * radianPerDivide);
+        float cosNext = std::cos((index + 1) * radianPerDivide);
+        float u = float(index) / float(kRingDivide);
+        float uNext = float(index + 1) / float(kRingDivide);
+
+        // 外側の頂点
+        model_->GetModelData().vertices.push_back({ { -sin * kOuterRadius, cos * kOuterRadius, 0.0f }, { u, 0.0f }, { 0.0f, 0.0f, 1.0f } });
+        model_->GetModelData().vertices.push_back({ { -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f }, { uNext, 0.0f }, { 0.0f, 0.0f, 1.0f } });
+
+        // 内側の頂点
+        model_->GetModelData().vertices.push_back({ { -sin * kInnerRadius, cos * kInnerRadius, 0.0f }, { u, 1.0f }, { 0.0f, 0.0f, 1.0f } });
+        model_->GetModelData().vertices.push_back({ { -sinNext * kInnerRadius, cosNext * kInnerRadius, 0.0f }, { uNext, 1.0f }, { 0.0f, 0.0f, 1.0f } });
+    }
 }
