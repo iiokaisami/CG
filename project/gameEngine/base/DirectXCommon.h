@@ -255,7 +255,6 @@ private:
 
 	// レンダーテクスチャ
 	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource_ = nullptr;
-	D3D12_CPU_DESCRIPTOR_HANDLE renderTextureRTVHandle_ = {};
 
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence_ = nullptr;
 	uint64_t fenceValue_ = 0;
