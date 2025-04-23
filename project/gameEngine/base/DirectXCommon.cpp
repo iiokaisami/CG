@@ -356,6 +356,12 @@ void DirectXCommon::InitializeFinalRenderTargets()
 	renderTextureResource_ = CreateRenderTextureResource(device_, WinApp::kClientWidth, WinApp::kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
 	device_->CreateRenderTargetView(renderTextureResource_.Get(), &rtvDesc_, rtvStartHandle);
 
+	// RenderTargetViewの生成
+	rtvStartHandle.ptr += descriptorSizeRTV_; // 次のディスクリプタ位置を計算
+	renderTextureRTVHandle_ = rtvStartHandle;
+	device_->CreateRenderTargetView(renderTextureResource_.Get(), &rtvDesc_, renderTextureRTVHandle_);
+
+
 	// SRVのDescriptor Heapの先頭ハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE srvStartHandle = srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 
@@ -475,60 +481,44 @@ void DirectXCommon::InitializeImGui()
 void DirectXCommon::PreDraw()
 {
 	//これから書き込むバックバッファのインデックスを取得
-	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
-
-
-	//TransitionBarrierの設定
-	//今回のバリアはTransition
-	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	//Noneにしておく
-	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	//バリアを張る対称のリソース。現在のバックバッファに対して行う
-	barrier_.Transition.pResource = renderTextureResource_.Get();//swapChainResources_[backBufferIndex].Get();
-	//遷移前（現在）のresourceState
-	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;//D3D12_RESOURCE_STATE_PRESENT;
-	//遷移後のResourceState
-	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-
-	barrier_.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	//transitionBarrierを張る
-	commandList_->ResourceBarrier(1, &barrier_);
-
-
-
+	//UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
 
 	//描画先のRTVを設定する
-	commandList_->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, nullptr);
-	commandList_->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, &dsvHandle_);
+	//commandList_->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, nullptr);
+	//commandList_->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, &dsvHandle_);
 
 
 	//指定した色で画面全体をクリアする
-	float clearColor[] = { 0.1f,0.25f,0.5f,1.0f };	//青っぽい色。RGBAの順
-	commandList_->ClearRenderTargetView(rtvHandles_[backBufferIndex], clearColor, 0, nullptr);
+	//commandList_->ClearRenderTargetView(rtvHandles_[backBufferIndex], clearColor, 0, nullptr);
 	
+	/////////////////////////////////////////////////////////////////////////
 
+	// RenderTextureに対する描画設定
+	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier_.Transition.pResource = renderTextureResource_.Get();
+	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrier_.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	commandList_->ResourceBarrier(1, &barrier_);
+
+	// RenderTargetViewとDepthStencilViewを設定
+	commandList_->OMSetRenderTargets(1, &renderTextureRTVHandle_, false, &dsvHandle_);
+
+	// RenderTextureのクリア
+	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f }; // 青っぽい色
+	commandList_->ClearRenderTargetView(renderTextureRTVHandle_, clearColor, 0, nullptr);
 	//指定した深度で画面全体をクリアする
-	commandList_->ClearDepthStencilView(
-		dsvHandle_,
-		D3D12_CLEAR_FLAG_DEPTH,
-		1.0f,
-		0,
-		0,
-		nullptr
-	);
+	commandList_->ClearDepthStencilView(dsvHandle_, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-	//描画用のDescriptorHeapの設定
-	//もろもろの描画処理が終わったタイミングでImGuiの描画コマンドを積む
-	//Guiは画面の最前面に映すので、一番最後の描画として行う
-	//Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { srvDescriptorHeap_ };
-	//commandList_->SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
-	 // 描画用のDescriptorHeapの設定
+	// ビューポートとシザーレクトを設定
+	commandList_->RSSetViewports(1, &viewport_);
+	commandList_->RSSetScissorRects(1, &scissorRect_);
+
+	// 描画用のDescriptorHeapの設定（必要な部分）
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { srvDescriptorHeap_ };
 	commandList_->SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
 
-
-	commandList_->RSSetViewports(1, &viewport_);
-	commandList_->RSSetScissorRects(1, &scissorRect_);
 }
 
 void DirectXCommon::PostDraw()
