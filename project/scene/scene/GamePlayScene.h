@@ -3,6 +3,9 @@
 #include <Framework.h>
 
 #include "../base/BaseScene.h"
+#include "../Player.h"
+#include "../Enemy.h"
+#include "../Field.h"
 
 class GamePlayScene : public BaseScene
 {
@@ -27,21 +30,22 @@ private:
 	std::shared_ptr<Camera> camera2 = std::make_shared<Camera>();
     
     uint32_t activeIndex = 0;
-	Vector3 camera1Rotate = { 0.0f,0.0f,0.0f };
-	Vector3 camera1Position = { 0.0f,4.0f,0.0f };
+	Vector3 camera1Rotate = { -0.9f,0.0f,0.0f };
+	Vector3 camera1Position = { 0.0f,-20.0f,0.0f };
 	Vector3 camera2Rotate = { 0.0f,0.0f,0.0f };
 	Vector3 camera2Position = { 0.0f,4.0f,0.0f };
-	
+
 	// 2Dスプライト
-	std::vector<Sprite*>sprites = {};
+	//std::vector<Sprite*>sprites = {};
 
-	// 3Dオブジェクト
-	std::vector<Object3d*> object3ds = {};
+	// プレイヤー
+	std::unique_ptr<Player> pPlayer_ = nullptr;
 
-	// 透明チェック
-	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
+	// エネミー
+	std::unique_ptr<Enemy> pEnemy_ = nullptr;
 
-	// 位置
-	Vector3 position_ = { 0.0f,0.0f,0.0f };
+	// フィールド
+	std::unique_ptr<Field> pField_ = nullptr;
+
 };
 

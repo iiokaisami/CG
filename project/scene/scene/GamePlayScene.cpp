@@ -4,19 +4,15 @@
 
 void GamePlayScene::Initialize()
 {
-	//////////////////////////////////////
-
-	// カメラマネージャーテスト
-
-
 	// カメラの作成
 	camera1 = std::make_shared<Camera>();
 	camera2 = std::make_shared<Camera>();
 
 	camera1Rotate = camera1->GetRotate();
 	camera1Position = camera1->GetPosition();
-	camera1Position.y = 4.0f;
-	camera1Position.z = -5.0f;
+	camera1Position.y = 70.0f;
+	camera1Position.z = -15.0f;
+	camera1Rotate.x = 1.2f;
 	camera2Rotate = camera2->GetRotate();
 	camera2Position = camera2->GetPosition();
 	camera2Position.y = 4.0f;
@@ -33,28 +29,22 @@ void GamePlayScene::Initialize()
 	Object3dCommon::GetInstance()->SetDefaultCamera(cameraManager.GetActiveCamera());
 
 
-	//////////////////////////////////////
+	// プレイヤー
+	pPlayer_ = std::make_unique<Player>();
+	pPlayer_->Initialize();
+
+	// エネミー
+	pEnemy_ = std::make_unique<Enemy>();
+	pEnemy_->Initialize();
+	pEnemy_->SetPlayerPosition(pPlayer_->GetPosition());
+
+	// フィールド
+	pField_ = std::make_unique<Field>();
+	pField_->Initialize();
 
 
-	// --- 3Dオブジェクト ---
-
-
-	for (uint32_t i = 0; i < 1; ++i)
-	{
-		Object3d* object = new Object3d();
-		if (i == 0)
-		{
-			object->Initialize("axis.obj");
-		}
-		position_ = { 0.0f,4.0f,10.0f };
-		object->SetPosition(position_);
-
-		object->SetScale({ 1.2f,1.2f,1.2f });
-
-		object3ds.push_back(object);
-	}
-
-	for (uint32_t i = 0; i < 1; ++i)
+	// スプライト
+	/*for (uint32_t i = 0; i < 1; ++i)
 	{
 		Sprite* sprite = new Sprite();
 
@@ -63,22 +53,20 @@ void GamePlayScene::Initialize()
 		}
 
 		sprites.push_back(sprite);
-	}
+	}*/
 }
 
 void GamePlayScene::Finalize()
 {
-	for (auto& obj : object3ds)
-	{
-		delete obj;
-	}
-	object3ds.clear();
+	pPlayer_->Finalize();
+	pEnemy_->Finalize();
+	pField_->Finalize();
 
-	for (Sprite* sprite : sprites)
+	/*for (Sprite* sprite : sprites)
 	{
 		delete sprite;
 	}
-	sprites.clear();
+	sprites.clear();*/
 
 	// カメラ解放
 	cameraManager.RemoveCamera(0);
@@ -87,26 +75,19 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
-	for (auto& obj : object3ds) 
-	{
-		obj->Update();
-		obj->SetPosition(position_);
-	}
-
-
-	for (Sprite* sprite : sprites)
+	/*for (Sprite* sprite : sprites)
 	{
 		sprite->Update();
 
 		sprite->SetColor(color_);
 
-	}
+	}*/
 
 	// カメラマネージャーのテスト
 	cameraManager.UpdateAll();
 
 	// ENTER押してカメラ切り替え
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
+	if (Input::GetInstance()->TriggerKey(DIK_P))
 	{
 		if (cameraManager.GetActiveIndex() == 0)
 		{
@@ -135,38 +116,15 @@ void GamePlayScene::Update()
 		// viewMatrix を使った処理
 	}
 
+	// プレイヤーの更新
+	pPlayer_->Update();
 
+	// エネミーの更新
+	pEnemy_->SetPlayerPosition(pPlayer_->GetPosition());
+	pEnemy_->Update();
 
-	uint32_t i = 1;
-	for (Object3d* object3d : object3ds)
-	{
-		object3d->Update();
-
-
-		Vector3 pos{}, pos2{}, rotate{}, rotate2{};
-
-		pos2 = { 1.0f,-1.0f,1.0f };
-
-		if (i == 1)
-		{
-			rotate = object3d->GetRotate();
-			rotate.y += 0.1f;
-			object3d->SetPosition(pos);
-			object3d->SetRotate(rotate);
-		}
-		else
-		{
-			rotate2 = object3d->GetRotate();
-			rotate2.z += 0.05f;
-			object3d->SetPosition(pos2);
-			object3d->SetRotate(rotate2);
-		}
-		i++;
-
-		// カメラ切り替え
-		object3d->SetCamera(cameraManager.GetActiveCamera());
-	}
-
+	// フィールドの更新
+	pField_->Update();
 
 
 #ifdef _DEBUG
@@ -175,17 +133,17 @@ void GamePlayScene::Update()
 
 	ImGui::Begin("PlayScene");
 
-	ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
-
 	ImGui::SliderFloat3("camera1Position", &camera1Position.x, -100.0f, 100.0f);
 	ImGui::SliderFloat3("camera1Rotate", &camera1Rotate.x, -10.0f, 10.0f);
 
 	ImGui::SliderFloat3("camera2Position", &camera2Position.x, -100.0f, 100.0f);
 	ImGui::SliderFloat3("camera2Rotate", &camera2Rotate.x, -10.0f, 10.0f);
 
-	ImGui::SliderFloat3("position", &position_.x, -100.0f, 100.0f);
-
 	ImGui::End();
+
+	pPlayer_->ImGuiDraw();
+	pEnemy_->ImGuiDraw();
+	pField_->ImGuiDraw();
 
 #endif // _DEBUG
 
@@ -202,16 +160,15 @@ void GamePlayScene::Draw()
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
-	for (auto& obj : object3ds) 
-	{
-		obj->Draw();
-	}
+	pPlayer_->Draw();
+	pEnemy_->Draw();
+	pField_->Draw();
 
 	// 描画前処理(Sprite)
 	SpriteCommon::GetInstance()->CommonDrawSetting();
 
-	for (Sprite* sprite : sprites)
-	{
-		sprite->Draw();
-	}
+	//for (Sprite* sprite : sprites)
+	//{
+	//	sprite->Draw();
+	//}
 }
