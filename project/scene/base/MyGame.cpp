@@ -62,7 +62,7 @@ void MyGame::Update()
 	
 		if (ImGui::Button("AddParticle"))
 		{
-			particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 3);
+			particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 1);
 		}
 	}
 

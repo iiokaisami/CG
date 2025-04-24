@@ -19,6 +19,8 @@ public:
 
 	void Draw();
 
+	void UpdateVertexBuffer();
+
 public: // セッター
 
 	void SetEnableLighting(bool enable);
@@ -94,6 +96,10 @@ public: // ゲッター
 
 	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView()const { return vertexBufferView_; }
 	ModelData GetModelData() { return modelData_; }
+
+public: // セッター
+
+	void AddVertex(const Vector4& position, const Vector2& texcoord, const Vector3& normal);
 
 private:
 	

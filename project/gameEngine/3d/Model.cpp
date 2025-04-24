@@ -278,6 +278,38 @@ Model::Node Model::ReadNode(aiNode* node)
 	return result;
 }
 
+void Model::UpdateVertexBuffer()
+{
+	// 頂点データが空の場合は処理をスキップ
+	if (modelData_.vertices.empty()) {
+		return;
+	}
+
+	// 新しい頂点バッファを作成
+	vertexResource_ = modelCommon_->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
+
+	// 頂点データを GPU バッファにコピー
+	void* mappedData = nullptr;
+	vertexResource_->Map(0, nullptr, &mappedData);
+	std::memcpy(mappedData, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
+	vertexResource_->Unmap(0, nullptr);
+
+	// 頂点バッファビューを更新
+	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
+	vertexBufferView_.SizeInBytes = static_cast<UINT>(sizeof(VertexData) * modelData_.vertices.size());
+	vertexBufferView_.StrideInBytes = sizeof(VertexData);
+}
+
+void Model::AddVertex(const Vector4& position, const Vector2& texcoord, const Vector3& normal)
+{
+	// 頂点データを作成して追加
+	VertexData vertex = { position, texcoord, normal };
+	modelData_.vertices.push_back(vertex);
+
+	// VertexBufferViewを更新
+	UpdateVertexBuffer();
+}
+
 void Model::SetEnableLighting(bool enable)
 {
 	if (materialData_)

@@ -340,6 +340,16 @@ void ParticleManager::Draw()
         srvManager_->SetGraphicsRootDescriptorTable(2, ParticleGroup.materialData.textureIndex);
         // テクスチャのSRVを設定
         srvManager_->SetGraphicsRootDescriptorTable(1, ParticleGroup.srvIndex);
+       
+        // 頂点数をログに出力
+        size_t vertexCount = model_->GetModelData().vertices.size();
+        Logger::Log("Drawing vertices:\n\n\n " + std::to_string(vertexCount));
+
+        if (vertexCount == 0) {
+            Logger::Log("Error: No vertices to draw.");
+            continue;
+        }
+        
         // DrawCall (インスタンシング描画)
         dxCommon_->GetCommandList()->DrawInstanced(UINT(model_->GetModelData().vertices.size()), ParticleGroup.instanceCount, 0, 0);
 
@@ -391,12 +401,12 @@ Particle ParticleManager::MakeTestParticle(std::mt19937& randomEngine, const Vec
 
     Particle particle;
 
-    particle.transform.scale = { 0.1f, distScale(randomEngine), 1.0f};
+  //  particle.transform.scale = { 0.1f, distScale(randomEngine), 1.0f};
     particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
     particle.transform.translate = translate;
     particle.velocity = {0.0f,0.0f,0.0f};
     particle.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    particle.lifeTime = 10.0f;
+    particle.lifeTime = 3.0f;
     particle.currentTime = 0.0f;
 
     return particle;
@@ -406,7 +416,7 @@ void ParticleManager::MakeRing()
 {
     const uint32_t kRingDivide = 32; // 分割数
     const float kOuterRadius = 1.0f; // 外側の半径
-    const float kInnerRadius = 0.5f; // 内側の半径
+    const float kInnerRadius = 0.2f; // 内側の半径
     const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);
 
     for (uint32_t index = 0; index < kRingDivide; ++index)
@@ -418,12 +428,17 @@ void ParticleManager::MakeRing()
         float u = float(index) / float(kRingDivide);
         float uNext = float(index + 1) / float(kRingDivide);
 
-        // 外側の頂点
-        model_->GetModelData().vertices.push_back({ { -sin * kOuterRadius, cos * kOuterRadius, 0.0f }, { u, 0.0f }, { 0.0f, 0.0f, 1.0f } });
-        model_->GetModelData().vertices.push_back({ { -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f }, { uNext, 0.0f }, { 0.0f, 0.0f, 1.0f } });
+        // 三角形1: 外側の現在の頂点 -> 内側の現在の頂点 -> 外側の次の頂点
+        model_->AddVertex({ -sin * kOuterRadius, cos * kOuterRadius, 0.0f, 1.0f }, { u, 0.0f }, { 0.0f, 0.0f, 1.0f });
+        model_->AddVertex({ -sin * kInnerRadius, cos * kInnerRadius, 0.0f, 1.0f }, { u, 1.0f }, { 0.0f, 0.0f, 1.0f });
+        model_->AddVertex({ -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext, 0.0f }, { 0.0f, 0.0f, 1.0f });
 
-        // 内側の頂点
-        model_->GetModelData().vertices.push_back({ { -sin * kInnerRadius, cos * kInnerRadius, 0.0f }, { u, 1.0f }, { 0.0f, 0.0f, 1.0f } });
-        model_->GetModelData().vertices.push_back({ { -sinNext * kInnerRadius, cosNext * kInnerRadius, 0.0f }, { uNext, 1.0f }, { 0.0f, 0.0f, 1.0f } });
+        // 三角形2: 外側の次の頂点 -> 内側の現在の頂点 -> 内側の次の頂点
+        model_->AddVertex({ -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext, 0.0f }, { 0.0f, 0.0f, 1.0f });
+        model_->AddVertex({ -sin * kInnerRadius, cos * kInnerRadius, 0.0f, 1.0f }, { u, 1.0f }, { 0.0f, 0.0f, 1.0f });
+        model_->AddVertex({ -sinNext * kInnerRadius, cosNext * kInnerRadius, 0.0f, 1.0f }, { uNext, 1.0f }, { 0.0f, 0.0f, 1.0f });
     }
+
+	// モデルデータを更新
+	model_->UpdateVertexBuffer();
 }
