@@ -33,14 +33,14 @@ void GamePlayScene::Initialize()
 	pPlayer_ = std::make_unique<Player>();
 	pPlayer_->Initialize();
 
-	// エネミー
-	pEnemy_ = std::make_unique<Enemy>();
-	pEnemy_->Initialize();
-	pEnemy_->SetPlayerPosition(pPlayer_->GetPosition());
 
 	// フィールド
 	pField_ = std::make_unique<Field>();
 	pField_->Initialize();
+
+
+	// エネミーのcsvデータを読み込み
+	LoadEnemyPopData1();
 
 
 	// スプライト
@@ -59,7 +59,10 @@ void GamePlayScene::Initialize()
 void GamePlayScene::Finalize()
 {
 	pPlayer_->Finalize();
-	pEnemy_->Finalize();
+	for (auto& enemy : pEnemies_)
+	{
+		enemy->Finalize();
+	}
 	pField_->Finalize();
 
 	/*for (Sprite* sprite : sprites)
@@ -120,8 +123,13 @@ void GamePlayScene::Update()
 	pPlayer_->Update();
 
 	// エネミーの更新
-	pEnemy_->SetPlayerPosition(pPlayer_->GetPosition());
-	pEnemy_->Update();
+	for (auto& enemy : pEnemies_)
+	{
+		enemy->SetPlayerPosition(pPlayer_->GetPosition());
+		enemy->Update();
+	}
+	// エネミーの出現コマンドの更新
+	UpdateEnemyPopCommands1();
 
 	// フィールドの更新
 	pField_->Update();
@@ -142,7 +150,10 @@ void GamePlayScene::Update()
 	ImGui::End();
 
 	pPlayer_->ImGuiDraw();
-	pEnemy_->ImGuiDraw();
+	for (auto& enemy : pEnemies_)
+	{
+		enemy->ImGuiDraw();
+	}
 	pField_->ImGuiDraw();
 
 #endif // _DEBUG
@@ -160,8 +171,12 @@ void GamePlayScene::Draw()
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
-	pPlayer_->Draw();
-	pEnemy_->Draw();
+	pPlayer_->Draw(); 
+	for (auto& enemy : pEnemies_) 
+	{
+		enemy->Draw();
+	}
+
 	pField_->Draw();
 
 	// 描画前処理(Sprite)
@@ -171,4 +186,110 @@ void GamePlayScene::Draw()
 	//{
 	//	sprite->Draw();
 	//}
+}
+
+void GamePlayScene::EnemyInit()
+{
+	// エネミー
+	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+	enemy->SetPosition(enemyPosition_);
+	enemy->Initialize();
+	enemy->SetPlayerPosition(pPlayer_->GetPosition());
+
+
+	// 敵を登録
+	pEnemies_.push_back(std::move(enemy));
+
+
+}
+
+void GamePlayScene::LoadEnemyPopData1()
+{
+	//ファイルを開く
+	std::ifstream file;
+	file.open("resources/csv/EnemyPop.csv");
+	assert(file.is_open());
+
+	//ファイルの内容を文字列ストリームにコピー
+	enemyPopCommands1 << file.rdbuf();
+
+	//ファイルを閉じる
+	file.close();
+}
+
+void GamePlayScene::UpdateEnemyPopCommands1()
+{
+	//待機処理
+	if (isEnemyWaiting_)
+	{
+		enemyWaitingTimer_--;
+
+		if (enemyWaitingTimer_ <= 0)
+		{
+			//待機完了
+			isEnemyWaiting_ = false;
+		}
+		return;
+	}
+
+	//1行分の文字列を入れる変数
+	std::string line;
+
+	//コマンドループ
+	while (getline(enemyPopCommands1, line)) {
+		//1行分の文字列を入れる変数
+		std::istringstream line_stream(line);
+
+		std::string word;
+		// ,区切りで行の先頭列を取得
+		getline(line_stream, word, ',');
+
+		// "//"から始まる行はコメント
+		if (word.find("//") == 0) {
+			//コメント行を飛ばす
+			continue;
+		}
+
+
+		// POSITONコマンド
+		if (word.find("POSITION") == 0)
+		{
+
+			// X座標
+			getline(line_stream, word, ',');
+			float x = (float)atoi(word.c_str());
+
+			// Y座標
+			getline(line_stream, word, ',');
+			float y = (float)atoi(word.c_str());
+
+			// Z座標
+			getline(line_stream, word, ',');
+			float z = (float)atoi(word.c_str());
+
+			enemyPosition_ = { x,y,z };
+
+			// 敵発生
+			EnemyInit();
+
+		}
+		// WAITコマンド
+		else if (word.find("WAIT") == 0)
+		{
+
+			getline(line_stream, word, ',');
+
+			// 待ち時間
+			int32_t waitTime = atoi(word.c_str());
+
+			//待機時間
+			isEnemyWaiting_ = true;
+			enemyWaitingTimer_ = waitTime;
+
+
+
+			//コマンドループを抜ける
+			break;
+		}
+	}
 }

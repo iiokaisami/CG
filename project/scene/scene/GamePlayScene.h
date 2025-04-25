@@ -23,6 +23,21 @@ public:
 	// 描画
 	void Draw() override;
 
+	// 敵の初期化
+	void EnemyInit();
+	// 敵の発生コマンド
+	std::stringstream enemyPopCommands1;
+	std::stringstream enemyPopCommands2;
+	std::stringstream enemyPopCommands3;
+	// 敵の発生コマンドの読み込み
+	void LoadEnemyPopData1();
+	//void LoadEnemyPopData2();
+	//void LoadEnemyPopData3();
+	// 敵の発生コマンドの更新
+	void UpdateEnemyPopCommands1();
+	//void UpdateEnemyPopCommands2();
+	//void UpdateEnemyPopCommands3();
+
 private:
 
 	CameraManager& cameraManager = CameraManager::GetInstance();
@@ -42,7 +57,13 @@ private:
 	std::unique_ptr<Player> pPlayer_ = nullptr;
 
 	// エネミー
-	std::unique_ptr<Enemy> pEnemy_ = nullptr;
+	std::vector<std::unique_ptr<Enemy>> pEnemies_;
+	// 敵の出現位置
+	Vector3 enemyPosition_{};
+	// 敵機中フラグ
+	bool isEnemyWaiting_ = true;
+	// 敵待機タイマー
+	int32_t enemyWaitingTimer_ = 9;
 
 	// フィールド
 	std::unique_ptr<Field> pField_ = nullptr;

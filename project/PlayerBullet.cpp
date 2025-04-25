@@ -10,7 +10,7 @@ void PlayerBullet::Initialize()
 	object_->SetRotate(rotation_);
 	
 	// 仮置き
-	scale_ = { 0.2f,0.2f,0.2f };
+	scale_ = { 0.5f,0.5f,0.5f };
 	object_->SetScale(scale_);
 
 	// 当たり判定
