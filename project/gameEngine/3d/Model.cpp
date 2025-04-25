@@ -300,6 +300,28 @@ void Model::UpdateVertexBuffer()
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 }
 
+void Model::UpdateIndexBuffer()
+{
+	// インデックスバッファが空の場合は処理をスキップ
+	if (modelData_.indices.empty())
+	{
+		return;
+	}
+
+	// 新しいインデックスバッファを作成
+	indexResource_ = modelCommon_->GetDxCommon()->CreateBufferResource(sizeof(uint32_t) * modelData_.indices.size());
+	
+	// インデックスデータを GPU バッファにコピー
+	void* mappedData = nullptr;
+	indexResource_->Map(0, nullptr, &mappedData);
+	std::memcpy(mappedData, modelData_.indices.data(), sizeof(uint32_t) * modelData_.indices.size());
+	indexResource_->Unmap(0, nullptr);
+	// インデックスバッファビューを更新
+	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
+	indexBufferView_.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * modelData_.indices.size());
+	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+}
+
 void Model::AddVertex(const Vector4& position, const Vector2& texcoord, const Vector3& normal)
 {
 	// 頂点データを作成して追加
@@ -308,6 +330,11 @@ void Model::AddVertex(const Vector4& position, const Vector2& texcoord, const Ve
 
 	// VertexBufferViewを更新
 	UpdateVertexBuffer();
+}
+
+void Model::AddIndex(uint32_t index)
+{
+	modelData_.indices.push_back(index);
 }
 
 void Model::SetEnableLighting(bool enable)

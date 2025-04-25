@@ -321,6 +321,10 @@ void ParticleManager::Draw()
     dxCommon_->GetCommandList()->SetPipelineState(pipelineState_.Get());
     // プリミティブトポロジーの設定
     dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+   
+    // インデックスバッファを設定(モデルから取得)
+    indexBufferView_ = model_->GetIndexBufferView();
+    dxCommon_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
 
     // パーティクルグループごとに描画
     for (const auto& [name, ParticleGroup] : particleGroups)
@@ -341,17 +345,12 @@ void ParticleManager::Draw()
         // テクスチャのSRVを設定
         srvManager_->SetGraphicsRootDescriptorTable(1, ParticleGroup.srvIndex);
        
-        // 頂点数をログに出力
-        size_t vertexCount = model_->GetModelData().vertices.size();
-        Logger::Log("Drawing vertices:\n\n\n " + std::to_string(vertexCount));
-
-        if (vertexCount == 0) {
-            Logger::Log("Error: No vertices to draw.");
-            continue;
-        }
         
         // DrawCall (インスタンシング描画)
-        dxCommon_->GetCommandList()->DrawInstanced(UINT(model_->GetModelData().vertices.size()), ParticleGroup.instanceCount, 0, 0);
+        dxCommon_->GetCommandList()->DrawIndexedInstanced(
+            static_cast<UINT>(model_->GetModelData().indices.size()), 
+            ParticleGroup.instanceCount, 
+            0, 0, 0);
 
     }
 }
@@ -401,12 +400,12 @@ Particle ParticleManager::MakeTestParticle(std::mt19937& randomEngine, const Vec
 
     Particle particle;
 
-  //  particle.transform.scale = { 0.1f, distScale(randomEngine), 1.0f};
+    particle.transform.scale = { 0.1f, distScale(randomEngine), 1.0f};
     particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
     particle.transform.translate = translate;
     particle.velocity = {0.0f,0.0f,0.0f};
     particle.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    particle.lifeTime = 3.0f;
+    particle.lifeTime = 1.0f;
     particle.currentTime = 0.0f;
 
     return particle;
@@ -428,17 +427,31 @@ void ParticleManager::MakeRing()
         float u = float(index) / float(kRingDivide);
         float uNext = float(index + 1) / float(kRingDivide);
 
+        // 頂点追加 + 基準インデックス保存
+        uint32_t baseIndex = model_->GetVertexCount();
+
         // 三角形1: 外側の現在の頂点 -> 内側の現在の頂点 -> 外側の次の頂点
         model_->AddVertex({ -sin * kOuterRadius, cos * kOuterRadius, 0.0f, 1.0f }, { u, 0.0f }, { 0.0f, 0.0f, 1.0f });
         model_->AddVertex({ -sin * kInnerRadius, cos * kInnerRadius, 0.0f, 1.0f }, { u, 1.0f }, { 0.0f, 0.0f, 1.0f });
         model_->AddVertex({ -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext, 0.0f }, { 0.0f, 0.0f, 1.0f });
 
+        model_->AddIndex(baseIndex + 0);
+        model_->AddIndex(baseIndex + 1);
+        model_->AddIndex(baseIndex + 2);
+
         // 三角形2: 外側の次の頂点 -> 内側の現在の頂点 -> 内側の次の頂点
         model_->AddVertex({ -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext, 0.0f }, { 0.0f, 0.0f, 1.0f });
         model_->AddVertex({ -sin * kInnerRadius, cos * kInnerRadius, 0.0f, 1.0f }, { u, 1.0f }, { 0.0f, 0.0f, 1.0f });
         model_->AddVertex({ -sinNext * kInnerRadius, cosNext * kInnerRadius, 0.0f, 1.0f }, { uNext, 1.0f }, { 0.0f, 0.0f, 1.0f });
+    
+        model_->AddIndex(baseIndex + 3);
+        model_->AddIndex(baseIndex + 4);
+        model_->AddIndex(baseIndex + 5);
+    
     }
 
-	// モデルデータを更新
+	// すべての頂点・インデックス追加後にバッファを一括更新
 	model_->UpdateVertexBuffer();
+	model_->UpdateIndexBuffer();
+
 }
