@@ -58,7 +58,7 @@ public:
 	void CreateRootSignature();
 
 	// パーティクルグループの生成
-	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, bool isMakeRing = false);
+	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, bool isMakeRing = false,bool isMakeCylinder = false);
 
 	// 更新
 	void Update();
@@ -73,6 +73,8 @@ public:
 	Particle MakeTestParticle(std::mt19937& randomEngine, const Vector3& translate);
 
 	void MakeRing();
+
+	void MakeCylinder();
 
 public: // セッター
 

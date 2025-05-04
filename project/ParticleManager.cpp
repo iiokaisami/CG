@@ -199,7 +199,7 @@ void ParticleManager::CreateRootSignature()
     depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 }
 
-void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, bool isMakeRing)
+void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, bool isMakeRing, bool isMakeCylinder)
 {
     ModelManager::GetInstance()->LoadModel(modelFilePath);
 
@@ -248,6 +248,12 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     {
         // リングの頂点データを生成
         MakeRing();
+    }
+
+    if (isMakeCylinder)
+    {
+        // シリンダーの頂点データを生成
+        MakeCylinder();
     }
 }
 
@@ -453,5 +459,32 @@ void ParticleManager::MakeRing()
 	// すべての頂点・インデックス追加後にバッファを一括更新
 	model_->UpdateVertexBuffer();
 	model_->UpdateIndexBuffer();
+
+}
+
+void ParticleManager::MakeCylinder()
+{
+	const uint32_t kCylinderDivide = 32;
+	const float kTopRadius = 1.0f;
+	const float kBottomRadius = 1.0f;
+	const float kHeight = 3.0f;
+	const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kCylinderDivide);
+
+    for (uint32_t index = 0; index < kCylinderDivide; ++index)
+    {
+        float sin = std::sin(index * radianPerDivide);
+		float cos = std::cos(index * radianPerDivide);
+		float sinNext = std::sin((index + 1) * radianPerDivide);
+		float cosNext = std::cos((index + 1) * radianPerDivide);
+		float u = float(index) / float(kCylinderDivide);
+		float uNext = float(index + 1) / float(kCylinderDivide);
+
+		// position, texcoord, normalの順で頂点を追加
+        model_->AddVertex({ -sin * kTopRadius, kHeight, cos * kTopRadius, 1.0f }, { u, 0.0f }, { -sin, 0.0f, cos });
+        model_->AddVertex({ -sinNext * kTopRadius, kHeight, cosNext * kTopRadius, 1.0f }, { uNext, 0.0f }, { -sinNext, 0.0f, cosNext });
+		model_->AddVertex({ -sin * kBottomRadius, 0.0f, cos * kBottomRadius, 1.0f }, { u, 1.0f }, { -sin, 0.0f, cos });
+        model_->AddVertex({ -sin * kBottomRadius, 0.0f, cos * kBottomRadius, 1.0f }, { u, 1.0f }, { -sin, 0.0f, cos });
+        model_->AddVertex({ -sinNext * kTopRadius, kHeight, cosNext * kTopRadius, 1.0f }, { uNext, 0.0f }, { -sinNext, 0.0f, cosNext });
+		model_->AddVertex({ -sinNext * kBottomRadius, 0.0f, cosNext * kBottomRadius, 1.0f }, { uNext, 1.0f }, { -sinNext, 0.0f, cosNext });
 
 }
