@@ -65,6 +65,19 @@ void CopyPass::Draw(Microsoft::WRL::ComPtr <ID3D12GraphicsCommandList> cmdList, 
     };
     cmdList->SetDescriptorHeaps(_countof(heaps), heaps); // 2つを一括バインド
 
+    // デバッグログ
+    D3D12_GPU_DESCRIPTOR_HANDLE srvHeapBase = srvManager_->GetHeap()->GetGPUDescriptorHandleForHeapStart();
+    D3D12_GPU_DESCRIPTOR_HANDLE samplerHeapBase = dxCommon_->GetSamplerHeap()->GetGPUDescriptorHandleForHeapStart();
+
+    OutputDebugStringA(("SRV Heap Base Address: " + std::to_string(srvHeapBase.ptr) + "\n").c_str());
+    OutputDebugStringA(("Sampler Heap Base Address: " + std::to_string(samplerHeapBase.ptr) + "\n").c_str());
+    OutputDebugStringA(("srvHandle.ptr: " + std::to_string(srvHandle.ptr) + "\n").c_str());
+    OutputDebugStringA(("SamplerHandle.ptr: " + std::to_string(dxCommon_->GetSamplerDescriptorHandle().ptr) + "\n").c_str());
+
+    // ディスクリプタハンドルの有効性を確認
+    assert(srvHandle.ptr >= srvHeapBase.ptr && "srvHandle is outside the SRV heap!");
+    assert(dxCommon_->GetSamplerDescriptorHandle().ptr >= samplerHeapBase.ptr && "Sampler handle is outside the Sampler heap!");
+
     cmdList->SetGraphicsRootDescriptorTable(0, srvHandle);
     cmdList->SetGraphicsRootDescriptorTable(1, dxCommon_->GetSamplerDescriptorHandle());
 

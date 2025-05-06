@@ -31,7 +31,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvHeap_;
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle_{};
     uint32_t srvIndex_ = 0;
-    DXGI_FORMAT format_ = DXGI_FORMAT_R8G8B8A8_UNORM;
+    DXGI_FORMAT format_ = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
     Vector4 clearColor_ = { 0, 0, 0, 1 };
     uint32_t width_ = 0;
     uint32_t height_ = 0;

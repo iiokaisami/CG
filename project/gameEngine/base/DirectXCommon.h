@@ -191,12 +191,10 @@ public: // ゲッター
 	ID3D12DescriptorHeap* GetSamplerHeap() const { return samplerHeap_; }
 	// Sampler用ディスクリプタヒープのサイズを取得する関数
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSamplerDescriptorHandle() const
-	{  
-       D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = samplerHeap_->GetCPUDescriptorHandleForHeapStart();  
-       D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle;  
-       gpuHandle.ptr = static_cast<UINT64>(cpuHandle.ptr);  
-       return gpuHandle;  
-    }
+	{
+		assert(samplerHeap_ != nullptr && "Sampler Heap is not initialized!");
+		return samplerHeap_->GetGPUDescriptorHandleForHeapStart();
+	}
 
 private:
 
