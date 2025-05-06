@@ -134,7 +134,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const std::string& f
 	// テクスチャデータの参照を取得
 	TextureData& textureData = it->second;
 	
-	Logger::Log(std::format("Returning SRV Handle: 0x{:X} from DescriptorHeap Address: 0x{:X}\n\n",
+	Logger::Log(std::format("Returning SRV Handle: 0x{:X} from DescriptorHeap Address: 0x{:X}",
 		textureData.srvHandleGPU.ptr,
 		reinterpret_cast<uintptr_t>(descriptorHeap_.Get())));
 
