@@ -814,7 +814,12 @@ void DirectXCommon::CreateSamplerHeap()
 	desc.NumDescriptors = 1;
 	desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	HRESULT hr = device_->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&samplerHeap_));
-	assert(SUCCEEDED(hr));
+	assert(SUCCEEDED(hr) && "Failed to create Sampler Heap!");
+
+	// デバッグログ
+	D3D12_GPU_DESCRIPTOR_HANDLE samplerHeapBase = samplerHeap_->GetGPUDescriptorHandleForHeapStart();
+	OutputDebugStringA(("Sampler Heap Base Address: " + std::to_string(samplerHeapBase.ptr) + "\n").c_str());
+	assert(samplerHeap_ != nullptr && "Sampler Descriptor Heap is null!");
 
 	D3D12_SAMPLER_DESC samplerDesc{};
 	samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;

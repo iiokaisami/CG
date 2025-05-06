@@ -14,6 +14,12 @@ void SrvManager::Initialize(DirectXCommon* dxCommon)
     descriptorHeap_ = dxCommon_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount_, true);
     // デスクリプタ1個分のサイズを取得して記録
     descriptorSize_ = dxCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+    // デバッグログ
+    D3D12_GPU_DESCRIPTOR_HANDLE srvHeapBase = descriptorHeap_->GetGPUDescriptorHandleForHeapStart();
+    OutputDebugStringA(("SRV Heap Base Address: " + std::to_string(srvHeapBase.ptr) + "\n").c_str());
+    assert(descriptorHeap_ != nullptr && "SRV Descriptor Heap is null!");
+
 }
 
 uint32_t SrvManager::Allocate()
@@ -63,6 +69,12 @@ void SrvManager::CreateSRVforTexture2D(uint32_t srvIndex, ID3D12Resource* pResou
     srvDesc.Texture2D.MipLevels = MipLevels;
 
     dxCommon_->GetDevice()->CreateShaderResourceView(pResource, &srvDesc, GetCPUDescriptorHandle(srvIndex));
+
+    // デバッグログ
+    D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = GetGPUDescriptorHandle(srvIndex);
+    OutputDebugStringA(("Created SRV Handle: " + std::to_string(srvHandle.ptr) + "\n").c_str());
+    assert(srvHandle.ptr != 0 && "SRV Handle is invalid!");
+
 }
 
 void SrvManager::CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource* pResource, UINT numElements, UINT structureByteStride)
@@ -203,6 +215,11 @@ uint32_t SrvManager::LoadTexture(const std::string& textureFilePath)
     // SRV作成
     uint32_t srvIndex = Allocate();
     CreateSRVforTexture2D(srvIndex, textureResource.Get(), textureResource->GetDesc().Format, textureResource->GetDesc().MipLevels);
+
+    // デバッグログ
+    D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = GetGPUDescriptorHandle(srvIndex);
+    OutputDebugStringA(("Loaded Texture SRV Handle: " + std::to_string(srvHandle.ptr) + "\n").c_str());
+    assert(srvHandle.ptr != 0 && "Loaded Texture SRV Handle is invalid!");
 
     // インデックスをキャッシュに保存
     textureIndices_[textureFilePath] = srvIndex;
