@@ -310,6 +310,13 @@ void DirectXCommon::InitializeFinalRenderTargets()
 {
 	HRESULT result = S_FALSE;
 
+	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
+	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rtvHeapDesc.NumDescriptors = 10; // RTVの数（SwapChain用2個 + RenderTexture用など）
+	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	rtvHeapDesc.NodeMask = 0;
+
+	device_->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvDescriptorHeap_));
 
 	//SwapChainからResourceを引っ張ってくる
 	result = swapChain_->GetBuffer(0, IID_PPV_ARGS(&swapChainResources_[0]));
@@ -321,6 +328,9 @@ void DirectXCommon::InitializeFinalRenderTargets()
 	// RTVの設定
 	rtvDesc_.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	rtvDesc_.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+
+	// RTVディスクリプタのサイズを取得（ここで初期化）
+	descriptorSizeRTV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	// RTVのDescriptor Heapの先頭ハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
@@ -493,6 +503,16 @@ void DirectXCommon::PreDraw()
 	
 	/////////////////////////////////////////////////////////////////////////
 
+	// 描画用のDescriptorHeapの設定（必要な部分）
+	//Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { srvDescriptorHeap_ };
+	//commandList_->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps->GetAddressOf());
+
+	// 描画用のDescriptorHeapの設定
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap_.Get() };
+	Logger::Log(std::format("PreDraw: Setting DescriptorHeap Address: 0x{:X}\n\n", reinterpret_cast<uintptr_t>(descriptorHeaps[0])));
+	commandList_->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+
+
 	// RenderTextureに対する描画設定
 	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -507,6 +527,7 @@ void DirectXCommon::PreDraw()
 
 	// RenderTextureのクリア
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f }; // 青っぽい色
+	Logger::Log(std::format("Clear Color: R={}, G={}, B={}, A={}\n\n", clearColor[0], clearColor[1], clearColor[2], clearColor[3]));
 	commandList_->ClearRenderTargetView(renderTextureRTVHandle_, clearColor, 0, nullptr);
 	//指定した深度で画面全体をクリアする
 	commandList_->ClearDepthStencilView(dsvHandle_, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
@@ -515,15 +536,14 @@ void DirectXCommon::PreDraw()
 	commandList_->RSSetViewports(1, &viewport_);
 	commandList_->RSSetScissorRects(1, &scissorRect_);
 
-	// 描画用のDescriptorHeapの設定（必要な部分）
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { srvDescriptorHeap_ };
-	commandList_->SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
-
 }
 
 void DirectXCommon::PostDraw()
 {
 	HRESULT result = S_FALSE;
+
+	// 描画後の状態を確認
+	Logger::Log("PostDraw: Completed drawing.\n\n");
 
 	//これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
@@ -542,13 +562,13 @@ void DirectXCommon::PostDraw()
 
 	/////////////////////////////////////////////////////////////////
 	// TransitionBarrierの設定
-	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier_.Transition.pResource = swapChainResources_[backBufferIndex].Get();
-	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrier_.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	commandList_->ResourceBarrier(1, &barrier_);
+	//barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//barrier_.Transition.pResource = swapChainResources_[backBufferIndex].Get();
+	//barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	//barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	//barrier_.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	//commandList_->ResourceBarrier(1, &barrier_);
 
 
 	// 描画先のRTVを設定する
@@ -559,13 +579,13 @@ void DirectXCommon::PostDraw()
 	// ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList_.Get());
 
 	// TransitionBarrierの設定
-	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier_.Transition.pResource = swapChainResources_[backBufferIndex].Get();
-	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	barrier_.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	commandList_->ResourceBarrier(1, &barrier_);
+	//barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//barrier_.Transition.pResource = swapChainResources_[backBufferIndex].Get();
+	//barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	//barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+	//barrier_.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	//commandList_->ResourceBarrier(1, &barrier_);
 	/////////////////////////////////////////////////////////////////
 
 	//コマンドリストの内容を確定させる。すべてのコマンドを頼んでからCloseすること
@@ -857,6 +877,13 @@ void DirectXCommon::CommandPass()
 
 Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateRenderTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device, int32_t width, int32_t height, DXGI_FORMAT format, const Vector4& clearColor)
 {
+	D3D12_CLEAR_VALUE clearValue{};
+	clearValue.Format = format;
+	clearValue.Color[0] = clearColor.x;
+	clearValue.Color[1] = clearColor.y;
+	clearValue.Color[2] = clearColor.z;
+	clearValue.Color[3] = clearColor.w;
+
 	D3D12_RESOURCE_DESC resourceDesc{};
 	resourceDesc.Width = width; // Textureの幅
 	resourceDesc.Height = height; // Textureの高さ
@@ -869,14 +896,6 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateRenderTextureResourc
 
 	D3D12_HEAP_PROPERTIES heapProperties{};
 	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
-
-	D3D12_CLEAR_VALUE clearValue{};
-	clearValue.Format = format;
-	clearValue.Color[0] = clearColor.x;
-	clearValue.Color[1] = clearColor.y;
-	clearValue.Color[2] = clearColor.z;
-	clearValue.Color[3] = clearColor.w;
-
 
 	//resourceの生成
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
