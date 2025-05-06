@@ -206,6 +206,7 @@ void TitleScene::Draw()
 	{
 		object3ds[1]->Draw();
 	}
+	object3ds[1]->Draw();
 	object3ds[2]->Draw();
 }
 
