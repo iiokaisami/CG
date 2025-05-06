@@ -512,21 +512,26 @@ void DirectXCommon::PreDraw()
 	Logger::Log(std::format("PreDraw: Setting DescriptorHeap Address: 0x{:X}\n\n", reinterpret_cast<uintptr_t>(descriptorHeaps[0])));
 	commandList_->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
+	// リソースの状態確認
+	Logger::Log(std::format("PreDraw: Checking resource state for RenderTexture (Address: 0x{:X})\n\n", reinterpret_cast<uintptr_t>(renderTextureResource_.Get())));
 
+	Logger::Log("PreDraw: Transitioning resource state...");
 	// RenderTextureに対する描画設定
 	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	barrier_.Transition.pResource = renderTextureResource_.Get();
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrier_.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	barrier_.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;	
 	commandList_->ResourceBarrier(1, &barrier_);
+
+	Logger::Log("PreDraw: Resource state transition completed.");
 
 	// RenderTargetViewとDepthStencilViewを設定
 	commandList_->OMSetRenderTargets(1, &renderTextureRTVHandle_, false, &dsvHandle_);
 
 	// RenderTextureのクリア
-	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f }; // 青っぽい色
+	float clearColor[] = { 1.0f, 0.0f, 0.0f, 1.0f };//{ 0.1f, 0.25f, 0.5f, 1.0f }; // 青っぽい色
 	Logger::Log(std::format("Clear Color: R={}, G={}, B={}, A={}\n\n", clearColor[0], clearColor[1], clearColor[2], clearColor[3]));
 	commandList_->ClearRenderTargetView(renderTextureRTVHandle_, clearColor, 0, nullptr);
 	//指定した深度で画面全体をクリアする
@@ -542,11 +547,10 @@ void DirectXCommon::PostDraw()
 {
 	HRESULT result = S_FALSE;
 
-	// 描画後の状態を確認
-	Logger::Log("PostDraw: Completed drawing.\n\n");
-
 	//これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
+
+	Logger::Log("PostDraw: Transitioning resource state...");
 
 	//画面の各処理はすべて終わり、画面に移すので、状態を遷移
 	//今回はRenderTargetからPresentにする
@@ -559,6 +563,9 @@ void DirectXCommon::PostDraw()
 
 	//TransitonのBarrierを張る
 	commandList_->ResourceBarrier(1, &barrier_);
+
+	Logger::Log("PostDraw: Resource state transition completed.");
+
 
 	/////////////////////////////////////////////////////////////////
 	// TransitionBarrierの設定

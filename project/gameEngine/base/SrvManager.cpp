@@ -11,9 +11,17 @@ void SrvManager::Initialize(DirectXCommon* dxCommon)
 	dxCommon_ = dxCommon;
 
 	// デスクリプタヒープの生成
-	descriptorHeap_ = dxCommon_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount_, true);
-	// デスクリプタ1個分のサイズを取得して記録
+	//descriptorHeap_ = dxCommon_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount_, true);
+	
+     // DirectXCommonからデスクリプタヒープを取得
+    descriptorHeap_ = dxCommon_->GetSrvDescriptorHeap();
+    assert(descriptorHeap_ != nullptr); // デスクリプタヒープが取得できなかった場合は停止
+
+
+    // デスクリプタ1個分のサイズを取得して記録
 	descriptorSize_ = dxCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+    Logger::Log(std::format("SrvManager::Initialize: Using DescriptorHeap Address: 0x{:X}\n", reinterpret_cast<uintptr_t>(descriptorHeap_.Get())));
 }
 
 uint32_t SrvManager::Allocate()
@@ -86,6 +94,10 @@ void SrvManager::PreDraw()
 {
 	// 描画用DescriptorHeapの設定
 	ID3D12DescriptorHeap* descriptorHeaps[] = { descriptorHeap_.Get() };
+    
+    // デバッグログを追加して、設定されるディスクリプタヒープのアドレスを確認
+    Logger::Log(std::format("SrvManager::PreDraw: Setting DescriptorHeap Address: 0x{:X}\n", reinterpret_cast<uintptr_t>(descriptorHeaps[0])));
+
 	dxCommon_->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 }
 

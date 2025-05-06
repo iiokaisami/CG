@@ -22,6 +22,8 @@ void Model::Initialize(ModelCommon* modelCommon, const std::string& directorypat
 
 	// .objの参照しているテクスチャファイル読み込み
 	TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
+	Logger::Log(std::format("Loaded texture: {}\n", modelData_.material.textureFilePath));
+
 	// 読み込んだテクスチャの番号を取得
 	modelData_.material.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(modelData_.material.textureFilePath);
 
@@ -35,11 +37,10 @@ void Model::Draw()
 	//Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { TextureManager::GetInstance()->GetDescriptorHeap().Get() };
 	//modelCommon_->GetDxCommon()->GetCommandList()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps->GetAddressOf());
 
-    // 描画用のディスクリプタヒープを設定
+	// 描画用のディスクリプタヒープを設定
 	ID3D12DescriptorHeap* descriptorHeaps[] = { TextureManager::GetInstance()->GetDescriptorHeap().Get() };
 	Logger::Log(std::format("Setting DescriptorHeap Address: 0x{:X}\n\n", reinterpret_cast<uintptr_t>(descriptorHeaps[0])));
 	modelCommon_->GetDxCommon()->GetCommandList()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
-
 
 	// VertexBufferViewを設定
 	modelCommon_->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
@@ -50,10 +51,13 @@ void Model::Draw()
 	// SRVのDescriptorTableの先頭を設定
 	auto srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureFilePath);
 	Logger::Log(std::format("SRV Handle: 0x{:X}\n\n", srvHandle.ptr));
+	Logger::Log(std::format("Before SetGraphicsRootDescriptorTable: Current DescriptorHeap Address: 0x{:X}\n",
+		reinterpret_cast<uintptr_t>(descriptorHeaps[0])));
+
 	modelCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, srvHandle);
 
 	// 描画！
-    modelCommon_->GetDxCommon()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+	modelCommon_->GetDxCommon()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 
 }
 
