@@ -34,7 +34,7 @@ void CopyPass::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, const
     psoDesc.VS = { vs->GetBufferPointer(), vs->GetBufferSize() };
     psoDesc.PS = { ps->GetBufferPointer(), ps->GetBufferSize() };
     psoDesc.pRootSignature = rootSignature_.Get();
-    psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM; //DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+    psoDesc.RTVFormats[0] = /*DXGI_FORMAT_R8G8B8A8_UNORM;*/ DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
     psoDesc.NumRenderTargets = 1;
     psoDesc.SampleDesc.Count = 1;
     psoDesc.SampleMask = UINT_MAX;
