@@ -20,7 +20,7 @@ void TitleScene::Initialize()
 	ModelManager::GetInstance()->LoadModel("sphere.obj");
 	ModelManager::GetInstance()->LoadModel("terrain.obj");
 
-	for (uint32_t i = 0; i < 2; ++i)
+	for (uint32_t i = 0; i < 3; ++i)
 	{
 		Object3d* object = new Object3d();
 		if (i == 0)
@@ -30,6 +30,10 @@ void TitleScene::Initialize()
 		if (i == 1)
 		{
 			object->Initialize("terrain.obj");
+		}
+		if (i == 2)
+		{
+			object->Initialize("plane.obj");
 		}
 		position_ = { 0.0f,0.0f,5.0f };
 		scale_ = { 1.0f,1.0f,1.0f };
@@ -202,6 +206,7 @@ void TitleScene::Draw()
 	{
 		object3ds[1]->Draw();
 	}
+	object3ds[2]->Draw();
 }
 
 void TitleScene::SetLightSettings()

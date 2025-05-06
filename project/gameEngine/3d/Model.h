@@ -1,5 +1,9 @@
 #pragma once
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #include "MyMath.h"
 #include "TextureManager.h"
 
@@ -44,13 +48,6 @@ private: // 構造体、関数
 		uint32_t textureIndex = 0;
 	};
 
-
-	struct ModelData
-	{
-		std::vector<VertexData> vertices;
-		MaterialData material;
-	};
-
 	struct Material
 	{
 		Vector4 color;
@@ -64,6 +61,20 @@ private: // 構造体、関数
 		int32_t spotLight;
 	};
 
+	struct  Node
+	{
+		Matrix4x4 localMatrix;
+		std::string name;
+		std::vector<Node> children;
+	};
+
+	struct  ModelData
+	{
+		std::vector<VertexData> vertices;
+		MaterialData material;
+		Node rootNode;
+	};
+
 	//mtlファイルを読む関数
 	static MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
@@ -75,6 +86,8 @@ private: // 構造体、関数
 
 	// マテリアルデータ生成
 	void CreateMaterialData();
+
+	static Node ReadNode(aiNode* node);
 
 
 public: // ゲッター

@@ -24,8 +24,8 @@ void MyGame::Initialize()
 	loadAudioThread.join();
 
 	// パーティクルグループの生成
-	particleManager->CreateParticleGroup("exampleGroup", "resources/images/uvChecker.png", "plane.obj");
-	particleManager->CreateParticleGroup("secondGroup", "resources/images/monsterBall.png", "plane.obj");
+	//particleManager->CreateParticleGroup("exampleGroup", "resources/images/uvChecker.png", "plane.obj");
+	//particleManager->CreateParticleGroup("secondGroup", "resources/images/monsterBall.png", "plane.obj");
 
 	useExampleGroup_ = true;
 }
@@ -67,10 +67,10 @@ void MyGame::Update()
 	// パーティクルの生成
 	if (useExampleGroup_)
 	{
-		particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
+		//particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
 	} else
 	{
-		particleManager->Emit("secondGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
+		//particleManager->Emit("secondGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
 	}
 
 }
