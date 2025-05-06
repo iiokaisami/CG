@@ -1,3 +1,4 @@
+
 #pragma once
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -33,11 +34,6 @@ public:
 
 	void ReportLiveObjects();
 	void Finalize();
-
-	struct Vector4
-	{
-		float x, y, z, w;
-	};
 
 	/// <summary>
 	/// デバイスの初期化
@@ -166,11 +162,7 @@ public:
 
 	void CommandPass();
 
-	///---CG5---///
-	
-	// 
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device,int32_t width, int32_t height, DXGI_FORMAT format, const Vector4& clearColor);
-
+	void CreateSamplerHeap();
 
 public: // ゲッター
 
@@ -192,6 +184,19 @@ public: // ゲッター
 	size_t GetBackBufferCount() const { return backBuffers_.size(); }
 	// swapChainDescを取得
 	DXGI_SWAP_CHAIN_DESC1 GetSwapChainDesc() { return swapChainDesc_; }
+
+	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle() { return dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(); }
+	size_t GetDescriptorSizeRTV() { return descriptorSizeRTV_; }
+	// Sampler用ディスクリプタヒープを取得する関数
+	ID3D12DescriptorHeap* GetSamplerHeap() const { return samplerHeap_; }
+	// Sampler用ディスクリプタヒープのサイズを取得する関数
+	D3D12_GPU_DESCRIPTOR_HANDLE GetSamplerDescriptorHandle() const
+	{  
+       D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = samplerHeap_->GetCPUDescriptorHandleForHeapStart();  
+       D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle;  
+       gpuHandle.ptr = static_cast<UINT64>(cpuHandle.ptr);  
+       return gpuHandle;  
+    }
 
 private:
 
@@ -237,13 +242,15 @@ private:
 
 	HANDLE fenceEvent_ = nullptr;
 
-	 uint32_t descriptorSizeSRV_ = 0;
-	 uint32_t descriptorSizeRTV_ = 0;
-	 uint32_t descriptorSizeDSV_ = 0;
+	uint32_t descriptorSizeSRV_ = 0;
+	uint32_t descriptorSizeRTV_ = 0;
+	uint32_t descriptorSizeDSV_ = 0;
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_ = nullptr;
+	// Sampler用ディスクリプタヒープ
+	ID3D12DescriptorHeap* samplerHeap_ = nullptr;
 
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers_;
 
@@ -252,11 +259,6 @@ private:
 
 	// スワップチェーンリソース
 	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChainResources_;
-
-	// レンダーテクスチャ
-	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource_ = nullptr;
-	D3D12_CPU_DESCRIPTOR_HANDLE renderTextureRTVHandle_;
-
 
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence_ = nullptr;
 	uint64_t fenceValue_ = 0;
@@ -269,7 +271,7 @@ private:
 	// ビューポート
 	D3D12_VIEWPORT viewport_{};
 	// シザー矩形
-	D3D12_RECT scissorRect_{}; 
+	D3D12_RECT scissorRect_{};
 
 	// 記録時間（FPS固定）
 	std::chrono::steady_clock::time_point reference_;

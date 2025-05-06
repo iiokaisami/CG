@@ -82,20 +82,26 @@ void MyGame::Draw()
 
 	//コマンドを積み込んで確定させる
 
+	// ---------- オフスクリーン描画 ----------
+	renderTexture->BeginRender();
 
 	srvManager->PreDraw();
-
-	dxCommon->PreDraw();
-
-	sceneManager_->Draw();
+	sceneManager_->Draw();   // 実際の描画
 
 	//particleManager->Draw();
 
+	renderTexture->EndRender();
+
+
+	// ---------- SwapChainへの描画 ----------
+	dxCommon->PreDraw();
+
+	copyPass->Draw(dxCommon->GetCommandList(), renderTexture->GetGPUHandle());
+	
 #ifdef _DEBUG
 	// ImGui描画
 	imGuiManager->Draw();
 #endif // _DEBUG
-
 
 	dxCommon->PostDraw();
 

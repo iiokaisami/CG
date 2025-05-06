@@ -76,6 +76,14 @@ void Framework::Initialize()
 	modelManager = ModelManager::GetInstance();
 	modelManager->Initialize(dxCommon.get());
 
+	// レンダーテクスチャ
+	renderTexture = std::make_unique<RenderTexture>();
+	renderTexture->Initialize(dxCommon.get(), srvManager.get(), WinApp::kClientWidth, WinApp::kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM/*DXGI_FORMAT_R8G8B8A8_UNORM*/, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+	// コピー用パス
+	copyPass = std::make_unique<CopyPass>();
+	copyPass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/CopyImage.VS.hlsl", L"resources/shaders/CopyImage.PS.hlsl");
+
 	// パーティクル	
 	particleManager = ParticleManager::GetInstance();
 	particleManager->Initialize(dxCommon.get(),srvManager.get());
@@ -122,6 +130,13 @@ void Framework::Finalize()
 	object3dCommon->Finalize();
 
 	modelManager->Finalize();
+
+	// レンダーテクスチャ解放
+	renderTexture.reset();
+	renderTexture = nullptr;
+	// コピー用パス解放
+	copyPass.reset();
+	copyPass = nullptr;
 
 #ifdef _DEBUG
 	// ImGuiManager解放

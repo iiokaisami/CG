@@ -1,7 +1,6 @@
+
 #include "Model.h"
 
-#include <format>
-#include <iomanip>
 #include <fstream>
 #include <sstream>
 
@@ -22,43 +21,30 @@ void Model::Initialize(ModelCommon* modelCommon, const std::string& directorypat
 
 	// .objの参照しているテクスチャファイル読み込み
 	TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
-	Logger::Log(std::format("Loaded texture: {}\n", modelData_.material.textureFilePath));
-
 	// 読み込んだテクスチャの番号を取得
 	modelData_.material.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(modelData_.material.textureFilePath);
 
 }
 
 void Model::UpData()
-{}
+{
+}
 
 void Model::Draw()
 {
-	//Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { TextureManager::GetInstance()->GetDescriptorHeap().Get() };
-	//modelCommon_->GetDxCommon()->GetCommandList()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps->GetAddressOf());
-
-	// 描画用のディスクリプタヒープを設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = { TextureManager::GetInstance()->GetDescriptorHeap().Get() };
-	Logger::Log(std::format("Setting DescriptorHeap Address: 0x{:X}\n\n", reinterpret_cast<uintptr_t>(descriptorHeaps[0])));
-	modelCommon_->GetDxCommon()->GetCommandList()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
-
 	// VertexBufferViewを設定
 	modelCommon_->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
 	// マテリアルCBufferの場所を設定
 	modelCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 
-	// SRVのDescriptorTableの先頭を設定
-	auto srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureFilePath);
-	Logger::Log(std::format("SRV Handle: 0x{:X}\n\n", srvHandle.ptr));
-	Logger::Log(std::format("Before SetGraphicsRootDescriptorTable: Current DescriptorHeap Address: 0x{:X}\n",
-		reinterpret_cast<uintptr_t>(descriptorHeaps[0])));
 
-	modelCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, srvHandle);
+	// SRVのDescriptorTableの先頭を設定。2はrootPatameter[2]である。
+	modelCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureFilePath));
 
-	// 描画！
+
+	//描画！
 	modelCommon_->GetDxCommon()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
-
 }
 
 Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
@@ -178,7 +164,7 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
 
 	Assimp::Importer importer;
 	std::string fullPath = directoryPath + "/" + filename;
-	const aiScene* scene = importer.ReadFile(fullPath.c_str(),aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+	const aiScene* scene = importer.ReadFile(fullPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 	assert(scene->HasMeshes()); // メッシュがない場合はエラー
 
 	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)

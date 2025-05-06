@@ -24,6 +24,8 @@
 #include "ModelManager.h"
 #include "SrvManager.h"
 #include "Audio.h"
+#include "RenderTexture.h"
+#include "../../CopyPass.h"
 
 #include "../../ParticleEmitter.h"
 
@@ -76,6 +78,9 @@ protected:
 	TextureManager* textureManager = nullptr;
 	Object3dCommon* object3dCommon = nullptr;
 	ModelManager* modelManager = nullptr;
+
+	std::unique_ptr <RenderTexture> renderTexture = nullptr;
+	std::unique_ptr <CopyPass> copyPass = nullptr;
 
 	ParticleManager* particleManager = nullptr;
 
