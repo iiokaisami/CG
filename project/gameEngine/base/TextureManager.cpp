@@ -26,6 +26,18 @@ void TextureManager::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager)
 	dxCommon_ = dxCommon;
 	srvManager_ = srvManager;
 
+	// DxCommonのディスクリプタヒープを取得して設定
+	descriptorHeap_ = dxCommon_->GetSrvDescriptorHeap();
+	if (descriptorHeap_)
+	{
+		Logger::Log("Using external descriptor heap in TextureManager.\n");
+	}
+	else
+	{
+		Logger::Log("Error: Failed to get descriptor heap from DxCommon.");
+		assert(false);
+	}
+
 	// SRVの数と同数
 	textureDatas.reserve(DirectXCommon::kMaxSRVCount);
 }
@@ -58,6 +70,8 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	textureData.resource = dxCommon_->CreateTextureResource(textureData.metadata);
 	textureData.intermediate = dxCommon_->UploadTextureData(textureData.resource, mipImages);
 	dxCommon_->CommandPass();
+
+	Logger::Log(std::format("Creating SRV in DescriptorHeap Address: 0x{:X}\n\n", reinterpret_cast<uintptr_t>(descriptorHeap_.Get())));
 
 	// テクスチャデータの要素番号をSRVのインデックスをする
 	textureData.srvIndex = srvManager_->Allocate();
@@ -119,6 +133,17 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const std::string& f
 
 	// テクスチャデータの参照を取得
 	TextureData& textureData = it->second;
+	
+	Logger::Log(std::format("Returning SRV Handle: 0x{:X} from DescriptorHeap Address: 0x{:X}\n\n",
+		textureData.srvHandleGPU.ptr,
+		reinterpret_cast<uintptr_t>(descriptorHeap_.Get())));
+
+	
 	return textureData.srvHandleGPU;
+}
+
+Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> TextureManager::GetDescriptorHeap() const
+{
+	return descriptorHeap_;
 }
 

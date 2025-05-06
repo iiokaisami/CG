@@ -89,7 +89,7 @@ void MyGame::Draw()
 
 	sceneManager_->Draw();
 
-	particleManager->Draw();
+	//particleManager->Draw();
 
 #ifdef _DEBUG
 	// ImGui描画

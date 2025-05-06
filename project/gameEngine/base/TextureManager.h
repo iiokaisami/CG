@@ -42,6 +42,9 @@ public: // ゲッター
 	// テクスチャ番号からGPUハンドルを所得
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(const std::string& filePath);
 
+	// ディスクリプタヒープを取得
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> GetDescriptorHeap() const;
+
 
 private: // 構造体
 
@@ -67,5 +70,9 @@ private:
 
 	// SRVインデックスの開始番号
 	static uint32_t kSRVIndexTop;
+
+	// ディスクリプタヒープ
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap_;
+
 };
 
