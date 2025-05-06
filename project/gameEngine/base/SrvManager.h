@@ -40,6 +40,12 @@ public: // ゲッター
 		return handle;
 	}
 
+	// SRV用デスクリプタヒープを取得
+	ID3D12DescriptorHeap* GetHeap() const
+	{
+		return descriptorHeap_.Get();
+	}
+
 public: // セッター
 
 	void SetGraphicsRootDescriptorTable(UINT RootParameterIndex, uint32_t srvIndex);

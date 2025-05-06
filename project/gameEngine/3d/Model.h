@@ -96,7 +96,7 @@ public: // ゲッター
 	ModelData GetModelData() { return modelData_; }
 
 private:
-	
+
 	ModelCommon* modelCommon_ = nullptr;
 
 	// Objファイルのデータ
@@ -118,4 +118,3 @@ private:
 	// Transform
 	Transform transform_;
 };
-
