@@ -44,7 +44,7 @@ void Model::Draw()
 
 
 	//描画！
-	modelCommon_->GetDxCommon()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+	modelCommon_->GetDxCommon()->GetCommandList()->DrawInstanced(/*UINT(modelData_.vertices.size())*/3, 1, 0, 0);
 }
 
 Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)

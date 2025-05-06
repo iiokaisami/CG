@@ -86,8 +86,8 @@ void MyGame::Draw()
 	renderTexture->BeginRender();
 
 	srvManager->PreDraw();
-	sceneManager_->Draw();   // 実際の描画
 
+	sceneManager_->Draw();   // 実際の描画
 	//particleManager->Draw();
 
 	renderTexture->EndRender();
