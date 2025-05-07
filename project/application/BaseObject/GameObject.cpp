@@ -1,6 +1,5 @@
 #include "GameObject.h"
 
-#include "../../ImGuiManager.h"
 #include <functional>
 #include <sstream>
 

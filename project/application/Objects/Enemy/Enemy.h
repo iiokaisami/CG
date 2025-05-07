@@ -1,19 +1,19 @@
 #pragma once
 
-#include "GameObject.h"
-#include "PlayerBullet.h"
+#include "../application/BaseObject/GameObject.h"
+#include "../gameEngine/math/MyMath.h"
 
 #include <Object3d.h>
 #include <Sprite.h>
 #include <Framework.h>
 
-class Player : public GameObject
+class Enemy : public GameObject
 {
 public:
 
-	Player() = default;
-	~Player() = default;
-	
+	Enemy() = default;
+	~Enemy() = default;
+
 	// 初期化
 	void Initialize() override;
 	
@@ -25,27 +25,37 @@ public:
 	
 	// 描画
 	void Draw() override;
-	
+
 	// スプライト描画
 	void Draw2D();
-	
+
 	// ImGui
 	void ImGuiDraw();
-	
+
 	// 移動
 	void Move();
-	
+
 	// 攻撃
 	void Attack();
 
 private: // 衝突判定
 
 	//void OnCollisionTrigger(const Collider* _other);
-	
+
+	// 敵同士が衝突したときの処理
+	void EnemyCollision(Vector3 _position);
+
 public: // ゲッター
 
-	// デスフラグ
 	bool IsDead() const { return isDead_; }
+
+public: // セッター
+
+	// プレイヤーの位置をセット
+	void SetPlayerPosition(Vector3 _playerPosition) { playerPosition_ = _playerPosition; }
+
+	// エネミーの位置をセット
+	void SetEnemyPosition(Vector3 _enemyPosition) { position_ = _enemyPosition; }
 
 private:
 
@@ -57,20 +67,18 @@ private:
 	Collider collider_;
 	AABB aabb_;*/
 
-	// 弾
-	std::list<PlayerBullet*> bullets_ = {};
-
-	// 発射クールタイム
-	const int kShootCoolDownFrame_ = 15;
-	// 弾のクールタイム
-	int countCoolDownFrame_ = 0;
-
 	// 移動速度
 	Vector3 moveVelocity_{};
-	Vector3 moveSpeed_ = { 0.05f,0.0f,0.05f };
+	float moveSpeed_ = 0.05f;
 
-	// 死亡フラグ
+	// プレイヤーの位置
+	Vector3 playerPosition_{};
+	Vector3 toPlayer_{};
+
+	// 死亡
 	bool isDead_ = false;
+
+	
 
 };
 

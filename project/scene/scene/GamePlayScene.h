@@ -3,9 +3,9 @@
 #include <Framework.h>
 
 #include "../base/BaseScene.h"
-#include "../Player.h"
-#include "../Enemy.h"
-#include "../Field.h"
+#include "../application/Objects/Player/Player.h"
+#include "../application/Objects/Enemy/Enemy.h"
+#include "../application/Objects/Field/Field.h"
 
 class GamePlayScene : public BaseScene
 {
