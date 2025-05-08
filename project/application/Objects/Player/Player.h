@@ -2,6 +2,7 @@
 
 #include "../application/BaseObject/GameObject.h"
 #include "Bullet/PlayerBullet.h"
+#include"../application/Collider/ColliderManager.h"
 
 #include <Object3d.h>
 #include <Sprite.h>
@@ -40,12 +41,18 @@ public:
 
 private: // 衝突判定
 
-	//void OnCollisionTrigger(const Collider* _other);
+	void OnCollisionTrigger(const Collider* _other);
 	
 public: // ゲッター
 
 	// デスフラグ
 	bool IsDead() const { return isDead_; }
+
+	bool IsHitMoment() const { return isHitMoment_; }
+
+public: // セッター
+
+	void SetHitMoment(bool _isHitMoment) { isHitMoment_ = _isHitMoment; }
 
 private:
 
@@ -53,12 +60,12 @@ private:
 	std::unique_ptr<Object3d> object_ = nullptr;
 
 	// 当たり判定関係
-	/*CollisionManager* collisionManager_ = nullptr;
+	ColliderManager* colliderManager_ = nullptr;
 	Collider collider_;
-	AABB aabb_;*/
+	AABB aabb_;
 
 	// 弾
-	std::list<PlayerBullet*> bullets_ = {};
+	std::list<PlayerBullet*> pBullets_ = {};
 
 	// 発射クールタイム
 	const int kShootCoolDownFrame_ = 15;
@@ -67,10 +74,13 @@ private:
 
 	// 移動速度
 	Vector3 moveVelocity_{};
-	Vector3 moveSpeed_ = { 0.05f,0.0f,0.05f };
+	Vector3 moveSpeed_ = { 0.1f,0.0f,0.1f };
 
 	// 死亡フラグ
 	bool isDead_ = false;
+
+	// ヒットした瞬間のフラグ
+	bool isHitMoment_ = false;
 
 };
 

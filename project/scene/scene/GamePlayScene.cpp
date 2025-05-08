@@ -28,6 +28,9 @@ void GamePlayScene::Initialize()
 
 	Object3dCommon::GetInstance()->SetDefaultCamera(cameraManager.GetActiveCamera());
 
+	// 衝突判定
+	colliderManager_ = ColliderManager::GetInstance();
+	colliderManager_->Initialize();
 
 	// プレイヤー
 	pPlayer_ = std::make_unique<Player>();
@@ -78,6 +81,9 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
+	// 当たり判定チェック
+	colliderManager_->CheckAllCollision();
+
 	/*for (Sprite* sprite : sprites)
 	{
 		sprite->Update();
@@ -121,6 +127,26 @@ void GamePlayScene::Update()
 
 	// プレイヤーの更新
 	pPlayer_->Update();
+
+	// プレイヤーがヒットした場合にカメラをシェイク
+	if (pPlayer_->IsHitMoment())
+	{
+		// アクティブなカメラを取得
+		if (activeCamera)
+		{
+			// カメラをシェイク (持続時間,振幅)
+			activeCamera->StartShake(0.3f, 0.5f);
+
+			// ヒットフラグをリセット
+			pPlayer_->SetHitMoment(false);
+		}
+	}
+
+	// カメラのシェイクを更新
+	if (activeCamera)
+	{
+		activeCamera->UpdateShake(1.0f / 60.0f); // フレームレートに応じたdeltaTime
+	}
 
 	// エネミーの更新
 	for (auto& enemy : pEnemies_)
@@ -194,6 +220,7 @@ void GamePlayScene::EnemyInit()
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
 	enemy->SetPosition(enemyPosition_);
 	enemy->Initialize();
+	enemy->SetPosition(enemyPosition_);
 	enemy->SetPlayerPosition(pPlayer_->GetPosition());
 
 

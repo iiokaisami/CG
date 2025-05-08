@@ -1,9 +1,12 @@
 #pragma once
 
 #include "../application/BaseObject/GameObject.h"
+#include"../application/Collider/ColliderManager.h"
 
 #include <Object3d.h>
 #include <memory>
+#include <Framework.h>
+
 
 class Field : public GameObject
 {
@@ -37,9 +40,9 @@ private: // メンバ変数
 	std::unique_ptr<Object3d> object_ = nullptr;
 	
 	// 当たり判定関係
-	/*CollisionManager* collisionManager_ = nullptr;
+	ColliderManager* colliderManager_ = nullptr;
 	Collider collider_;
-	AABB aabb_;*/
+	AABB aabb_;
 
 };
 

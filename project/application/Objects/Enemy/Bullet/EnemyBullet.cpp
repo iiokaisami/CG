@@ -14,22 +14,22 @@ void EnemyBullet::Initialize()
 	object_->SetScale(scale_);
 
 	// 当たり判定
-	/*collisionManager_ = CollisionManager::GetInstance();
+	colliderManager_ = ColliderManager::GetInstance();
 	objectName_ = "EnemyBullet";
 
 	collider_.SetOwner(this);
 	collider_.SetColliderID(objectName_);
 	collider_.SetShapeData(&aabb_);
 	collider_.SetShape(Shape::AABB);
-	collider_.SetAttribute(collisionManager_->GetNewAttribute(collider_.GetColliderID()));
-	collider_.SetOnCollisionTrigger(std::bind(&PlayerBullet::OnCollision, this));
-	collisionManager_->RegisterCollider(&collider_);*/
+	collider_.SetAttribute(colliderManager_->GetNewAttribute(collider_.GetColliderID()));
+	collider_.SetOnCollisionTrigger(std::bind(&EnemyBullet::OnCollisionTrigger, this, std::placeholders::_1));
+	colliderManager_->RegisterCollider(&collider_);
 
 }
 
 void EnemyBullet::Finalize()
 {
-	//collisionManager_->DeleteCollider(&collider_);
+	colliderManager_->DeleteCollider(&collider_);
 }
 
 void EnemyBullet::Update()
@@ -40,12 +40,12 @@ void EnemyBullet::Update()
 	object_->SetRotate(rotation_);
 	object_->SetScale(scale_);
 
-	rotation_ += {1.0f, 1.0f, 1.0f};
+	rotation_ += {0.1f, 0.1f, 0.0f};
 	position_ += velocity_;
 
-	/*aabb_.min = position_ - object_->GetScale();
+	aabb_.min = position_ - object_->GetScale();
 	aabb_.max = position_ + object_->GetScale();
-	collider_.SetPosition(position_);*/
+	collider_.SetPosition(position_);
 
 	//時間経過でデス
 	if (--deathTimer_ <= 0) {
@@ -73,12 +73,18 @@ void EnemyBullet::ImGuiDraw()
 	ImGui::End();
 }
 
-void EnemyBullet::OnCollisionTrigger()
+void EnemyBullet::OnCollisionTrigger(const Collider* _other)
 {
-	isDead_ = true;
+	if (_other->GetColliderID() == "Player")
+	{
+		isDead_ = true;
+	} else if (_other->GetColliderID() == "PlayerBullet")
+	{
+		isDead_ = true;
+	}
 }
 
 void EnemyBullet::RunSetMask()
 {
-	//collider_.SetMask(collisionManager_->GetNewMask(collider_.GetColliderID(), "Player"));
+	collider_.SetMask(colliderManager_->GetNewMask(collider_.GetColliderID(), "Enemy"));
 }

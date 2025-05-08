@@ -3,7 +3,7 @@
 void PlayerBullet::Initialize()
 {
 	// --- 3Dオブジェクト ---
-	object_ = std::make_unique<Object3d>();
+  	object_ = std::make_unique<Object3d>();
 	object_->Initialize("cube.obj");
 
 	object_->SetPosition(position_);
@@ -14,7 +14,7 @@ void PlayerBullet::Initialize()
 	object_->SetScale(scale_);
 
 	// 当たり判定
-	/*collisionManager_ = CollisionManager::GetInstance();
+	colliderManager_ = ColliderManager::GetInstance();
 
 	objectName_ = "PlayerBullet";
 
@@ -22,15 +22,15 @@ void PlayerBullet::Initialize()
 	collider_.SetColliderID(objectName_);
 	collider_.SetShapeData(&aabb_);
 	collider_.SetShape(Shape::AABB);
-	collider_.SetAttribute(collisionManager_->GetNewAttribute(collider_.GetColliderID()));
-	collider_.SetOnCollisionTrigger(std::bind(&PlayerBullet::OnCollision, this));
-	collisionManager_->RegisterCollider(&collider_);*/
+	collider_.SetAttribute(colliderManager_->GetNewAttribute(collider_.GetColliderID()));
+	collider_.SetOnCollisionTrigger(std::bind(&PlayerBullet::OnCollisionTrigger, this, std::placeholders::_1));
+	colliderManager_->RegisterCollider(&collider_);
 
 }
 
 void PlayerBullet::Finalize()
 {
-	//collisionManager_->DeleteCollider(&collider_);
+	colliderManager_->DeleteCollider(&collider_);
 }
 
 void PlayerBullet::Update()
@@ -44,9 +44,9 @@ void PlayerBullet::Update()
 	rotation_.y += 1.0f;
 	position_ += velocity_;
 
-	/*aabb_.min = position_ - object_->GetScale();
+	aabb_.min = position_ - object_->GetScale();
 	aabb_.max = position_ + object_->GetScale();
-	collider_.SetPosition(position_);*/
+	collider_.SetPosition(position_);
 
 	//時間経過でデス
 	if (--deathTimer_ <= 0) {
@@ -74,12 +74,18 @@ void PlayerBullet::ImGuiDraw()
 	ImGui::End();
 }
 
-void PlayerBullet::OnCollisionTrigger()
+void PlayerBullet::OnCollisionTrigger(const Collider* _other)
 {
-	isDead_ = true;
+	if (_other->GetColliderID() == "Enemy")
+	{
+		isDead_ = true;
+	}  else if (_other->GetColliderID() == "EnemyBullet")
+	{
+		isDead_ = true;
+	}
 }
 
 void PlayerBullet::RunSetMask()
 {
-	//collider_.SetMask(collisionManager_->GetNewMask(collider_.GetColliderID(), "Player"));
+	collider_.SetMask(colliderManager_->GetNewMask(collider_.GetColliderID(), "Player"));
 }

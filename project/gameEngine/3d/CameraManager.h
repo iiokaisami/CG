@@ -32,7 +32,7 @@ public:
     std::shared_ptr<Camera> GetActiveCamera() const;
 
     // アップデート（全カメラの更新処理を実行）
-    void UpdateAll();
+    void UpdateAll(float deltaTime = 0.0f);
 
     // 特定のカメラのシェイクを開始
     void ShakeSpecificCamera(uint32_t index, float duration, float magnitude);

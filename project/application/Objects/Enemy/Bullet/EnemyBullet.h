@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../application/BaseObject/GameObject.h"
+#include"../../application/Collider/ColliderManager.h"
 
 #include <Object3d.h>
 #include <Sprite.h>
@@ -31,7 +32,7 @@ public:
 
 private: // 衝突判定
 	
-	void OnCollisionTrigger();
+	void OnCollisionTrigger(const Collider* _other);
 
 public: // ゲッター
 
@@ -39,11 +40,11 @@ public: // ゲッター
 	
 	void RunSetMask();
 	
-	Vector3 SetVelocity(const Vector3 _velocity) { return velocity_ = _velocity; }
-	
 public: // セッター
 
 	bool SetIsDead(const bool _isDead) { return isDead_ = _isDead; }
+
+	Vector3 SetVelocity(const Vector3 _velocity) { return velocity_ = _velocity; }
 
 private: // メンバ変数
 
@@ -51,9 +52,9 @@ private: // メンバ変数
 	std::unique_ptr<Object3d> object_ = nullptr;
 	
 	// 当たり判定関係
-	/*CollisionManager* collisionManager_ = nullptr;
+	ColliderManager* colliderManager_ = nullptr;
 	Collider collider_;
-	AABB aabb_;*/
+	AABB aabb_;
 	
 	// 速度
 	Vector3 velocity_{};

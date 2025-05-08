@@ -42,7 +42,7 @@ std::shared_ptr<Camera> CameraManager::GetActiveCamera() const
     return nullptr;
 }
 
-void CameraManager::UpdateAll() 
+void CameraManager::UpdateAll(float deltaTime)
 {
     for (auto& camera : cameras_)
     {

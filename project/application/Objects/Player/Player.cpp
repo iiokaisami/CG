@@ -16,7 +16,7 @@ void Player::Initialize()
 	object_->SetScale(scale_);
 
 	// 衝突判定
-	/*collisionManager_ = CollisionManager::GetInstance();
+	colliderManager_ = ColliderManager::GetInstance();
 
 	objectName_ = "Player";
 
@@ -24,9 +24,9 @@ void Player::Initialize()
 	collider_.SetColliderID(objectName_);
 	collider_.SetShapeData(&aabb_);
 	collider_.SetShape(Shape::AABB);
-	collider_.SetAttribute(collisionManager_->GetNewAttribute(collider_.GetColliderID()));
+	collider_.SetAttribute(colliderManager_->GetNewAttribute(collider_.GetColliderID()));
 	collider_.SetOnCollisionTrigger(std::bind(&Player::OnCollisionTrigger, this, std::placeholders::_1));
-	collisionManager_->RegisterCollider(&collider_);*/
+	colliderManager_->RegisterCollider(&collider_);
 
 	// ステータス
 	hp_ = 5;
@@ -35,22 +35,24 @@ void Player::Initialize()
 
 void Player::Finalize()
 {
-	for (auto& bullet : bullets_)
+	for (auto& bullet : pBullets_)
 	{
 		bullet->SetIsDead(true);
 		bullet->Finalize();
 	}
 
-	bullets_.remove_if([](PlayerBullet* bullet) {
-		if (bullet->IsDead()) {
-			bullet->Finalize();
-			delete bullet;
-			return true;
-		}
-		return false;
+	pBullets_.remove_if([](PlayerBullet* bullet)
+		{
+			if (bullet->IsDead())
+			{
+				bullet->Finalize();
+				delete bullet;
+				return true;
+			}
+			return false;
 		});
 
-	//collisionManager_->DeleteCollider(&collider_);
+	colliderManager_->DeleteCollider(&collider_);
 }
 
 void Player::Update()
@@ -65,15 +67,9 @@ void Player::Update()
 	
 	// 攻撃
 	Attack();
-	
-	// プレイヤーの弾の更新
-	for (auto& bullet : bullets_)
-	{
-		bullet->Update();
-	}
 
 	// 弾の削除
-	bullets_.remove_if([](PlayerBullet* bullet) 
+	pBullets_.remove_if([](PlayerBullet* bullet)
 		{
 		if (bullet->IsDead()) {
 			bullet->Finalize();
@@ -84,15 +80,15 @@ void Player::Update()
 		});
 
 	// 弾更新
-	for (auto& bullet : bullets_)
+	for (auto& bullet : pBullets_)
 	{
 		bullet->Update();
 	}
 
-	/*aabb_.min = position_ - object_->GetScale();
+	aabb_.min = position_ - object_->GetScale();
 	aabb_.max = position_ + object_->GetScale();
 	aabb_.max.y += 1.0f;
-	collider_.SetPosition(position_);*/
+	collider_.SetPosition(position_);
 }
 
 void Player::Draw()
@@ -101,7 +97,7 @@ void Player::Draw()
 
 
 	// 弾描画
-	for (auto& bullet : bullets_)
+	for (auto& bullet : pBullets_)
 	{
 		bullet->Draw();
 	}
@@ -119,9 +115,15 @@ void Player::ImGuiDraw()
 	ImGui::SliderFloat3("rot", &rotation_.x, -3.14f, 3.14f);
 	ImGui::SliderFloat3("scale", &scale_.x, 0.0f, 10.0f);
 
+	// HitMomentオン
+	if (ImGui::Button("HitMoment"))
+	{
+		isHitMoment_ = true;
+	}
+
 	ImGui::End();
 
-	for (auto& bullet : bullets_)
+	for (auto& bullet : pBullets_)
 	{
 		bullet->ImGuiDraw();
 	}
@@ -184,13 +186,21 @@ void Player::Attack()
 			newBullet->SetVelocity(bulletVelocity);
 
 			newBullet->RunSetMask();
-			//collider_.SetMask(collisionManager_->GetNewMask(collider_.GetColliderID(), "PlayerBullet"));
+			collider_.SetMask(colliderManager_->GetNewMask(collider_.GetColliderID(), "PlayerBullet"));
 
 			// 弾を登録する
-			bullets_.push_back(newBullet);
+			pBullets_.push_back(newBullet);
 
 			countCoolDownFrame_ = kShootCoolDownFrame_;
 		}
 	}
 	countCoolDownFrame_--;
+}
+
+void Player::OnCollisionTrigger(const Collider* _other)
+{
+	if (_other->GetColliderID() == "EnemyBullet")
+	{
+		isHitMoment_ = true;
+	}
 }

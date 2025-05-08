@@ -1,7 +1,9 @@
 #pragma once
 
 #include "../application/BaseObject/GameObject.h"
+#include "Bullet/EnemyBullet.h"
 #include "../gameEngine/math/MyMath.h"
+#include"../application/Collider/ColliderManager.h"
 
 #include <Object3d.h>
 #include <Sprite.h>
@@ -40,7 +42,7 @@ public:
 
 private: // 衝突判定
 
-	//void OnCollisionTrigger(const Collider* _other);
+	void OnCollisionTrigger(const Collider* _other);
 
 	// 敵同士が衝突したときの処理
 	void EnemyCollision(Vector3 _position);
@@ -63,9 +65,9 @@ private:
 	std::unique_ptr<Object3d> object_ = nullptr;
 
 	// 当たり判定関係
-	/*CollisionManager* collisionManager_ = nullptr;
+	ColliderManager* colliderManager_ = nullptr;
 	Collider collider_;
-	AABB aabb_;*/
+	AABB aabb_;
 
 	// 移動速度
 	Vector3 moveVelocity_{};
@@ -74,11 +76,15 @@ private:
 	// プレイヤーの位置
 	Vector3 playerPosition_{};
 	Vector3 toPlayer_{};
+	// 追尾停止距離
+	const float kStopChasingDistance = 15.0f;
+
 
 	// 死亡
 	bool isDead_ = false;
 
-	
+	// 弾
+	std::vector<std::unique_ptr<EnemyBullet>> pBullets_ = {};
 
 };
 

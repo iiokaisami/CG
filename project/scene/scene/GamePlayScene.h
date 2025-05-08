@@ -6,6 +6,7 @@
 #include "../application/Objects/Player/Player.h"
 #include "../application/Objects/Enemy/Enemy.h"
 #include "../application/Objects/Field/Field.h"
+#include "../application/Collider/ColliderManager.h"
 
 class GamePlayScene : public BaseScene
 {
@@ -44,6 +45,9 @@ private:
 	std::shared_ptr<Camera> camera1 = std::make_shared<Camera>();
 	std::shared_ptr<Camera> camera2 = std::make_shared<Camera>();
     
+	// 衝突判定
+	ColliderManager* colliderManager_ = nullptr;
+
     uint32_t activeIndex = 0;
 	Vector3 camera1Rotate = { -0.9f,0.0f,0.0f };
 	Vector3 camera1Position = { 0.0f,-20.0f,0.0f };
