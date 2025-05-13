@@ -5,6 +5,7 @@
 #include <vector>
 #include <random>
 #include <numbers>
+#include <MyMath.h>
 
 #include "Object3dCommon.h"
 #include "ModelManager.h"
@@ -370,8 +371,10 @@ void ParticleManager::Emit(const std::string name, const Vector3& position, uint
     {
         // 新しいパーティクルを追加
         //particleGroups.at(name).particleList.push_back(MakeNewParticle(randomEngine_, position));
-    
-        particleGroups.at(name).particleList.push_back(MakeTestParticle(randomEngine_, position));
+
+        particleGroups.at(name).particleList.push_back(MakeCylinderParticle(randomEngine_, position));
+
+        //particleGroups.at(name).particleList.push_back(MakeTestParticle(randomEngine_, position));
     }
     // パーティクルグループのインスタンス数を更新
     particleGroups.at(name).instanceCount = count;
@@ -391,8 +394,42 @@ Particle ParticleManager::MakeNewParticle(std::mt19937& randomEngine, const Vect
     newParticle.transform.translate = position + randomTranslate;
     newParticle.velocity = { distribution(randomEngine),distribution(randomEngine),distribution(randomEngine) };
     newParticle.color = { distColor(randomEngine),distColor(randomEngine),distColor(randomEngine),1.0f };
-    newParticle.lifeTime = distLifeTime(randomEngine);
+	newParticle.lifeTime = distLifeTime(randomEngine); // 秒
     newParticle.currentTime = 0.0f;
+
+    return newParticle;
+}
+
+Particle ParticleManager::MakeCylinderParticle(std::mt19937& randomEngine, const Vector3& position)
+{
+    Particle newParticle;
+  
+    newParticle.transform.scale = { 1.0f,1.0f,1.0f };
+    newParticle.transform.translate = position;
+    newParticle.velocity = { 0,0,0 };
+    newParticle.color = { 0.0f,0.0f,0.5f,1.0f };
+    newParticle.lifeTime = 3; // 秒
+    newParticle.currentTime = 0.0f;
+
+    // 回転
+	if (direction_ == "UP")
+	{
+		newParticle.transform.rotate = { 0.0f,0.0f,3.14f };
+		newParticle.transform.translate.y += newParticle.transform.scale.y * 2.0f;
+	}
+    else if (direction_ == "DOWN")
+	{
+		newParticle.transform.rotate = { 0.0f,0.0f,0.0f };
+	}
+    else if (direction_ == "LEFT")
+	{
+		newParticle.transform.rotate = { 0.0f,0.0f,1.57f };
+	}
+    else if (direction_ == "RIGHT")
+	{
+		newParticle.transform.rotate = { 0.0f,0.0f,-1.57f };
+	}
+    
 
     return newParticle;
 }
@@ -411,7 +448,7 @@ Particle ParticleManager::MakeTestParticle(std::mt19937& randomEngine, const Vec
     particle.transform.translate = translate;
     particle.velocity = {0.0f,0.0f,0.0f};
     particle.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    particle.lifeTime = 1.0f;
+	particle.lifeTime = 1.0f; // 秒
     particle.currentTime = 0.0f;
 
     return particle;
@@ -464,27 +501,47 @@ void ParticleManager::MakeRing()
 
 void ParticleManager::MakeCylinder()
 {
-	const uint32_t kCylinderDivide = 32;
-	const float kTopRadius = 1.0f;
-	const float kBottomRadius = 1.0f;
-	const float kHeight = 3.0f;
-	const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kCylinderDivide);
+    const uint32_t kCylinderDivide = 32;
+    const float kTopRadius = 1.0f;
+    const float kBottomRadius = 1.0f;
+    const float kHeight = 3.0f;
+    const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kCylinderDivide);
 
     for (uint32_t index = 0; index < kCylinderDivide; ++index)
     {
         float sin = std::sin(index * radianPerDivide);
-		float cos = std::cos(index * radianPerDivide);
-		float sinNext = std::sin((index + 1) * radianPerDivide);
-		float cosNext = std::cos((index + 1) * radianPerDivide);
-		float u = float(index) / float(kCylinderDivide);
-		float uNext = float(index + 1) / float(kCylinderDivide);
+        float cos = std::cos(index * radianPerDivide);
+        float sinNext = std::sin((index + 1) * radianPerDivide);
+        float cosNext = std::cos((index + 1) * radianPerDivide);
+        float u = float(index) / float(kCylinderDivide);
+        float uNext = float(index + 1) / float(kCylinderDivide);
 
-		// position, texcoord, normalの順で頂点を追加
-        model_->AddVertex({ -sin * kTopRadius, kHeight, cos * kTopRadius, 1.0f }, { u, 0.0f }, { -sin, 0.0f, cos });
-        model_->AddVertex({ -sinNext * kTopRadius, kHeight, cosNext * kTopRadius, 1.0f }, { uNext, 0.0f }, { -sinNext, 0.0f, cosNext });
-		model_->AddVertex({ -sin * kBottomRadius, 0.0f, cos * kBottomRadius, 1.0f }, { u, 1.0f }, { -sin, 0.0f, cos });
-        model_->AddVertex({ -sin * kBottomRadius, 0.0f, cos * kBottomRadius, 1.0f }, { u, 1.0f }, { -sin, 0.0f, cos });
-        model_->AddVertex({ -sinNext * kTopRadius, kHeight, cosNext * kTopRadius, 1.0f }, { uNext, 0.0f }, { -sinNext, 0.0f, cosNext });
-		model_->AddVertex({ -sinNext * kBottomRadius, 0.0f, cosNext * kBottomRadius, 1.0f }, { uNext, 1.0f }, { -sinNext, 0.0f, cosNext });
+        // 頂点を生成
+        Vector3 top1 = { -sin * kTopRadius, kHeight, cos * kTopRadius };
+        Vector3 top2 = { -sinNext * kTopRadius, kHeight, cosNext * kTopRadius };
+        Vector3 bottom1 = { -sin * kBottomRadius, 0.0f, cos * kBottomRadius };
+        Vector3 bottom2 = { -sinNext * kBottomRadius, 0.0f, cosNext * kBottomRadius };
+
+        // 頂点を追加
+        model_->AddVertex({ top1.x, top1.y, top1.z, 1.0f }, { u, 0.0f }, { -sin, 0.0f, cos });
+        model_->AddVertex({ top2.x, top2.y, top2.z, 1.0f }, { uNext, 0.0f }, { -sinNext, 0.0f, cosNext });
+        model_->AddVertex({ bottom1.x, bottom1.y, bottom1.z, 1.0f }, { u, 1.0f }, { -sin, 0.0f, cos });
+        model_->AddVertex({ bottom1.x, bottom1.y, bottom1.z, 1.0f }, { u, 1.0f }, { -sin, 0.0f, cos });
+        model_->AddVertex({ top2.x, top2.y, top2.z, 1.0f }, { uNext, 0.0f }, { -sinNext, 0.0f, cosNext });
+        model_->AddVertex({ bottom2.x, bottom2.y, bottom2.z, 1.0f }, { uNext, 1.0f }, { -sinNext, 0.0f, cosNext });
+
+        // インデックスを追加
+        uint32_t baseIndex = model_->GetVertexCount() - 6;
+        model_->AddIndex(baseIndex + 0);
+        model_->AddIndex(baseIndex + 1);
+        model_->AddIndex(baseIndex + 2);
+        model_->AddIndex(baseIndex + 3);
+        model_->AddIndex(baseIndex + 4);
+        model_->AddIndex(baseIndex + 5);
+    }
+
+    // すべての頂点・インデックス追加後にバッファを一括更新
+    model_->UpdateVertexBuffer();
+    model_->UpdateIndexBuffer();
 
 }

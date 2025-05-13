@@ -70,6 +70,8 @@ public:
 
 	Particle MakeNewParticle(std::mt19937& randomEngine, const Vector3& position);
 
+	Particle MakeCylinderParticle(std::mt19937& randomEngine, const Vector3& position);
+
 	Particle MakeTestParticle(std::mt19937& randomEngine, const Vector3& translate);
 
 	void MakeRing();
@@ -80,9 +82,16 @@ public: // セッター
 
 	void SetCamera(std::shared_ptr<Camera> camera) { camera_ = camera; }
 
+	// シリンダーの向き
+	// "UP"下から上
+	// "DOWN"上から下
+	// "LEFT"右から左
+	// "RIGHT"左から右
+	void SetCylinderDirection(const std::string& direction) { direction_ = direction; }
+
 private: // 構造体
 
-	struct Transform
+	struct TransformData
 	{
 		Vector3 scale;
 		Vector3 rotate;
@@ -182,7 +191,7 @@ private:
 
 	const float kDeltaTime_ = 1.0f / 60.0f;
 
-	Transform transform_;
+	TransformData transform_;
 	Matrix4x4 backToFrontMatrix_;
 	//modelマテリアる用のリソースを作る。今回color1つ分のサイズを用意する
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
@@ -192,4 +201,8 @@ private:
 
 	// モデルのビューをキャッシュする用
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
+
+	// Cylinderの向き
+	std::string direction_ = "UP";
+
 };

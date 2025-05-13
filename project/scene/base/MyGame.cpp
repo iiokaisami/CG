@@ -24,8 +24,11 @@ void MyGame::Initialize()
 	loadAudioThread.join();
 
 	// パーティクルグループの生成
-	particleManager->CreateParticleGroup("exampleGroup", "resources/images/gradationLine.png", "plane.obj",true);
+	particleManager->CreateParticleGroup("exampleGroup", "resources/images/gradationLine.png", "plane.obj", false, true);
 	//particleManager->CreateParticleGroup("secondGroup", "resources/images/monsterBall.png", "plane.obj");
+
+	// Cylinderを出すときに向き指定する
+	particleManager->SetCylinderDirection("UP");
 
 	useExampleGroup_ = true;
 }
@@ -62,7 +65,26 @@ void MyGame::Update()
 	
 		if (ImGui::Button("AddParticle"))
 		{
-			particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 3);
+			particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 1);
+		}
+
+		static int selectedDirection = 0; // 0: UP, 1: DOWN, 2: LEFT, 3: RIGHT
+
+		if (ImGui::RadioButton("CylinderDirection : UP", selectedDirection == 0)) {
+			selectedDirection = 0;
+			particleManager->SetCylinderDirection("UP");
+		}
+		if (ImGui::RadioButton("CylinderDirection : DOWN", selectedDirection == 1)) {
+			selectedDirection = 1;
+			particleManager->SetCylinderDirection("DOWN");
+		}
+		if (ImGui::RadioButton("CylinderDirection : LEFT", selectedDirection == 2)) {
+			selectedDirection = 2;
+			particleManager->SetCylinderDirection("LEFT");
+		}
+		if (ImGui::RadioButton("CylinderDirection : RIGHT", selectedDirection == 3)) {
+			selectedDirection = 3;
+			particleManager->SetCylinderDirection("RIGHT");
 		}
 	}
 
