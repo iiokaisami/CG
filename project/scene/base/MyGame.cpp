@@ -61,6 +61,17 @@ void MyGame::Update()
 		ImGui::Checkbox("Use Example Group", &useExampleGroup_);
 	}
 
+	if (ImGui::CollapsingHeader("Grayscale"))
+	{
+		bool grayscale = (useGrayscale_ != 0);
+		if (ImGui::Checkbox("Use Grayscale", &grayscale)) 
+		{
+			useGrayscale_ = grayscale;
+		}
+		// CopyPass に反映
+		copyPass->SetUseGrayscale(static_cast<uint32_t>(useGrayscale_));
+	}
+
 #endif // _DEBUG
 
 

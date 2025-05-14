@@ -16,9 +16,10 @@ void CopyPass::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, const
     CD3DX12_DESCRIPTOR_RANGE samplerRange{};
     samplerRange.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 1, 0);
 
-    CD3DX12_ROOT_PARAMETER rootParams[2]{};
+    CD3DX12_ROOT_PARAMETER rootParams[3]{};
     rootParams[0].InitAsDescriptorTable(1, &range, D3D12_SHADER_VISIBILITY_PIXEL);
     rootParams[1].InitAsDescriptorTable(1, &samplerRange, D3D12_SHADER_VISIBILITY_PIXEL);
+    rootParams[2].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_PIXEL); // b0
 
     CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc{};
     rootSigDesc.Init(_countof(rootParams), rootParams, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
@@ -50,10 +51,39 @@ void CopyPass::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, const
 
 	// Samplerヒープの作成
     dxCommon_->CreateSamplerHeap();
+
+    // 定数バッファ用リソース
+    D3D12_HEAP_PROPERTIES heapProps = {};
+    heapProps.Type = D3D12_HEAP_TYPE_UPLOAD;
+
+    D3D12_RESOURCE_DESC resDesc = {};
+    resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+    resDesc.Width = sizeof(GrayscaleCB);
+    resDesc.Height = 1;
+    resDesc.DepthOrArraySize = 1;
+    resDesc.MipLevels = 1;
+    resDesc.SampleDesc.Count = 1;
+    resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+    dxCommon_->GetDevice()->CreateCommittedResource(
+        &heapProps,
+        D3D12_HEAP_FLAG_NONE,
+        &resDesc,
+        D3D12_RESOURCE_STATE_GENERIC_READ,
+        nullptr,
+        IID_PPV_ARGS(&grayscaleCB_)
+    );
 }
 
 void CopyPass::Draw(Microsoft::WRL::ComPtr <ID3D12GraphicsCommandList> cmdList, D3D12_GPU_DESCRIPTOR_HANDLE srvHandle)
 {
+    {
+        void* mapped = nullptr;
+        grayscaleCB_->Map(0, nullptr, &mapped);
+        memcpy(mapped, &grayscaleCBData_, sizeof(grayscaleCBData_));
+        grayscaleCB_->Unmap(0, nullptr);
+    }
+
     cmdList->SetPipelineState(pipelineState_.Get());
     cmdList->SetGraphicsRootSignature(rootSignature_.Get());
     cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -80,6 +110,7 @@ void CopyPass::Draw(Microsoft::WRL::ComPtr <ID3D12GraphicsCommandList> cmdList, 
 
     cmdList->SetGraphicsRootDescriptorTable(0, srvHandle);
     cmdList->SetGraphicsRootDescriptorTable(1, dxCommon_->GetSamplerDescriptorHandle());
+    cmdList->SetGraphicsRootConstantBufferView(2, grayscaleCB_->GetGPUVirtualAddress());
 
     cmdList->DrawInstanced(3, 1, 0, 0);
 }

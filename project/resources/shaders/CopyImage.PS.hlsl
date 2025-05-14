@@ -1,5 +1,10 @@
 #include "CopyImage.hlsli"
 
+cbuffer GrayscaleParam : register(b0)
+{
+    uint useGrayscale;
+};
+
 Texture2D<float4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
@@ -14,8 +19,11 @@ PixelShaderOutput main(VertexShaderOutput input)
     
     output.color = gTexture.Sample(gSampler, input.texcoord);
     
-    float value = dot(output.color.rgb, float3(0.2125f, 0.7154f, 0.0721f));
-    output.color.rgb = float3(value, value, value);
+    if (useGrayscale == 1)
+    {
+        float value = dot(output.color.rgb, float3(0.2125f, 0.7154f, 0.0721f));
+        output.color.rgb = float3(value, value, value);
+    }
     
     return output;
 }
