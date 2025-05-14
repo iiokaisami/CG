@@ -31,4 +31,7 @@ public:
 	SoundData soundData2_;
 
 	bool useExampleGroup_ = true;
+
+	// 0 : グレースケール無効, 1: グレースケール有効
+	uint32_t useGrayscale_ = 0;
 };
