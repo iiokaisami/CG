@@ -1,4 +1,4 @@
-#include "Grayscale.hlsli"
+#include "BoxFilter.hlsli"
 
 static const int kNumVertex = 3;
 

@@ -91,6 +91,19 @@ void MyGame::Update()
 		}
 	}
 
+	if (ImGui::CollapsingHeader("BoxFilter"))
+	{
+		static bool useBoxFilter = false;
+		if (ImGui::Checkbox("Use BoxFilter", &useBoxFilter))
+		{
+			postEffectManager->SetActiveEffect("BoxFilter", useBoxFilter);
+		}
+
+		static float blurIntensity = 1.0f;
+		ImGui::SliderFloat("Box Blur Intensity", &blurIntensity, 0.1f, 1.0f);
+		postEffectManager->GetPassAs<BoxFilterPass>("BoxFilter")->SetIntensity(blurIntensity);
+	}
+
 #endif // _DEBUG
 
 

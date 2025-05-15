@@ -108,7 +108,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="gameEngine\base\postEffect\BoxFilter.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\BoxFilterPass.cpp" />
     <ClCompile Include="gameEngine\base\postEffect\BasePostEffectPass.cpp" />
     <ClCompile Include="gameEngine\audio\Audio.cpp" />
     <ClCompile Include="gameEngine\math\Quaternion.cpp" />
@@ -152,7 +152,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="gameEngine\base\postEffect\VignettePass.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="gameEngine\base\postEffect\BoxFilter.h" />
+    <ClInclude Include="gameEngine\base\postEffect\BoxFilterPass.h" />
     <ClInclude Include="gameEngine\base\postEffect\BasePostEffectPass.h" />
     <ClInclude Include="gameEngine\audio\Audio.h" />
     <ClInclude Include="gameEngine\math\Quaternion.h" />

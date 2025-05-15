@@ -29,6 +29,7 @@
 #include "postEffect/PostEffectManager.h"
 #include "postEffect/GrayscalePass.h"
 #include "postEffect/VignettePass.h"
+#include "postEffect/BoxFilterPass.h"
 
 #include "../../ParticleEmitter.h"
 
@@ -87,6 +88,7 @@ protected:
 	std::unique_ptr<PostEffectManager> postEffectManager = nullptr;
 	std::unique_ptr<GrayscalePass> grayscalePass = nullptr;
 	std::unique_ptr<VignettePass> vignettePass = nullptr;
+	std::unique_ptr<BoxFilterPass> boxFilterPass = nullptr;
 
 	ParticleManager* particleManager = nullptr;
 
