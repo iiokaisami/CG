@@ -26,11 +26,19 @@ PixelShaderOutput main(VertexShaderOutput input)
     }
     if (useGrayscale == 1)
     {
-        output.color.rgb = float3(0.0f, 0.0f, 0.0f);
+        float3 sepia;
+        sepia.r = dot(output.color.rgb, float3(0.4f, 0.75f, 0.2f));
+        sepia.g = dot(output.color.rgb, float3(0.35f, 0.68f, 0.15f));
+        sepia.b = dot(output.color.rgb, float3(0.25f, 0.55f, 0.1f));
+        output.color.rgb = saturate(sepia);
     }
     if (useGrayscale == 2)
     {
-        output.color.rgb = float3(0.5f, 0.5f, 0.5f);
+        float3 cool;
+        cool.r = output.color.rgb.r * 0.6f;
+        cool.g = output.color.rgb.g * 0.8f;
+        cool.b = output.color.rgb.b * 1.5f;
+        output.color.rgb = saturate(cool);
     }
     
 
