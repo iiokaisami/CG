@@ -18,11 +18,21 @@ PixelShaderOutput main(VertexShaderOutput input)
     PixelShaderOutput output;
     output.color = gTexture.Sample(gSampler, input.texcoord);
 
-    if (useGrayscale == 1)
+  
+    if (useGrayscale == 0)
     {
         float value = dot(output.color.rgb, float3(0.2125f, 0.7154f, 0.0721f));
         output.color.rgb = float3(value, value, value);
     }
+    if (useGrayscale == 1)
+    {
+        output.color.rgb = float3(0.0f, 0.0f, 0.0f);
+    }
+    if (useGrayscale == 2)
+    {
+        output.color.rgb = float3(0.5f, 0.5f, 0.5f);
+    }
+    
 
     return output;
 }

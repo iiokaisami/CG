@@ -55,5 +55,6 @@ PixelShaderOutput main(VertexShaderOutput input)
     }
 
     output.color.rgb /= weightSum;
+    
     return output;
 }

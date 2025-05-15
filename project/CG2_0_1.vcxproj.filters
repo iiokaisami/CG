@@ -198,6 +198,12 @@
     <ClCompile Include="gameEngine\base\postEffect\BoxFilterPass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="gameEngine\base\postEffect\GaussianFilterPass.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="gameEngine\base\postEffect\NoneEffectPass.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameEngine\3d\Object3d.h">
@@ -326,6 +332,12 @@
     <ClInclude Include="gameEngine\base\postEffect\BoxFilterPass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="gameEngine\base\postEffect\GaussianFilterPass.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="gameEngine\base\postEffect\NoneEffectPass.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Object3d.hlsli" />
@@ -334,6 +346,8 @@
     <None Include="resources\shaders\Grayscale.hlsli" />
     <None Include="resources\shaders\Vignette.hlsli" />
     <None Include="resources\shaders\BoxFilter.hlsli" />
+    <None Include="resources\shaders\GaussianFilter.hlsli" />
+    <None Include="resources\shaders\NoneEffect.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\Object3d.PS.hlsl" />
@@ -346,5 +360,9 @@
     <FxCompile Include="resources\shaders\Vignette.VS.hlsl" />
     <FxCompile Include="resources\shaders\BoxFilter.PS.hlsl" />
     <FxCompile Include="resources\shaders\BoxFilter.VS.hlsl" />
+    <FxCompile Include="resources\shaders\GaussianFilter.PS.hlsl" />
+    <FxCompile Include="resources\shaders\GaussianFilter.VS.hlsl" />
+    <FxCompile Include="resources\shaders\NoneEffect.PS.hlsl" />
+    <FxCompile Include="resources\shaders\NoneEffect.VS.hlsl" />
   </ItemGroup>
 </Project>
