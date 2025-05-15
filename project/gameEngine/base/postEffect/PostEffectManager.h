@@ -18,6 +18,8 @@ public:
     void SetActiveEffects(const std::vector<std::string>& names); 
     void DrawAll(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> cmdList, D3D12_GPU_DESCRIPTOR_HANDLE inputSrvHandle, ID3D12Resource* inputResource, D3D12_RESOURCE_STATES& currentState);
 
+    void SetNoneEffect(std::unique_ptr<IPostEffectPass> pass);
+
     template<typename T>
     T* GetPassAs(const std::string& name)
     {
@@ -32,10 +34,6 @@ private:
 
     std::unordered_map<std::string, std::unique_ptr<IPostEffectPass>> passes_;
 
-};
+    std::unique_ptr<IPostEffectPass> noneEffect_;
 
-template<typename T>
-inline T* GetPassAs(const std::string& name)
-{
-    return nullptr;
-}
+};

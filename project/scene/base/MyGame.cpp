@@ -63,14 +63,23 @@ void MyGame::Update()
 
 	if (ImGui::CollapsingHeader("Grayscale"))
 	{
-
-		bool grayscale = (useGrayscale_ != 0);
-		if (ImGui::Checkbox("UseGrayscaleEneble", &grayscale))
+		static bool useGrayscale = false;
+		if (ImGui::Checkbox("UseGrayscale", &useGrayscale))
 		{
-			useGrayscale_ = grayscale;
+			postEffectManager->SetActiveEffect("Grayscale", useGrayscale);
+		}
+		if (ImGui::Button("グレースケール1 (1をセット)")) {
+			useGrayscale_ = 1;
+		}
+		if (ImGui::Button("グレースケール2 (2をセット)")) {
+			useGrayscale_ = 2;
 		}
 
-		postEffectManager->GetPassAs<GrayscalePass>("Grayscale")->SetUseGrayscale(static_cast<uint32_t>(useGrayscale_));
+		// 現在値を表示
+		ImGui::Text("useGrayscale_ = %u", useGrayscale_);
+
+		// 値をGrayscalePassに反映
+		postEffectManager->GetPassAs<GrayscalePass>("Grayscale")->SetUseGrayscale(useGrayscale_);
 
 	}
 
@@ -102,6 +111,19 @@ void MyGame::Update()
 		static float blurIntensity = 1.0f;
 		ImGui::SliderFloat("Box Blur Intensity", &blurIntensity, 0.1f, 1.0f);
 		postEffectManager->GetPassAs<BoxFilterPass>("BoxFilter")->SetIntensity(blurIntensity);
+	}
+
+	if (ImGui::CollapsingHeader("GaussianFilter"))
+	{
+		static bool useGaussianFilter = false;
+		if (ImGui::Checkbox("Use GaussianFilter", &useGaussianFilter))
+		{
+			postEffectManager->SetActiveEffect("GaussianFilter", useGaussianFilter);
+		}
+
+		static float gaussianIntensity = 1.0f;
+		ImGui::SliderFloat("Gaussian Blur Intensity", &gaussianIntensity, 0.1f, 5.0f);
+		postEffectManager->GetPassAs<GaussianFilterPass>("GaussianFilter")->SetIntensity(gaussianIntensity);
 	}
 
 #endif // _DEBUG

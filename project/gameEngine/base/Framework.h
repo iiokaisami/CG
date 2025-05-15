@@ -27,9 +27,11 @@
 #include "RenderTexture.h"
 
 #include "postEffect/PostEffectManager.h"
+#include "postEffect/NoneEffectPass.h"
 #include "postEffect/GrayscalePass.h"
 #include "postEffect/VignettePass.h"
 #include "postEffect/BoxFilterPass.h"
+#include "postEffect/GaussianFilterPass.h"
 
 #include "../../ParticleEmitter.h"
 
@@ -86,9 +88,11 @@ protected:
 	std::unique_ptr <RenderTexture> renderTexture = nullptr;
 
 	std::unique_ptr<PostEffectManager> postEffectManager = nullptr;
+	std::unique_ptr<NoneEffectPass> noneEffectPass = nullptr;
 	std::unique_ptr<GrayscalePass> grayscalePass = nullptr;
 	std::unique_ptr<VignettePass> vignettePass = nullptr;
 	std::unique_ptr<BoxFilterPass> boxFilterPass = nullptr;
+	std::unique_ptr<GaussianFilterPass> gaussianFilterPass = nullptr;
 
 	ParticleManager* particleManager = nullptr;
 

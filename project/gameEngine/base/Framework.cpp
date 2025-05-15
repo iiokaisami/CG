@@ -81,19 +81,24 @@ void Framework::Initialize()
 	renderTexture->Initialize(dxCommon.get(), srvManager.get(), WinApp::kClientWidth, WinApp::kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, Vector4(0.1f, 0.25f, 0.5f, 1.0f));
 
 	// ポストエフェクト
+	noneEffectPass = std::make_unique<NoneEffectPass>();
+	noneEffectPass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/NoneEffect.VS.hlsl", L"resources/shaders/NoneEffect.PS.hlsl");
 	grayscalePass = std::make_unique<GrayscalePass>();
 	grayscalePass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/Grayscale.VS.hlsl", L"resources/shaders/Grayscale.PS.hlsl");
 	vignettePass = std::make_unique<VignettePass>();
 	vignettePass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/Vignette.VS.hlsl", L"resources/shaders/Vignette.PS.hlsl");
 	boxFilterPass = std::make_unique<BoxFilterPass>();
 	boxFilterPass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/BoxFilter.VS.hlsl", L"resources/shaders/BoxFilter.PS.hlsl");
-	
+	gaussianFilterPass = std::make_unique<GaussianFilterPass>();
+	gaussianFilterPass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/GaussianFilter.VS.hlsl", L"resources/shaders/GaussianFilter.PS.hlsl");
+
 	postEffectManager = std::make_unique<PostEffectManager>();
+	postEffectManager->SetNoneEffect(std::move(noneEffectPass));
 	postEffectManager->AddPass("Grayscale", std::move(grayscalePass));
 	postEffectManager->AddPass("Vignette", std::move(vignettePass));
 	postEffectManager->AddPass("BoxFilter", std::move(boxFilterPass));
-	postEffectManager->SetActiveEffect("Vignette", false);
-	postEffectManager->SetActiveEffect("BoxFilter", false);
+	postEffectManager->AddPass("GaussianFilter", std::move(gaussianFilterPass));
+	
 
 	// パーティクル	
 	particleManager = ParticleManager::GetInstance();
