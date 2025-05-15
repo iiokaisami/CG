@@ -68,11 +68,27 @@ void MyGame::Update()
 		{
 			postEffectManager->SetActiveEffect("Grayscale", useGrayscale);
 		}
-		if (ImGui::Button("グレースケール1 (1をセット)")) {
-			useGrayscale_ = 1;
+		if (ImGui::Button("1"))
+		{
+			if (useGrayscale_ == 1)
+			{
+				useGrayscale_ = 0;
+			} 
+			else 
+			{
+				useGrayscale_ = 1;
+			}
 		}
-		if (ImGui::Button("グレースケール2 (2をセット)")) {
-			useGrayscale_ = 2;
+		if (ImGui::Button("2"))
+		{
+			if (useGrayscale_ == 2)
+			{
+				useGrayscale_ = 0;
+			}
+			else
+			{
+				useGrayscale_ = 2;
+			}
 		}
 
 		// 現在値を表示
