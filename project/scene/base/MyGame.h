@@ -34,4 +34,7 @@ public:
 
 	// 0 : グレースケール無効, 1: グレースケール有効
 	uint32_t useGrayscale_ = 0;
+
+	// Vignetteの強度
+	float vignetteRadius_ = 0.5f;
 };

@@ -1,6 +1,6 @@
-#include "CopyImage.hlsli"
+#include "Grayscale.hlsli"
 
-cbuffer GrayscaleParam : register(b0)
+cbuffer GrayscaleCB : register(b0)
 {
     uint useGrayscale;
 };
@@ -16,14 +16,13 @@ struct PixelShaderOutput
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
-    
     output.color = gTexture.Sample(gSampler, input.texcoord);
-    
+
     if (useGrayscale == 1)
     {
         float value = dot(output.color.rgb, float3(0.2125f, 0.7154f, 0.0721f));
         output.color.rgb = float3(value, value, value);
     }
-    
+
     return output;
 }

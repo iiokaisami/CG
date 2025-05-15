@@ -41,9 +41,9 @@ public: // ゲッター
 	}
 
 	// SRV用デスクリプタヒープを取得
-	ID3D12DescriptorHeap* GetHeap() const
+	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> GetHeap() const
 	{
-		return descriptorHeap_.Get();
+		return descriptorHeap_;
 	}
 
 public: // セッター

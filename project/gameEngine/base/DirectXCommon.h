@@ -164,6 +164,8 @@ public:
 
 	void CreateSamplerHeap();
 
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateUploadBuffer(size_t sizeInBytes);
+
 public: // ゲッター
 
 	// デバイス
@@ -186,11 +188,14 @@ public: // ゲッター
 	DXGI_SWAP_CHAIN_DESC1 GetSwapChainDesc() { return swapChainDesc_; }
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle() { return dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(); }
+	
 	size_t GetDescriptorSizeRTV() { return descriptorSizeRTV_; }
+	
 	// Sampler用ディスクリプタヒープを取得する関数
-	ID3D12DescriptorHeap* GetSamplerHeap() const { return samplerHeap_; }
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> GetSamplerHeap() const { return samplerHeap_; }
+	
 	// Sampler用ディスクリプタヒープのサイズを取得する関数
-	D3D12_GPU_DESCRIPTOR_HANDLE GetSamplerDescriptorHandle() const
+	D3D12_GPU_DESCRIPTOR_HANDLE GetSamplerHandle() const
 	{
 		assert(samplerHeap_ != nullptr && "Sampler Heap is not initialized!");
 		return samplerHeap_->GetGPUDescriptorHandleForHeapStart();

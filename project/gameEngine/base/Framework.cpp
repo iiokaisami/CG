@@ -80,18 +80,24 @@ void Framework::Initialize()
 	renderTexture = std::make_unique<RenderTexture>();
 	renderTexture->Initialize(dxCommon.get(), srvManager.get(), WinApp::kClientWidth, WinApp::kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, Vector4(0.1f, 0.25f, 0.5f, 1.0f));
 
-	// コピー用パス
-	copyPass = std::make_unique<CopyPass>();
-	copyPass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/CopyImage.VS.hlsl", L"resources/shaders/CopyImage.PS.hlsl");
+	// ポストエフェクト
+	grayscalePass = std::make_unique<GrayscalePass>();
+	grayscalePass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/Grayscale.VS.hlsl", L"resources/shaders/Grayscale.PS.hlsl");
+	vignettePass = std::make_unique<VignettePass>();
+	vignettePass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/Vignette.VS.hlsl", L"resources/shaders/Vignette.PS.hlsl");
+
+	postEffectManager = std::make_unique<PostEffectManager>();
+	postEffectManager->AddPass("Grayscale", std::move(grayscalePass));
+	postEffectManager->AddPass("Vignette", std::move(vignettePass));
+	postEffectManager->SetActiveEffect("Vignette", false);
 
 	// パーティクル	
 	particleManager = ParticleManager::GetInstance();
 	particleManager->Initialize(dxCommon.get(),srvManager.get());
 
-
-	// パーティクル	
-	particleManager = ParticleManager::GetInstance();
-	particleManager->Initialize(dxCommon.get(), srvManager.get());
+	inputSrv = renderTexture->GetSRVHandle();
+	inputRes = renderTexture->GetResource();
+	state = renderTexture->GetCurrentState();
 
 #ifdef _DEBUG
 
@@ -99,6 +105,7 @@ void Framework::Initialize()
 	imGuiManager->Initialize(winApp.get(), dxCommon.get());
 
 #endif // _DEBUG
+		
 }
 
 void Framework::Finalize()
@@ -134,9 +141,8 @@ void Framework::Finalize()
 	// レンダーテクスチャ解放
 	renderTexture.reset();
 	renderTexture = nullptr;
-	// コピー用パス解放
-	copyPass.reset();
-	copyPass = nullptr;
+	
+
 
 #ifdef _DEBUG
 	// ImGuiManager解放

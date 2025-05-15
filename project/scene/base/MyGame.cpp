@@ -63,13 +63,32 @@ void MyGame::Update()
 
 	if (ImGui::CollapsingHeader("Grayscale"))
 	{
+
 		bool grayscale = (useGrayscale_ != 0);
-		if (ImGui::Checkbox("Use Grayscale", &grayscale)) 
+		if (ImGui::Checkbox("UseGrayscaleEneble", &grayscale))
 		{
 			useGrayscale_ = grayscale;
 		}
-		// CopyPass に反映
-		copyPass->SetUseGrayscale(static_cast<uint32_t>(useGrayscale_));
+
+		postEffectManager->GetPassAs<GrayscalePass>("Grayscale")->SetUseGrayscale(static_cast<uint32_t>(useGrayscale_));
+
+	}
+
+	if (ImGui::CollapsingHeader("Vignette"))
+	{
+
+		static bool useVignette = false;
+		if (ImGui::Checkbox("Use Vignette", &useVignette))
+		{
+			// ポストエフェクトマネージャに切り替えを伝える関数を作る想定
+			postEffectManager->SetActiveEffect("Vignette",useVignette);
+		}
+
+		// VignetteのパラメータをImGuiで調整する
+		if (ImGui::SliderFloat("Vignette Radius", &vignetteRadius_, 0.0f, 5.0f))
+		{
+			postEffectManager->GetPassAs<VignettePass>("Vignette")->SetStrength(vignetteRadius_);
+		}
 	}
 
 #endif // _DEBUG
@@ -106,9 +125,9 @@ void MyGame::Draw()
 
 	// ---------- SwapChainへの描画 ----------
 	dxCommon->PreDraw();
-
-	copyPass->Draw(dxCommon->GetCommandList(), renderTexture->GetGPUHandle());
 	
+	postEffectManager->DrawAll(dxCommon->GetCommandList(), renderTexture->GetGPUHandle(), inputRes.Get(), state);
+
 #ifdef _DEBUG
 	// ImGui描画
 	imGuiManager->Draw();

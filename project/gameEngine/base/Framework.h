@@ -25,7 +25,10 @@
 #include "SrvManager.h"
 #include "Audio.h"
 #include "RenderTexture.h"
-#include "../../CopyPass.h"
+
+#include "postEffect/PostEffectManager.h"
+#include "postEffect/GrayscalePass.h"
+#include "postEffect/VignettePass.h"
 
 #include "../../ParticleEmitter.h"
 
@@ -80,9 +83,16 @@ protected:
 	ModelManager* modelManager = nullptr;
 
 	std::unique_ptr <RenderTexture> renderTexture = nullptr;
-	std::unique_ptr <CopyPass> copyPass = nullptr;
+
+	std::unique_ptr<PostEffectManager> postEffectManager = nullptr;
+	std::unique_ptr<GrayscalePass> grayscalePass = nullptr;
+	std::unique_ptr<VignettePass> vignettePass = nullptr;
 
 	ParticleManager* particleManager = nullptr;
+
+	D3D12_GPU_DESCRIPTOR_HANDLE inputSrv;
+	Microsoft::WRL::ComPtr<ID3D12Resource> inputRes;
+	D3D12_RESOURCE_STATES state;
 
 #ifdef _DEBUG
 

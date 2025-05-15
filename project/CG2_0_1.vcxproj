@@ -108,10 +108,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CopyPass.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\BoxFilter.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\BasePostEffectPass.cpp" />
     <ClCompile Include="gameEngine\audio\Audio.cpp" />
     <ClCompile Include="gameEngine\math\Quaternion.cpp" />
     <ClCompile Include="gameEngine\base\RenderTexture.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\IPostEffectPass.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\GrayscalePass.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\PostEffectManager.cpp" />
     <ClCompile Include="scene\base\SceneFactory.cpp" />
     <ClCompile Include="scene\base\SceneManager.cpp" />
     <ClCompile Include="scene\base\BaseScene.cpp" />
@@ -145,12 +149,17 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="ParticleManager.cpp" />
     <ClCompile Include="scene\scene\TitleScene.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\VignettePass.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CopyPass.h" />
+    <ClInclude Include="gameEngine\base\postEffect\BoxFilter.h" />
+    <ClInclude Include="gameEngine\base\postEffect\BasePostEffectPass.h" />
     <ClInclude Include="gameEngine\audio\Audio.h" />
     <ClInclude Include="gameEngine\math\Quaternion.h" />
     <ClInclude Include="gameEngine\base\RenderTexture.h" />
+    <ClInclude Include="gameEngine\base\postEffect\IPostEffectPass.h" />
+    <ClInclude Include="gameEngine\base\postEffect\GrayscalePass.h" />
+    <ClInclude Include="gameEngine\base\postEffect\PostEffectManager.h" />
     <ClInclude Include="scene\base\SceneFactory.h" />
     <ClInclude Include="scene\base\AbstractSceneFactory.h" />
     <ClInclude Include="scene\base\SceneManager.h" />
@@ -184,6 +193,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="ParticleManager.h" />
     <ClInclude Include="scene\scene\TitleScene.h" />
+    <ClInclude Include="gameEngine\base\postEffect\VignettePass.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
@@ -194,17 +204,27 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\CopyImage.hlsli" />
+    <None Include="resources\shaders\BoxFilter.hlsli" />
+    <None Include="resources\shaders\Grayscale.hlsli" />
     <None Include="resources\shaders\Object3d.hlsli" />
     <None Include="resources\shaders\Particle.hlsli" />
     <None Include="resources\shaders\Sprite.hlsli" />
+    <None Include="resources\shaders\Vignette.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="resources\shaders\CopyImage.PS.hlsl">
+    <FxCompile Include="resources\shaders\BoxFilter.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\BoxFilter.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="resources\shaders\CopyImage.VS.hlsl">
+    <FxCompile Include="resources\shaders\Grayscale.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Grayscale.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
@@ -223,6 +243,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <FxCompile Include="resources\shaders\Particle.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Vignette.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Vignette.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
