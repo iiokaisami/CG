@@ -44,7 +44,7 @@ void RenderTexture::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, 
     assert(SUCCEEDED(hr));
 
     rtvHeap_ = dxCommon_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 1, false);
-    rtvHandle_ = dxCommon_->GetCPUDescriptorHandle(rtvHeap_.Get(), dxCommon_->GetDescriptorSizeRTV(), 0);
+    rtvHandle_ = dxCommon_->GetCPUDescriptorHandle(rtvHeap_.Get(), static_cast<uint32_t>(dxCommon_->GetDescriptorSizeRTV()), 0);
 
     dxCommon_->GetDevice()->CreateRenderTargetView(texture_.Get(), nullptr, rtvHandle_);
 
@@ -54,8 +54,10 @@ void RenderTexture::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, 
     currentState_ = D3D12_RESOURCE_STATE_RENDER_TARGET;
 }
 
-void RenderTexture::BeginRender() {
-    if (currentState_ != D3D12_RESOURCE_STATE_RENDER_TARGET) {
+void RenderTexture::BeginRender() 
+{
+    if (currentState_ != D3D12_RESOURCE_STATE_RENDER_TARGET)
+    {
         auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
             texture_.Get(),
             currentState_,
@@ -89,8 +91,10 @@ void RenderTexture::BeginRender() {
     dxCommon_->GetCommandList()->ClearRenderTargetView(rtvHandle_, clearColor, 0, nullptr);
 }
 
-void RenderTexture::EndRender() {
-    if (currentState_ != D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE) {
+void RenderTexture::EndRender()
+{
+    if (currentState_ != D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE) 
+    {
         auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
             texture_.Get(),
             currentState_,
@@ -100,6 +104,12 @@ void RenderTexture::EndRender() {
     }
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE RenderTexture::GetGPUHandle() const {
+D3D12_GPU_DESCRIPTOR_HANDLE RenderTexture::GetGPUHandle() const 
+{
+    return srvManager_->GetGPUDescriptorHandle(srvIndex_);
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE RenderTexture::GetSRVHandle() const
+{
     return srvManager_->GetGPUDescriptorHandle(srvIndex_);
 }

@@ -11,6 +11,7 @@ class SrvManager;
 class RenderTexture  
 {  
 public:
+
     void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor);
     void BeginRender();
     void EndRender();
@@ -21,6 +22,12 @@ public: // ゲッター
     ID3D12Resource* GetResource() const { return texture_.Get(); }
     D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const;
     uint32_t GetSRVIndex() const { return srvIndex_; }
+
+    // SRV ハンドルの取得
+    D3D12_GPU_DESCRIPTOR_HANDLE GetSRVHandle() const;
+
+    // 現在のリソース状態
+	D3D12_RESOURCE_STATES& GetCurrentState() { return currentState_; }
 
 private:
 

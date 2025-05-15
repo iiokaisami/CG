@@ -1,4 +1,4 @@
-#include "CopyImage.hlsli"
+#include "Grayscale.hlsli"
 
 static const int kNumVertex = 3;
 
