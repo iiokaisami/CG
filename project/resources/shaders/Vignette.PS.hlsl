@@ -2,7 +2,7 @@
 
 cbuffer VignetteCB : register(b0)
 {
-    float intensity; // 0.0〜1.0程度で調整可能
+    float intensity;
     float3 padding;
 };
 

@@ -85,11 +85,15 @@ void Framework::Initialize()
 	grayscalePass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/Grayscale.VS.hlsl", L"resources/shaders/Grayscale.PS.hlsl");
 	vignettePass = std::make_unique<VignettePass>();
 	vignettePass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/Vignette.VS.hlsl", L"resources/shaders/Vignette.PS.hlsl");
-
+	boxFilterPass = std::make_unique<BoxFilterPass>();
+	boxFilterPass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/BoxFilter.VS.hlsl", L"resources/shaders/BoxFilter.PS.hlsl");
+	
 	postEffectManager = std::make_unique<PostEffectManager>();
 	postEffectManager->AddPass("Grayscale", std::move(grayscalePass));
 	postEffectManager->AddPass("Vignette", std::move(vignettePass));
+	postEffectManager->AddPass("BoxFilter", std::move(boxFilterPass));
 	postEffectManager->SetActiveEffect("Vignette", false);
+	postEffectManager->SetActiveEffect("BoxFilter", false);
 
 	// パーティクル	
 	particleManager = ParticleManager::GetInstance();

@@ -195,7 +195,7 @@
     <ClCompile Include="gameEngine\base\postEffect\BasePostEffectPass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="gameEngine\base\postEffect\BoxFilter.cpp">
+    <ClCompile Include="gameEngine\base\postEffect\BoxFilterPass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -323,7 +323,7 @@
     <ClInclude Include="gameEngine\base\postEffect\BasePostEffectPass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="gameEngine\base\postEffect\BoxFilter.h">
+    <ClInclude Include="gameEngine\base\postEffect\BoxFilterPass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
