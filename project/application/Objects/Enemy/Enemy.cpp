@@ -28,7 +28,7 @@ void Enemy::Initialize()
     colliderManager_->RegisterCollider(&collider_);
 
     // ステータス
-    hp_ = 5;
+    hp_ = 3;
     isDead_ = false;
 
 }
@@ -91,7 +91,7 @@ void Enemy::Update()
     }
 
 	// 敵同士の衝突判定
-	//EnemyCollision();
+	EnemyCollision(enemyPosition_);
 
 
     aabb_.min = position_ - object_->GetScale();
@@ -218,8 +218,26 @@ void Enemy::Attack()
 
 void Enemy::OnCollisionTrigger(const Collider* _other)
 {
+	if (_other->GetColliderID() == "PlayerBullet")
+	{
+		// プレイヤーの弾と衝突した場合
+		if (hp_ > 0)
+		{
+			hp_--;
+		}
+        else
+		{
+			isDead_ = true;
+		}
+	}
+    else if (_other->GetColliderID() == "Enemy")
+	{
+		enemyPosition_ = _other->GetPosition();
+		isEnemyCollision_ = true;
+	}
 }
 
 void Enemy::EnemyCollision(Vector3 _position)
 {
+
 }

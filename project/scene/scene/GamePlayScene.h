@@ -39,6 +39,9 @@ public:
 	//void UpdateEnemyPopCommands2();
 	//void UpdateEnemyPopCommands3();
 
+	// カメラ処理
+	void CameraUpdate();
+
 private:
 
 	CameraManager& cameraManager = CameraManager::GetInstance();
@@ -68,6 +71,8 @@ private:
 	bool isEnemyWaiting_ = true;
 	// 敵待機タイマー
 	int32_t enemyWaitingTimer_ = 9;
+	// プレイヤーとの距離
+	std::vector<Vector3> toPlayerDistance_;
 
 	// フィールド
 	std::unique_ptr<Field> pField_ = nullptr;

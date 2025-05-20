@@ -49,7 +49,11 @@ private: // 衝突判定
 
 public: // ゲッター
 
+	// 死亡フラグ
 	bool IsDead() const { return isDead_; }
+
+	// プレイヤーとの距離
+	Vector3 GetToPlayer() const { return toPlayer_; }
 
 public: // セッター
 
@@ -85,6 +89,12 @@ private:
 
 	// 弾
 	std::vector<std::unique_ptr<EnemyBullet>> pBullets_ = {};
+
+	// 敵同士の衝突判定
+	// フラグ
+	bool isEnemyCollision_ = false;
+	// 相手の敵の位置
+	Vector3 enemyPosition_{};\
 
 };
 

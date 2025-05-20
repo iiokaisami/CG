@@ -4,6 +4,9 @@
 
 void TitleScene::Initialize()
 {
+	// 必ず先頭でカメラを全クリア
+	cameraManager.ClearAllCameras();
+
 	camera_ = std::make_shared<Camera>();
 	camera_->SetRotate({ 0.3f,0.0f,0.0f });
 	camera_->SetPosition({ 0.0f,4.0f,-20.0f });
@@ -17,9 +20,6 @@ void TitleScene::Initialize()
 	camera_->SetRotate(cameraRotate_);
 
 	// --- 3Dオブジェクト ---
-	ModelManager::GetInstance()->LoadModel("sphere.obj");
-	ModelManager::GetInstance()->LoadModel("terrain.obj");
-
 	for (uint32_t i = 0; i < 3; ++i)
 	{
 		Object3d* object = new Object3d();

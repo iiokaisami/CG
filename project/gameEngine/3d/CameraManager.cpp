@@ -66,3 +66,9 @@ void CameraManager::StartShakeActiveCamera(float duration, float magnitude)
 {
     ShakeSpecificCamera(activeCameraIndex_, duration, magnitude);
 }
+
+void CameraManager::ClearAllCameras()
+{
+    cameras_.clear();
+    activeCameraIndex_ = std::numeric_limits<uint32_t>::max();
+}

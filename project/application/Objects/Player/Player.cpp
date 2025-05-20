@@ -29,7 +29,7 @@ void Player::Initialize()
 	colliderManager_->RegisterCollider(&collider_);
 
 	// ステータス
-	hp_ = 5;
+	hp_ = 3;
 	isDead_ = false;
 }
 
@@ -201,6 +201,29 @@ void Player::OnCollisionTrigger(const Collider* _other)
 {
 	if (_other->GetColliderID() == "EnemyBullet")
 	{
+		// プレイヤーのHPを減少
+		if (hp_ > 0)
+		{
+			hp_--;
+		}
+		else
+		{
+			isDead_ = true;
+		}
+
+		isHitMoment_ = true;
+	} 
+	else if (_other->GetColliderID() == "Enemy")
+	{
+		// プレイヤーのHPを減少
+		if (hp_ > 0)
+		{
+			hp_--;
+		} 
+		else
+		{
+			isDead_ = true;
+		}
 		isHitMoment_ = true;
 	}
 }

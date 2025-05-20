@@ -25,12 +25,6 @@ public:
     // シーンの変更時等に呼び出す
     void RemoveCamera(uint32_t index);
 
-    // アクティブカメラを設定
-    void SetActiveCamera(uint32_t index);
-
-    // アクティブカメラの取得
-    std::shared_ptr<Camera> GetActiveCamera() const;
-
     // アップデート（全カメラの更新処理を実行）
     void UpdateAll(float deltaTime = 0.0f);
 
@@ -46,9 +40,23 @@ public:
     // cameraManager.StartShakeActiveCamera(1.0f, 1.5f);
     void StartShakeActiveCamera(float duration, float magnitude);
 
-public:
+	// 全てのカメラを削除
+    void ClearAllCameras();
+
+public: // ゲッター
 
     uint32_t GetActiveIndex()const { return activeCameraIndex_; }
+
+    // アクティブカメラの取得
+    std::shared_ptr<Camera> GetActiveCamera() const;
+
+	// カメラの数を取得
+	uint32_t GetCameraCount() const { return static_cast<uint32_t>(cameras_.size()); }
+
+public: // セッター
+
+    // アクティブカメラを設定
+    void SetActiveCamera(uint32_t index);
 
 private:
     CameraManager() = default;

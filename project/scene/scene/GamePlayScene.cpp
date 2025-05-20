@@ -4,6 +4,9 @@
 
 void GamePlayScene::Initialize()
 {
+	// 必ず先頭でカメラを全クリア
+	cameraManager.ClearAllCameras();
+
 	// カメラの作成
 	camera1 = std::make_shared<Camera>();
 	camera2 = std::make_shared<Camera>();
@@ -95,7 +98,7 @@ void GamePlayScene::Update()
 	// カメラマネージャーのテスト
 	cameraManager.UpdateAll();
 
-	// ENTER押してカメラ切り替え
+	// P押してカメラ切り替え
 	if (Input::GetInstance()->TriggerKey(DIK_P))
 	{
 		if (cameraManager.GetActiveIndex() == 0)
@@ -117,43 +120,33 @@ void GamePlayScene::Update()
 	camera2->SetRotate(camera2Rotate);
 	camera2->SetPosition(camera2Position);
 
-	// アクティブカメラの情報を取得
-	auto activeCamera = cameraManager.GetActiveCamera();
-	if (activeCamera)
-	{
-		auto viewMatrix = activeCamera->GetViewMatrix();
-		// viewMatrix を使った処理
-	}
-
 	// プレイヤーの更新
 	pPlayer_->Update();
 
-	// プレイヤーがヒットした場合にカメラをシェイク
-	if (pPlayer_->IsHitMoment())
-	{
-		// アクティブなカメラを取得
-		if (activeCamera)
-		{
-			// カメラをシェイク (持続時間,振幅)
-			activeCamera->StartShake(0.3f, 0.5f);
-
-			// ヒットフラグをリセット
-			pPlayer_->SetHitMoment(false);
-		}
-	}
-
-	// カメラのシェイクを更新
-	if (activeCamera)
-	{
-		activeCamera->UpdateShake(1.0f / 60.0f); // フレームレートに応じたdeltaTime
-	}
+	// カメラの更新(引き、シェイク)
+	CameraUpdate();
 
 	// エネミーの更新
 	for (auto& enemy : pEnemies_)
 	{
 		enemy->SetPlayerPosition(pPlayer_->GetPosition());
 		enemy->Update();
+		toPlayerDistance_.push_back(enemy->GetToPlayer());
 	}
+	// isDeatエネミーがたったら削除
+	pEnemies_.erase(
+		std::remove_if(pEnemies_.begin(), pEnemies_.end(),
+			[](std::unique_ptr<Enemy>& enemy)
+			{
+				if (enemy->IsDead())
+				{
+					enemy->Finalize();
+					return true;
+				}
+				return false;
+			}),
+		pEnemies_.end()
+	);
 	// エネミーの出現コマンドの更新
 	UpdateEnemyPopCommands1();
 
@@ -185,10 +178,15 @@ void GamePlayScene::Update()
 #endif // _DEBUG
 
 
-	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
+	if (Input::GetInstance()->TriggerKey(DIK_UP))
 	{
 		// シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		SceneManager::GetInstance()->ChangeScene("CLEAR");
+	}
+	if (Input::GetInstance()->TriggerKey(DIK_DOWN) or pPlayer_->IsDead())
+	{
+		// シーン切り替え
+		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
 	}
 }
 
@@ -220,13 +218,11 @@ void GamePlayScene::EnemyInit()
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
 	enemy->SetPosition(enemyPosition_);
 	enemy->Initialize();
-	enemy->SetPosition(enemyPosition_);
 	enemy->SetPlayerPosition(pPlayer_->GetPosition());
-
+	enemy->Update();
 
 	// 敵を登録
 	pEnemies_.push_back(std::move(enemy));
-
 
 }
 
@@ -319,4 +315,37 @@ void GamePlayScene::UpdateEnemyPopCommands1()
 			break;
 		}
 	}
+}
+
+void GamePlayScene::CameraUpdate()
+{
+	// アクティブカメラの情報を取得
+	auto activeCamera = cameraManager.GetActiveCamera();
+	if (activeCamera)
+	{
+		auto viewMatrix = activeCamera->GetViewMatrix();
+	}
+
+	// プレイヤーがヒットした場合にカメラをシェイク
+	if (pPlayer_->IsHitMoment())
+	{
+		// アクティブなカメラを取得
+		if (activeCamera)
+		{
+			// カメラをシェイク (持続時間,振幅)
+			activeCamera->StartShake(0.3f, 0.5f);
+
+			// ヒットフラグをリセット
+			pPlayer_->SetHitMoment(false);
+		}
+	}
+
+	// シェイク
+	if (activeCamera)
+	{
+		activeCamera->UpdateShake(1.0f / 60.0f);
+	}
+
+	// カメラの引き
+
 }
