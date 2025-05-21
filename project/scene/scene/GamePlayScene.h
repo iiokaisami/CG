@@ -42,11 +42,18 @@ public:
 	// カメラ処理
 	void CameraUpdate();
 
+	// カメラシェイク
+	void CameraShake();
+
+	// カメラ追尾
+	void CameraFollowZoom();
+
+
 private:
 
 	CameraManager& cameraManager = CameraManager::GetInstance();
-	std::shared_ptr<Camera> camera1 = std::make_shared<Camera>();
-	std::shared_ptr<Camera> camera2 = std::make_shared<Camera>();
+	std::shared_ptr<Camera> camera1 = nullptr;
+	std::shared_ptr<Camera> camera2 = nullptr;
     
 	// 衝突判定
 	ColliderManager* colliderManager_ = nullptr;
@@ -76,6 +83,12 @@ private:
 
 	// フィールド
 	std::unique_ptr<Field> pField_ = nullptr;
+
+	
+	// カメラが静止時に追従する基準位置
+	Vector3 cameraRestCenter_; 
+	// カメラが現在静止モードかどうか
+	bool cameraIsResting_ = true;
 
 };
 

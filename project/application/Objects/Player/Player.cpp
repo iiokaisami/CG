@@ -61,7 +61,7 @@ void Player::Update()
 	object_->SetRotate(rotation_);
 	object_->SetScale(scale_);
 	object_->Update();
-	
+
 	// 移動
 	Move();
 	
@@ -94,7 +94,6 @@ void Player::Update()
 void Player::Draw()
 {
 	object_->Draw();
-
 
 	// 弾描画
 	for (auto& bullet : pBullets_)
@@ -133,35 +132,33 @@ void Player::Move()
 {
 	moveVelocity_ = {};
 
-	// 移動処理
+	// 画面上の見た目通りに移動（カメラ回転なし）
 	if (Input::GetInstance()->PushKey(DIK_W))
 	{
 		moveVelocity_.z += moveSpeed_.z;
 	}
 	if (Input::GetInstance()->PushKey(DIK_S))
 	{
-		moveVelocity_.z += -moveSpeed_.z;
+		moveVelocity_.z -= moveSpeed_.z;
 	}
 	if (Input::GetInstance()->PushKey(DIK_A))
 	{
-		moveVelocity_.x += -moveSpeed_.x;
+		moveVelocity_.x -= moveSpeed_.x;
 	}
 	if (Input::GetInstance()->PushKey(DIK_D))
 	{
 		moveVelocity_.x += moveSpeed_.x;
 	}
 
-	// 移動ベクトルがゼロでない場合に回転を計算
-	if (moveVelocity_.x != 0.0f or moveVelocity_.z != 0.0f)
+	// 移動ベクトルがゼロでない場合にプレイヤーの向きを補間で更新
+	if (moveVelocity_.x != 0.0f || moveVelocity_.z != 0.0f)
 	{
-		// 移動方向の角度を計算 (atan2を使用)
 		float targetAngle = std::atan2(moveVelocity_.x, moveVelocity_.z);
-
-		// 現在の回転角度と目標角度を補間 (Lerp)
-		const float rotationSpeed = 0.1f; // 回転速度 (0.0f～1.0f)
-		rotation_.y = rotation_.y + (targetAngle - rotation_.y) * rotationSpeed;
+		const float rotationSpeed = 0.1f;
+		rotation_.y += (targetAngle - rotation_.y) * rotationSpeed;
 	}
 
+	// 位置更新
 	position_ += moveVelocity_;
 }
 
@@ -204,7 +201,7 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		// プレイヤーのHPを減少
 		if (hp_ > 0)
 		{
-			hp_--;
+			//hp_--;
 		}
 		else
 		{
@@ -218,7 +215,7 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		// プレイヤーのHPを減少
 		if (hp_ > 0)
 		{
-			hp_--;
+			//hp_--;
 		} 
 		else
 		{

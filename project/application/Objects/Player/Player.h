@@ -50,6 +50,8 @@ public: // ゲッター
 
 	bool IsHitMoment() const { return isHitMoment_; }
 
+	Vector3 GetVelocity() const { return moveVelocity_; }
+
 public: // セッター
 
 	void SetHitMoment(bool _isHitMoment) { isHitMoment_ = _isHitMoment; }

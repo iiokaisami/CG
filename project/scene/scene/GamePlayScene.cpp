@@ -39,7 +39,6 @@ void GamePlayScene::Initialize()
 	pPlayer_ = std::make_unique<Player>();
 	pPlayer_->Initialize();
 
-
 	// フィールド
 	pField_ = std::make_unique<Field>();
 	pField_->Initialize();
@@ -48,6 +47,9 @@ void GamePlayScene::Initialize()
 	// エネミーのcsvデータを読み込み
 	LoadEnemyPopData1();
 
+	// 追尾の初期化
+	cameraIsResting_ = true;
+	cameraRestCenter_ = pPlayer_->GetPosition() + Vector3{ 0.0f,70.0f,-20.0f };
 
 	// スプライト
 	/*for (uint32_t i = 0; i < 1; ++i)
@@ -123,7 +125,7 @@ void GamePlayScene::Update()
 	// プレイヤーの更新
 	pPlayer_->Update();
 
-	// カメラの更新(引き、シェイク)
+	// カメラの更新(シェイク、追尾、引き)
 	CameraUpdate();
 
 	// エネミーの更新
@@ -319,6 +321,16 @@ void GamePlayScene::UpdateEnemyPopCommands1()
 
 void GamePlayScene::CameraUpdate()
 {
+	// カメラのシェイク
+	CameraShake();
+
+	// カメラの追従・引き
+	CameraFollowZoom();
+
+}
+
+void GamePlayScene::CameraShake()
+{
 	// アクティブカメラの情報を取得
 	auto activeCamera = cameraManager.GetActiveCamera();
 	if (activeCamera)
@@ -345,7 +357,47 @@ void GamePlayScene::CameraUpdate()
 	{
 		activeCamera->UpdateShake(1.0f / 60.0f);
 	}
+}
 
-	// カメラの引き
+void GamePlayScene::CameraFollowZoom()
+{
+	if (!camera1 || !pPlayer_) return;
+	if (toPlayerDistance_.empty()) return;
 
+	Vector3 playerPos = pPlayer_->GetPosition();
+
+	// 敵との最短距離を取得
+	float minDistance = std::numeric_limits<float>::max();
+	for (const Vector3& vec : toPlayerDistance_) {
+		float dist = vec.Length();
+		minDistance = std::min(minDistance, dist);
+	}
+
+	// ズーム(カメラのZ位置)を距離に応じて変化
+	// 距離が近い→カメラ寄る、距離が遠い→カメラ引く
+	const float minDist = 5.0f;
+	const float maxDist = 50.0f;
+	const float nearZ = -15.0f;
+	const float farZ = -40.0f;
+	float t = std::clamp((minDistance - minDist) / (maxDist - minDist), 0.0f, 1.0f);
+	float cameraZ = std::lerp(nearZ, farZ, t);
+
+	// カメラの理想的な相対位置
+	Vector3 offset = { 0.0f, 70.0f, cameraZ };
+	Vector3 targetPos = playerPos + offset;
+
+	// カメラの回転
+	Vector3 targetRot = { 1.2f, 0.0f, 0.0f };
+
+	// 補間で滑らかに追従
+	Vector3 currentPos = camera1->GetPosition();
+	Vector3 nextPos;
+	nextPos.Lerp(currentPos, targetPos, 0.8f);
+
+	Vector3 currentRot = camera1->GetRotate();
+	Vector3 nextRot;
+	nextRot.Lerp(currentRot, targetRot, 0.25f);
+
+	camera1->SetPosition(nextPos);
+	camera1->SetRotate(nextRot);
 }
