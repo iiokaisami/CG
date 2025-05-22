@@ -370,9 +370,9 @@ void ParticleManager::Emit(const std::string name, const Vector3& position, uint
     for (uint32_t i = 0; i < count; ++i)
     {
         // 新しいパーティクルを追加
-        //particleGroups.at(name).particleList.push_back(MakeNewParticle(randomEngine_, position));
+        particleGroups.at(name).particleList.push_back(MakeNewParticle(randomEngine_, position));
 
-        particleGroups.at(name).particleList.push_back(MakeCylinderParticle(randomEngine_, position));
+        //particleGroups.at(name).particleList.push_back(MakeCylinderParticle(randomEngine_, position));
 
         //particleGroups.at(name).particleList.push_back(MakeTestParticle(randomEngine_, position));
     }

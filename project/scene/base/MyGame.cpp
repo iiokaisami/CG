@@ -24,8 +24,8 @@ void MyGame::Initialize()
 	loadAudioThread.join();
 
 	// パーティクルグループの生成
-	particleManager->CreateParticleGroup("exampleGroup", "resources/images/gradationLine.png", "plane.obj", false, true);
-	//particleManager->CreateParticleGroup("secondGroup", "resources/images/monsterBall.png", "plane.obj");
+	//particleManager->CreateParticleGroup("exampleGroup", "resources/images/gradationLine.png", "plane.obj", false, true);
+	particleManager->CreateParticleGroup("exampleGroup", "resources/images/monsterBall.png", "plane.obj");
 
 	// Cylinderを出すときに向き指定する
 	particleManager->SetCylinderDirection("UP");
@@ -65,7 +65,7 @@ void MyGame::Update()
 	
 		if (ImGui::Button("AddParticle"))
 		{
-			particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 1);
+			particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 13);
 		}
 
 		static int selectedDirection = 0; // 0: UP, 1: DOWN, 2: LEFT, 3: RIGHT
