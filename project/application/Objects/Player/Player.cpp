@@ -201,7 +201,7 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		// プレイヤーのHPを減少
 		if (hp_ > 0)
 		{
-			//hp_--;
+			hp_--;
 		}
 		else
 		{
@@ -215,7 +215,7 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		// プレイヤーのHPを減少
 		if (hp_ > 0)
 		{
-			//hp_--;
+			hp_--;
 		} 
 		else
 		{

@@ -105,7 +105,7 @@ void GameOverScene::Update()
 
 	// 透明度の更新
 
-	ImGui::Begin("TitleScene");
+	ImGui::Begin("GameOverScene");
 
 	//ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
 

@@ -104,7 +104,7 @@ void ClearScene::Update()
 
 	// 透明度の更新
 
-	ImGui::Begin("TitleScene");
+	ImGui::Begin("ClearScene");
 
 	//ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
 
