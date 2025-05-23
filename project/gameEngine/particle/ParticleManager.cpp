@@ -200,7 +200,7 @@ void ParticleManager::CreateRootSignature()
     depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 }
 
-void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, bool isMakeRing, bool isMakeCylinder)
+void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, const std::string& type)
 {
     ModelManager::GetInstance()->LoadModel(modelFilePath);
 
@@ -244,14 +244,14 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     // srvを生成
     srvManager_->CreateSRVforStructuredBuffer(particleGroups.at(name).srvIndex, particleGroups.at(name).instancingResource.Get(), MaxInstanceCount, sizeof(ParticleForGPU));
 
-   
-    if (isMakeRing)
+
+
+    if (type == "Ring")
     {
         // リングの頂点データを生成
         MakeRing();
     }
-
-    if (isMakeCylinder)
+    if (type == "Cylinder")
     {
         // シリンダーの頂点データを生成
         MakeCylinder();
@@ -328,7 +328,7 @@ void ParticleManager::Draw()
     dxCommon_->GetCommandList()->SetPipelineState(pipelineState_.Get());
     // プリミティブトポロジーの設定
     dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-   
+
     // インデックスバッファを設定(モデルから取得)
     indexBufferView_ = model_->GetIndexBufferView();
     dxCommon_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
@@ -351,18 +351,18 @@ void ParticleManager::Draw()
         srvManager_->SetGraphicsRootDescriptorTable(2, ParticleGroup.materialData.textureIndex);
         // テクスチャのSRVを設定
         srvManager_->SetGraphicsRootDescriptorTable(1, ParticleGroup.srvIndex);
-       
-        
+
+
         // DrawCall (インスタンシング描画)
         dxCommon_->GetCommandList()->DrawIndexedInstanced(
-            static_cast<UINT>(model_->GetModelData().indices.size()), 
-            ParticleGroup.instanceCount, 
+            static_cast<UINT>(model_->GetModelData().indices.size()),
+            ParticleGroup.instanceCount,
             0, 0, 0);
 
     }
 }
 
-void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count)
+void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count, const std::string& particleType)
 {
     // パーティクルグループが登録されているかチェック
     assert(particleGroups.contains(name));
@@ -370,11 +370,23 @@ void ParticleManager::Emit(const std::string name, const Vector3& position, uint
     for (uint32_t i = 0; i < count; ++i)
     {
         // 新しいパーティクルを追加
-        particleGroups.at(name).particleList.push_back(MakeNewParticle(randomEngine_, position));
-
-        //particleGroups.at(name).particleList.push_back(MakeCylinderParticle(randomEngine_, position));
-
-        //particleGroups.at(name).particleList.push_back(MakeTestParticle(randomEngine_, position));
+        if (particleType == "Default")
+        {
+            particleGroups.at(name).particleList.push_back(MakeNewParticle(randomEngine_, position));
+        }
+        else if (particleType == "Cylinder") 
+        {
+            particleGroups.at(name).particleList.push_back(MakeCylinderParticle(randomEngine_, position));
+        }
+        else if (particleType == "Slash") 
+        {
+            particleGroups.at(name).particleList.push_back(MakeSlashParticle(randomEngine_, position));
+        }
+        else
+        {
+            // 未知のタイプはDefault
+            particleGroups.at(name).particleList.push_back(MakeNewParticle(randomEngine_, position));
+        }
     }
     // パーティクルグループのインスタンス数を更新
     particleGroups.at(name).instanceCount = count;
@@ -434,7 +446,7 @@ Particle ParticleManager::MakeCylinderParticle(std::mt19937& randomEngine, const
     return newParticle;
 }
 
-Particle ParticleManager::MakeTestParticle(std::mt19937& randomEngine, const Vector3& translate)
+Particle ParticleManager::MakeSlashParticle(std::mt19937& randomEngine, const Vector3& translate)
 {
     std::uniform_real_distribution<float> distScale(0.5f, 1.5f); // スケールの範囲
     std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>); // 回転の範囲
@@ -494,8 +506,8 @@ void ParticleManager::MakeRing()
     }
 
 	// すべての頂点・インデックス追加後にバッファを一括更新
-	model_->UpdateVertexBuffer();
-	model_->UpdateIndexBuffer();
+    model_->UpdateVertexBuffer();
+    model_->UpdateIndexBuffer();
 
 }
 
@@ -521,7 +533,7 @@ void ParticleManager::MakeCylinder()
         Vector3 top2 = { -sinNext * kTopRadius, kHeight, cosNext * kTopRadius };
         Vector3 bottom1 = { -sin * kBottomRadius, 0.0f, cos * kBottomRadius };
         Vector3 bottom2 = { -sinNext * kBottomRadius, 0.0f, cosNext * kBottomRadius };
-
+        
         // 頂点を追加
         model_->AddVertex({ top1.x, top1.y, top1.z, 1.0f }, { u, 0.0f }, { -sin, 0.0f, cos });
         model_->AddVertex({ top2.x, top2.y, top2.z, 1.0f }, { uNext, 0.0f }, { -sinNext, 0.0f, cosNext });

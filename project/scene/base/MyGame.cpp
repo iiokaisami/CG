@@ -24,8 +24,9 @@ void MyGame::Initialize()
 	loadAudioThread.join();
 
 	// パーティクルグループの生成
-	//particleManager->CreateParticleGroup("exampleGroup", "resources/images/gradationLine.png", "plane.obj", false, true);
-	particleManager->CreateParticleGroup("exampleGroup", "resources/images/monsterBall.png", "plane.obj");
+	particleManager->CreateParticleGroup("RingGroup", "resources/images/gradationLine.png", "plane.obj", "Ring");
+	particleManager->CreateParticleGroup("CylinderGroup", "resources/images/monsterBall.png", "plane.obj", "Cylinder");
+	particleManager->CreateParticleGroup("NormalGroup", "resources/images/monsterBall.png", "plane.obj");
 
 	// Cylinderを出すときに向き指定する
 	particleManager->SetCylinderDirection("UP");
@@ -63,10 +64,19 @@ void MyGame::Update()
 	{
 		ImGui::Checkbox("Use Example Group", &useExampleGroup_);
 	
-		if (ImGui::Button("AddParticle"))
+		/*if (ImGui::Button("AddRing"))
 		{
-			particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 13);
+			particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 3,"Slash");
+		}*/
+		if (ImGui::Button("AddCylinder"))
+		{
+			particleManager->Emit("CylinderGroup", Vector3(0.0f, 0.0f, 0.0f), 3, "Cylinder");
 		}
+		/*if (ImGui::Button("AddNormal"))
+		{
+			particleManager->Emit("NormalGroup", Vector3(0.0f, 0.0f, 0.0f), 3);
+		}*/
+
 
 		static int selectedDirection = 0; // 0: UP, 1: DOWN, 2: LEFT, 3: RIGHT
 
@@ -90,25 +100,11 @@ void MyGame::Update()
 
 #endif // _DEBUG
 
-	
-	// パーティクルの生成
-	if (useExampleGroup_)
-	{
-		/*particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 3);*/
-	} else
-	{
-		//particleManager->Emit("secondGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
-	}
-
 }
 
 void MyGame::Draw()
 {
-
 	//ゲームの処理		描画処理
-
-	//コマンドを積み込んで確定させる
-
 
 	srvManager->PreDraw();
 
@@ -125,6 +121,7 @@ void MyGame::Draw()
 
 
 	dxCommon->PostDraw();
+
 
 }
 

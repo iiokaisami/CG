@@ -25,7 +25,7 @@
 #include "SrvManager.h"
 #include "Audio.h"
 
-#include "../../ParticleEmitter.h"
+#include "../particle/ParticleEmitter.h"
 
 #include "../../scene/base/SceneManager.h"
 #include "../../scene/base/SceneFactory.h"   

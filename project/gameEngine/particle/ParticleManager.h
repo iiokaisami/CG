@@ -5,12 +5,12 @@
 #include <TextureManager.h>
 #include <Object3d.h>
 #include <numbers>
+#include <MyMath.h>
+#include <DirectXCommon.h>
+#include <SrvManager.h>
+#include <Camera.h>
 
-#include "MyMath.h"
-#include "DirectXCommon.h"
-#include "SrvManager.h"
 #include "Particle.h"
-#include "CameraManager.h"
 
 class Object3dCommon;
 
@@ -27,6 +27,7 @@ struct ParticleForGPU
 	Matrix4x4 world;
 	Vector4 color;
 };
+
 
 struct ParticleGroup
 {
@@ -58,7 +59,7 @@ public:
 	void CreateRootSignature();
 
 	// パーティクルグループの生成
-	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, bool isMakeRing = false,bool isMakeCylinder = false);
+	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, const std::string& type = "Default");
 
 	// 更新
 	void Update();
@@ -66,13 +67,13 @@ public:
 	// 描画
 	void Draw();
 
-	void Emit(const std::string name, const Vector3& position, uint32_t count);
+	void Emit(const std::string name, const Vector3& position, uint32_t count, const std::string& particleType = "Default");
 
 	Particle MakeNewParticle(std::mt19937& randomEngine, const Vector3& position);
 
 	Particle MakeCylinderParticle(std::mt19937& randomEngine, const Vector3& position);
 
-	Particle MakeTestParticle(std::mt19937& randomEngine, const Vector3& translate);
+	Particle MakeSlashParticle(std::mt19937& randomEngine, const Vector3& translate);
 
 	void MakeRing();
 
