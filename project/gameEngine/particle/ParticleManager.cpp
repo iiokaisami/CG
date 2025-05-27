@@ -20,13 +20,20 @@ ParticleManager* ParticleManager::GetInstance()
     return instance_;
 }
 
-void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, ModelCommon* modelCommon)
 {
     dxCommon_ = dxCommon;
     srvManager_ = srvManager;
+    modelCommon_ = modelCommon;
     object3dCommon_ = Object3dCommon::GetInstance();
     // ランダムエンジンの初期化
     randomEngine_ = std::mt19937{ std::random_device{}() };
+
+    // モーション登録
+	ParticleMotion::Initialize();
+
+    // （Cylinder方向など必要あれば指定）
+    ParticleMotion::SetDirection("UP");
 
     // パイプライン生成
     CreatePipeline();
@@ -204,7 +211,9 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
 {
     ModelManager::GetInstance()->LoadModel(modelFilePath);
 
-    model_ = ModelManager::GetInstance()->FindModel(modelFilePath);
+    std::unique_ptr<Model> model = std::make_unique<Model>();
+    model->Initialize(modelCommon_, "resources/models", modelFilePath);
+    models_[name] = std::move(model);
 
     if (particleGroups.contains(name))
     {
@@ -249,13 +258,33 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     if (type == "Ring")
     {
         // リングの頂点データを生成
-        MakeRing();
+		MeshBuilder::BuildRing(models_[name].get());
     }
     if (type == "Cylinder")
     {
         // シリンダーの頂点データを生成
-        MakeCylinder();
+		MeshBuilder::BuildCylinder(models_[name].get());
     }
+    if (type == "Cone")
+    {
+		// コーンの頂点データを生成
+		MeshBuilder::BuildCone(models_[name].get());
+    }
+    if (type == "Spiral")
+    {
+        // スパイラルの頂点データを生成
+        MeshBuilder::BuildSpiral(models_[name].get());
+    }
+	if (type == "Torus")
+	{
+		// トーラスの頂点データを生成
+		MeshBuilder::BuildTorus(models_[name].get());
+	}
+	if (type == "Helix")
+	{
+		// ヘリックスの頂点データを生成
+		MeshBuilder::BuildHelix(models_[name].get());
+	}
 }
 
 void ParticleManager::Update()
@@ -316,80 +345,63 @@ void ParticleManager::Update()
 
 void ParticleManager::Draw()
 {
-    // パーティクルグループが設定されていなければ描画しない
     if (particleGroups.empty())
     {
         return;
     }
 
-    // ルートシグネイチャの設定
+    // 共通設定
     dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
-    // PSO (Pipeline State Object) を設定
     dxCommon_->GetCommandList()->SetPipelineState(pipelineState_.Get());
-    // プリミティブトポロジーの設定
     dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    // インデックスバッファを設定(モデルから取得)
-    indexBufferView_ = model_->GetIndexBufferView();
-    dxCommon_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
-
-    // パーティクルグループごとに描画
     for (const auto& [name, ParticleGroup] : particleGroups)
     {
-        // インスタンス数が0なら描画しない
-        if (ParticleGroup.instanceCount == 0)
-        {
-            continue;
-        }
+        if (ParticleGroup.instanceCount == 0) continue;
 
-        // VertexBufferViewを設定
-        vertexBufferView_ = model_->GetVertexBufferView();
-        dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
-        // マテリアルのCBufferを設定
+        // ---- グループごとのモデルを取得 ----
+        Model* model = models_[name].get();
+        assert(model != nullptr);
+
+        // ---- モデルに合わせて Vertex/Index Buffer を設定 ----
+        D3D12_VERTEX_BUFFER_VIEW vbv = model->GetVertexBufferView();
+        D3D12_INDEX_BUFFER_VIEW ibv = model->GetIndexBufferView();
+
+        dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vbv);
+        dxCommon_->GetCommandList()->IASetIndexBuffer(&ibv);
+
+        // ---- マテリアルは共通でも良い（必要なら個別対応可能） ----
         dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
-        // インスタンシングデータのSRVを設定
-        srvManager_->SetGraphicsRootDescriptorTable(2, ParticleGroup.materialData.textureIndex);
-        // テクスチャのSRVを設定
-        srvManager_->SetGraphicsRootDescriptorTable(1, ParticleGroup.srvIndex);
 
+        // ---- テクスチャとインスタンスSRV（逆にしているかも）----
+        srvManager_->SetGraphicsRootDescriptorTable(1, ParticleGroup.srvIndex); // StructuredBuffer (instancing)
+        srvManager_->SetGraphicsRootDescriptorTable(2, ParticleGroup.materialData.textureIndex); // Texture SRV
 
-        // DrawCall (インスタンシング描画)
+        // ---- 描画 ----
         dxCommon_->GetCommandList()->DrawIndexedInstanced(
-            static_cast<UINT>(model_->GetModelData().indices.size()),
+            static_cast<UINT>(model->GetModelData().indices.size()),
             ParticleGroup.instanceCount,
             0, 0, 0);
-
     }
+
 }
 
-void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count, const std::string& particleType)
+void ParticleManager::Emit(const std::string groupName, const Vector3& position, uint32_t count, const std::string& motionName)
 {
-    // パーティクルグループが登録されているかチェック
-    assert(particleGroups.contains(name));
-    // パーティクルグループのパーティクルリストに新しいパーティクルを追加
+    // グループが存在するかチェック
+    auto it = particleGroups.find(groupName);
+    if (it == particleGroups.end()) return;
+
+    ParticleGroup& group = it->second;
+
     for (uint32_t i = 0; i < count; ++i)
     {
-        // 新しいパーティクルを追加
-        if (particleType == "Default")
-        {
-            particleGroups.at(name).particleList.push_back(MakeNewParticle(randomEngine_, position));
-        }
-        else if (particleType == "Cylinder") 
-        {
-            particleGroups.at(name).particleList.push_back(MakeCylinderParticle(randomEngine_, position));
-        }
-        else if (particleType == "Slash") 
-        {
-            particleGroups.at(name).particleList.push_back(MakeSlashParticle(randomEngine_, position));
-        }
-        else
-        {
-            // 未知のタイプはDefault
-            particleGroups.at(name).particleList.push_back(MakeNewParticle(randomEngine_, position));
-        }
+        // モーション名に応じたパーティクル生成
+        Particle p = ParticleMotion::Create(motionName, randomEngine_, position);
+        group.particleList.push_back(p);
     }
     // パーティクルグループのインスタンス数を更新
-    particleGroups.at(name).instanceCount = count;
+    particleGroups.at(groupName).instanceCount = count;
 
 }
 
@@ -412,148 +424,80 @@ Particle ParticleManager::MakeNewParticle(std::mt19937& randomEngine, const Vect
     return newParticle;
 }
 
-Particle ParticleManager::MakeCylinderParticle(std::mt19937& randomEngine, const Vector3& position)
+void ParticleManager::DebugUI()
 {
-    Particle newParticle;
-  
-    newParticle.transform.scale = { 1.0f,1.0f,1.0f };
-    newParticle.transform.translate = position;
-    newParticle.velocity = { 0,0,0 };
-    newParticle.color = { 0.0f,0.0f,0.5f,1.0f };
-    newParticle.lifeTime = 3; // 秒
-    newParticle.currentTime = 0.0f;
+    static std::string newGroupName = "MyGroup";
+    static std::string selectedShape = "Ring";
+    static const char* shapeOptions[] = { "Ring", "Cylinder", "Cone", "Spiral", "Torus", "Helix" };
+    static int currentShape = 0;
 
-    // 回転
-	if (direction_ == "UP")
-	{
-		newParticle.transform.rotate = { 0.0f,0.0f,3.14f };
-		newParticle.transform.translate.y += newParticle.transform.scale.y * 2.0f;
-	}
-    else if (direction_ == "DOWN")
-	{
-		newParticle.transform.rotate = { 0.0f,0.0f,0.0f };
-	}
-    else if (direction_ == "LEFT")
-	{
-		newParticle.transform.rotate = { 0.0f,0.0f,1.57f };
-	}
-    else if (direction_ == "RIGHT")
-	{
-		newParticle.transform.rotate = { 0.0f,0.0f,-1.57f };
-	}
-    
+    static int selectedGroupIndex = 0;
+    static int currentMotion = 0;
+    static std::string selectedMotion = "Homing";
 
-    return newParticle;
-}
-
-Particle ParticleManager::MakeSlashParticle(std::mt19937& randomEngine, const Vector3& translate)
-{
-    std::uniform_real_distribution<float> distScale(0.5f, 1.5f); // スケールの範囲
-    std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>); // 回転の範囲
-    std::uniform_real_distribution<float> distVelocity(-1.0f, 1.0f); // 速度の範囲
-
-
-    Particle particle;
-
-    particle.transform.scale = { 0.1f, distScale(randomEngine), 1.0f};
-    particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
-    particle.transform.translate = translate;
-    particle.velocity = {0.0f,0.0f,0.0f};
-    particle.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	particle.lifeTime = 1.0f; // 秒
-    particle.currentTime = 0.0f;
-
-    return particle;
-}
-
-void ParticleManager::MakeRing()
-{
-    const uint32_t kRingDivide = 32; // 分割数
-    const float kOuterRadius = 1.0f; // 外側の半径
-    const float kInnerRadius = 0.2f; // 内側の半径
-    const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);
-
-    for (uint32_t index = 0; index < kRingDivide; ++index)
-    {
-        float sin = std::sin(index * radianPerDivide);
-        float cos = std::cos(index * radianPerDivide);
-        float sinNext = std::sin((index + 1) * radianPerDivide);
-        float cosNext = std::cos((index + 1) * radianPerDivide);
-        float u = float(index) / float(kRingDivide);
-        float uNext = float(index + 1) / float(kRingDivide);
-
-        // 頂点追加 + 基準インデックス保存
-        uint32_t baseIndex = model_->GetVertexCount();
-
-        // 三角形1: 外側の現在の頂点 -> 内側の現在の頂点 -> 外側の次の頂点
-        model_->AddVertex({ -sin * kOuterRadius, cos * kOuterRadius, 0.0f, 1.0f }, { u, 0.0f }, { 0.0f, 0.0f, 1.0f });
-        model_->AddVertex({ -sin * kInnerRadius, cos * kInnerRadius, 0.0f, 1.0f }, { u, 1.0f }, { 0.0f, 0.0f, 1.0f });
-        model_->AddVertex({ -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext, 0.0f }, { 0.0f, 0.0f, 1.0f });
-
-        model_->AddIndex(baseIndex + 0);
-        model_->AddIndex(baseIndex + 1);
-        model_->AddIndex(baseIndex + 2);
-
-        // 三角形2: 外側の次の頂点 -> 内側の現在の頂点 -> 内側の次の頂点
-        model_->AddVertex({ -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext, 0.0f }, { 0.0f, 0.0f, 1.0f });
-        model_->AddVertex({ -sin * kInnerRadius, cos * kInnerRadius, 0.0f, 1.0f }, { u, 1.0f }, { 0.0f, 0.0f, 1.0f });
-        model_->AddVertex({ -sinNext * kInnerRadius, cosNext * kInnerRadius, 0.0f, 1.0f }, { uNext, 1.0f }, { 0.0f, 0.0f, 1.0f });
-    
-        model_->AddIndex(baseIndex + 3);
-        model_->AddIndex(baseIndex + 4);
-        model_->AddIndex(baseIndex + 5);
-    
+    // Motion 一覧取得
+    const auto& motionMap = ParticleMotion::GetAll();
+    static std::vector<std::string> motionNames;
+    if (motionNames.empty()) {
+        for (const auto& [name, _] : motionMap) {
+            motionNames.push_back(name);
+        }
     }
 
-	// すべての頂点・インデックス追加後にバッファを一括更新
-    model_->UpdateVertexBuffer();
-    model_->UpdateIndexBuffer();
-
-}
-
-void ParticleManager::MakeCylinder()
-{
-    const uint32_t kCylinderDivide = 32;
-    const float kTopRadius = 1.0f;
-    const float kBottomRadius = 1.0f;
-    const float kHeight = 3.0f;
-    const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kCylinderDivide);
-
-    for (uint32_t index = 0; index < kCylinderDivide; ++index)
-    {
-        float sin = std::sin(index * radianPerDivide);
-        float cos = std::cos(index * radianPerDivide);
-        float sinNext = std::sin((index + 1) * radianPerDivide);
-        float cosNext = std::cos((index + 1) * radianPerDivide);
-        float u = float(index) / float(kCylinderDivide);
-        float uNext = float(index + 1) / float(kCylinderDivide);
-
-        // 頂点を生成
-        Vector3 top1 = { -sin * kTopRadius, kHeight, cos * kTopRadius };
-        Vector3 top2 = { -sinNext * kTopRadius, kHeight, cosNext * kTopRadius };
-        Vector3 bottom1 = { -sin * kBottomRadius, 0.0f, cos * kBottomRadius };
-        Vector3 bottom2 = { -sinNext * kBottomRadius, 0.0f, cosNext * kBottomRadius };
-        
-        // 頂点を追加
-        model_->AddVertex({ top1.x, top1.y, top1.z, 1.0f }, { u, 0.0f }, { -sin, 0.0f, cos });
-        model_->AddVertex({ top2.x, top2.y, top2.z, 1.0f }, { uNext, 0.0f }, { -sinNext, 0.0f, cosNext });
-        model_->AddVertex({ bottom1.x, bottom1.y, bottom1.z, 1.0f }, { u, 1.0f }, { -sin, 0.0f, cos });
-        model_->AddVertex({ bottom1.x, bottom1.y, bottom1.z, 1.0f }, { u, 1.0f }, { -sin, 0.0f, cos });
-        model_->AddVertex({ top2.x, top2.y, top2.z, 1.0f }, { uNext, 0.0f }, { -sinNext, 0.0f, cosNext });
-        model_->AddVertex({ bottom2.x, bottom2.y, bottom2.z, 1.0f }, { uNext, 1.0f }, { -sinNext, 0.0f, cosNext });
-
-        // インデックスを追加
-        uint32_t baseIndex = model_->GetVertexCount() - 6;
-        model_->AddIndex(baseIndex + 0);
-        model_->AddIndex(baseIndex + 1);
-        model_->AddIndex(baseIndex + 2);
-        model_->AddIndex(baseIndex + 3);
-        model_->AddIndex(baseIndex + 4);
-        model_->AddIndex(baseIndex + 5);
+    // グループ一覧取得
+    std::vector<std::string> groupNames;
+    for (const auto& [name, _] : particleGroups) {
+        groupNames.push_back(name);
     }
 
-    // すべての頂点・インデックス追加後にバッファを一括更新
-    model_->UpdateVertexBuffer();
-    model_->UpdateIndexBuffer();
+    if (ImGui::Begin("Particle Control")) {
+
+        // --- 新規作成用グループ名入力 ---
+        char groupNameBuffer[128] = {};
+        strcpy_s(groupNameBuffer, newGroupName.c_str());
+
+        if (ImGui::InputText("New GroupName", groupNameBuffer, sizeof(groupNameBuffer))) {
+            newGroupName = groupNameBuffer;
+        }
+
+        // --- 形状選択 ---
+        if (ImGui::Combo("Shape", &currentShape, shapeOptions, IM_ARRAYSIZE(shapeOptions))) {
+            selectedShape = shapeOptions[currentShape];
+        }
+
+        if (ImGui::Button("Create Group")) {
+            CreateParticleGroup(newGroupName, "resources/images/gradationLine.png", "plane.obj", selectedShape);
+        }
+
+        // --- モーション選択 ---
+        if (ImGui::Combo("Motion", &currentMotion, [](void* data, int idx, const char** out_text) {
+            const auto& names = *static_cast<std::vector<std::string>*>(data);
+            if (idx < 0 || idx >= names.size()) return false;
+            *out_text = names[idx].c_str();
+            return true;
+            }, (void*)&motionNames, (int)motionNames.size())) {
+            selectedMotion = motionNames[currentMotion];
+        }
+
+        ImGui::Separator();
+
+        // --- 既存グループ選択 ---
+        if (!groupNames.empty()) {
+            ImGui::Text("Emit to Group:");
+            ImGui::Combo("##GroupList", &selectedGroupIndex, [](void* data, int idx, const char** out_text) {
+                const auto& names = *static_cast<std::vector<std::string>*>(data);
+                if (idx < 0 || idx >= names.size()) return false;
+                *out_text = names[idx].c_str();
+                return true;
+                }, (void*)&groupNames, (int)groupNames.size());
+        }
+
+        if (ImGui::Button("Emit Particle") && selectedGroupIndex < groupNames.size()) {
+            const std::string& groupToEmit = groupNames[selectedGroupIndex];
+            Emit(groupToEmit, { 0, 1, 0 }, 23, selectedMotion);
+        }
+    }
+
+    ImGui::End();
 
 }

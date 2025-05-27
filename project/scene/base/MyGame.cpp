@@ -24,12 +24,16 @@ void MyGame::Initialize()
 	loadAudioThread.join();
 
 	// パーティクルグループの生成
-	particleManager->CreateParticleGroup("RingGroup", "resources/images/gradationLine.png", "plane.obj", "Ring");
-	particleManager->CreateParticleGroup("CylinderGroup", "resources/images/monsterBall.png", "plane.obj", "Cylinder");
-	particleManager->CreateParticleGroup("NormalGroup", "resources/images/monsterBall.png", "plane.obj");
+	/*particleManager->CreateParticleGroup("RingGroup", "resources/images/monsterBall.png", "plane.obj", "Ring");
+	particleManager->CreateParticleGroup("CylinderGroup", "resources/images/gradationLine.png", "plane.obj", "Cylinder");
+	particleManager->CreateParticleGroup("ConeGroup", "resources/images/gradationLine.png", "plane.obj", "Cone");
+	particleManager->CreateParticleGroup("SpiralGroup", "resources/images/gradationLine.png", "plane.obj", "Spiral");
+	particleManager->CreateParticleGroup("TorusGroup", "resources/images/gradationLine.png", "plane.obj", "Torus");
+	particleManager->CreateParticleGroup("HelixGroup", "resources/images/gradationLine.png", "plane.obj", "Helix");*/
 
+	
 	// Cylinderを出すときに向き指定する
-	particleManager->SetCylinderDirection("UP");
+	ParticleMotion::SetDirection("UP");
 
 	useExampleGroup_ = true;
 }
@@ -60,43 +64,7 @@ void MyGame::Update()
 
 #ifdef _DEBUG
 
-	if (ImGui::CollapsingHeader("particleManager"))
-	{
-		ImGui::Checkbox("Use Example Group", &useExampleGroup_);
-	
-		/*if (ImGui::Button("AddRing"))
-		{
-			particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 3,"Slash");
-		}*/
-		if (ImGui::Button("AddCylinder"))
-		{
-			particleManager->Emit("CylinderGroup", Vector3(0.0f, 0.0f, 0.0f), 3, "Cylinder");
-		}
-		/*if (ImGui::Button("AddNormal"))
-		{
-			particleManager->Emit("NormalGroup", Vector3(0.0f, 0.0f, 0.0f), 3);
-		}*/
-
-
-		static int selectedDirection = 0; // 0: UP, 1: DOWN, 2: LEFT, 3: RIGHT
-
-		if (ImGui::RadioButton("CylinderDirection : UP", selectedDirection == 0)) {
-			selectedDirection = 0;
-			particleManager->SetCylinderDirection("UP");
-		}
-		if (ImGui::RadioButton("CylinderDirection : DOWN", selectedDirection == 1)) {
-			selectedDirection = 1;
-			particleManager->SetCylinderDirection("DOWN");
-		}
-		if (ImGui::RadioButton("CylinderDirection : LEFT", selectedDirection == 2)) {
-			selectedDirection = 2;
-			particleManager->SetCylinderDirection("LEFT");
-		}
-		if (ImGui::RadioButton("CylinderDirection : RIGHT", selectedDirection == 3)) {
-			selectedDirection = 3;
-			particleManager->SetCylinderDirection("RIGHT");
-		}
-	}
+	particleManager->DebugUI();
 
 #endif // _DEBUG
 

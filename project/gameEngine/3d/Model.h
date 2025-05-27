@@ -23,12 +23,18 @@ public:
 
 	void UpdateIndexBuffer();
 
+	void ClearVertexData();
+
+	void CopyFrom(const Model& other);
+
 public: // セッター
 
 	void SetEnableLighting(bool enable);
 	void SetEnableDirectionalLight(bool enable);
 	void SetEnablePointLight(bool enable);
 	void SetEnableSpotLight(bool enable);
+
+	void SetModelCommon(ModelCommon* modelCommon) { modelCommon_ = modelCommon; }
 
 private: // 構造体、関数
 

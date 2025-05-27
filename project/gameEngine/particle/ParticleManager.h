@@ -11,6 +11,9 @@
 #include <Camera.h>
 
 #include "Particle.h"
+#include "ParticleMotion.h"
+#include "MeshBuilder.h"
+#include "ModelCommon.h"
 
 class Object3dCommon;
 
@@ -47,7 +50,7 @@ public:
 
 
 	// 初期化
-	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
+	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, ModelCommon* modelCommon);
 
 	// 終了
 	void Finalize();
@@ -59,6 +62,10 @@ public:
 	void CreateRootSignature();
 
 	// パーティクルグループの生成
+	// name: パーティクルグループの名前
+	// textureFilePath: テクスチャファイルのパス
+	// modelFilePath: モデルファイルのパス
+	// type: パーティクルのタイプ（"Default", "Ring", "Cylinder", "Slash"など）
 	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, const std::string& type = "Default");
 
 	// 更新
@@ -67,28 +74,16 @@ public:
 	// 描画
 	void Draw();
 
-	void Emit(const std::string name, const Vector3& position, uint32_t count, const std::string& particleType = "Default");
+	void Emit(const std::string groupName, const Vector3& position, uint32_t count, const std::string& motionName = "Default");
 
+	// パーティクルを生成する関数群(動きや出し方)
 	Particle MakeNewParticle(std::mt19937& randomEngine, const Vector3& position);
 
-	Particle MakeCylinderParticle(std::mt19937& randomEngine, const Vector3& position);
-
-	Particle MakeSlashParticle(std::mt19937& randomEngine, const Vector3& translate);
-
-	void MakeRing();
-
-	void MakeCylinder();
+	void DebugUI();
 
 public: // セッター
 
 	void SetCamera(std::shared_ptr<Camera> camera) { camera_ = camera; }
-
-	// シリンダーの向き
-	// "UP"下から上
-	// "DOWN"上から下
-	// "LEFT"右から左
-	// "RIGHT"左から右
-	void SetCylinderDirection(const std::string& direction) { direction_ = direction; }
 
 private: // 構造体
 
@@ -197,8 +192,10 @@ private:
 	//modelマテリアる用のリソースを作る。今回color1つ分のサイズを用意する
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
 	//マテリアルにデータを書き込む	
-	Material* materialData_ = nullptr;
-	Model* model_ = nullptr;
+	Material* materialData_ = nullptr; 
+	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
+	ModelCommon* modelCommon_ = nullptr;
+
 
 	// モデルのビューをキャッシュする用
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;

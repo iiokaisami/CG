@@ -240,6 +240,34 @@ void Model::UpdateIndexBuffer()
 	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
 }
 
+void Model::ClearVertexData()
+{
+	// リソースを解放
+	modelData_.vertices.clear();
+	modelData_.indices.clear();
+
+	// 頂点リソースとインデックスリソースをリセット
+	vertexResource_.Reset();
+	indexResource_.Reset();
+
+	// 頂点バッファビューとインデックスバッファビューをリセット
+	vertexBufferView_ = {};
+	indexBufferView_ = {};
+}
+
+void Model::CopyFrom(const Model& other)
+{
+	modelData_ = other.modelData_;
+	vertexResource_ = other.vertexResource_;
+	materialResource_ = other.materialResource_;
+	vertexData_ = other.vertexData_;
+	materialData_ = other.materialData_;
+	vertexBufferView_ = other.vertexBufferView_;
+	indexResource_ = other.indexResource_;
+	indexBufferView_ = other.indexBufferView_;
+	transform_ = other.transform_;
+}
+
 void Model::AddVertex(const Vector4& position, const Vector2& texcoord, const Vector3& normal)
 {
 	// 頂点データを作成して追加

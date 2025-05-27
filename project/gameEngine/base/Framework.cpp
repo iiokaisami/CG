@@ -49,6 +49,9 @@ void Framework::Initialize()
 	srvManager = std::make_unique<SrvManager>();
 	srvManager->Initialize(dxCommon.get());
 
+	modelCommon = std::make_unique<ModelCommon>();
+	modelCommon->Initialize(dxCommon.get());
+
 	// キーボード入力
 	input = Input::GetInstance();
 	input->Initialize(winApp.get());
@@ -78,7 +81,7 @@ void Framework::Initialize()
 
 	// パーティクル	
 	particleManager = ParticleManager::GetInstance();
-	particleManager->Initialize(dxCommon.get(),srvManager.get());
+	particleManager->Initialize(dxCommon.get(),srvManager.get(),modelCommon.get());
 
 
 #ifdef _DEBUG
