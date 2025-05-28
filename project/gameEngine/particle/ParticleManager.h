@@ -203,4 +203,10 @@ private:
 	// Cylinderの向き
 	std::string direction_ = "UP";
 
+	// パーティクル
+	bool isEmitting_ = false;
+	std::string emitGroupName_ = "";
+	std::string emitMotionName_ = "";
+	Vector3 emitPosition_ = { 0, 1, 0 };
+
 };

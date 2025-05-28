@@ -128,29 +128,39 @@ void MeshBuilder::BuildSpiral(Model* model)
 {
     model->ClearVertexData();
 
-    const uint32_t kTurns = 5;
-    const uint32_t kSegmentsPerTurn = 32;
-    const float kRadius = 1.0f;
-    const float kHeight = 5.0f;
+    const uint32_t kDivisions = 50;       // 分割数
+    const float kWidth = 1.0f;            // 長方形の幅（X方向）
+    const float kHeight = 5.0f;           // 長方形の高さ（Z方向）
+    const float kTwist = 3.0f * std::numbers::pi_v<float>; // ねじれ量（ラジアン）
 
-    const uint32_t kTotal = kTurns * kSegmentsPerTurn;
+    for (uint32_t i = 0; i <= kDivisions; ++i) {
+        float t = float(i) / float(kDivisions);
+        float z = t * kHeight;
+        float angle = t * kTwist;
 
-    for (uint32_t i = 0; i < kTotal; ++i)
-    {
-        float t = float(i) / float(kTotal);
-        float angle = t * kTurns * 2.0f * std::numbers::pi_v<float>;
+        // 回転に応じたX, Y 位置（幅の左右）
+        float xLeft = -std::cos(angle) * (kWidth * 0.5f);
+        float yLeft = -std::sin(angle) * (kWidth * 0.5f);
+        float xRight = std::cos(angle) * (kWidth * 0.5f);
+        float yRight = std::sin(angle) * (kWidth * 0.5f);
 
-        float x = std::cos(angle) * kRadius;
-        float y = t * kHeight;
-        float z = std::sin(angle) * kRadius;
+        Vector3 normal = { 0.0f, 0.0f, 1.0f }; // 単純にZ方向
 
-        float u = float(i) / float(kTotal);
-        model->AddVertex({ x, y, z, 1.0f }, { u, 0.0f }, { 0.0f, 1.0f, 0.0f });
+        // 左右の2頂点を追加
+        model->AddVertex({ xLeft,  yLeft,  z, 1.0f }, { 0.0f, t }, normal);
+        model->AddVertex({ xRight, yRight, z, 1.0f }, { 1.0f, t }, normal);
+    }
 
-        if (i >= 1) {
-            model->AddIndex(i - 1);
-            model->AddIndex(i);
-        }
+    // インデックス（三角形化）
+    for (uint32_t i = 0; i < kDivisions; ++i) {
+        uint32_t base = i * 2;
+        model->AddIndex(base + 0);
+        model->AddIndex(base + 1);
+        model->AddIndex(base + 2);
+
+        model->AddIndex(base + 2);
+        model->AddIndex(base + 1);
+        model->AddIndex(base + 3);
     }
 
     model->UpdateVertexBuffer();
@@ -166,16 +176,14 @@ void MeshBuilder::BuildTorus(Model* model)
     const float kOuterR = 1.5f;
     const float kInnerR = 0.4f;
 
-    for (uint32_t i = 0; i < kCircleDiv; ++i)
-    {
+    for (uint32_t i = 0; i < kCircleDiv; ++i) {
         float theta = 2.0f * std::numbers::pi_v<float> *float(i) / float(kCircleDiv);
         float nextTheta = 2.0f * std::numbers::pi_v<float> *float(i + 1) / float(kCircleDiv);
-        for (uint32_t j = 0; j < kTubeDiv; ++j)
-        {
+
+        for (uint32_t j = 0; j < kTubeDiv; ++j) {
             float phi = 2.0f * std::numbers::pi_v<float> *float(j) / float(kTubeDiv);
             float nextPhi = 2.0f * std::numbers::pi_v<float> *float(j + 1) / float(kTubeDiv);
 
-            // 4つの点を使って面を作る
             auto point = [&](float t, float p) -> Vector3 {
                 float x = (kOuterR + kInnerR * std::cos(p)) * std::cos(t);
                 float y = kInnerR * std::sin(p);
@@ -189,10 +197,10 @@ void MeshBuilder::BuildTorus(Model* model)
             Vector3 v3 = point(nextTheta, nextPhi);
 
             uint32_t base = model->GetVertexCount();
-            model->AddVertex({ v0.x, v0.y, v0.z, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
-            model->AddVertex({ v1.x, v1.y, v1.z, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
-            model->AddVertex({ v2.x, v2.y, v2.z, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f });
-            model->AddVertex({ v3.x, v3.y, v3.z, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f, 0.0f });
+            model->AddVertex({ v0.x, v0.y, v0.z, 1.0f }, { 0,0 }, { 0,1,0 });
+            model->AddVertex({ v1.x, v1.y, v1.z, 1.0f }, { 1,0 }, { 0,1,0 });
+            model->AddVertex({ v2.x, v2.y, v2.z, 1.0f }, { 0,1 }, { 0,1,0 });
+            model->AddVertex({ v3.x, v3.y, v3.z, 1.0f }, { 1,1 }, { 0,1,0 });
 
             model->AddIndex(base + 0);
             model->AddIndex(base + 1);
@@ -215,9 +223,9 @@ void MeshBuilder::BuildHelix(Model* model)
     const float kRadius = 1.0f;
     const float kHeight = 5.0f;
     const uint32_t kTurns = 5;
+    const float kWidth = 0.05f;
 
-    for (uint32_t i = 0; i < kSegments; ++i)
-    {
+    for (uint32_t i = 0; i < kSegments; ++i) {
         float t = float(i) / float(kSegments);
         float angle = t * kTurns * 2.0f * std::numbers::pi_v<float>;
 
@@ -225,13 +233,35 @@ void MeshBuilder::BuildHelix(Model* model)
         float y = t * kHeight;
         float z = std::sin(angle) * kRadius;
 
-        model->AddVertex({ x, y, z, 1.0f }, { t, 0.0f }, { 0.0f, 1.0f, 0.0f });
+        float nextT = float(i + 1) / float(kSegments);
+        float nextAngle = nextT * kTurns * 2.0f * std::numbers::pi_v<float>;
+        float nx = std::cos(nextAngle) * kRadius;
+        float ny = nextT * kHeight;
+        float nz = std::sin(nextAngle) * kRadius;
 
-        if (i >= 1)
-        {
-            model->AddIndex(i - 1);
-            model->AddIndex(i);
-        }
+        Vector3 pos1 = { x, y, z };
+        Vector3 pos2 = { nx, ny, nz };
+        Vector3 dir = Normalize(pos2 - pos1);
+        Vector3 right = Normalize(Cross({ 0, 1, 0 }, dir)) * kWidth;
+
+        Vector3 v0 = pos1 + right;
+        Vector3 v1 = pos1 - right;
+        Vector3 v2 = pos2 + right;
+        Vector3 v3 = pos2 - right;
+
+        uint32_t base = model->GetVertexCount();
+        model->AddVertex({ v0.x, v0.y, v0.z, 1.0f }, { 0,0 }, { 0,1,0 });
+        model->AddVertex({ v1.x, v1.y, v1.z, 1.0f }, { 1,0 }, { 0,1,0 });
+        model->AddVertex({ v2.x, v2.y, v2.z, 1.0f }, { 0,1 }, { 0,1,0 });
+        model->AddVertex({ v3.x, v3.y, v3.z, 1.0f }, { 1,1 }, { 0,1,0 });
+
+        model->AddIndex(base + 0);
+        model->AddIndex(base + 1);
+        model->AddIndex(base + 2);
+
+        model->AddIndex(base + 2);
+        model->AddIndex(base + 1);
+        model->AddIndex(base + 3);
     }
 
     model->UpdateVertexBuffer();

@@ -328,8 +328,8 @@ void ParticleManager::Update()
                 matrix * MakeTranslateMatrix((*it).transform.translate);
             Matrix4x4 wVPMatrix = worldMatrix * viewMatrix * projectionMatrix;
 
-            if (count < Particlegroup.instanceCount)
-            {
+
+            if (count < 1024) { // SRVバッファの最大数に安全チェック
                 Particlegroup.instancingData[count].WVP = wVPMatrix;
                 Particlegroup.instancingData[count].world = worldMatrix;
                 Particlegroup.instancingData[count].color = it->color;
@@ -340,6 +340,14 @@ void ParticleManager::Update()
             // 次のパーティクルへ
             ++it;
         }
+
+        Particlegroup.instanceCount = count;
+
+    }
+
+    if (isEmitting_ && particleGroups.contains(emitGroupName_))
+    {
+        Emit(emitGroupName_, emitPosition_, 3, emitMotionName_); // 毎フレーム3個など調整可
     }
 }
 
@@ -400,8 +408,6 @@ void ParticleManager::Emit(const std::string groupName, const Vector3& position,
         Particle p = ParticleMotion::Create(motionName, randomEngine_, position);
         group.particleList.push_back(p);
     }
-    // パーティクルグループのインスタンス数を更新
-    particleGroups.at(groupName).instanceCount = count;
 
 }
 
@@ -492,10 +498,29 @@ void ParticleManager::DebugUI()
                 }, (void*)&groupNames, (int)groupNames.size());
         }
 
+        // --- Emit 一回だけ ---
         if (ImGui::Button("Emit Particle") && selectedGroupIndex < groupNames.size()) {
             const std::string& groupToEmit = groupNames[selectedGroupIndex];
             Emit(groupToEmit, { 0, 1, 0 }, 23, selectedMotion);
         }
+
+        // --- ループ Emit の開始・停止 ---
+        if (!isEmitting_) {
+            if (ImGui::Button("▶ Emit Loop") && selectedGroupIndex < groupNames.size()) {
+                isEmitting_ = true;
+
+                // 🔽 Emit 情報を Update 側で使えるようにセット！
+                emitGroupName_ = groupNames[selectedGroupIndex];
+                emitMotionName_ = selectedMotion;
+                emitPosition_ = { 0, 1, 0 }; // 任意の発生位置（固定）
+            }
+        } else {
+            if (ImGui::Button("⏹ Stop Emit")) {
+                isEmitting_ = false;
+            }
+        }
+
+        ImGui::Text("Loop Emitting: %s", isEmitting_ ? "ON" : "OFF");
     }
 
     ImGui::End();
