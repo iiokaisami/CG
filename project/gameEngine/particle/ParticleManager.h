@@ -38,8 +38,9 @@ struct ParticleGroup
 	std::list<Particle> particleList;
 	uint32_t srvIndex;
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource;
-	uint32_t instanceCount;
+	uint32_t instanceCount = 0;
 	ParticleForGPU* instancingData;
+	std::string motionName = "Homing";
 };
 
 class ParticleManager
@@ -66,7 +67,7 @@ public:
 	// textureFilePath: テクスチャファイルのパス
 	// modelFilePath: モデルファイルのパス
 	// type: パーティクルのタイプ（"Default", "Ring", "Cylinder", "Slash"など）
-	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, const std::string& type = "Default");
+	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, const std::string& type = "Default", const std::string& motionName = "Homing");
 
 	// 更新
 	void Update();
@@ -76,9 +77,7 @@ public:
 
 	void Emit(const std::string groupName, const Vector3& position, uint32_t count, const std::string& motionName = "Default");
 
-	// パーティクルを生成する関数群(動きや出し方)
-	Particle MakeNewParticle(std::mt19937& randomEngine, const Vector3& position);
-
+	// 形、動きをそれぞれ確認できる関数
 	void DebugUI();
 
 public: // セッター
@@ -132,6 +131,14 @@ private: // 構造体
 	{
 		float position[3];
 		float color[4];
+	};
+
+	struct EmitSetting {
+		std::string groupName;
+		std::string motionName;
+		Vector3 emitPosition;
+		uint32_t emitCount;
+		bool isLooping = false;
 	};
 
 private:
@@ -203,10 +210,6 @@ private:
 	// Cylinderの向き
 	std::string direction_ = "UP";
 
-	// パーティクル
-	bool isEmitting_ = false;
-	std::string emitGroupName_ = "";
-	std::string emitMotionName_ = "";
-	Vector3 emitPosition_ = { 0, 1, 0 };
+	std::vector<EmitSetting> emitSettings_;
 
 };

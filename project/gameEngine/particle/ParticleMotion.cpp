@@ -130,6 +130,8 @@ Particle ParticleMotion::MakeWiggle(std::mt19937& rand, const Vector3& origin)
 
 Particle ParticleMotion::MakeCylinder(std::mt19937& rand, const Vector3& position)
 {
+    rand;
+
     Particle p;
     p.transform.scale = { 1.0f, 1.0f, 1.0f };
     p.transform.translate = position;

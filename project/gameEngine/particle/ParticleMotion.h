@@ -47,7 +47,8 @@ public: // セッター
 private:
 
     static std::unordered_map<std::string, MotionFunc> motions_;
-	static std::string direction_;
+
+    static std::string direction_;
 
 };
 

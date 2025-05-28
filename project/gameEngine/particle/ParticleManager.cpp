@@ -207,7 +207,7 @@ void ParticleManager::CreateRootSignature()
     depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 }
 
-void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, const std::string& type)
+void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, const std::string& type, const std::string& motionName)
 {
     ModelManager::GetInstance()->LoadModel(modelFilePath);
 
@@ -222,7 +222,9 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
 
     // パーティクルグループを作成、コンテナに登録
     ParticleGroup newGroup = {};
+    newGroup.motionName = motionName; // 追加: モーション名をセット
     particleGroups.insert(std::make_pair(name, std::move(newGroup)));
+
     // テクスチャファイルパスを登録
     particleGroups.at(name).materialData.textureFilePath = textureFilePath;
     // テクスチャを読み込んでSRVを生成
@@ -253,38 +255,24 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     // srvを生成
     srvManager_->CreateSRVforStructuredBuffer(particleGroups.at(name).srvIndex, particleGroups.at(name).instancingResource.Get(), MaxInstanceCount, sizeof(ParticleForGPU));
 
+    // モデルの頂点を構築
+    using BuildFunc = std::function<void(Model*)>;
 
+    static const std::unordered_map<std::string, BuildFunc> shapeBuilders = {
+        { "Ring",     MeshBuilder::BuildRing },
+        { "Cylinder", MeshBuilder::BuildCylinder },
+        { "Cone",     MeshBuilder::BuildCone },
+        { "Spiral",   MeshBuilder::BuildSpiral },
+        { "Torus",    MeshBuilder::BuildTorus },
+        { "Helix",    MeshBuilder::BuildHelix }
+    };
 
-    if (type == "Ring")
+    // モデル構築後に呼ぶ
+    auto it = shapeBuilders.find(type);
+    if (it != shapeBuilders.end())
     {
-        // リングの頂点データを生成
-		MeshBuilder::BuildRing(models_[name].get());
+        it->second(models_[name].get());
     }
-    if (type == "Cylinder")
-    {
-        // シリンダーの頂点データを生成
-		MeshBuilder::BuildCylinder(models_[name].get());
-    }
-    if (type == "Cone")
-    {
-		// コーンの頂点データを生成
-		MeshBuilder::BuildCone(models_[name].get());
-    }
-    if (type == "Spiral")
-    {
-        // スパイラルの頂点データを生成
-        MeshBuilder::BuildSpiral(models_[name].get());
-    }
-	if (type == "Torus")
-	{
-		// トーラスの頂点データを生成
-		MeshBuilder::BuildTorus(models_[name].get());
-	}
-	if (type == "Helix")
-	{
-		// ヘリックスの頂点データを生成
-		MeshBuilder::BuildHelix(models_[name].get());
-	}
 }
 
 void ParticleManager::Update()
@@ -345,9 +333,12 @@ void ParticleManager::Update()
 
     }
 
-    if (isEmitting_ && particleGroups.contains(emitGroupName_))
+    for (auto& setting : emitSettings_)
     {
-        Emit(emitGroupName_, emitPosition_, 3, emitMotionName_); // 毎フレーム3個など調整可
+        if (setting.isLooping && particleGroups.contains(setting.groupName))
+        {
+            Emit(setting.groupName, setting.emitPosition, setting.emitCount, setting.motionName);
+        }
     }
 }
 
@@ -396,38 +387,23 @@ void ParticleManager::Draw()
 
 void ParticleManager::Emit(const std::string groupName, const Vector3& position, uint32_t count, const std::string& motionName)
 {
-    // グループが存在するかチェック
+    // グループごとのmotionNameを使うEmit
     auto it = particleGroups.find(groupName);
-    if (it == particleGroups.end()) return;
-
-    ParticleGroup& group = it->second;
-
-    for (uint32_t i = 0; i < count; ++i)
+    if (it == particleGroups.end()) 
     {
-        // モーション名に応じたパーティクル生成
-        Particle p = ParticleMotion::Create(motionName, randomEngine_, position);
+        return;
+    }
+    
+    ParticleGroup& group = it->second;
+    
+    for (uint32_t i = 0; i < count; ++i) 
+    {
+        Particle p = ParticleMotion::Create(group.motionName, randomEngine_, position);
+        p.motionName = group.motionName;
         group.particleList.push_back(p);
     }
+    group.instanceCount = static_cast<uint32_t>(group.particleList.size());
 
-}
-
-Particle ParticleManager::MakeNewParticle(std::mt19937& randomEngine, const Vector3& position)
-{
-    std::uniform_real_distribution<float>distribution(-1.0f, 1.0f);
-    std::uniform_real_distribution<float>distColor(0.0f, 1.0f);
-    std::uniform_real_distribution<float>distLifeTime(1.0f, 3.0f);
-
-    Particle newParticle;
-    Vector3 randomTranslate = { distribution(randomEngine),distribution(randomEngine),distribution(randomEngine) };
-
-    newParticle.transform.scale = { 1.0f,1.0f,1.0f };
-    newParticle.transform.translate = position + randomTranslate;
-    newParticle.velocity = { distribution(randomEngine),distribution(randomEngine),distribution(randomEngine) };
-    newParticle.color = { distColor(randomEngine),distColor(randomEngine),distColor(randomEngine),1.0f };
-	newParticle.lifeTime = distLifeTime(randomEngine); // 秒
-    newParticle.currentTime = 0.0f;
-
-    return newParticle;
 }
 
 void ParticleManager::DebugUI()
@@ -472,7 +448,8 @@ void ParticleManager::DebugUI()
         }
 
         if (ImGui::Button("Create Group")) {
-            CreateParticleGroup(newGroupName, "resources/images/gradationLine.png", "plane.obj", selectedShape);
+            CreateParticleGroup(newGroupName, "resources/images/gradationLine.png", "plane.obj", selectedShape, selectedMotion);
+
         }
 
         // --- モーション選択 ---
@@ -499,28 +476,59 @@ void ParticleManager::DebugUI()
         }
 
         // --- Emit 一回だけ ---
-        if (ImGui::Button("Emit Particle") && selectedGroupIndex < groupNames.size()) {
+        if (ImGui::Button("Emit Particle") && selectedGroupIndex < groupNames.size()) 
+        {
             const std::string& groupToEmit = groupNames[selectedGroupIndex];
             Emit(groupToEmit, { 0, 1, 0 }, 23, selectedMotion);
         }
 
         // --- ループ Emit の開始・停止 ---
-        if (!isEmitting_) {
-            if (ImGui::Button("▶ Emit Loop") && selectedGroupIndex < groupNames.size()) {
-                isEmitting_ = true;
+        if (ImGui::Button("▶ Emit Loop") && selectedGroupIndex < groupNames.size()) 
+        {
+            const std::string& selectedGroup = groupNames[selectedGroupIndex];
 
-                // 🔽 Emit 情報を Update 側で使えるようにセット！
-                emitGroupName_ = groupNames[selectedGroupIndex];
-                emitMotionName_ = selectedMotion;
-                emitPosition_ = { 0, 1, 0 }; // 任意の発生位置（固定）
+            // 同じグループが既に設定されていれば更新、なければ追加
+            auto it = std::find_if(emitSettings_.begin(), emitSettings_.end(),
+                [&](const EmitSetting& s) { return s.groupName == selectedGroup; });
+
+            if (it != emitSettings_.end())
+            {
+                // 既にある → 上書き
+                it->motionName = selectedMotion;
+                it->emitPosition = { 0, 1, 0 };
+                it->emitCount = 3;
+                it->isLooping = true;
+            } 
+            else
+            {
+                // 新規追加
+                EmitSetting newSetting;
+                newSetting.groupName = selectedGroup;
+                newSetting.motionName = selectedMotion;
+                newSetting.emitPosition = { 0, 1, 0 };
+                newSetting.emitCount = 3;
+                newSetting.isLooping = true;
+                emitSettings_.push_back(newSetting);
             }
-        } else {
-            if (ImGui::Button("⏹ Stop Emit")) {
-                isEmitting_ = false;
+        }
+        else 
+        {
+            if (ImGui::Button("⏹ Stop Emit") && selectedGroupIndex < groupNames.size()) 
+            {
+                const std::string& selectedGroup = groupNames[selectedGroupIndex];
+
+                // 該当グループだけ停止
+                for (auto& setting : emitSettings_)
+                {
+                    if (setting.groupName == selectedGroup)
+                    {
+                        setting.isLooping = false;
+                    }
+                }
             }
         }
 
-        ImGui::Text("Loop Emitting: %s", isEmitting_ ? "ON" : "OFF");
+        
     }
 
     ImGui::End();
