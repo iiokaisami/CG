@@ -42,6 +42,7 @@ void RenderTexture::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, 
         &clear,
         IID_PPV_ARGS(&texture_));
     assert(SUCCEEDED(hr));
+    hr;
 
     rtvHeap_ = dxCommon_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 1, false);
     rtvHandle_ = dxCommon_->GetCPUDescriptorHandle(rtvHeap_.Get(), static_cast<uint32_t>(dxCommon_->GetDescriptorSizeRTV()), 0);

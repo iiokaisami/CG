@@ -815,6 +815,7 @@ void DirectXCommon::CreateSamplerHeap()
 	desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	HRESULT hr = device_->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&samplerHeap_));
 	assert(SUCCEEDED(hr) && "Failed to create Sampler Heap!");
+	hr;
 
 	// デバッグログ
 	D3D12_GPU_DESCRIPTOR_HANDLE samplerHeapBase = samplerHeap_->GetGPUDescriptorHandleForHeapStart();
