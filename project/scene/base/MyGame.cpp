@@ -24,8 +24,16 @@ void MyGame::Initialize()
 	loadAudioThread.join();
 
 	// パーティクルグループの生成
-	//particleManager->CreateParticleGroup("exampleGroup", "resources/images/uvChecker.png", "plane.obj");
-	//particleManager->CreateParticleGroup("secondGroup", "resources/images/monsterBall.png", "plane.obj");
+	/*particleManager->CreateParticleGroup("RingGroup", "resources/images/monsterBall.png", "plane.obj", "Ring");
+	particleManager->CreateParticleGroup("CylinderGroup", "resources/images/gradationLine.png", "plane.obj", "Cylinder");
+	particleManager->CreateParticleGroup("ConeGroup", "resources/images/gradationLine.png", "plane.obj", "Cone");
+	particleManager->CreateParticleGroup("SpiralGroup", "resources/images/gradationLine.png", "plane.obj", "Spiral");
+	particleManager->CreateParticleGroup("TorusGroup", "resources/images/gradationLine.png", "plane.obj", "Torus");
+	particleManager->CreateParticleGroup("HelixGroup", "resources/images/gradationLine.png", "plane.obj", "Helix");*/
+
+	
+	// Cylinderを出すときに向き指定する
+	ParticleMotion::SetDirection("UP");
 
 	useExampleGroup_ = true;
 }
@@ -56,10 +64,7 @@ void MyGame::Update()
 
 #ifdef _DEBUG
 
-	if (ImGui::CollapsingHeader("particleManager"))
-	{
-		ImGui::Checkbox("Use Example Group", &useExampleGroup_);
-	}
+	particleManager->DebugUI();
 
 	if (ImGui::CollapsingHeader("Grayscale"))
 	{
@@ -144,21 +149,10 @@ void MyGame::Update()
 
 #endif // _DEBUG
 
-
-	// パーティクルの生成
-	if (useExampleGroup_)
-	{
-		//particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
-	} else
-	{
-		//particleManager->Emit("secondGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
-	}
-
 }
 
 void MyGame::Draw()
 {
-
 	//ゲームの処理		描画処理
 
 	//コマンドを積み込んで確定させる
@@ -169,7 +163,7 @@ void MyGame::Draw()
 	srvManager->PreDraw();
 
 	sceneManager_->Draw();   // 実際の描画
-	//particleManager->Draw();
+	particleManager->Draw();
 
 	renderTexture->EndRender();
 
@@ -185,6 +179,7 @@ void MyGame::Draw()
 #endif // _DEBUG
 
 	dxCommon->PostDraw();
+
 
 }
 

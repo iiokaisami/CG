@@ -78,89 +78,7 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
 {
 	//中で必要となる変数の宣言
 	ModelData modelData; //構築するModelData
-	//std::vector<Vector4> positions; //位置
-	//std::vector<Vector3> normals; //法線
-	//std::vector<Vector2> texcoords; //テクスチャ座標
-	//std::string line; //ファイルから読んだ1行を格納するもの
-
-	////ファイルを開く
-	//std::ifstream file(directoryPath + "/" + filename); //ファイルを開く
-	//assert(file.is_open()); //とりあえず開けなかったら止める
-
-	////実際にファイルを読み、ModelDataを構築していく
-	//while (std::getline(file, line))
-	//{
-	//	std::string identifier;
-	//	std::istringstream s(line);
-	//	s >> identifier; //先頭の識別子を読む
-
-	//	//identifienに応じた処理
-	//	if (identifier == "v")
-	//	{
-	//		Vector4 position;
-	//		s >> position.x >> position.y >> position.z;
-	//		position.w = 1.0f;
-	//		positions.push_back(position);
-	//	}
-	//	else if (identifier == "vt")
-	//	{
-	//		Vector2 texcoord;
-	//		s >> texcoord.x >> texcoord.y;
-	//		texcoords.push_back(texcoord);
-	//	}
-	//	else if (identifier == "vn")
-	//	{
-	//		Vector3 normal;
-	//		s >> normal.x >> normal.y >> normal.z;
-	//		normals.push_back(normal);
-	//	}
-	//	else if (identifier == "f")
-	//	{
-	//		VertexData triangle[3];
-	//		//面は三角形限定。その他は未対応
-	//		for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex)
-	//		{
-	//			std::string vertexDefinition;
-	//			s >> vertexDefinition;
-	//			//頂点は要素へのIndexは「位置/UV/法線」で格納されているので、分解してIndexを取得する
-	//			std::istringstream v(vertexDefinition);
-	//			uint32_t elementIndices[3];
-	//			for (int32_t element = 0; element < 3; ++element)
-	//			{
-	//				std::string index;
-	//				std::getline(v, index, '/'); //  /区切りでインデックスを読んでいく
-	//				elementIndices[element] = std::stoi(index);
-	//			}
-	//			//要素へのIndexから、実際の要素の値を取得して、頂点を構築する
-	//			Vector4 position = positions[elementIndices[0] - 1];
-	//			Vector2 texcoord = texcoords[elementIndices[1] - 1];
-	//			Vector3 normal = normals[elementIndices[2] - 1];
-
-	//			position.x *= -1.0f;
-	//			normal.x *= -1.0f;
-
-	//			texcoord.y = 1.0f - texcoord.y;
-
-	//			//VertexData vertex = {position,texcoord,normal};
-	//			//modelData.vertices.push_back(vertex);
-	//			triangle[faceVertex] = { position,texcoord,normal };
-	//		}
-	//		modelData.vertices.push_back(triangle[2]);
-	//		modelData.vertices.push_back(triangle[1]);
-	//		modelData.vertices.push_back(triangle[0]);
-	//	}
-	//	else if (identifier == "mtllib")
-	//	{
-	//		//materialTemplateLibraryファイルの名前を取得する
-	//		std::string materialFilename;
-	//		s >> materialFilename;
-	//		//基本的にobjファイルと同一階層にmtlは存在させるので,ディレクトリ名とファイル名を渡す
-	//		modelData.material = LoadMaterialTemplateFile(directoryPath, materialFilename);
-	//	}
-	//}
-
-	////ModelDataを返す
-	//return modelData;
+	
 
 	Assimp::Importer importer;
 	std::string fullPath = directoryPath + "/" + filename;
@@ -278,6 +196,93 @@ Model::Node Model::ReadNode(aiNode* node)
 	}
 
 	return result;
+}
+
+void Model::UpdateVertexBuffer()
+{
+	// 頂点データが空の場合は処理をスキップ
+	if (modelData_.vertices.empty()) {
+		return;
+	}
+
+	// 新しい頂点バッファを作成
+	vertexResource_ = modelCommon_->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
+
+	// 頂点データを GPU バッファにコピー
+	void* mappedData = nullptr;
+	vertexResource_->Map(0, nullptr, &mappedData);
+	std::memcpy(mappedData, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
+	vertexResource_->Unmap(0, nullptr);
+
+	// 頂点バッファビューを更新
+	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
+	vertexBufferView_.SizeInBytes = static_cast<UINT>(sizeof(VertexData) * modelData_.vertices.size());
+	vertexBufferView_.StrideInBytes = sizeof(VertexData);
+}
+
+void Model::UpdateIndexBuffer()
+{
+	// インデックスバッファが空の場合は処理をスキップ
+	if (modelData_.indices.empty())
+	{
+		return;
+	}
+
+	// 新しいインデックスバッファを作成
+	indexResource_ = modelCommon_->GetDxCommon()->CreateBufferResource(sizeof(uint32_t) * modelData_.indices.size());
+	
+	// インデックスデータを GPU バッファにコピー
+	void* mappedData = nullptr;
+	indexResource_->Map(0, nullptr, &mappedData);
+	std::memcpy(mappedData, modelData_.indices.data(), sizeof(uint32_t) * modelData_.indices.size());
+	indexResource_->Unmap(0, nullptr);
+	// インデックスバッファビューを更新
+	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
+	indexBufferView_.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * modelData_.indices.size());
+	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+}
+
+void Model::ClearVertexData()
+{
+	// リソースを解放
+	modelData_.vertices.clear();
+	modelData_.indices.clear();
+
+	// 頂点リソースとインデックスリソースをリセット
+	vertexResource_.Reset();
+	indexResource_.Reset();
+
+	// 頂点バッファビューとインデックスバッファビューをリセット
+	vertexBufferView_ = {};
+	indexBufferView_ = {};
+}
+
+void Model::CopyFrom(const Model& other)
+{
+	modelData_ = other.modelData_;
+	vertexResource_ = other.vertexResource_;
+	materialResource_ = other.materialResource_;
+	vertexData_ = other.vertexData_;
+	materialData_ = other.materialData_;
+	vertexBufferView_ = other.vertexBufferView_;
+	indexResource_ = other.indexResource_;
+	indexBufferView_ = other.indexBufferView_;
+	transform_ = other.transform_;
+}
+
+void Model::AddVertex(const Vector4& position, const Vector2& texcoord, const Vector3& normal)
+{
+	// 頂点データを作成して追加
+	VertexData vertex = { position, texcoord, normal };
+	modelData_.vertices.push_back(vertex);
+
+	// VertexBufferViewを更新
+	UpdateVertexBuffer();
+}
+
+void Model::AddIndex(uint32_t index)
+{
+	modelData_.indices.push_back(index);
 }
 
 void Model::SetEnableLighting(bool enable)
