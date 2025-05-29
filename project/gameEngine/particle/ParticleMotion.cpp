@@ -48,84 +48,70 @@ const std::unordered_map<std::string, ParticleMotion::MotionFunc>& ParticleMotio
 
 Particle ParticleMotion::MakeHoming(std::mt19937& rand, const Vector3& target)
 {
-    std::uniform_real_distribution<float> d(-1.5f, 1.5f);
-    Vector3 offset = { d(rand), d(rand), d(rand) };
-    Vector3 pos = target + offset;
-    Vector3 dir = Normalize(target - pos);
-
-    Particle p;
-    p.transform.translate = pos;
-    p.velocity = dir * 0.5f;
-    p.transform.scale = { 1, 1, 1 };
-    p.color = { 0, 1, 1, 1 };
-    p.lifeTime = 3.0f;
-    p.currentTime = 0;
-    return p;
+    std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
+    Particle particle;
+    particle.transform.translate = target + Vector3(dist(rand), dist(rand), dist(rand));
+	particle.transform.scale = { 1.0f, 1.0f, 1.0f }; // スケールを設定
+    particle.velocity = Normalize(target - particle.transform.translate) * 0.5f;
+    particle.lifeTime = 2.0f;
+    particle.currentTime = 0.0f;
+    return particle;
 
 }
 
 Particle ParticleMotion::MakeOrbit(std::mt19937& rand, const Vector3& target)
 {
-    std::uniform_real_distribution<float> angleDist(0.0f, 2.0f * std::numbers::pi_v<float>);
-    std::uniform_real_distribution<float> radiusDist(0.5f, 1.5f);
-    float angle = angleDist(rand);
-    float radius = radiusDist(rand);
-    Vector3 offset = { std::cos(angle) * radius, 0.0f, std::sin(angle) * radius };
+    std::uniform_real_distribution<float> distAngle(0.0f, 2.0f * std::numbers::pi_v<float>);
+    float angle = distAngle(rand);
+    float radius = 2.0f; // 半径を拡大して軌道を明確に
 
-    Particle p;
-    p.transform.translate = target + offset;
-    p.velocity = Normalize(offset) * 0.5f;
-    p.transform.scale = { 0.5f, 0.5f, 0.5f };
-    p.color = { 1.0f, 0.8f, 0.2f, 1.0f };
-    p.lifeTime = 2.0f;
-    p.currentTime = 0.0f;
-    return p;
+    // 初期位置は円周上
+    Vector3 offset = Vector3(std::cos(angle) * radius, 0.0f, std::sin(angle) * radius);
+    Vector3 tangent = Vector3(-std::sin(angle), 0.0f, std::cos(angle)); // 接線方向
+
+    Particle particle;
+    particle.transform.translate = target + offset;
+    particle.transform.scale = { 1.0f, 1.0f, 1.0f }; // スケールを設定
+    particle.velocity = tangent * 0.1f; // 円運動するように初期速度を設定
+    particle.lifeTime = 3.0f;
+    particle.currentTime = 0.0f;
+    return particle;
 }
 
 Particle ParticleMotion::MakeExplosion(std::mt19937& rand, const Vector3& center)
 {
-    std::uniform_real_distribution<float> d(-1.0f, 1.0f);
-    Vector3 dir = Normalize({ d(rand), d(rand), d(rand) });
-
-    Particle p;
-    p.transform.translate = center;
-    p.velocity = dir * 0.25f;
-    p.transform.scale = { 1.0f, 1.0f, 1.0f };
-    p.color = { 1.0f, 0.3f, 0.3f, 1.0f };
-    p.lifeTime = 1.0f;
-    p.currentTime = 0.0f;
-    return p;
+    std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
+    Particle particle;
+    particle.transform.translate = center;
+    particle.transform.scale = { 1.0f, 1.0f, 1.0f }; // スケールを設定
+    particle.velocity = Normalize(Vector3(dist(rand), dist(rand), dist(rand))) * 0.2f;
+    particle.lifeTime = 2.5f;
+    particle.currentTime = 0.0f;
+    return particle;
 }
 
 Particle ParticleMotion::MakeFountain(std::mt19937& rand, const Vector3& base)
 {
-    std::uniform_real_distribution<float> h(-0.1f, 0.1f);
-    std::uniform_real_distribution<float> v(0.25f, 0.4f);
-    Vector3 velocity = { h(rand), v(rand), h(rand) };
-
-    Particle p;
-    p.transform.translate = base;
-    p.velocity = velocity;
-    p.transform.scale = { 0.3f, 0.3f, 0.3f };
-    p.color = { 0.6f, 0.6f, 1.0f, 1.0f };
-    p.lifeTime = 2.5f;
-    p.currentTime = 0.0f;
-    return p;
+    std::uniform_real_distribution<float> distXY(-1.5f, 1.5f);
+    Particle particle;
+    particle.transform.translate = base + Vector3(distXY(rand), 0.0f, distXY(rand));
+    particle.transform.scale = { 1.0f, 1.0f, 1.0f }; // スケールを設定
+    particle.velocity = Vector3(0.0f, 0.1f, 0.0f);
+    particle.lifeTime = 2.0f;
+    particle.currentTime = 0.0f;
+    return particle;
 }
 
 Particle ParticleMotion::MakeWiggle(std::mt19937& rand, const Vector3& origin)
 {
-    std::uniform_real_distribution<float> d(-0.05f, 0.05f);
-    std::uniform_real_distribution<float> s(0.2f, 0.6f);
-
-    Particle p;
-    p.transform.translate = origin;
-    p.velocity = { d(rand) * 3.0f, d(rand) + 0.02f + 0.06f, d(rand) * 3.0f };
-    p.transform.scale = { s(rand), s(rand), s(rand) };
-    p.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    p.lifeTime = 4.0f;
-    p.currentTime = 0.0f;
-    return p;
+    std::uniform_real_distribution<float> dist(-0.4f, 0.4f);
+    Particle particle;
+    particle.transform.translate = origin + Vector3(dist(rand), 0.0f, dist(rand));
+    particle.transform.scale = { 1.0f, 1.0f, 1.0f }; // スケールを設定
+    particle.velocity = Vector3(dist(rand), dist(rand), dist(rand)) * 0.5f;
+    particle.lifeTime = 2.0f;
+    particle.currentTime = 0.0f;
+    return particle;
 }
 
 Particle ParticleMotion::MakeCylinder(std::mt19937& rand, const Vector3& position)
@@ -135,6 +121,7 @@ Particle ParticleMotion::MakeCylinder(std::mt19937& rand, const Vector3& positio
     Particle p;
     p.transform.scale = { 1.0f, 1.0f, 1.0f };
     p.transform.translate = position;
+    p.transform.scale = { 1.0f, 1.0f, 1.0f }; // スケールを設定
     p.velocity = { 0, 0, 0 };
     p.color = { 0.0f, 0.0f, 0.5f, 1.0f };
     p.lifeTime = 3.0f;

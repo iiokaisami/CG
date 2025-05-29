@@ -97,7 +97,7 @@ void MeshBuilder::BuildCone(Model* model)
     const float kHeight = 3.0f;
     const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kDivide);
 
-    Vector3 apex = { 0.0f, kHeight, 0.0f };
+    Vector3 apex = { 0.0f, +kHeight * 0.5f, 0.0f };     // 頂点：上に1.5
     uint32_t apexIndex = model->GetVertexCount();
     model->AddVertex({ apex.x, apex.y, apex.z, 1.0f }, { 0.5f, 0.0f }, { 0, 1, 0 });
 
@@ -108,7 +108,8 @@ void MeshBuilder::BuildCone(Model* model)
         float sinNext = std::sin((i + 1) * radianPerDivide);
         float cosNext = std::cos((i + 1) * radianPerDivide);
 
-        Vector3 base1 = { -sin * kRadius, 0.0f, cos * kRadius };
+        
+        Vector3 base1 = { -sin * kRadius, -kHeight * 0.5f, cos * kRadius };
         Vector3 base2 = { -sinNext * kRadius, 0.0f, cosNext * kRadius };
 
         uint32_t base = model->GetVertexCount();

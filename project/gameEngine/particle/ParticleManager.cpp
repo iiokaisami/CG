@@ -250,6 +250,15 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
         particleGroups.at(name).instancingData[i] = particleForGPU;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    for (uint32_t i = 0; i < MaxInstanceCount; ++i)
+    {
+        particleGroups.at(name).instancingData[i].WVP = MakeIdentity4x4();
+        particleGroups.at(name).instancingData[i].world = MakeIdentity4x4();
+        particleGroups.at(name).instancingData[i].color = Vector4(0, 0, 0, 0); // 完全に透明
+    }
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
     // インスタンス用のSRVインデックス
     particleGroups.at(name).srvIndex = srvManager_->Allocate();
     // srvを生成
@@ -279,13 +288,16 @@ void ParticleManager::Update()
 {
     camera_ = object3dCommon_->GetDefaultCamera();
 
-    Matrix4x4 matrix = backToFrontMatrix_ * camera_->GetViewMatrix();
-    matrix.m[3][0] = 0.0f;
-    matrix.m[3][1] = 0.0f;
-    matrix.m[3][2] = 0.0f;
-
     Matrix4x4 viewMatrix = camera_->GetViewMatrix();
     Matrix4x4 projectionMatrix = camera_->GetProjectionMatrix();
+    Matrix4x4 billboardMatrix = backToFrontMatrix_ * viewMatrix;
+    billboardMatrix.m[3][0] = 0.0f;
+    billboardMatrix.m[3][1] = 0.0f;
+    billboardMatrix.m[3][2] = 0.0f;
+
+    if (std::isnan(billboardMatrix.m[0][0]) || std::isinf(billboardMatrix.m[0][0])) {
+        Logger::Log("billboardMatrix に異常な値が含まれています！");
+    }
 
     for (auto& [name, Particlegroup] : particleGroups)
     {
@@ -309,11 +321,15 @@ void ParticleManager::Update()
             // アルファ値をパーティクルの色に適用
             (*it).color.w = alpha; 
 
-            Matrix4x4 worldMatrix = MakeScaleMatrix((*it).transform.scale)  *
+       
+           Matrix4x4 SRT =
+                MakeScaleMatrix((*it).transform.scale) *
                 MakeRotateXMatrix((*it).transform.rotate.x) *
-                MakeRotateYMatrix((*it).transform.rotate.y) * 
-                MakeRotateZMatrix((*it).transform.rotate.z) * 
-                matrix * MakeTranslateMatrix((*it).transform.translate);
+                MakeRotateYMatrix((*it).transform.rotate.y) *
+                MakeRotateZMatrix((*it).transform.rotate.z) *
+                MakeTranslateMatrix((*it).transform.translate);
+
+            Matrix4x4 worldMatrix = SRT * billboardMatrix;
             Matrix4x4 wVPMatrix = worldMatrix * viewMatrix * projectionMatrix;
 
 
@@ -361,6 +377,8 @@ void ParticleManager::Draw()
         // ---- グループごとのモデルを取得 ----
         Model* model = models_[name].get();
         assert(model != nullptr);
+        UINT indexCount = static_cast<UINT>(model->GetModelData().indices.size());
+        assert(indexCount < 10000);
 
         // ---- モデルに合わせて Vertex/Index Buffer を設定 ----
         D3D12_VERTEX_BUFFER_VIEW vbv = model->GetVertexBufferView();
