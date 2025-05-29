@@ -379,6 +379,7 @@ void ParticleManager::Draw()
         assert(model != nullptr);
         UINT indexCount = static_cast<UINT>(model->GetModelData().indices.size());
         assert(indexCount < 10000);
+        indexCount;
 
         // ---- モデルに合わせて Vertex/Index Buffer を設定 ----
         D3D12_VERTEX_BUFFER_VIEW vbv = model->GetVertexBufferView();
@@ -405,6 +406,7 @@ void ParticleManager::Draw()
 
 void ParticleManager::Emit(const std::string groupName, const Vector3& position, uint32_t count, const std::string& motionName)
 {
+    motionName;
     // グループごとのmotionNameを使うEmit
     auto it = particleGroups.find(groupName);
     if (it == particleGroups.end()) 
