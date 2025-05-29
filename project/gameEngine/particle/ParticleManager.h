@@ -137,6 +137,7 @@ private: // 構造体
 		std::string groupName;
 		std::string motionName;
 		Vector3 emitPosition;
+		float interval;
 		uint32_t emitCount;
 		bool isLooping = false;
 	};

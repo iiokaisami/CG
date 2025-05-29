@@ -39,6 +39,7 @@ void ParticleMotion::Initialize()
 	Register("Wiggle", MakeWiggle);
     Register("Cylinder", MakeCylinder);
     Register("Slash", MakeSlash);
+	Register("Flame", MakeFlame);
 }
 
 const std::unordered_map<std::string, ParticleMotion::MotionFunc>& ParticleMotion::GetAll()
@@ -162,6 +163,24 @@ Particle ParticleMotion::MakeSlash(std::mt19937& rand, const Vector3& translate)
     p.lifeTime = 1.0f;
     p.currentTime = 0.0f;
 
+    return p;
+}
+
+Particle ParticleMotion::MakeFlame(std::mt19937& rand, const Vector3& base)
+{
+    std::uniform_real_distribution<float> distXY(-0.2f, 0.2f);
+    std::uniform_real_distribution<float> distScale(0.5f, 1.5f);
+    std::uniform_real_distribution<float> distVelY(0.05f, 0.15f);
+    std::uniform_real_distribution<float> distLife(0.8f, 1.5f);
+    std::uniform_real_distribution<float> distColor(0.8f, 1.0f);
+
+    Particle p;
+    p.transform.translate = base + Vector3(distXY(rand), 0.0f, distXY(rand));
+    p.transform.scale = Vector3(0.3f, distScale(rand), 0.3f);
+    p.velocity = Vector3(distXY(rand), distVelY(rand), distXY(rand));
+    p.color = Vector4(distColor(rand), distColor(rand) * 0.5f, 0.0f, 1.0f); // 赤〜オレンジ
+    p.lifeTime = distLife(rand);
+    p.currentTime = 0.0f;
     return p;
 }
 

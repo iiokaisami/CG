@@ -428,12 +428,15 @@ void ParticleManager::DebugUI()
 {
     static std::string newGroupName = "MyGroup";
     static std::string selectedShape = "Ring";
-    static const char* shapeOptions[] = { "Ring", "Cylinder", "Cone", "Spiral", "Torus", "Helix" };
+    static const char* shapeOptions[] = { "Ring", "Cylinder", "Cone", "Spiral", "Torus", "Helix", "Flame"};
     static int currentShape = 0;
 
     static int selectedGroupIndex = 0;
     static int currentMotion = 0;
     static std::string selectedMotion = "Homing";
+
+    static int emitCount = 10;
+    static Vector3 emitPosition = { 0.0f, 1.0f, 0.0f };
 
     // Motion 一覧取得
     const auto& motionMap = ParticleMotion::GetAll();
@@ -482,6 +485,9 @@ void ParticleManager::DebugUI()
 
         ImGui::Separator();
 
+        ImGui::SliderInt("Emit Count", &emitCount, 1, 100);
+        ImGui::InputFloat3("Emit Position", reinterpret_cast<float*>(&emitPosition));
+
         // --- 既存グループ選択 ---
         if (!groupNames.empty()) {
             ImGui::Text("Emit to Group:");
@@ -497,11 +503,11 @@ void ParticleManager::DebugUI()
         if (ImGui::Button("Emit Particle") && selectedGroupIndex < groupNames.size()) 
         {
             const std::string& groupToEmit = groupNames[selectedGroupIndex];
-            Emit(groupToEmit, { 0, 1, 0 }, 23, selectedMotion);
+            Emit(groupToEmit, emitPosition, emitCount, selectedMotion);
         }
 
         // --- ループ Emit の開始・停止 ---
-        if (ImGui::Button("▶ Emit Loop") && selectedGroupIndex < groupNames.size()) 
+        if (ImGui::Button("Emit Loop") && selectedGroupIndex < groupNames.size()) 
         {
             const std::string& selectedGroup = groupNames[selectedGroupIndex];
 
@@ -513,8 +519,8 @@ void ParticleManager::DebugUI()
             {
                 // 既にある → 上書き
                 it->motionName = selectedMotion;
-                it->emitPosition = { 0, 1, 0 };
-                it->emitCount = 3;
+                it->emitPosition = emitPosition;
+                it->emitCount = emitCount;
                 it->isLooping = true;
             } 
             else
@@ -523,15 +529,15 @@ void ParticleManager::DebugUI()
                 EmitSetting newSetting;
                 newSetting.groupName = selectedGroup;
                 newSetting.motionName = selectedMotion;
-                newSetting.emitPosition = { 0, 1, 0 };
-                newSetting.emitCount = 3;
+                newSetting.emitPosition = emitPosition;
+                newSetting.emitCount = emitCount;
                 newSetting.isLooping = true;
                 emitSettings_.push_back(newSetting);
             }
         }
         else 
         {
-            if (ImGui::Button("⏹ Stop Emit") && selectedGroupIndex < groupNames.size()) 
+            if (ImGui::Button("Stop Emit") && selectedGroupIndex < groupNames.size()) 
             {
                 const std::string& selectedGroup = groupNames[selectedGroupIndex];
 

@@ -27,14 +27,22 @@ public:
     static const std::unordered_map<std::string, MotionFunc>& GetAll();
 
     // 各モーション関数の定義
+	// targetへ向かう
     static Particle MakeHoming(std::mt19937& rand, const Vector3& target);
+	// targetを中心に円運動
     static Particle MakeOrbit(std::mt19937& rand, const Vector3& target);
+	// 中心からランダムに放射状に飛ぶ
     static Particle MakeExplosion(std::mt19937& rand, const Vector3& center);
+	// baseから上に向かって噴出
     static Particle MakeFountain(std::mt19937& rand, const Vector3& base);
+	// originを中心にランダムに揺れる
     static Particle MakeWiggle(std::mt19937& rand, const Vector3& origin);
-
+	// 円柱状に放射
     static Particle MakeCylinder(std::mt19937& rand, const Vector3& position);
+	// 斜めにスラッシュ
     static Particle MakeSlash(std::mt19937& rand, const Vector3& translate);
+	// 炎のように上昇
+    static Particle MakeFlame(std::mt19937& rand, const Vector3& base);
 
 public: // セッター
 
