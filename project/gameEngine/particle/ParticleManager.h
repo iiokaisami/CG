@@ -75,7 +75,7 @@ public:
 	// 描画
 	void Draw();
 
-	void Emit(const std::string groupName, const Vector3& position, uint32_t count, const std::string& motionName = "Default");
+	void Emit(const std::string groupName, const Vector3& position, uint32_t count);
 
 	// 形、動きをそれぞれ確認できる関数
 	void DebugUI();

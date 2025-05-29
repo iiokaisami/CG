@@ -353,7 +353,7 @@ void ParticleManager::Update()
     {
         if (setting.isLooping && particleGroups.contains(setting.groupName))
         {
-            Emit(setting.groupName, setting.emitPosition, setting.emitCount, setting.motionName);
+            Emit(setting.groupName, setting.emitPosition, setting.emitCount);
         }
     }
 }
@@ -404,7 +404,7 @@ void ParticleManager::Draw()
 
 }
 
-void ParticleManager::Emit(const std::string groupName, const Vector3& position, uint32_t count, const std::string& motionName)
+void ParticleManager::Emit(const std::string groupName, const Vector3& position, uint32_t count)
 {
     motionName;
     // グループごとのmotionNameを使うEmit
@@ -505,7 +505,7 @@ void ParticleManager::DebugUI()
         if (ImGui::Button("Emit Particle") && selectedGroupIndex < groupNames.size()) 
         {
             const std::string& groupToEmit = groupNames[selectedGroupIndex];
-            Emit(groupToEmit, emitPosition, emitCount, selectedMotion);
+            Emit(groupToEmit, emitPosition, emitCount);
         }
 
         // --- ループ Emit の開始・停止 ---
