@@ -406,7 +406,6 @@ void ParticleManager::Draw()
 
 void ParticleManager::Emit(const std::string groupName, const Vector3& position, uint32_t count)
 {
-    motionName;
     // グループごとのmotionNameを使うEmit
     auto it = particleGroups.find(groupName);
     if (it == particleGroups.end()) 
