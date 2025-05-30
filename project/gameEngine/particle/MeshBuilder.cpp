@@ -341,11 +341,14 @@ void MeshBuilder::BuildPetal(Model* model)
         // 根元から先端までの補間
         float y = std::sin(angle) * baseRadius;
         float x = std::cos(angle) * baseRadius * 0.7f;
+        y;
+        x;
 
         // 花びらの先端に向かう補間
         float v = t;
-        float px = std::sin(angle) * (baseRadius + bulge * std::pow(std::sin(std::numbers::pi_v<float> *t), 2));
-        float pz = std::cos(angle) * (baseRadius * 0.7f + bulge * std::pow(std::sin(std::numbers::pi_v<float> *t), 2));
+        float bulgeFactor = static_cast<float>(std::pow(std::sin(std::numbers::pi_v<float> *t), 2));
+        float px = std::sin(angle) * (baseRadius + bulge * bulgeFactor);
+        float pz = std::cos(angle) * (baseRadius * 0.7f + bulge * bulgeFactor);
         float py = v * tipHeight;
 
         // 先端の割れ

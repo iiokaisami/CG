@@ -24,14 +24,20 @@ void MyGame::Initialize()
 	loadAudioThread.join();
 
 	// パーティクルグループの生成
-	/*particleManager->CreateParticleGroup("RingGroup", "resources/images/monsterBall.png", "plane.obj", "Ring");
-	particleManager->CreateParticleGroup("CylinderGroup", "resources/images/gradationLine.png", "plane.obj", "Cylinder");
-	particleManager->CreateParticleGroup("ConeGroup", "resources/images/gradationLine.png", "plane.obj", "Cone");
-	particleManager->CreateParticleGroup("SpiralGroup", "resources/images/gradationLine.png", "plane.obj", "Spiral");
-	particleManager->CreateParticleGroup("TorusGroup", "resources/images/gradationLine.png", "plane.obj", "Torus");
-	particleManager->CreateParticleGroup("HelixGroup", "resources/images/gradationLine.png", "plane.obj", "Helix");*/
+	//particleManager->CreateParticleGroup("RingGroup", "resources/images/monsterBall.png", "plane.obj", "Ring");
+	particleManager->CreateParticleGroup("slash", "resources/images/gradationLine.png", "plane.obj", "Ring", "Slash");
+	particleManager->CreateParticleGroup("magic1Group", "resources/images/gradationLine.png", "plane.obj", "Cylinder", "Magic1");
+	particleManager->CreateParticleGroup("magic2Group", "resources/images/white.png", "plane.obj", "Triangle", "Magic2");
+	particleManager->CreateParticleGroup("laserGroup", "resources/images/white.png", "plane.obj", "Cylinder", "Laser");
+	particleManager->CreateParticleGroup("petalGroup", "resources/images/white.png", "plane.obj", "Petal", "Petal");
 
+	particleManager->CreateParticleGroup("homingGroup", "resources/images/white.png", "plane.obj", "Ring", "Homing");
+	particleManager->CreateParticleGroup("flameGroup", "resources/images/white.png", "plane.obj", "Ring", "Flame");
+	particleManager->CreateParticleGroup("explosionGroup", "resources/images/white.png", "plane.obj", "Ring", "Explosion");
 	
+
+	particleManager->Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1, 1000000);
+
 	// Cylinderを出すときに向き指定する
 	ParticleMotion::SetDirection("UP");
 
@@ -59,6 +65,73 @@ void MyGame::Finalize()
 void MyGame::Update()
 {
 	Framework::Update();
+
+	if (time > 9.0f)
+	{
+		time = 0.0f;
+	}
+
+	time += 1.0f / 60.0f;
+
+	if (std::fmod(time, 1.0f) < 0.1f)
+	{
+		particleManager->Emit("magic2Group", { 0.0f,1.0f,0.0f }, 5, 1);
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_1))
+	{
+		particleManager->Emit("slash", { 0.0f,2.0f,0.0f }, 3, 1);
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_2))
+	{
+		particleManager->Emit("laserGroup", { 0.0f,1.0f,0.0f }, 3, 5);
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_3))
+	{
+		particleManager->Emit("petalGroup", { 0.0f,1.0f,0.0f }, 10, 100);
+		isPetal_ = !isPetal_;
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_4))
+	{
+		particleManager->Emit("homingGroup", { 0.0f,1.0f,0.0f }, 3, 100);
+		isHoming_ = !isHoming_;
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_5))
+	{
+		particleManager->Emit("flameGroup", { 0.0f,1.0f,0.0f }, 5, 100);
+		isFlame_ = !isFlame_;
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_6))
+	{
+		particleManager->Emit("explosionGroup", { 0.0f,1.0f,0.0f }, 3, 100);
+		isExplosion_ = !isExplosion_;
+	}
+
+	if (std::fmod(time, 0.8f) < 0.1f && isPetal_)
+	{
+		particleManager->Emit("petalGroup", { 0.0f,1.0f,0.0f }, 8, 1);
+	}
+
+	if (std::fmod(time, 1.0f) < 0.1f && isHoming_)
+	{
+		particleManager->Emit("homingGroup", { 0.0f,1.0f,0.0f }, 3, 1);
+	}
+
+	if (std::fmod(time, 0.8f) < 0.1f && isFlame_)
+	{
+		particleManager->Emit("flameGroup", { 0.0f,1.0f,0.0f }, 5, 1);
+	}
+
+	if (std::fmod(time, 1.0f) < 0.1f && isExplosion_)
+	{
+		particleManager->Emit("explosionGroup", { 0.0f,1.0f,0.0f }, 3, 1);
+	}
+
 
 
 

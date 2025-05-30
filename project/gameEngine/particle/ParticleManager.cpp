@@ -222,7 +222,7 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
 
     // パーティクルグループを作成、コンテナに登録
     ParticleGroup newGroup = {};
-    newGroup.motionName = motionName; // 追加: モーション名をセット
+    newGroup.motionName = motionName;
     particleGroups.insert(std::make_pair(name, std::move(newGroup)));
 
     // テクスチャファイルパスを登録
@@ -269,9 +269,9 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
         { "Spiral",   MeshBuilder::BuildSpiral },
         { "Torus",    MeshBuilder::BuildTorus },
         { "Helix",    MeshBuilder::BuildHelix },
-		{ "Sphere",   MeshBuilder::BuildSphere },
-		{ "Petal",    MeshBuilder::BuildPetal },
-		{ "Triangle", MeshBuilder::BuildTriangle }
+        { "Sphere",   MeshBuilder::BuildSphere },
+        { "Triangle", MeshBuilder::BuildTriangle },
+        { "Petal",    MeshBuilder::BuildPetal},
     };
 
     // モデル構築後に呼ぶ
@@ -312,15 +312,19 @@ void ParticleManager::Update()
 
             // パーティクルの位置を更新
             (*it).transform.translate += (*it).velocity * kDeltaTime_;
+            // パーティクルの回転を更新
+            (*it).transform.rotate += (*it).angularVelocity * kDeltaTime_;
+            // パーティクルのスケールを更新
+            (*it).transform.scale += (*it).scaleVelocity * kDeltaTime_;
             // パーティクルの寿命
             (*it).currentTime += kDeltaTime_;
             float alpha = 1.0f - ((*it).currentTime / (*it).lifeTime);
 
             // アルファ値をパーティクルの色に適用
-            (*it).color.w = alpha; 
+            (*it).color.w = alpha;
 
-       
-           Matrix4x4 SRT =
+
+            Matrix4x4 SRT =
                 MakeScaleMatrix((*it).transform.scale) *
                 MakeRotateXMatrix((*it).transform.rotate.x) *
                 MakeRotateYMatrix((*it).transform.rotate.y) *
@@ -337,7 +341,7 @@ void ParticleManager::Update()
                 Particlegroup.instancingData[count].color = it->color;
                 ++count;
             }
-           
+
 
             // 次のパーティクルへ
             ++it;
@@ -351,7 +355,9 @@ void ParticleManager::Update()
     {
         if (setting.isLooping && particleGroups.contains(setting.groupName))
         {
-            Emit(setting.groupName, setting.emitPosition, setting.emitCount);
+            // パーティクルを発生
+            Emit(setting.groupName, setting.emitPosition, setting.emitCount, 1);
+
         }
     }
 }
@@ -402,23 +408,34 @@ void ParticleManager::Draw()
 
 }
 
-void ParticleManager::Emit(const std::string groupName, const Vector3& position, uint32_t count)
+void ParticleManager::Emit(const std::string groupName, const Vector3& position, uint32_t count, uint32_t interval)
 {
     // グループごとのmotionNameを使うEmit
     auto it = particleGroups.find(groupName);
-    if (it == particleGroups.end()) 
+    if (it == particleGroups.end())
     {
         return;
     }
-    
+
+    EmitSetting newSetting;
+    newSetting.groupName = groupName;
+    newSetting.interval = static_cast<float>(interval);
+    newSetting.motionName = it->second.motionName;
+    newSetting.emitCount = count;
+    newSetting.emitPosition = position;
+    newSetting.isLooping = false; // 初期状態はループ無し
+    emitSettings_.push_back(newSetting);
+
+
+    // パーティクル生成
     ParticleGroup& group = it->second;
-    
-    for (uint32_t i = 0; i < count; ++i) 
+    for (uint32_t i = 0; i < count; ++i)
     {
         Particle p = ParticleMotion::Create(group.motionName, randomEngine_, position);
         p.motionName = group.motionName;
         group.particleList.push_back(p);
     }
+
     group.instanceCount = static_cast<uint32_t>(group.particleList.size());
 
 }
@@ -502,7 +519,7 @@ void ParticleManager::DebugUI()
         if (ImGui::Button("Emit Particle") && selectedGroupIndex < groupNames.size()) 
         {
             const std::string& groupToEmit = groupNames[selectedGroupIndex];
-            Emit(groupToEmit, emitPosition, emitCount);
+            Emit(groupToEmit, emitPosition, emitCount,1);
         }
 
         // --- ループ Emit の開始・停止 ---

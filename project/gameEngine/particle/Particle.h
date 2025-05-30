@@ -17,6 +17,8 @@ public:
     // パーティクルの状態
     Transform transform;
     Vector3 velocity;
+    Vector3 angularVelocity{0,0,0};
+    Vector3 scaleVelocity{ 0,0,0 };
     Vector4 color;
     float lifeTime;
     float currentTime;

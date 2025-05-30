@@ -40,6 +40,12 @@ void ParticleMotion::Initialize()
     Register("Cylinder", MakeCylinder);
     Register("Slash", MakeSlash);
 	Register("Flame", MakeFlame);
+	Register("Magic1", MakeMagic1);
+	Register("Magic2", MakeMagic2);
+	Register("Laser", MakeLaser);
+	Register("Petal", MakePetal);
+	Register("Water", MakeWater);
+	Register("Bubble", MakeBubble);
 }
 
 const std::unordered_map<std::string, ParticleMotion::MotionFunc>& ParticleMotion::GetAll()
@@ -52,10 +58,11 @@ Particle ParticleMotion::MakeHoming(std::mt19937& rand, const Vector3& target)
     std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
     Particle particle;
     particle.transform.translate = target + Vector3(dist(rand), dist(rand), dist(rand));
-	particle.transform.scale = { 1.0f, 1.0f, 1.0f }; // スケールを設定
+    particle.transform.scale = { 0.5f, 0.5f, 0.5f };
     particle.velocity = Normalize(target - particle.transform.translate) * 0.5f;
     particle.lifeTime = 2.0f;
     particle.currentTime = 0.0f;
+    particle.color = { 0.4f, 0.8f, 1.0f, 1.0f }; // 青白い
     return particle;
 
 }
@@ -84,10 +91,11 @@ Particle ParticleMotion::MakeExplosion(std::mt19937& rand, const Vector3& center
     std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
     Particle particle;
     particle.transform.translate = center;
-    particle.transform.scale = { 1.0f, 1.0f, 1.0f }; // スケールを設定
+    particle.transform.scale = { 1.0f, 1.0f, 1.0f };
     particle.velocity = Normalize(Vector3(dist(rand), dist(rand), dist(rand))) * 0.2f;
     particle.lifeTime = 2.5f;
     particle.currentTime = 0.0f;
+    particle.color = { 1.0f, 0.5f, 0.0f, 1.0f }; // オレンジ色（炎）
     return particle;
 }
 
@@ -186,60 +194,124 @@ Particle ParticleMotion::MakeFlame(std::mt19937& rand, const Vector3& base)
 
 Particle ParticleMotion::MakeMagic1(std::mt19937& rand, const Vector3& translate)
 {
-    // 魔法陣：その場でY軸回転し続け、寿命は非常に長い
-    std::uniform_real_distribution<float> distAngle(0.0f, 2.0f * std::numbers::pi_v<float>);
-    std::uniform_real_distribution<float> distScale(0.8f, 1.2f);
-
+    rand;
     Particle p;
     p.transform.translate = translate;
+    p.transform.rotate = { 0.0f, 0.0f, 3.14f };
+    p.transform.translate.y += p.transform.scale.y * 2.0f;
     p.transform.scale = { 1.0f, 1.0f, 1.0f };
-    p.transform.rotate = { 0.0f, distAngle(rand), 0.0f };
     p.velocity = { 0.0f, 0.0f, 0.0f };
+	p.angularVelocity = { 0.0f, 1.0f, 0.0f };
     p.color = { 0.6f, 0.3f, 1.0f, 1.0f };
-    p.lifeTime = 1000.0f; // 非常に長い寿命
+    p.lifeTime = 100000.0f;
     p.currentTime = 0.0f;
     return p;
 }
 
 Particle ParticleMotion::MakeMagic2(std::mt19937& rand, const Vector3& translate)
 {
-    // 魔法陣：中心を軸にXZ平面で円運動しつつ、色々な軸で回転
-    std::uniform_real_distribution<float> distAngle(0.0f, 2.0f * std::numbers::pi_v<float>);
-    std::uniform_real_distribution<float> distScale(0.8f, 1.2f);
+    std::uniform_real_distribution<float> distXZ(-0.9f, 0.9f);
     std::uniform_real_distribution<float> distRot(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
-    std::uniform_real_distribution<float> distRadius(1.0f, 2.0f);
-
-    float theta = distAngle(rand);
-    float radius = distRadius(rand);
+    std::uniform_real_distribution<float> distScale(0.1f, 0.3f);
 
     Particle p;
-    // XZ平面で円運動の初期位置
-    p.transform.translate = translate + Vector3(std::cos(theta) * radius, 0.0f, std::sin(theta) * radius);
+
+    p.transform.translate = { distXZ(rand), translate.y, distXZ(rand) };
+
     p.transform.scale = { distScale(rand), distScale(rand), distScale(rand) };
-    // ランダムな回転
-    p.transform.rotate = { distRot(rand), distRot(rand), distRot(rand) };
-    // 円運動の速度（XZ平面を中心に回る）
-    float angularSpeed = 0.7f; // 円運動の速さ
-    p.velocity = Vector3(-std::sin(theta) * radius * angularSpeed, 0.0f, std::cos(theta) * radius * angularSpeed);
-    p.color = { 0.6f, 0.3f, 1.0f, 1.0f }; // 紫系
-    p.lifeTime = 1000.0f;
+    p.transform.rotate = { distRot(rand), distRot(rand), distRot(rand) }; // パラパラ感
+    p.velocity = { 0.0f, 0.3f, 0.0f }; // 少しずつ上昇
+    p.angularVelocity = { 0.0f, 3.0f, 0.0f }; // Y軸回転
+    p.scaleVelocity = { -0.01f, -0.01f, -0.01f };
+    p.color = { 0.6f, 0.3f, 1.0f, 1.0f };
+    p.lifeTime = 2.5f;
     p.currentTime = 0.0f;
+
     return p;
 }
 
 Particle ParticleMotion::MakeLaser(std::mt19937& rand, const Vector3& translate)
 {
-    // レーザー：細長く高速で直進
-    std::uniform_real_distribution<float> distDir(-0.05f, 0.05f);
+    std::uniform_real_distribution<float> distWiggle(-0.05f, 0.05f);
     std::uniform_real_distribution<float> distLen(2.0f, 4.0f);
 
     Particle p;
     p.transform.translate = translate;
-    p.transform.scale = { 0.08f, distLen(rand), 0.08f };
+    p.transform.scale = { 0.8f, 0.0f, 0.8f };
     p.transform.rotate = { 0.0f, 0.0f, 0.0f };
-    p.velocity = { distDir(rand), 1.5f, distDir(rand) }; // Y方向に高速
-    p.color = { 1.0f, 0.2f, 0.2f, 1.0f }; // 赤系
-    p.lifeTime = 0.5f;
+    p.velocity = { distWiggle(rand), 0.0f, distWiggle(rand) };
+	p.scaleVelocity = { -0.2f, 2.0f, -0.2f };
+    p.color = { 1.0f, 0.2f, 0.2f, 1.0f };
+    p.lifeTime = 4.0f;
+    p.currentTime = 0.0f;
+    return p;
+}
+
+Particle ParticleMotion::MakePetal(std::mt19937& rand, const Vector3& translate)
+{
+    translate;
+    // XZ: -5～5, Y: 5
+    std::uniform_real_distribution<float> distXZ(-3.0f, 3.0f);
+    std::uniform_real_distribution<float> distRot(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
+    std::uniform_real_distribution<float> distScale(0.2f, 0.5f);
+    std::uniform_real_distribution<float> distColorR(0.8f, 1.0f); // ピンク系
+    std::uniform_real_distribution<float> distColorG(0.4f, 0.7f);
+    std::uniform_real_distribution<float> distColorB(0.7f, 0.9f);
+    std::uniform_real_distribution<float> distAngVel(-1.0f, 1.0f);
+    std::uniform_real_distribution<float> distWiggle(-0.05f, 0.05f);
+
+    Particle p;
+    p.transform.translate = Vector3(distXZ(rand), 4.5f, distXZ(rand));
+    p.transform.scale = { distScale(rand), distScale(rand), distScale(rand) };
+    p.transform.rotate = { distRot(rand), distRot(rand), distRot(rand) };
+    // ひらひら感: XZに微小な揺れ、Yはゆっくり落下
+    p.velocity = { distWiggle(rand), -0.35f, distWiggle(rand) };
+    // 回転しながら落ちる
+    p.angularVelocity = { distAngVel(rand), distAngVel(rand), distAngVel(rand) };
+    // 花びららしい色
+    p.color = { distColorR(rand), distColorG(rand), distColorB(rand), 1.0f };
+    p.lifeTime = 6.0f;
+    p.currentTime = 0.0f;
+    return p;
+}
+
+Particle ParticleMotion::MakeWater(std::mt19937& rand, const Vector3& translate)
+{
+    // XZ方向ランダム、Yは上向き
+    std::uniform_real_distribution<float> distXZ(-0.5f, 0.5f);
+    std::uniform_real_distribution<float> distVelY(0.7f, 1.2f);
+    std::uniform_real_distribution<float> distScale(0.15f, 0.25f);
+
+    Particle p;
+    p.transform.translate = translate;
+    p.transform.scale = { distScale(rand), distScale(rand), distScale(rand) };
+    p.transform.rotate = { 0.0f, 0.0f, 0.0f };
+    // 初速：XZランダム、Y上向き
+    p.velocity = { distXZ(rand), distVelY(rand), distXZ(rand) };
+    p.angularVelocity = { 0.0f, 0.0f, 0.0f };
+    p.color = { 0.3f, 0.5f, 1.0f, 1.0f }; // 水色
+    p.lifeTime = 1.2f;
+    p.currentTime = 0.0f;
+    return p;
+}
+
+Particle ParticleMotion::MakeBubble(std::mt19937& rand, const Vector3& translate)
+{
+    // XZ: -1.0～1.0の範囲でランダムに出現
+    std::uniform_real_distribution<float> distXZ(-1.0f, 1.0f);
+    std::uniform_real_distribution<float> distScale(0.08f, 0.15f);
+    std::uniform_real_distribution<float> distVelY(0.15f, 0.25f);
+    std::uniform_real_distribution<float> distColor(0.7f, 1.0f);
+
+    Particle p;
+    p.transform.translate = translate + Vector3(distXZ(rand), 0.0f, distXZ(rand));
+    p.transform.scale = { distScale(rand), distScale(rand), distScale(rand) };
+    p.transform.rotate = { 0.0f, 0.0f, 0.0f };
+    // 泡らしく上昇
+    p.velocity = { 0.0f, distVelY(rand), 0.0f };
+    p.angularVelocity = { 0.0f, 0.0f, 0.0f };
+    p.color = { distColor(rand), distColor(rand), 1.0f, 0.7f }; // 透明感のある青
+    p.lifeTime = 2.0f;
     p.currentTime = 0.0f;
     return p;
 }

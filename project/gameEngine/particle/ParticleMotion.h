@@ -50,12 +50,16 @@ public:
 	static Particle MakeMagic2(std::mt19937& rand, const Vector3& translate);
 	static Particle MakeLaser(std::mt19937& rand, const Vector3& translate);
 
-    // 花火
-	static Particle MakeLaunch(std::mt19937& rand, const Vector3& translate);
-	static Particle MakeFirework(std::mt19937& rand, const Vector3& translate);
-	
+	// 花びら
+	static Particle MakePetal(std::mt19937& rand, const Vector3& translate);
 
+    // 水
+	static Particle MakeWater(std::mt19937& rand, const Vector3& translate);
 
+    // 泡
+	static Particle MakeBubble(std::mt19937& rand, const Vector3& translate);
+
+ 
 public: // セッター
 
 	// "UP"下から上

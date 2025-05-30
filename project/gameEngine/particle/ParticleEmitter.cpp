@@ -41,5 +41,5 @@ void ParticleEmitter::Emit(const std::string& name, const Vector3& translate, ui
     assert(particleGroups_.find(name) != particleGroups_.end() && "Particle group not found!");
 
     // ParticleManagerにEmitを呼び出してパーティクルを生成
-    ParticleManager::GetInstance()->Emit(name, translate, count);
+    ParticleManager::GetInstance()->Emit(name, translate, count, 1);
 }
