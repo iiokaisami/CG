@@ -184,6 +184,66 @@ Particle ParticleMotion::MakeFlame(std::mt19937& rand, const Vector3& base)
     return p;
 }
 
+Particle ParticleMotion::MakeMagic1(std::mt19937& rand, const Vector3& translate)
+{
+    // 魔法陣：その場でY軸回転し続け、寿命は非常に長い
+    std::uniform_real_distribution<float> distAngle(0.0f, 2.0f * std::numbers::pi_v<float>);
+    std::uniform_real_distribution<float> distScale(0.8f, 1.2f);
+
+    Particle p;
+    p.transform.translate = translate;
+    p.transform.scale = { 1.0f, 1.0f, 1.0f };
+    p.transform.rotate = { 0.0f, distAngle(rand), 0.0f };
+    p.velocity = { 0.0f, 0.0f, 0.0f };
+    p.color = { 0.6f, 0.3f, 1.0f, 1.0f };
+    p.lifeTime = 1000.0f; // 非常に長い寿命
+    p.currentTime = 0.0f;
+    return p;
+}
+
+Particle ParticleMotion::MakeMagic2(std::mt19937& rand, const Vector3& translate)
+{
+    // 魔法陣：中心を軸にXZ平面で円運動しつつ、色々な軸で回転
+    std::uniform_real_distribution<float> distAngle(0.0f, 2.0f * std::numbers::pi_v<float>);
+    std::uniform_real_distribution<float> distScale(0.8f, 1.2f);
+    std::uniform_real_distribution<float> distRot(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
+    std::uniform_real_distribution<float> distRadius(1.0f, 2.0f);
+
+    float theta = distAngle(rand);
+    float radius = distRadius(rand);
+
+    Particle p;
+    // XZ平面で円運動の初期位置
+    p.transform.translate = translate + Vector3(std::cos(theta) * radius, 0.0f, std::sin(theta) * radius);
+    p.transform.scale = { distScale(rand), distScale(rand), distScale(rand) };
+    // ランダムな回転
+    p.transform.rotate = { distRot(rand), distRot(rand), distRot(rand) };
+    // 円運動の速度（XZ平面を中心に回る）
+    float angularSpeed = 0.7f; // 円運動の速さ
+    p.velocity = Vector3(-std::sin(theta) * radius * angularSpeed, 0.0f, std::cos(theta) * radius * angularSpeed);
+    p.color = { 0.6f, 0.3f, 1.0f, 1.0f }; // 紫系
+    p.lifeTime = 1000.0f;
+    p.currentTime = 0.0f;
+    return p;
+}
+
+Particle ParticleMotion::MakeLaser(std::mt19937& rand, const Vector3& translate)
+{
+    // レーザー：細長く高速で直進
+    std::uniform_real_distribution<float> distDir(-0.05f, 0.05f);
+    std::uniform_real_distribution<float> distLen(2.0f, 4.0f);
+
+    Particle p;
+    p.transform.translate = translate;
+    p.transform.scale = { 0.08f, distLen(rand), 0.08f };
+    p.transform.rotate = { 0.0f, 0.0f, 0.0f };
+    p.velocity = { distDir(rand), 1.5f, distDir(rand) }; // Y方向に高速
+    p.color = { 1.0f, 0.2f, 0.2f, 1.0f }; // 赤系
+    p.lifeTime = 0.5f;
+    p.currentTime = 0.0f;
+    return p;
+}
+
 void ParticleMotion::SetDirection(const std::string& direction)
 {
 	direction_ = direction;

@@ -24,5 +24,15 @@ public:
 	// Helix作成(ばね状)
 	static void BuildHelix(Model* model);
 
+	// 小さい球
+	static void BuildSphere(Model* model);
+
+	// 花びら
+	static void BuildPetal(Model* model);
+
+	// ペラペラな三角形
+	static void BuildTriangle(Model* model);
+
+
 };
 

@@ -268,3 +268,135 @@ void MeshBuilder::BuildHelix(Model* model)
     model->UpdateVertexBuffer();
     model->UpdateIndexBuffer();
 }
+
+void MeshBuilder::BuildSphere(Model* model)
+{
+    model->ClearVertexData();
+
+    const uint32_t kLatitude = 16;   // 緯度分割数
+    const uint32_t kLongitude = 32;  // 経度分割数
+    const float kRadius = 0.1f;
+
+    for (uint32_t lat = 0; lat <= kLatitude; ++lat) {
+        float theta = float(lat) * std::numbers::pi_v<float> / float(kLatitude);
+        float y = std::cos(theta) * kRadius;
+        float r = std::sin(theta) * kRadius;
+        float v = float(lat) / float(kLatitude);
+
+        for (uint32_t lon = 0; lon <= kLongitude; ++lon) {
+            float phi = float(lon) * 2.0f * std::numbers::pi_v<float> / float(kLongitude);
+            float x = std::cos(phi) * r;
+            float z = std::sin(phi) * r;
+            float u = float(lon) / float(kLongitude);
+
+            Vector3 normal = { x / kRadius, y / kRadius, z / kRadius };
+            model->AddVertex({ x, y, z, 1.0f }, { u, v }, normal);
+        }
+    }
+
+    for (uint32_t lat = 0; lat < kLatitude; ++lat) {
+        for (uint32_t lon = 0; lon < kLongitude; ++lon) {
+            uint32_t curr = lat * (kLongitude + 1) + lon;
+            uint32_t next = (lat + 1) * (kLongitude + 1) + lon;
+
+            model->AddIndex(curr);
+            model->AddIndex(next);
+            model->AddIndex(curr + 1);
+
+            model->AddIndex(curr + 1);
+            model->AddIndex(next);
+            model->AddIndex(next + 1);
+        }
+    }
+
+    model->UpdateVertexBuffer();
+    model->UpdateIndexBuffer();
+}
+
+void MeshBuilder::BuildPetal(Model* model)
+{
+    model->ClearVertexData();
+
+    // パラメータ
+    const uint32_t kDiv = 32; // 分割数
+    const float baseRadius = 0.18f; // 根元の半径
+    const float tipHeight = 0.7f;   // 花びらの高さ
+    const float angleSpan = std::numbers::pi_v<float> *0.85f; // 花びらの開き角度
+    const float bulge = 0.18f;      // 側面のふくらみ
+    const float tipSplit = 0.08f;   // 先端の割れ
+    const float tipBulge = 0.10f;   // 先端のふくらみ
+
+    // 頂点リスト
+    std::vector<uint32_t> edgeIndices;
+
+    // 根元の中心
+    uint32_t centerIdx = model->GetVertexCount();
+    model->AddVertex({ 0.0f, 0.0f, 0.0f, 1.0f }, { 0.5f, 1.0f }, { 0,0,1 });
+
+    // 花びらの輪郭
+    for (uint32_t i = 0; i <= kDiv; ++i) {
+        float t = float(i) / float(kDiv);
+        float angle = (t - 0.5f) * angleSpan;
+
+        // 根元から先端までの補間
+        float y = std::sin(angle) * baseRadius;
+        float x = std::cos(angle) * baseRadius * 0.7f;
+
+        // 花びらの先端に向かう補間
+        float v = t;
+        float px = std::sin(angle) * (baseRadius + bulge * std::pow(std::sin(std::numbers::pi_v<float> *t), 2));
+        float pz = std::cos(angle) * (baseRadius * 0.7f + bulge * std::pow(std::sin(std::numbers::pi_v<float> *t), 2));
+        float py = v * tipHeight;
+
+        // 先端の割れ
+        if (t > 0.45f && t < 0.55f) {
+            float split = tipSplit * std::sin((t - 0.5f) * std::numbers::pi_v<float> *2.0f);
+            py += tipBulge * std::sin(std::numbers::pi_v<float> *t);
+            px += split;
+        }
+
+        // 先端に近いほど高さを上げる
+        float tipRate = std::pow(v, 1.5f);
+        float finalY = py;
+        float finalX = px * (1.0f - tipRate) + 0.0f * tipRate;
+        float finalZ = pz * (1.0f - tipRate) + 0.0f * tipRate;
+
+        float u = t;
+        edgeIndices.push_back(model->GetVertexCount());
+        model->AddVertex({ finalX, finalY, finalZ, 1.0f }, { u, 1.0f - v }, { 0,0,1 });
+    }
+
+    // 根元の扇形
+    for (uint32_t i = 0; i < kDiv; ++i) {
+        model->AddIndex(centerIdx);
+        model->AddIndex(edgeIndices[i]);
+        model->AddIndex(edgeIndices[i + 1]);
+    }
+
+    // 先端の割れを強調するため、先端に追加の三角形を作ることもできます（省略可）
+
+    model->UpdateVertexBuffer();
+    model->UpdateIndexBuffer();
+}
+
+void MeshBuilder::BuildTriangle(Model* model)
+{
+    model->ClearVertexData();
+
+    // XY平面上の正三角形
+    Vector3 v0 = { 0.0f, 0.5f, 0.0f };
+    Vector3 v1 = { -0.433f, -0.25f, 0.0f }; // -sqrt(3)/4, -1/4
+    Vector3 v2 = { 0.433f, -0.25f, 0.0f };  // sqrt(3)/4, -1/4
+
+    uint32_t base = model->GetVertexCount();
+    model->AddVertex({ v0.x, v0.y, v0.z, 1.0f }, { 0.5f, 0.0f }, { 0,0,1 });
+    model->AddVertex({ v1.x, v1.y, v1.z, 1.0f }, { 0.0f, 1.0f }, { 0,0,1 });
+    model->AddVertex({ v2.x, v2.y, v2.z, 1.0f }, { 1.0f, 1.0f }, { 0,0,1 });
+
+    model->AddIndex(base + 0);
+    model->AddIndex(base + 1);
+    model->AddIndex(base + 2);
+
+    model->UpdateVertexBuffer();
+    model->UpdateIndexBuffer();
+}

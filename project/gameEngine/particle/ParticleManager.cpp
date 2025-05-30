@@ -248,16 +248,11 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     for (uint32_t i = 0; i < MaxInstanceCount; ++i)
     {
         particleGroups.at(name).instancingData[i] = particleForGPU;
-    }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-    for (uint32_t i = 0; i < MaxInstanceCount; ++i)
-    {
         particleGroups.at(name).instancingData[i].WVP = MakeIdentity4x4();
         particleGroups.at(name).instancingData[i].world = MakeIdentity4x4();
         particleGroups.at(name).instancingData[i].color = Vector4(0, 0, 0, 0); // 完全に透明
     }
-	//////////////////////////////////////////////////////////////////////////////////////////////////
 
     // インスタンス用のSRVインデックス
     particleGroups.at(name).srvIndex = srvManager_->Allocate();
@@ -273,7 +268,10 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
         { "Cone",     MeshBuilder::BuildCone },
         { "Spiral",   MeshBuilder::BuildSpiral },
         { "Torus",    MeshBuilder::BuildTorus },
-        { "Helix",    MeshBuilder::BuildHelix }
+        { "Helix",    MeshBuilder::BuildHelix },
+		{ "Sphere",   MeshBuilder::BuildSphere },
+		{ "Petal",    MeshBuilder::BuildPetal },
+		{ "Triangle", MeshBuilder::BuildTriangle }
     };
 
     // モデル構築後に呼ぶ
@@ -429,7 +427,7 @@ void ParticleManager::DebugUI()
 {
     static std::string newGroupName = "MyGroup";
     static std::string selectedShape = "Ring";
-    static const char* shapeOptions[] = { "Ring", "Cylinder", "Cone", "Spiral", "Torus", "Helix", "Flame"};
+    static const char* shapeOptions[] = { "Ring", "Cylinder", "Cone", "Spiral", "Torus", "Helix", "Sphere", "Petal","Triangle"};
     static int currentShape = 0;
 
     static int selectedGroupIndex = 0;
@@ -470,7 +468,7 @@ void ParticleManager::DebugUI()
         }
 
         if (ImGui::Button("Create Group")) {
-            CreateParticleGroup(newGroupName, "resources/images/gradationLine.png", "plane.obj", selectedShape, selectedMotion);
+            CreateParticleGroup(newGroupName, "resources/images/monsterBall.png", "plane.obj", selectedShape, selectedMotion);
 
         }
 
