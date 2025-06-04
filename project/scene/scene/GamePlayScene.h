@@ -4,8 +4,9 @@
 
 #include "../base/BaseScene.h"
 #include "../application/Objects/Player/Player.h"
-#include "../application/Objects/Enemy/Enemy.h"
+#include "../application/Objects/Enemy/EnemyManager.h"
 #include "../application/Objects/Field/Field.h"
+#include "../application/Objects/Field/Wall.h"
 #include "../application/Collider/ColliderManager.h"
 
 class GamePlayScene : public BaseScene
@@ -23,21 +24,6 @@ public:
 
 	// 描画
 	void Draw() override;
-
-	// 敵の初期化
-	void EnemyInit();
-	// 敵の発生コマンド
-	std::stringstream enemyPopCommands1;
-	std::stringstream enemyPopCommands2;
-	std::stringstream enemyPopCommands3;
-	// 敵の発生コマンドの読み込み
-	void LoadEnemyPopData1();
-	//void LoadEnemyPopData2();
-	//void LoadEnemyPopData3();
-	// 敵の発生コマンドの更新
-	void UpdateEnemyPopCommands1();
-	//void UpdateEnemyPopCommands2();
-	//void UpdateEnemyPopCommands3();
 
 	// カメラ処理
 	void CameraUpdate();
@@ -71,18 +57,13 @@ private:
 	std::unique_ptr<Player> pPlayer_ = nullptr;
 
 	// エネミー
-	std::vector<std::unique_ptr<Enemy>> pEnemies_;
-	// 敵の出現位置
-	Vector3 enemyPosition_{};
-	// 敵機中フラグ
-	bool isEnemyWaiting_ = true;
-	// 敵待機タイマー
-	int32_t enemyWaitingTimer_ = 9;
-	// プレイヤーとの距離
-	std::vector<Vector3> toPlayerDistance_;
+	std::unique_ptr<EnemyManager> pEnemyManager_ = nullptr;
 
 	// フィールド
 	std::unique_ptr<Field> pField_ = nullptr;
+
+	// 壁
+	std::vector<std::unique_ptr<Wall>> pWalls_;
 
 	
 	// カメラが静止時に追従する基準位置

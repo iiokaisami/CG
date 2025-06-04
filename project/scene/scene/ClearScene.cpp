@@ -41,21 +41,22 @@ void ClearScene::Initialize()
 		object3ds.push_back(object);
 	}
 
-	//for (uint32_t i = 0; i < 1; ++i)
-	//{
-	//	Sprite* sprite = new Sprite();
-	//	
-	//	if (i == 0) {
-	//		sprite->Initialize("uvChecker.png", { 0,0 }, color_, { 0,0 });
-	//	}
-	//	
-	//	sprites.push_back(sprite);
+	for (uint32_t i = 0; i < 1; ++i)
+	{
+		Sprite* sprite = new Sprite();
+		
+		if (i == 0)
+		{
+			sprite->Initialize("clear.png", { 0,0 }, {1.0f,1.0f,1.0f,1.0f}, { 0,0 });
+		}
+		
+		sprites.push_back(sprite);
 
-	//	/*Vector2 size = sprite->GetSize();
-	//	size.x = 370.0f;
-	//	size.y = 370.0f;
-	//	sprite->SetSize(size);*/
-	//}
+		/*Vector2 size = sprite->GetSize();
+		size.x = 370.0f;
+		size.y = 370.0f;
+		sprite->SetSize(size);*/
+	}
 
 }
 
@@ -66,10 +67,10 @@ void ClearScene::Finalize()
 		delete obj;
 	}
 
-	/*for (Sprite* sprite : sprites)
+	for (Sprite* sprite : sprites)
 	{
 		delete sprite;
-	}*/
+	}
 
 	cameraManager.RemoveCamera(0);
 }
@@ -90,13 +91,11 @@ void ClearScene::Update()
 	object3ds[0]->SetScale(scale_);
 	object3ds[0]->SetRotate(rotate_);
 
-	/*for (Sprite* sprite : sprites)
+	for (Sprite* sprite : sprites)
 	{
 		sprite->Update();
 
-		sprite->SetColor(color_);
-
-	}*/
+	}
 
 
 

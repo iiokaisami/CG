@@ -39,10 +39,14 @@ public:
 	// 攻撃
 	void Attack();
 
+
 private: // 衝突判定
 
 	void OnCollisionTrigger(const Collider* _other);
 	
+	// 壁に衝突したときの処理
+	void WallCollision();
+
 public: // ゲッター
 
 	// デスフラグ
@@ -83,6 +87,12 @@ private:
 
 	// ヒットした瞬間のフラグ
 	bool isHitMoment_ = false;
+
+	// 壁に衝突したかどうか
+	bool isWallCollision_ = false;
+
+	// 衝突相手のAABB
+	AABB collisionWallAABB_;
 
 };
 

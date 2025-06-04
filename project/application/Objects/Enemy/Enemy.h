@@ -47,6 +47,9 @@ private: // 衝突判定
 	// 敵同士が衝突したときの処理
 	void EnemyCollision(Vector3 _position);
 
+	// 壁に衝突したときの処理
+	void WallCollision();
+
 public: // ゲッター
 
 	// 死亡フラグ
@@ -94,7 +97,14 @@ private:
 	// フラグ
 	bool isEnemyCollision_ = false;
 	// 相手の敵の位置
-	Vector3 enemyPosition_{};\
+	Vector3 enemyPosition_{};
+
+	// 壁に衝突したかどうか
+	bool isWallCollision_ = false;
+	
+	// 衝突相手のaabb
+	AABB collisionEnemyAABB_ = {};
+	AABB collisionWallAABB_ = {};
 
 };
 

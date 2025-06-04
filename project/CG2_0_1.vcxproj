@@ -113,6 +113,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="application\Objects\Enemy\Bullet\EnemyBullet.cpp" />
     <ClCompile Include="application\Collider\Collider.cpp" />
     <ClCompile Include="application\Collider\ColliderManager.cpp" />
+    <ClCompile Include="application\Objects\Enemy\EnemyManager.cpp" />
     <ClCompile Include="scene\scene\ClearScene.cpp" />
     <ClCompile Include="gameEngine\audio\Audio.cpp" />
     <ClCompile Include="gameEngine\math\Quaternion.cpp" />
@@ -153,6 +154,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="ParticleManager.cpp" />
     <ClCompile Include="scene\scene\TitleScene.cpp" />
+    <ClCompile Include="application\Objects\Field\Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\Objects\Enemy\Enemy.h" />
@@ -160,6 +162,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\Objects\Enemy\Bullet\EnemyBullet.h" />
     <ClInclude Include="application\Collider\Collider.h" />
     <ClInclude Include="application\Collider\ColliderManager.h" />
+    <ClInclude Include="application\Objects\Enemy\EnemyManager.h" />
     <ClInclude Include="scene\scene\ClearScene.h" />
     <ClInclude Include="gameEngine\audio\Audio.h" />
     <ClInclude Include="gameEngine\math\Quaternion.h" />
@@ -201,6 +204,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="ParticleManager.h" />
     <ClInclude Include="scene\scene\TitleScene.h" />
     <ClInclude Include="application\Collider\Shape.h" />
+    <ClInclude Include="application\Objects\Field\Wall.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

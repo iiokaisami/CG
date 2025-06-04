@@ -128,7 +128,7 @@ void Sprite::Update()
 	vertexData_[2].position = { right,bottom,0.0f,1.0f };
 	vertexData_[2].texcoord = { tex_right,tex_bottom };
 	//vertexData_[2].texcoord = { 1.0f,1.0f };
-	vertexData_[3].normal = { 0.0f,0.0f,-1.0f };
+	vertexData_[2].normal = { 0.0f,0.0f,-1.0f };
 
 	vertexData_[3].position = { right,top,0.0f,1.0f };
 	vertexData_[3].texcoord = { tex_right,tex_top };

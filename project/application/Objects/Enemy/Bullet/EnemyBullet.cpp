@@ -78,7 +78,12 @@ void EnemyBullet::OnCollisionTrigger(const Collider* _other)
 	if (_other->GetColliderID() == "Player")
 	{
 		isDead_ = true;
-	} else if (_other->GetColliderID() == "PlayerBullet")
+	} 
+	if (_other->GetColliderID() == "PlayerBullet")
+	{
+		isDead_ = true;
+	}
+	if (_other->GetColliderID() == "Wall")
 	{
 		isDead_ = true;
 	}

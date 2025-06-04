@@ -39,13 +39,23 @@ void GamePlayScene::Initialize()
 	pPlayer_ = std::make_unique<Player>();
 	pPlayer_->Initialize();
 
+	// エネミー
+	pEnemyManager_ = std::make_unique<EnemyManager>();
+	pEnemyManager_->Initialize();
+
 	// フィールド
 	pField_ = std::make_unique<Field>();
 	pField_->Initialize();
 
-
-	// エネミーのcsvデータを読み込み
-	LoadEnemyPopData1();
+	// 壁の初期化
+	for (int i = 0; i < 1; ++i)
+	{
+		auto wall = std::make_unique<Wall>();
+		wall->Initialize();
+		wall->SetPosition({ static_cast<float>(i * 5.0f),0.0f,3.0f });
+		wall->SetRotation({ 0.0f, i * 0.7f, 0.0f });
+		pWalls_.push_back(std::move(wall));
+	}
 
 	// 追尾の初期化
 	cameraIsResting_ = true;
@@ -67,11 +77,12 @@ void GamePlayScene::Initialize()
 void GamePlayScene::Finalize()
 {
 	pPlayer_->Finalize();
-	for (auto& enemy : pEnemies_)
-	{
-		enemy->Finalize();
-	}
+	pEnemyManager_->Finalize();
 	pField_->Finalize();
+	for (auto& wall : pWalls_)
+	{
+		wall->Finalize();
+	}
 
 	/*for (Sprite* sprite : sprites)
 	{
@@ -124,36 +135,23 @@ void GamePlayScene::Update()
 
 	// プレイヤーの更新
 	pPlayer_->Update();
+	// プレイヤーの位置をエネミーマネージャーにセット
+	pEnemyManager_->SetPlayerPosition(pPlayer_->GetPosition());
 
 	// カメラの更新(シェイク、追尾、引き)
 	CameraUpdate();
 
 	// エネミーの更新
-	for (auto& enemy : pEnemies_)
-	{
-		enemy->SetPlayerPosition(pPlayer_->GetPosition());
-		enemy->Update();
-		toPlayerDistance_.push_back(enemy->GetToPlayer());
-	}
-	// isDeatエネミーがたったら削除
-	pEnemies_.erase(
-		std::remove_if(pEnemies_.begin(), pEnemies_.end(),
-			[](std::unique_ptr<Enemy>& enemy)
-			{
-				if (enemy->IsDead())
-				{
-					enemy->Finalize();
-					return true;
-				}
-				return false;
-			}),
-		pEnemies_.end()
-	);
-	// エネミーの出現コマンドの更新
-	UpdateEnemyPopCommands1();
+	pEnemyManager_->Update();
 
 	// フィールドの更新
 	pField_->Update();
+
+	// 壁の更新
+	for (auto& wall : pWalls_)
+	{
+		wall->Update();
+	}
 
 
 #ifdef _DEBUG
@@ -171,11 +169,12 @@ void GamePlayScene::Update()
 	ImGui::End();
 
 	pPlayer_->ImGuiDraw();
-	for (auto& enemy : pEnemies_)
-	{
-		enemy->ImGuiDraw();
-	}
+	pEnemyManager_->ImGuiDraw();
 	pField_->ImGuiDraw();
+	for (auto& wall : pWalls_)
+	{
+		wall->ImGuiDraw();
+	}
 
 #endif // _DEBUG
 
@@ -198,12 +197,15 @@ void GamePlayScene::Draw()
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
 	pPlayer_->Draw(); 
-	for (auto& enemy : pEnemies_) 
-	{
-		enemy->Draw();
-	}
+
+	pEnemyManager_->Draw();
 
 	pField_->Draw();
+
+	for (auto& wall : pWalls_)
+	{
+		wall->Draw();
+	}
 
 	// 描画前処理(Sprite)
 	SpriteCommon::GetInstance()->CommonDrawSetting();
@@ -212,111 +214,6 @@ void GamePlayScene::Draw()
 	//{
 	//	sprite->Draw();
 	//}
-}
-
-void GamePlayScene::EnemyInit()
-{
-	// エネミー
-	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
-	enemy->SetPosition(enemyPosition_);
-	enemy->Initialize();
-	enemy->SetPlayerPosition(pPlayer_->GetPosition());
-	enemy->Update();
-
-	// 敵を登録
-	pEnemies_.push_back(std::move(enemy));
-
-}
-
-void GamePlayScene::LoadEnemyPopData1()
-{
-	//ファイルを開く
-	std::ifstream file;
-	file.open("resources/csv/EnemyPop.csv");
-	assert(file.is_open());
-
-	//ファイルの内容を文字列ストリームにコピー
-	enemyPopCommands1 << file.rdbuf();
-
-	//ファイルを閉じる
-	file.close();
-}
-
-void GamePlayScene::UpdateEnemyPopCommands1()
-{
-	//待機処理
-	if (isEnemyWaiting_)
-	{
-		enemyWaitingTimer_--;
-
-		if (enemyWaitingTimer_ <= 0)
-		{
-			//待機完了
-			isEnemyWaiting_ = false;
-		}
-		return;
-	}
-
-	//1行分の文字列を入れる変数
-	std::string line;
-
-	//コマンドループ
-	while (getline(enemyPopCommands1, line)) {
-		//1行分の文字列を入れる変数
-		std::istringstream line_stream(line);
-
-		std::string word;
-		// ,区切りで行の先頭列を取得
-		getline(line_stream, word, ',');
-
-		// "//"から始まる行はコメント
-		if (word.find("//") == 0) {
-			//コメント行を飛ばす
-			continue;
-		}
-
-
-		// POSITONコマンド
-		if (word.find("POSITION") == 0)
-		{
-
-			// X座標
-			getline(line_stream, word, ',');
-			float x = (float)atoi(word.c_str());
-
-			// Y座標
-			getline(line_stream, word, ',');
-			float y = (float)atoi(word.c_str());
-
-			// Z座標
-			getline(line_stream, word, ',');
-			float z = (float)atoi(word.c_str());
-
-			enemyPosition_ = { x,y,z };
-
-			// 敵発生
-			EnemyInit();
-
-		}
-		// WAITコマンド
-		else if (word.find("WAIT") == 0)
-		{
-
-			getline(line_stream, word, ',');
-
-			// 待ち時間
-			int32_t waitTime = atoi(word.c_str());
-
-			//待機時間
-			isEnemyWaiting_ = true;
-			enemyWaitingTimer_ = waitTime;
-
-
-
-			//コマンドループを抜ける
-			break;
-		}
-	}
 }
 
 void GamePlayScene::CameraUpdate()
@@ -361,14 +258,17 @@ void GamePlayScene::CameraShake()
 
 void GamePlayScene::CameraFollowZoom()
 {
-	if (!camera1 || !pPlayer_) return;
-	if (toPlayerDistance_.empty()) return;
+	if (!camera1 or !pPlayer_ or pEnemyManager_->GetToPlayerDistance().empty())
+	{
+		return;
+	}
 
 	Vector3 playerPos = pPlayer_->GetPosition();
 
 	// 敵との最短距離を取得
 	float minDistance = std::numeric_limits<float>::max();
-	for (const Vector3& vec : toPlayerDistance_) {
+	for (const Vector3& vec : pEnemyManager_->GetToPlayerDistance())
+	{
 		float dist = vec.Length();
 		minDistance = std::min(minDistance, dist);
 	}
