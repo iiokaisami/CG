@@ -42,8 +42,12 @@ public:
 
 private: // 衝突判定
 
+	// 衝突時の処理
 	void OnCollisionTrigger(const Collider* _other);
 	
+	// 衝突中の処理
+	void OnCollision(const Collider* _other);
+
 	// 壁に衝突したときの処理
 	void WallCollision();
 

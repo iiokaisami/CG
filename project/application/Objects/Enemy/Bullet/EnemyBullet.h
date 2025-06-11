@@ -30,6 +30,9 @@ public:
 	// ImGui
 	void ImGuiDraw();
 
+	// モデル更新
+	void UpdateModel();
+
 private: // 衝突判定
 	
 	void OnCollisionTrigger(const Collider* _other);
@@ -37,8 +40,6 @@ private: // 衝突判定
 public: // ゲッター
 
 	bool IsDead() const { return isDead_; }
-	
-	void RunSetMask();
 	
 public: // セッター
 

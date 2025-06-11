@@ -25,6 +25,7 @@ void Enemy::Initialize()
     collider_.SetShape(Shape::AABB);
     collider_.SetAttribute(colliderManager_->GetNewAttribute(collider_.GetColliderID()));
     collider_.SetOnCollisionTrigger(std::bind(&Enemy::OnCollisionTrigger, this, std::placeholders::_1));
+	collider_.SetOnCollision(std::bind(&Enemy::OnCollision, this, std::placeholders::_1));
     colliderManager_->RegisterCollider(&collider_);
 
     // ステータス
@@ -90,13 +91,6 @@ void Enemy::Update()
         bullet->Update();
     }
 
-	// 敵同士の衝突判定
-    if (isEnemyCollision_)
-    {
-        EnemyCollision(enemyPosition_);
-		isEnemyCollision_ = false;
-    }
-
 	// aabbの更新
     aabb_.min = position_ - object_->GetScale();
     aabb_.max = position_ + object_->GetScale();
@@ -106,7 +100,7 @@ void Enemy::Update()
     // 壁に衝突した場合の処理
     if (isWallCollision_)
     {
-        WallCollision();
+		CorrectOverlap(collisionWallAABB_);
         isWallCollision_ = false;
     }
 
@@ -212,9 +206,7 @@ void Enemy::Attack()
                 bullet->Initialize();
                 bullet->SetPosition({ position_.x,position_.y + 0.5f,position_.z }); // 敵の位置より少し上を初期位置に設定
                 bullet->SetVelocity(bulletDirection * 0.2f); // 弾の速度を設定
-
-				bullet->RunSetMask();
-				collider_.SetMask(colliderManager_->GetNewMask(collider_.GetColliderID(), "EnemyBullet"));
+                bullet->UpdateModel();
 
                 // 弾をリストに追加
                 pBullets_.push_back(std::move(bullet));
@@ -244,93 +236,95 @@ void Enemy::OnCollisionTrigger(const Collider* _other)
 			isDead_ = true;
 		}
 	}
-    
+}
+
+void Enemy::OnCollision(const Collider* _other)
+{
     if (_other->GetColliderID() == "Enemy")
-	{
-		enemyPosition_ = _other->GetPosition();
-		isEnemyCollision_ = true;
-        collisionEnemyAABB_ = *_other->GetAABB();
-	}
+    {
+        
+        // 敵の位置
+        Vector3 enemyPosition = _other->GetOwner()->GetPosition();
 
-	if (_other->GetColliderID() == "Wall")
-	{
-		isWallCollision_ = true;
-		collisionWallAABB_ = *_other->GetAABB();
-	}
+        // 敵同士が重ならないようにする
+        Vector3 direction = position_ - enemyPosition;
+        direction.Normalize();
+        float distance = 2.5f; // 敵同士の間の距離を調整するための値
+
+        // 互いに重ならないように少しずつ位置を調整
+        if ((position_ - enemyPosition).Length() < distance) 
+        {
+            position_ += direction * 0.1f; // 微調整のための値
+        }
+    }
+
+    if (_other->GetColliderID() == "Wall")
+    {
+        isWallCollision_ = true;
+        collisionWallAABB_ = *_other->GetAABB();
+    }
 }
 
-void Enemy::EnemyCollision(Vector3 _position)
+void Enemy::CorrectOverlap(const AABB _anyAABB)
 {
+    Vector3 penetrationVector{};
 
-}
-
-void Enemy::WallCollision()
-{
-	Vector3 penetrationVector{};
-
-	// 壁との重なりを計算
-  
+    // 壁との重なりを計算
     // x軸(左右)
-    float overlapLeftX = collisionWallAABB_.max.x - aabb_.min.x;
-    float overlapRightX = aabb_.max.x - collisionWallAABB_.min.x;
+    float overlapLeftX = _anyAABB.max.x - aabb_.min.x;
+    float overlapRightX = aabb_.max.x - _anyAABB.min.x;
     float correctionX = 0.0f;
-   
-    if (overlapLeftX < overlapRightX) 
+
+    if (overlapLeftX < overlapRightX)
     {
         correctionX = overlapLeftX;
-    }
-    else 
+    } else
     {
         correctionX = -overlapRightX;
     }
 
-	// y軸(上下)
-    float overlapBelowY = collisionWallAABB_.max.y - aabb_.min.y;
-    float overlapAboveY = aabb_.max.y - collisionWallAABB_.min.y;
+    // y軸(上下)
+    float overlapBelowY = _anyAABB.max.y - aabb_.min.y;
+    float overlapAboveY = aabb_.max.y - _anyAABB.min.y;
     float correctionY = 0.0f;
-    
-    if (overlapBelowY < overlapAboveY) 
+
+    if (overlapBelowY < overlapAboveY)
     {
         correctionY = overlapBelowY;
-    }
-    else
+    } else
     {
         correctionY = -overlapAboveY;
     }
 
-	// z軸(前後)
-    float overlapBackZ = collisionWallAABB_.max.z - aabb_.min.z;
-    float overlapFrontZ = aabb_.max.z - collisionWallAABB_.min.z;
+    // z軸(前後)
+    float overlapBackZ = _anyAABB.max.z - aabb_.min.z;
+    float overlapFrontZ = aabb_.max.z - _anyAABB.min.z;
     float correctionZ = 0.0f;
-    
-    if (overlapBackZ < overlapFrontZ) 
+
+    if (overlapBackZ < overlapFrontZ)
     {
         correctionZ = overlapBackZ;
-    }
-    else
+    } else
     {
         correctionZ = -overlapFrontZ;
     }
 
-	// 最小の重なりを持つ軸を選択
+    // 最小の重なりを持つ軸を選択
     float absX = std::abs(correctionX);
     float absY = std::abs(correctionY);
     float absZ = std::abs(correctionZ);
 
-    if (absX <= absY && absX <= absZ) 
+    if (absX <= absY && absX <= absZ)
     {
         penetrationVector.x = correctionX;
-    }
-    else if (absY <= absZ)
+    } else if (absY <= absZ)
     {
         penetrationVector.y = correctionY;
-    }
-    else
+    } else
     {
         penetrationVector.z = correctionZ;
     }
 
-	// 位置を修正
-	position_ += penetrationVector;
-
+    // 位置を修正
+    position_ += penetrationVector;
 }

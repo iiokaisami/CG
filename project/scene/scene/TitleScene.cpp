@@ -49,7 +49,7 @@ void TitleScene::Initialize()
 		
 		if (i == 0)
 		{
-			sprite->Initialize("uvChecker.png", { 0,0 }, { 1.0f,1.0f,1.0f,1.0f }, { 0,0 });
+			sprite->Initialize("title.png", { 0,0 }, { 1.0f,1.0f,1.0f,1.0f }, { 0,0 });
 		}
 		
 		sprites.push_back(sprite);

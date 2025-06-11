@@ -42,13 +42,14 @@ public:
 
 private: // 衝突判定
 
+	// 衝突時の処理
 	void OnCollisionTrigger(const Collider* _other);
 
-	// 敵同士が衝突したときの処理
-	void EnemyCollision(Vector3 _position);
+	// 衝突中の処理
+	void OnCollision(const Collider* _other);
 
-	// 壁に衝突したときの処理
-	void WallCollision();
+	// 衝突時の押し出し処理
+	void CorrectOverlap(const AABB _anyAABB);
 
 public: // ゲッター
 
@@ -86,24 +87,16 @@ private:
 	// 追尾停止距離
 	const float kStopChasingDistance = 15.0f;
 
-
 	// 死亡
 	bool isDead_ = false;
 
 	// 弾
 	std::vector<std::unique_ptr<EnemyBullet>> pBullets_ = {};
 
-	// 敵同士の衝突判定
-	// フラグ
-	bool isEnemyCollision_ = false;
-	// 相手の敵の位置
-	Vector3 enemyPosition_{};
-
 	// 壁に衝突したかどうか
 	bool isWallCollision_ = false;
 	
 	// 衝突相手のaabb
-	AABB collisionEnemyAABB_ = {};
 	AABB collisionWallAABB_ = {};
 
 };

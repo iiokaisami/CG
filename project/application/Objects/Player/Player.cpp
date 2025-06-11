@@ -26,6 +26,7 @@ void Player::Initialize()
 	collider_.SetShape(Shape::AABB);
 	collider_.SetAttribute(colliderManager_->GetNewAttribute(collider_.GetColliderID()));
 	collider_.SetOnCollisionTrigger(std::bind(&Player::OnCollisionTrigger, this, std::placeholders::_1));
+	collider_.SetOnCollision(std::bind(&Player::OnCollision, this, std::placeholders::_1));
 	colliderManager_->RegisterCollider(&collider_);
 
 	// ステータス
@@ -228,17 +229,21 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		} 
 		else
 		{
-			isDead_ = true;
+			//isDead_ = true;
 		}
 		isHitMoment_ = true;
 	}
+
+}
+
+void Player::OnCollision(const Collider* _other)
+{
 
 	if (_other->GetColliderID() == "Wall")
 	{
 		isWallCollision_ = true;
 		collisionWallAABB_ = *_other->GetAABB();
 	}
-
 }
 
 void Player::WallCollision()

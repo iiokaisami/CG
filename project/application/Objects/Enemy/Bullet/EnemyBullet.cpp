@@ -34,11 +34,7 @@ void EnemyBullet::Finalize()
 
 void EnemyBullet::Update()
 {
-	object_->Update();
-
-	object_->SetPosition(position_);
-	object_->SetRotate(rotation_);
-	object_->SetScale(scale_);
+	UpdateModel();
 
 	rotation_ += {0.1f, 0.1f, 0.0f};
 	position_ += velocity_;
@@ -73,6 +69,15 @@ void EnemyBullet::ImGuiDraw()
 	ImGui::End();
 }
 
+void EnemyBullet::UpdateModel()
+{
+	object_->Update();
+
+	object_->SetPosition(position_);
+	object_->SetRotate(rotation_);
+	object_->SetScale(scale_);
+}
+
 void EnemyBullet::OnCollisionTrigger(const Collider* _other)
 {
 	if (_other->GetColliderID() == "Player")
@@ -87,9 +92,4 @@ void EnemyBullet::OnCollisionTrigger(const Collider* _other)
 	{
 		isDead_ = true;
 	}
-}
-
-void EnemyBullet::RunSetMask()
-{
-	collider_.SetMask(colliderManager_->GetNewMask(collider_.GetColliderID(), "Enemy"));
 }
