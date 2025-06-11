@@ -186,10 +186,10 @@ void TitleScene::Draw()
 	// 描画前処理(Sprite)
 	SpriteCommon::GetInstance()->CommonDrawSetting();
 
-	//for (Sprite* sprite : sprites)
-	//{
-	//	sprite->Draw();
-	//}
+	for (Sprite* sprite : sprites)
+	{
+		sprite->Draw();
+	}
 
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();

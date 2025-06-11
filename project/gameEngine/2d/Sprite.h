@@ -29,7 +29,8 @@ public:
 	void Draw();
 
 
-	//-----------ゲッター----------//
+public:// ゲッター
+
 	const Vector2& GetPosition()const { return position_; }
 	float GetRotation() const { return rotation_; }
 
@@ -45,7 +46,8 @@ public:
 	const Vector2& GetTextureLeftTop()const { return textureLeftTop_; }
 	const Vector2& GetTextureSize()const { return textureSize_; }
 
-	//-----------セッター----------//
+public:// セッター
+
 	void SetPosition(const Vector2& position) { position_ = position; }
 	void SetRotation(float rotation) { rotation_ = rotation; }
 
@@ -87,11 +89,7 @@ private: // 構造体、関数
 	struct Material
 	{
 		Vector4 color;
-		int32_t enableLighting;
-		float padding[3];
 		Matrix4x4 uvTransform;
-		float shininess;
-		int phongReflection;
 	};
 
 	struct TransformationMatrix

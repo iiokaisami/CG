@@ -47,15 +47,8 @@ void Sprite::Initialize(std::string textureFilePath,
 
 
 	// マテリアルデータにデータの初期値を書き込む
-	//色を変える
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	// Lightingを有効にする
-	materialData_->enableLighting = false;
 	materialData_->uvTransform = MakeIdentity4x4();
-	// Shininessを設定
-	materialData_->shininess = 0.5f;
-	// PhongReflectionを設定
-	materialData_->phongReflection = true;
 
 	//書き込むためのアドレス
 	transformationMatrixResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData_));
@@ -114,25 +107,25 @@ void Sprite::Update()
 	float tex_top = textureLeftTop_.y / metadata.height;
 	float tex_bottom = (textureLeftTop_.y + textureSize_.y) / metadata.height;
 
+	if (tex_right > 1.0f)
+	{
+		tex_right = 1.0f;
+	}
 
 	vertexData_[0].position = { left,bottom,0.0f,1.0f };
 	vertexData_[0].texcoord = { tex_left,tex_bottom };
-	//vertexData_[0].texcoord = { 0.0f,1.0f };
 	vertexData_[0].normal = { 0.0f,0.0f,-1.0f };
 
 	vertexData_[1].position = { left,top,0.0f,1.0f };
 	vertexData_[1].texcoord = { tex_left,tex_top };
-	//vertexData_[1].texcoord = { 0.0f,0.0f };
 	vertexData_[1].normal = { 0.0f,0.0f,-1.0f };
 
 	vertexData_[2].position = { right,bottom,0.0f,1.0f };
 	vertexData_[2].texcoord = { tex_right,tex_bottom };
-	//vertexData_[2].texcoord = { 1.0f,1.0f };
 	vertexData_[2].normal = { 0.0f,0.0f,-1.0f };
 
 	vertexData_[3].position = { right,top,0.0f,1.0f };
 	vertexData_[3].texcoord = { tex_right,tex_top };
-	//vertexData_[3].texcoord = { 1.0f,0.0f };
 	vertexData_[3].normal = { 0.0f,0.0f,-1.0f };
 
 	indexData_[0] = 0;		indexData_[1] = 1;		indexData_[2] = 2;
@@ -190,8 +183,12 @@ void Sprite::AdjustTextureSize()
 	// テクスチャメタデータを取得
 	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath_);
 
-	textureSize_.x = static_cast<float>(metadata.width);
-	textureSize_.y = static_cast<float>(metadata.height);
+	//textureSize_.x = static_cast<float>(metadata.width);
+	//textureSize_.y = static_cast<float>(metadata.height);
+	
+	textureLeftTop_ = { 0.0f,0.0f };
+	textureSize_ = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
+	
 	// 画像サイズをテクスチャサイズに合わせる
 	size_ = textureSize_;
 }
