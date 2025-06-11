@@ -114,6 +114,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="application\Collider\Collider.cpp" />
     <ClCompile Include="application\Collider\ColliderManager.cpp" />
     <ClCompile Include="application\Objects\Enemy\EnemyManager.cpp" />
+    <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveState.cpp" />
+    <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveStage1.cpp" />
+    <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveStage2.cpp" />
     <ClCompile Include="scene\scene\ClearScene.cpp" />
     <ClCompile Include="gameEngine\audio\Audio.cpp" />
     <ClCompile Include="gameEngine\math\Quaternion.cpp" />
@@ -163,6 +166,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\Collider\Collider.h" />
     <ClInclude Include="application\Collider\ColliderManager.h" />
     <ClInclude Include="application\Objects\Enemy\EnemyManager.h" />
+    <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveState.h" />
+    <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveStage1.h" />
+    <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveStage2.h" />
     <ClInclude Include="scene\scene\ClearScene.h" />
     <ClInclude Include="gameEngine\audio\Audio.h" />
     <ClInclude Include="gameEngine\math\Quaternion.h" />

@@ -4,6 +4,7 @@
 #include <Framework.h>
 
 #include "../application/Objects/Enemy/Enemy.h"
+#include "WaveState/EnemyWaveState.h"
 
 class EnemyManager
 {
@@ -45,11 +46,16 @@ public:
 	void UpdateEnemyPopCommands2();
 	//void UpdateEnemyPopCommands3();
 
+	// 敵のウェーブステート
+	void ChangeState(std::unique_ptr<EnemyWaveState>_pState);
 
 public: // ゲッター
 
 	// プレイヤーとの距離のゲッター
 	const std::vector<Vector3>& GetToPlayerDistance() const { return toPlayerDistance_; }
+
+	// 敵のウェーブ切り替えフラグ
+	bool IsWaveChange() const { return isWaveChange_; }
 
 public: // セッター
 
@@ -66,14 +72,23 @@ private:
 	bool isEnemyWaiting_ = true;
 	// 敵待機タイマー
 	int32_t enemyWaitingTimer_ = 9;
+	
+	// 敵の数
+	uint32_t enemyCount_ = 0;
+
+	// 敵のウェーブステート
+	std::unique_ptr<EnemyWaveState> pState_ = nullptr;
+	// 敵のウェーブ切り替え
+	bool isWaveChange_ = false;
+	// 敵のウェーブ切り替えインターバル
+	int32_t waveChangeInterval_ = 120;
+
+
 
 	// プレイヤーの位置
 	Vector3 playerPosition_{};
 	// プレイヤーとの距離
 	std::vector<Vector3> toPlayerDistance_;
-
-	// フェーズ数
-	uint32_t phase_ = 0;
 
 };
 

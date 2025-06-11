@@ -1,7 +1,13 @@
 #include "EnemyManager.h"
 
+#include "WaveState/EnemyWaveStage1.h"
+#include "WaveState/EnemyWaveStage2.h"
+
 void EnemyManager::Initialize()
 {
+	// ウェーブステート
+	ChangeState(std::make_unique<EnemyWaveStage1>(this));
+
 	// エネミーのcsvデータを読み込み
 	LoadEnemyPopData1();
 	LoadEnemyPopData2();
@@ -37,25 +43,17 @@ void EnemyManager::Update()
 			}),
 		pEnemies_.end()
 	);
-	// エネミーの出現コマンドの更新
-	UpdateEnemyPopCommands1();
 	
-	if (pEnemies_.size() == 0) // エネミーの数が10未満ならば
+	if (waveChangeInterval_ > 0)
 	{
-		if (phase_ == 1)
-		{
-			phase_ = 2; // 次のフェーズへ
-		}
-	}
-	else if (pEnemies_.size() >= 1 && phase_ == 0)
+		isWaveChange_ = false;
+		waveChangeInterval_--;
+	} 
+	else
 	{
-		phase_ = 1;
-	}
-
-	if (phase_ == 2)
-	{
-		// エネミーの出現コマンドの更新
-		UpdateEnemyPopCommands2();
+		// ステート遷移
+		isWaveChange_ = true;
+		waveChangeInterval_ = 120;
 	}
 	
 }
@@ -269,4 +267,9 @@ void EnemyManager::UpdateEnemyPopCommands2()
 			break;
 		}
 	}
+}
+
+void EnemyManager::ChangeState(std::unique_ptr<EnemyWaveState> _pState)
+{
+	pState_ = std::move(_pState);
 }
