@@ -24,8 +24,22 @@ void MyGame::Initialize()
 	loadAudioThread.join();
 
 	// パーティクルグループの生成
-	//particleManager->CreateParticleGroup("exampleGroup", "resources/images/uvChecker.png", "plane.obj");
-	//particleManager->CreateParticleGroup("secondGroup", "resources/images/monsterBall.png", "plane.obj");
+	//particleManager->CreateParticleGroup("RingGroup", "resources/images/monsterBall.png", "plane.obj", "Ring");
+	particleManager->CreateParticleGroup("slash", "resources/images/gradationLine.png", "plane.obj", "Ring", "Slash");
+	particleManager->CreateParticleGroup("magic1Group", "resources/images/gradationLine.png", "plane.obj", "Cylinder", "Magic1");
+	particleManager->CreateParticleGroup("magic2Group", "resources/images/white.png", "plane.obj", "Triangle", "Magic2");
+	particleManager->CreateParticleGroup("laserGroup", "resources/images/white.png", "plane.obj", "Cylinder", "Laser");
+	particleManager->CreateParticleGroup("petalGroup", "resources/images/white.png", "plane.obj", "Petal", "Petal");
+
+	particleManager->CreateParticleGroup("homingGroup", "resources/images/white.png", "plane.obj", "Ring", "Homing");
+	particleManager->CreateParticleGroup("flameGroup", "resources/images/white.png", "plane.obj", "Ring", "Flame");
+	particleManager->CreateParticleGroup("explosionGroup", "resources/images/white.png", "plane.obj", "Ring", "Explosion");
+	
+
+	particleManager->Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1, 1000000);
+
+	// Cylinderを出すときに向き指定する
+	ParticleMotion::SetDirection("UP");
 
 	useExampleGroup_ = true;
 }
@@ -52,52 +66,193 @@ void MyGame::Update()
 {
 	Framework::Update();
 
+	if (time > 9.0f)
+	{
+		time = 0.0f;
+	}
+
+	time += 1.0f / 60.0f;
+
+	if (std::fmod(time, 1.0f) < 0.1f)
+	{
+		particleManager->Emit("magic2Group", { 0.0f,1.0f,0.0f }, 5, 1);
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_1))
+	{
+		particleManager->Emit("slash", { 0.0f,2.0f,0.0f }, 3, 1);
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_2))
+	{
+		particleManager->Emit("laserGroup", { 0.0f,1.0f,0.0f }, 3, 5);
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_3))
+	{
+		particleManager->Emit("petalGroup", { 0.0f,1.0f,0.0f }, 10, 100);
+		isPetal_ = !isPetal_;
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_4))
+	{
+		particleManager->Emit("homingGroup", { 0.0f,1.0f,0.0f }, 3, 100);
+		isHoming_ = !isHoming_;
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_5))
+	{
+		particleManager->Emit("flameGroup", { 0.0f,1.0f,0.0f }, 5, 100);
+		isFlame_ = !isFlame_;
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_6))
+	{
+		particleManager->Emit("explosionGroup", { 0.0f,1.0f,0.0f }, 3, 100);
+		isExplosion_ = !isExplosion_;
+	}
+
+	if (std::fmod(time, 0.8f) < 0.1f && isPetal_)
+	{
+		particleManager->Emit("petalGroup", { 0.0f,1.0f,0.0f }, 8, 1);
+	}
+
+	if (std::fmod(time, 1.0f) < 0.1f && isHoming_)
+	{
+		particleManager->Emit("homingGroup", { 0.0f,1.0f,0.0f }, 3, 1);
+	}
+
+	if (std::fmod(time, 0.8f) < 0.1f && isFlame_)
+	{
+		particleManager->Emit("flameGroup", { 0.0f,1.0f,0.0f }, 5, 1);
+	}
+
+	if (std::fmod(time, 1.0f) < 0.1f && isExplosion_)
+	{
+		particleManager->Emit("explosionGroup", { 0.0f,1.0f,0.0f }, 3, 1);
+	}
+
+
 
 
 #ifdef _DEBUG
 
-	if (ImGui::CollapsingHeader("particleManager"))
+	particleManager->DebugUI();
+
+	if (ImGui::CollapsingHeader("Grayscale"))
 	{
-		ImGui::Checkbox("Use Example Group", &useExampleGroup_);
+		static bool useGrayscale = false;
+		if (ImGui::Checkbox("UseGrayscale", &useGrayscale))
+		{
+			postEffectManager->SetActiveEffect("Grayscale", useGrayscale);
+		}
+		if (ImGui::Button("1"))
+		{
+			if (useGrayscale_ == 1)
+			{
+				useGrayscale_ = 0;
+			} 
+			else 
+			{
+				useGrayscale_ = 1;
+			}
+		}
+		if (ImGui::Button("2"))
+		{
+			if (useGrayscale_ == 2)
+			{
+				useGrayscale_ = 0;
+			}
+			else
+			{
+				useGrayscale_ = 2;
+			}
+		}
+
+		// 現在値を表示
+		ImGui::Text("useGrayscale_ = %u", useGrayscale_);
+
+		// 値をGrayscalePassに反映
+		postEffectManager->GetPassAs<GrayscalePass>("Grayscale")->SetUseGrayscale(useGrayscale_);
+
+	}
+
+	if (ImGui::CollapsingHeader("Vignette"))
+	{
+
+		static bool useVignette = false;
+		if (ImGui::Checkbox("Use Vignette", &useVignette))
+		{
+			// ポストエフェクトマネージャに切り替えを伝える関数を作る想定
+			postEffectManager->SetActiveEffect("Vignette",useVignette);
+		}
+
+		// VignetteのパラメータをImGuiで調整する
+		if (ImGui::SliderFloat("Vignette Radius", &vignetteRadius_, 0.0f, 5.0f))
+		{
+			postEffectManager->GetPassAs<VignettePass>("Vignette")->SetStrength(vignetteRadius_);
+		}
+	}
+
+	if (ImGui::CollapsingHeader("BoxFilter"))
+	{
+		static bool useBoxFilter = false;
+		if (ImGui::Checkbox("Use BoxFilter", &useBoxFilter))
+		{
+			postEffectManager->SetActiveEffect("BoxFilter", useBoxFilter);
+		}
+
+		static float blurIntensity = 1.0f;
+		ImGui::SliderFloat("Box Blur Intensity", &blurIntensity, 0.1f, 1.0f);
+		postEffectManager->GetPassAs<BoxFilterPass>("BoxFilter")->SetIntensity(blurIntensity);
+	}
+
+	if (ImGui::CollapsingHeader("GaussianFilter"))
+	{
+		static bool useGaussianFilter = false;
+		if (ImGui::Checkbox("Use GaussianFilter", &useGaussianFilter))
+		{
+			postEffectManager->SetActiveEffect("GaussianFilter", useGaussianFilter);
+		}
+
+		static float gaussianIntensity = 1.0f;
+		ImGui::SliderFloat("Gaussian Blur Intensity", &gaussianIntensity, 0.1f, 5.0f);
+		postEffectManager->GetPassAs<GaussianFilterPass>("GaussianFilter")->SetIntensity(gaussianIntensity);
 	}
 
 #endif // _DEBUG
-
-
-	// パーティクルの生成
-	if (useExampleGroup_)
-	{
-		//particleManager->Emit("exampleGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
-	} else
-	{
-		//particleManager->Emit("secondGroup", Vector3(0.0f, 0.0f, 0.0f), 10);
-	}
 
 }
 
 void MyGame::Draw()
 {
-
 	//ゲームの処理		描画処理
 
 	//コマンドを積み込んで確定させる
 
+	// ---------- オフスクリーン描画 ----------
+	renderTexture->BeginRender();
 
 	srvManager->PreDraw();
 
+	sceneManager_->Draw();   // 実際の描画
+	particleManager->Draw();
+
+	renderTexture->EndRender();
+
+
+	// ---------- SwapChainへの描画 ----------
 	dxCommon->PreDraw();
-
-	sceneManager_->Draw();
-
-	//particleManager->Draw();
+	
+	postEffectManager->DrawAll(dxCommon->GetCommandList(), renderTexture->GetGPUHandle(), inputRes.Get(), state);
 
 #ifdef _DEBUG
 	// ImGui描画
 	imGuiManager->Draw();
 #endif // _DEBUG
 
-
 	dxCommon->PostDraw();
+
 
 }
 

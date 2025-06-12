@@ -1,7 +1,9 @@
+
 #include "DirectXCommon.h"
 
 #include <cassert>
 #include <thread>
+#include <d3d12.h>
 
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
@@ -18,19 +20,19 @@ void DirectXCommon::Initialize(WinApp* winApp)
 	assert(winApp);
 	// 借りてきたWinAppのインスタンスを記録
 	this->winApp_ = winApp;
-	
+
 	// FPS固定初期化
 	InitializeFixFPS();
 	// システムタイマーの分解能を上げる
 	timeBeginPeriod(1);
-	
+
 
 	// デバイスの初期化
 	InitializeDevice();
 
 	// コマンド関連初期化
 	InitializeCommand();
-	
+
 	// スワップチェーンの生成
 	CreateSwapChain();
 
@@ -38,19 +40,19 @@ void DirectXCommon::Initialize(WinApp* winApp)
 
 	// ディスクリプタヒープの生成
 	CreateDescriptorHeap();
-	
+
 	// 深度バッファの生成
 	CreateDepthBuffer();
-	
 
-	
+
+
 
 	// レンダーターゲットビューの初期化
 	InitializeFinalRenderTargets();
 
 	// 深度ステンシルビューの初期化
 	InitializeDepthStencilView();
-	
+
 	// フェンス生成
 	CreateFence();
 
@@ -62,7 +64,7 @@ void DirectXCommon::Initialize(WinApp* winApp)
 
 	// DXCコンパイラの生成
 	CreateDXCompiler();
-	
+
 	// ImGuiの初期化
 	//InitializeImGui(); 9章でやる
 
@@ -70,7 +72,7 @@ void DirectXCommon::Initialize(WinApp* winApp)
 	fenceEvent_ = CreateEvent(NULL, FALSE, FALSE, NULL);
 	assert(fenceEvent_ != nullptr);
 
-	
+
 }
 
 void DirectXCommon::ReportLiveObjects()
@@ -204,7 +206,7 @@ void DirectXCommon::InitializeCommand()
 	assert(SUCCEEDED(result));
 
 	// コマンドリストを生成
-	result = device_->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator_.Get(), nullptr,IID_PPV_ARGS(&commandList_));
+	result = device_->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator_.Get(), nullptr, IID_PPV_ARGS(&commandList_));
 	// コマンドリストの生成がうまくいかなかったので起動できない
 	assert(SUCCEEDED(result));
 
@@ -222,7 +224,7 @@ void DirectXCommon::CreateSwapChain()
 	//スワップチェインを生成する
 	swapChainDesc_.Width = WinApp::kClientWidth;						// 画面の幅。ウィンドウのクライアント領域を同じものにしておく
 	swapChainDesc_.Height = WinApp::kClientHeight;						// 画面の高さ。ウィンドウのクライアント領域を同じものにしておく
-	swapChainDesc_.Format = DXGI_FORMAT_R8G8B8A8_UNORM;				    // 色の形式
+	swapChainDesc_.Format = /*DXGI_FORMAT_R8G8B8A8_UNORM_SRGB*/DXGI_FORMAT_R8G8B8A8_UNORM;				    // 色の形式
 	swapChainDesc_.SampleDesc.Count = 1;								// マルチサンプルしない
 	swapChainDesc_.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;	    // 描画のターゲットとして利用する
 	swapChainDesc_.BufferCount = 2;									    // ダブルバッファ
@@ -509,14 +511,14 @@ void DirectXCommon::PostDraw()
 	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	barrier_.Transition.pResource = swapChainResources_[backBufferIndex].Get();
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrier_.Transition.StateAfter =  D3D12_RESOURCE_STATE_PRESENT;
+	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	barrier_.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 
 
 	//TransitonのBarrierを張る
 	commandList_->ResourceBarrier(1, &barrier_);
 
-	
+
 
 	//コマンドリストの内容を確定させる。すべてのコマンドを頼んでからCloseすること
 	result = commandList_->Close();
@@ -639,7 +641,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateBufferResource(size_
 	//頂点リソース用のヒープ設定
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
-	
+
 	//頂点リソースの設定
 	D3D12_RESOURCE_DESC bufferResourceDesc{};
 	//バッファリソース。テクスチャの場合はまた別の設定をする
@@ -659,7 +661,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateBufferResource(size_
 	return bufferResource;
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateTextureResource( const DirectX::TexMetadata& metadata)
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateTextureResource(const DirectX::TexMetadata& metadata)
 {
 	HRESULT result = S_FALSE;
 
@@ -754,7 +756,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateDepthStencilTextureR
 
 	// Resourceの生成
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
-	 hr = device_->CreateCommittedResource(
+	hr = device_->CreateCommittedResource(
 		&heapProperties,                  // Heapの設定
 		D3D12_HEAP_FLAG_NONE,             // Heapの特殊な設定
 		&resourceDesc,                    // Resource設定
@@ -805,6 +807,71 @@ void DirectXCommon::CommandPass()
 	assert(SUCCEEDED(result));
 }
 
+void DirectXCommon::CreateSamplerHeap()
+{
+	D3D12_DESCRIPTOR_HEAP_DESC desc{};
+	desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
+	desc.NumDescriptors = 1;
+	desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	HRESULT hr = device_->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&samplerHeap_));
+	assert(SUCCEEDED(hr) && "Failed to create Sampler Heap!");
+	hr;
+
+	// デバッグログ
+	D3D12_GPU_DESCRIPTOR_HANDLE samplerHeapBase = samplerHeap_->GetGPUDescriptorHandleForHeapStart();
+	OutputDebugStringA(("Sampler Heap Base Address: " + std::to_string(samplerHeapBase.ptr) + "\n").c_str());
+	assert(samplerHeap_ != nullptr && "Sampler Descriptor Heap is null!");
+
+	D3D12_SAMPLER_DESC samplerDesc{};
+	samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+
+	device_->CreateSampler(&samplerDesc, samplerHeap_->GetCPUDescriptorHandleForHeapStart());
+}
+
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateUploadBuffer(size_t sizeInBytes)
+{
+	D3D12_HEAP_PROPERTIES heapProperties = {};
+	heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
+	heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+	heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+
+	D3D12_RESOURCE_DESC resourceDesc = {};
+	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	resourceDesc.Alignment = 0;
+	resourceDesc.Width = sizeInBytes;
+	resourceDesc.Height = 1;
+	resourceDesc.DepthOrArraySize = 1;
+	resourceDesc.MipLevels = 1;
+	resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
+	resourceDesc.SampleDesc.Count = 1;
+	resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> buffer;
+	HRESULT hr = device_->CreateCommittedResource(
+		&heapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&resourceDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&buffer));
+
+	if (FAILED(hr)) {
+		Logger::Log("Failed to create upload buffer!");
+		return nullptr;
+	}
+
+	return buffer;
+}
+
 void DirectXCommon::InitializeFixFPS()
 {
 	// 現在時間を記録する
@@ -824,7 +891,7 @@ void DirectXCommon::UpdateFixFPS()
 	std::chrono::microseconds elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
 
 	// 1/60秒（よりわずかに短い時間）経っていない場合
-	if (elapsed < kMinCheckTime) 
+	if (elapsed < kMinCheckTime)
 	{
 		// 1/60経過するまで微小なスリープを繰り返す
 		while (std::chrono::steady_clock::now() - reference_ < kMinTime)
@@ -836,7 +903,3 @@ void DirectXCommon::UpdateFixFPS()
 	// 現在の時間を記録
 	reference_ = std::chrono::steady_clock::now();
 }
-
-
-
-

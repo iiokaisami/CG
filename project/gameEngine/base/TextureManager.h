@@ -10,7 +10,7 @@ class TextureManager
 private:
 	static TextureManager* instance;
 
-	
+
 
 	TextureManager() = default;
 	~TextureManager() = default;
@@ -26,7 +26,7 @@ public:
 
 
 	// 初期化
-	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager);
+	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
 	// テクスチャファイルの読み込み
 	void LoadTexture(const std::string& filePath);
@@ -46,7 +46,7 @@ public: // ゲッター
 private: // 構造体
 
 	// テクスチャ1枚分のデータ
-	struct TextureData 
+	struct TextureData
 	{
 		DirectX::TexMetadata metadata;
 		Microsoft::WRL::ComPtr<ID3D12Resource> resource;
@@ -59,7 +59,7 @@ private: // 構造体
 private:
 
 	// テクスチャデータ
-	std::unordered_map<std::string,TextureData> textureDatas;
+	std::unordered_map<std::string, TextureData> textureDatas;
 
 	DirectXCommon* dxCommon_ = nullptr;
 
@@ -68,4 +68,3 @@ private:
 	// SRVインデックスの開始番号
 	static uint32_t kSRVIndexTop;
 };
-

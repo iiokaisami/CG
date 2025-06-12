@@ -118,12 +118,22 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveStage1.cpp" />
     <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveStage2.cpp" />
     <ClCompile Include="scene\scene\ClearScene.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\BoxFilterPass.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\BasePostEffectPass.cpp" />
     <ClCompile Include="gameEngine\audio\Audio.cpp" />
     <ClCompile Include="gameEngine\math\Quaternion.cpp" />
     <ClCompile Include="application\BaseObject\GameObject.cpp" />
     <ClCompile Include="application\Objects\Player\Player.cpp" />
     <ClCompile Include="application\Objects\Player\Bullet\PlayerBullet.cpp" />
     <ClCompile Include="scene\scene\GameOverScene.cpp" />
+    <ClCompile Include="gameEngine\base\RenderTexture.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\IPostEffectPass.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\GrayscalePass.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\PostEffectManager.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\GaussianFilterPass.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\NoneEffectPass.cpp" />
+    <ClCompile Include="gameEngine\particle\MeshBuilder.cpp" />
+    <ClCompile Include="gameEngine\particle\ParticleMotion.cpp" />
     <ClCompile Include="scene\base\SceneFactory.cpp" />
     <ClCompile Include="scene\base\SceneManager.cpp" />
     <ClCompile Include="scene\base\BaseScene.cpp" />
@@ -153,10 +163,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="gameEngine\math\Vector3.cpp" />
     <ClCompile Include="gameEngine\base\SrvManager.cpp" />
     <ClCompile Include="scene\base\MyGame.cpp" />
-    <ClCompile Include="Particle.cpp" />
-    <ClCompile Include="ParticleEmitter.cpp" />
-    <ClCompile Include="ParticleManager.cpp" />
+    <ClCompile Include="gameEngine\particle\Particle.cpp" />
+    <ClCompile Include="gameEngine\particle\ParticleEmitter.cpp" />
+    <ClCompile Include="gameEngine\particle\ParticleManager.cpp" />
     <ClCompile Include="scene\scene\TitleScene.cpp" />
+    <ClCompile Include="gameEngine\base\postEffect\VignettePass.cpp" />
     <ClCompile Include="application\Objects\Field\Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -170,12 +181,22 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveStage1.h" />
     <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveStage2.h" />
     <ClInclude Include="scene\scene\ClearScene.h" />
+    <ClInclude Include="gameEngine\base\postEffect\BoxFilterPass.h" />
+    <ClInclude Include="gameEngine\base\postEffect\BasePostEffectPass.h" />
     <ClInclude Include="gameEngine\audio\Audio.h" />
     <ClInclude Include="gameEngine\math\Quaternion.h" />
     <ClInclude Include="application\BaseObject\GameObject.h" />
     <ClInclude Include="application\Objects\Player\Player.h" />
     <ClInclude Include="application\Objects\Player\Bullet\PlayerBullet.h" />
     <ClInclude Include="scene\scene\GameOverScene.h" />
+    <ClInclude Include="gameEngine\base\RenderTexture.h" />
+    <ClInclude Include="gameEngine\base\postEffect\IPostEffectPass.h" />
+    <ClInclude Include="gameEngine\base\postEffect\GrayscalePass.h" />
+    <ClInclude Include="gameEngine\base\postEffect\PostEffectManager.h" />
+    <ClInclude Include="gameEngine\base\postEffect\GaussianFilterPass.h" />
+    <ClInclude Include="gameEngine\base\postEffect\NoneEffectPass.h" />
+    <ClInclude Include="gameEngine\particle\MeshBuilder.h" />
+    <ClInclude Include="gameEngine\particle\ParticleMotion.h" />
     <ClInclude Include="scene\base\SceneFactory.h" />
     <ClInclude Include="scene\base\AbstractSceneFactory.h" />
     <ClInclude Include="scene\base\SceneManager.h" />
@@ -205,12 +226,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="scene\scene\GamePlayScene.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="scene\base\MyGame.h" />
-    <ClInclude Include="Particle.h" />
-    <ClInclude Include="ParticleEmitter.h" />
-    <ClInclude Include="ParticleManager.h" />
+    <ClInclude Include="gameEngine\particle\Particle.h" />
+    <ClInclude Include="gameEngine\particle\ParticleEmitter.h" />
+    <ClInclude Include="gameEngine\particle\ParticleManager.h" />
     <ClInclude Include="scene\scene\TitleScene.h" />
     <ClInclude Include="application\Collider\Shape.h" />
     <ClInclude Include="application\Objects\Field\Wall.h" />
+    <ClInclude Include="gameEngine\base\postEffect\VignettePass.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
@@ -221,11 +243,48 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\BoxFilter.hlsli" />
+    <None Include="resources\shaders\GaussianFilter.hlsli" />
+    <None Include="resources\shaders\Grayscale.hlsli" />
+    <None Include="resources\shaders\NoneEffect.hlsli" />
     <None Include="resources\shaders\Object3d.hlsli" />
     <None Include="resources\shaders\Particle.hlsli" />
     <None Include="resources\shaders\Sprite.hlsli" />
+    <None Include="resources\shaders\Vignette.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="resources\shaders\BoxFilter.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\BoxFilter.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\GaussianFilter.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\GaussianFilter.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Grayscale.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Grayscale.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\NoneEffect.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\NoneEffect.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="resources\shaders\Object3d.PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -241,6 +300,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <FxCompile Include="resources\shaders\Particle.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Vignette.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Vignette.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

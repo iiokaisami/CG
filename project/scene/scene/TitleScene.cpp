@@ -20,7 +20,10 @@ void TitleScene::Initialize()
 	camera_->SetRotate(cameraRotate_);
 
 	// --- 3Dオブジェクト ---
-	for (uint32_t i = 0; i < 3; ++i)
+	ModelManager::GetInstance()->LoadModel("sphere.obj");
+	ModelManager::GetInstance()->LoadModel("terrain.obj");
+
+	for (uint32_t i = 0; i < 2; ++i)
 	{
 		Object3d* object = new Object3d();
 		if (i == 0)
@@ -31,10 +34,7 @@ void TitleScene::Initialize()
 		{
 			object->Initialize("terrain.obj");
 		}
-		if (i == 2)
-		{
-			object->Initialize("plane.obj");
-		}
+		
 		position_ = { 0.0f,0.0f,5.0f };
 		scale_ = { 1.0f,1.0f,1.0f };
 		object->SetPosition(position_);
@@ -196,14 +196,11 @@ void TitleScene::Draw()
 
 	//for (auto& obj : object3ds)
 	//{
-		//obj->Draw();
+	//	obj->Draw();
 	//}
-	object3ds[0]->Draw();
-	if (isTerrainDraw)
-	{
-		object3ds[1]->Draw();
-	}
-	object3ds[2]->Draw();
+
+	object3ds[1]->Draw();
+	
 }
 
 void TitleScene::SetLightSettings()

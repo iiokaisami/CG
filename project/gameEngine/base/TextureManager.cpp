@@ -21,7 +21,7 @@ void TextureManager::Finalize()
 	instance = nullptr;
 }
 
-void TextureManager::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager)
+void TextureManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
 	dxCommon_ = dxCommon;
 	srvManager_ = srvManager;
@@ -49,7 +49,7 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	//ミップマップの作成
 	DirectX::ScratchImage mipImages{};
 	hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
-	
+
 	// テクスチャデータを追加
 	// 追加したテクスチャデータの参照を取得する
 	TextureData& textureData = textureDatas[filePath];
@@ -121,4 +121,3 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const std::string& f
 	TextureData& textureData = it->second;
 	return textureData.srvHandleGPU;
 }
-

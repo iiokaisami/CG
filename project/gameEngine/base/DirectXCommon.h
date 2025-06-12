@@ -1,3 +1,4 @@
+
 #pragma once
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -161,6 +162,9 @@ public:
 
 	void CommandPass();
 
+	void CreateSamplerHeap();
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateUploadBuffer(size_t sizeInBytes);
 
 public: // ゲッター
 
@@ -182,6 +186,20 @@ public: // ゲッター
 	size_t GetBackBufferCount() const { return backBuffers_.size(); }
 	// swapChainDescを取得
 	DXGI_SWAP_CHAIN_DESC1 GetSwapChainDesc() { return swapChainDesc_; }
+
+	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle() { return dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(); }
+	
+	size_t GetDescriptorSizeRTV() { return descriptorSizeRTV_; }
+	
+	// Sampler用ディスクリプタヒープを取得する関数
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> GetSamplerHeap() const { return samplerHeap_; }
+	
+	// Sampler用ディスクリプタヒープのサイズを取得する関数
+	D3D12_GPU_DESCRIPTOR_HANDLE GetSamplerHandle() const
+	{
+		assert(samplerHeap_ != nullptr && "Sampler Heap is not initialized!");
+		return samplerHeap_->GetGPUDescriptorHandleForHeapStart();
+	}
 
 private:
 
@@ -227,13 +245,15 @@ private:
 
 	HANDLE fenceEvent_ = nullptr;
 
-	 uint32_t descriptorSizeSRV_ = 0;
-	 uint32_t descriptorSizeRTV_ = 0;
-	 uint32_t descriptorSizeDSV_ = 0;
+	uint32_t descriptorSizeSRV_ = 0;
+	uint32_t descriptorSizeRTV_ = 0;
+	uint32_t descriptorSizeDSV_ = 0;
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_ = nullptr;
+	// Sampler用ディスクリプタヒープ
+	ID3D12DescriptorHeap* samplerHeap_ = nullptr;
 
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers_;
 
@@ -254,8 +274,10 @@ private:
 	// ビューポート
 	D3D12_VIEWPORT viewport_{};
 	// シザー矩形
-	D3D12_RECT scissorRect_{}; 
+	D3D12_RECT scissorRect_{};
 
 	// 記録時間（FPS固定）
 	std::chrono::steady_clock::time_point reference_;
+
+
 };
