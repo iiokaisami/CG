@@ -179,7 +179,7 @@ void GamePlayScene::Update()
 #endif // _DEBUG
 
 
-	if (Input::GetInstance()->TriggerKey(DIK_UP))
+	if (Input::GetInstance()->TriggerKey(DIK_UP) or pEnemyManager_->IsAllEnemyDefeated())
 	{
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("CLEAR");
