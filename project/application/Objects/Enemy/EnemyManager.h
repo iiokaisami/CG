@@ -3,7 +3,7 @@
 #include <vector>
 #include <Framework.h>
 
-#include "../application/Objects/Enemy/Enemy.h"
+#include "Enemy.h"
 #include "WaveState/EnemyWaveState.h"
 
 class EnemyManager

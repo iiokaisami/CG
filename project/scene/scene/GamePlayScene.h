@@ -3,11 +3,11 @@
 #include <Framework.h>
 
 #include "../base/BaseScene.h"
-#include "../application/Objects/Player/Player.h"
-#include "../application/Objects/Enemy/EnemyManager.h"
-#include "../application/Objects/Field/Field.h"
-#include "../application/Objects/Field/Wall.h"
-#include "../application/Collider/ColliderManager.h"
+#include "../../application/Objects/Player/Player.h"
+#include "../../application/Objects/Enemy/EnemyManager.h"
+#include "../../application/Objects/Field/Field.h"
+#include "../../application/Objects/Field/Wall.h"
+#include "../../application/Collider/ColliderManager.h"
 
 class GamePlayScene : public BaseScene
 {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../application/BaseObject/GameObject.h"
-#include"../../application/Collider/ColliderManager.h"
+#include "../../../BaseObject/GameObject.h"
+#include"../../../Collider/ColliderManager.h"
 
 #include <Object3d.h>
 #include <Sprite.h>

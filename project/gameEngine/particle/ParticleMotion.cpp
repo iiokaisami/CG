@@ -159,6 +159,7 @@ Particle ParticleMotion::MakeCylinder(std::mt19937& rand, const Vector3& positio
 
 Particle ParticleMotion::MakeSlash(std::mt19937& rand, const Vector3& translate)
 {
+    rand;
     std::uniform_real_distribution<float> scaleDist(0.5f, 1.5f);
     std::uniform_real_distribution<float> rotateDist(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
 
