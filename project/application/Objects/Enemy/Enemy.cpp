@@ -233,6 +233,9 @@ void Enemy::OnCollisionTrigger(const Collider* _other)
 		}
         else
 		{
+            // パーティクル
+            ParticleEmitter::Emit("explosionGroup", position_, 6);
+
 			isDead_ = true;
 		}
 	}

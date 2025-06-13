@@ -4,6 +4,7 @@
 #include "Bullet/EnemyBullet.h"
 #include "../gameEngine/math/MyMath.h"
 #include"../application/Collider/ColliderManager.h"
+#include "../gameEngine/particle/ParticleEmitter.h"
 
 #include <Object3d.h>
 #include <Sprite.h>

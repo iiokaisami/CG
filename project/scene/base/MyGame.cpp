@@ -32,7 +32,7 @@ void MyGame::Initialize()
 
 	particleManager->CreateParticleGroup("homingGroup", "resources/images/white.png", "plane.obj", "Ring", "Homing");
 	particleManager->CreateParticleGroup("flameGroup", "resources/images/white.png", "plane.obj", "Ring", "Flame");
-	particleManager->CreateParticleGroup("explosionGroup", "resources/images/white.png", "plane.obj", "Ring", "Explosion");
+	particleManager->CreateParticleGroup("explosionGroup", "resources/images/white.png", "plane.obj", "Helix", "Explosion");
 	
 
 	particleManager->Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1, 1000000);
