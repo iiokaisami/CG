@@ -163,8 +163,8 @@ Particle ParticleMotion::MakeSlash(std::mt19937& rand, const Vector3& translate)
     std::uniform_real_distribution<float> rotateDist(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
 
     Particle p;
-    p.transform.scale = { 0.1f, scaleDist(rand), 1.0f };
-    p.transform.rotate = { 0.0f, 0.0f, rotateDist(rand) };
+    p.transform.scale = {/* 0.1f, scaleDist(rand)*/1.0f,1.0f, 1.0f };
+    p.transform.rotate = { 0.0f, 0.0f, 0.0f/*rotateDist(rand)*/ };
     p.transform.translate = translate;
     p.velocity = { 0, 0, 0 };
     p.color = { 1.0f, 1.0f, 1.0f, 1.0f };

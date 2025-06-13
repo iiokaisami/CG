@@ -7,7 +7,7 @@ void Player::Initialize()
 	object_->Initialize("cube.obj");
 
 
-	position_ = { 0.2f,0.7f,0.2f };
+	position_ = { 0.2f,0.7f,-1.2f };
 	object_->SetPosition(position_);
 	object_->SetRotate(rotation_);
 	
@@ -32,6 +32,9 @@ void Player::Initialize()
 	// ステータス
 	hp_ = 3;
 	isDead_ = false;
+
+	// パーティクル
+
 }
 
 void Player::Finalize()

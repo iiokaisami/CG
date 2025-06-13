@@ -60,7 +60,7 @@ void EnemyBullet::Draw2D()
 
 void EnemyBullet::ImGuiDraw()
 {
-	ImGui::Begin("PlayerBullet");
+	ImGui::Begin("EnemyBullet");
 
 	ImGui::SliderFloat3("position", &position_.x, -30.0f, 30.0f);
 	ImGui::SliderFloat3("rotation", &rotation_.x, -3.14f, 3.14f);

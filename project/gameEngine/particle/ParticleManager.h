@@ -43,6 +43,16 @@ struct ParticleGroup
 	std::string motionName = "Homing";
 };
 
+struct EmitSetting {
+	std::string groupName;
+	std::string motionName;
+	Vector3 emitPosition;
+	float interval;
+	uint32_t emitCount = 1;
+	float timer = 0.0f;
+	bool isLooping = false;
+};
+
 class ParticleManager
 {
 public:
@@ -76,6 +86,8 @@ public:
 	void Draw();
 
 	void Emit(const std::string groupName, const Vector3& position, uint32_t count, uint32_t interval);
+
+	void AddEmitterSetting(const EmitSetting& setting);
 
 	// 形、動きをそれぞれ確認できる関数
 	void DebugUI();
@@ -131,16 +143,6 @@ private: // 構造体
 	{
 		float position[3];
 		float color[4];
-	};
-
-	struct EmitSetting {
-		std::string groupName;
-		std::string motionName;
-		Vector3 emitPosition;
-		float interval;
-		uint32_t emitCount = 1;
-		float timer = 0.0f;
-		bool isLooping = false;
 	};
 
 private:

@@ -5,7 +5,7 @@ void Wall::Initialize()
 	// --- 3Dオブジェクト ---
 	object_ = std::make_unique<Object3d>();
 	object_->Initialize("cube.obj");
-	position_ = { 0.0f,0.0f,0.0f };
+	position_ = { 0.0f,0.0f,-0.5f };
 	object_->SetPosition(position_);
 	object_->SetRotate(rotation_);
 	
@@ -33,13 +33,16 @@ void Wall::Finalize()
 
 void Wall::Update()
 {
+	// オブジェクトの更新
 	object_->SetPosition(position_);
 	object_->SetRotate(rotation_);
 	object_->SetScale(scale_);
 	object_->Update();
+
+	// 当たり判定更新
 	aabb_.min = position_ - object_->GetScale();
 	aabb_.max = position_ + object_->GetScale();
-	aabb_.max.y += 1.0f;
+	aabb_.max.y += 1.0f; // 見た目よりも縦に大きく
 	collider_.SetPosition(position_);
 }
 

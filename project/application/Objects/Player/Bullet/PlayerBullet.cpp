@@ -26,6 +26,7 @@ void PlayerBullet::Initialize()
 	collider_.SetOnCollisionTrigger(std::bind(&PlayerBullet::OnCollisionTrigger, this, std::placeholders::_1));
 	colliderManager_->RegisterCollider(&collider_);
 
+
 }
 
 void PlayerBullet::Finalize()
@@ -48,10 +49,15 @@ void PlayerBullet::Update()
 	aabb_.max = position_ + object_->GetScale();
 	collider_.SetPosition(position_);
 
+	// パーティクル
+	ParticleEmitter::Emit("slash", position_, 1);
+
 	//時間経過でデス
 	if (--deathTimer_ <= 0) {
 		isDead_ = true;
 	}
+
+
 }
 
 void PlayerBullet::Draw()

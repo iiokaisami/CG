@@ -52,7 +52,7 @@ void GamePlayScene::Initialize()
 	{
 		auto wall = std::make_unique<Wall>();
 		wall->Initialize();
-		wall->SetPosition({ static_cast<float>(i * 5.0f),0.0f,3.0f });
+		wall->SetPosition({ static_cast<float>(i * 5.0f),0.0f,1.5f });
 		wall->SetRotation({ 0.0f, i * 0.7f, 0.0f });
 		pWalls_.push_back(std::move(wall));
 	}

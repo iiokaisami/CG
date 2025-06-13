@@ -324,7 +324,7 @@ void ParticleManager::Update()
             (*it).color.w = alpha;
 
 
-            Matrix4x4 SRT =
+           /* Matrix4x4 SRT =
                 MakeScaleMatrix((*it).transform.scale) *
                 MakeRotateXMatrix((*it).transform.rotate.x) *
                 MakeRotateYMatrix((*it).transform.rotate.y) *
@@ -332,6 +332,22 @@ void ParticleManager::Update()
                 MakeTranslateMatrix((*it).transform.translate);
 
             Matrix4x4 worldMatrix = SRT * billboardMatrix;
+            Matrix4x4 wVPMatrix = worldMatrix * viewMatrix * projectionMatrix;*/
+
+
+            // SRTからTranslateを分離
+            Matrix4x4 SR =
+                MakeScaleMatrix((*it).transform.scale) *
+                MakeRotateXMatrix((*it).transform.rotate.x) *
+                MakeRotateYMatrix((*it).transform.rotate.y) *
+                MakeRotateZMatrix((*it).transform.rotate.z);
+
+            // ビルボード行列をSRに掛ける
+            Matrix4x4 billboardSR = SR * billboardMatrix;
+
+            // 最後にTranslateを掛ける
+            Matrix4x4 worldMatrix = billboardSR * MakeTranslateMatrix((*it).transform.translate);
+
             Matrix4x4 wVPMatrix = worldMatrix * viewMatrix * projectionMatrix;
 
 
@@ -438,6 +454,19 @@ void ParticleManager::Emit(const std::string groupName, const Vector3& position,
 
     group.instanceCount = static_cast<uint32_t>(group.particleList.size());
 
+}
+
+void ParticleManager::AddEmitterSetting(const EmitSetting& setting)
+{
+    EmitSetting native;
+    native.groupName = setting.groupName;
+    native.motionName = setting.motionName;
+    native.emitPosition = setting.emitPosition;
+    native.interval = setting.interval;
+    native.emitCount = setting.emitCount;
+    native.timer = setting.timer;
+    native.isLooping = setting.isLooping;
+    emitSettings_.push_back(native);
 }
 
 void ParticleManager::DebugUI()
