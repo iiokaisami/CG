@@ -117,6 +117,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveState.cpp" />
     <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveStage1.cpp" />
     <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveStage2.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorAttack.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorDead.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorHitReact.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorMove.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorSpawn.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorState.cpp" />
     <ClCompile Include="scene\scene\ClearScene.cpp" />
     <ClCompile Include="gameEngine\base\postEffect\BoxFilterPass.cpp" />
     <ClCompile Include="gameEngine\base\postEffect\BasePostEffectPass.cpp" />
@@ -180,6 +186,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveState.h" />
     <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveStage1.h" />
     <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveStage2.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorAttack.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorDead.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorHitReact.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorMove.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorSpawn.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorState.h" />
+    <ClInclude Include="gameEngine\math\Ease.h" />
     <ClInclude Include="scene\scene\ClearScene.h" />
     <ClInclude Include="gameEngine\base\postEffect\BoxFilterPass.h" />
     <ClInclude Include="gameEngine\base\postEffect\BasePostEffectPass.h" />

@@ -35,15 +35,13 @@ public:
 	// 共通描画設定
 	void CommonDrawSetting();
 
-	//-----------ゲッター----------//
-
-	DirectXCommon* GetDxCommon() const { return dxCommon_; }
-
 public: // セッター
 
 	void SetDefaultCamera(std::shared_ptr<Camera> camera) { defaultCamera_ = camera; }
 
 public: // ゲッター
+
+	DirectXCommon* GetDxCommon() const { return dxCommon_; }
 
 	std::shared_ptr<Camera> GetDefaultCamera() const { return defaultCamera_; }
 

@@ -41,6 +41,21 @@ public:
 	// 攻撃
 	void Attack();
 
+	// 出現モーション
+	void PopMotion();
+
+	// 移動モーション
+	void MoveMotion();
+
+	// 攻撃モーション
+	void AttackMotion();
+
+	// 被弾モーション
+	void HitMotion();
+
+	// 死亡モーション
+	void DeadMotion();
+
 private: // 衝突判定
 
 	// 衝突時の処理
@@ -68,6 +83,19 @@ public: // セッター
 	// エネミーの位置をセット
 	void SetEnemyPosition(Vector3 _enemyPosition) { position_ = _enemyPosition; }
 
+public: // 構造体
+
+	struct Motion
+	{
+		// モーションがアクティブかどうか
+		bool isActive = false;
+		// カウント
+		uint32_t count = 0;
+		// Maxカウント
+		uint32_t maxCount = 30;
+
+	};
+
 private:
 
 	// 3Dオブジェクト
@@ -88,11 +116,27 @@ private:
 	// 追尾停止距離
 	const float kStopChasingDistance = 15.0f;
 
+	// 出現モーション
+	Motion popMotion_ = {false,0,30};
+	// 移動モーション
+	Motion moveMotion_ = { false,0,30 };
+	// 攻撃モーション
+	Motion attackMotion_ = { false,0,30 };
+	// 被弾モーション
+	Motion hitMotion_ = { false,0,30 };
+	// 死亡モーション
+	Motion deadMotion_ = { false,0,30 };
+
 	// 死亡
 	bool isDead_ = false;
 
 	// 弾
 	std::vector<std::unique_ptr<EnemyBullet>> pBullets_ = {};
+
+	// 攻撃フラグ
+	bool isAttack_ = false;
+	// 攻撃クールタイム
+	uint32_t attackCooldown_ = 0;
 
 	// 壁に衝突したかどうか
 	bool isWallCollision_ = false;

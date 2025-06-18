@@ -1,5 +1,7 @@
 #include "Enemy.h"
 
+#include <Ease.h>
+
 void Enemy::Initialize()
 {
     // --- 3Dオブジェクト ---
@@ -12,8 +14,8 @@ void Enemy::Initialize()
     object_->SetRotate(rotation_);
 
     // 仮置き
-    scale_ = { 1.0f,1.0f,1.0f };
-    object_->SetScale(scale_);
+    scale_ = { 0.1f,0.1f,0.1f };
+	object_->SetScale(scale_);
 
     colliderManager_ = ColliderManager::GetInstance();
 
@@ -31,7 +33,7 @@ void Enemy::Initialize()
     // ステータス
     hp_ = 3;
     isDead_ = false;
-
+	popMotion_.isActive = true;
 }
 
 void Enemy::Finalize()
@@ -65,11 +67,40 @@ void Enemy::Update()
 	object_->SetScale(scale_);
     object_->Update();
 
-    // 移動
-	Move();
+    ///////////////////////////////////////////////
 
-    // 攻撃
-	Attack();
+    if (popMotion_.isActive)
+    {
+        PopMotion();
+    }
+    if (moveMotion_.isActive)
+    {
+        MoveMotion();
+    }
+    if (attackMotion_.isActive)
+    {
+        AttackMotion();
+    }
+    if (hitMotion_.isActive)
+    {
+        HitMotion();
+    }
+    if (deadMotion_.isActive)
+    {
+        DeadMotion();
+    }
+
+    ///////////////////////////////////////////////
+
+    // 出現モーションが終わるまで動かない
+	if (!popMotion_.isActive)
+	{
+        // 移動
+        Move();
+	
+        // 攻撃
+        Attack();
+    }
 
 	// 敵の弾の削除
     pBullets_.erase(
@@ -104,7 +135,7 @@ void Enemy::Update()
         isWallCollision_ = false;
     }
 
-
+    
 }
 
 void Enemy::Draw()
@@ -148,10 +179,17 @@ void Enemy::Move()
     {
         // プレイヤーとの距離が一定以下の場合、追尾を停止(0にすると色々まずかった)
         moveVelocity_ = { 0.000001f, 0.0f, 0.0f };
+
+		// 移動モーションを無効にする
+        moveMotion_.isActive = false;
+        
         return;
     }
     else
     {
+        // 追尾中は移動モーションを有効にする
+		moveMotion_.isActive = true; 
+
         // 敵弾から自キャラへのベクトルを計算
         toPlayer_ = playerPosition_ - position_;
 
@@ -183,11 +221,17 @@ void Enemy::Attack()
     if (distanceToPlayer <= kStopChasingDistance)
     {
         // 一定間隔で弾を発射
-        static int attackCooldown = 0;
-        if (attackCooldown <= 0)
+        if (attackCooldown_ <= 0)
         {
-            const int bulletCount = 36; // 弾の数
-            const float angleStep = 360.0f / bulletCount; // 弾の間隔角度
+            // 攻撃モーションを開始
+			attackMotion_.isActive = true; 
+        }
+
+        if (isAttack_)
+        {
+            // 弾の数と間隔角度
+            const int bulletCount = 36; 
+            const float angleStep = 360.0f / bulletCount;
 
             for (int i = 0; i < bulletCount; ++i)
             {
@@ -195,7 +239,8 @@ void Enemy::Attack()
                 float angle = DirectX::XMConvertToRadians(i * angleStep);
 
                 // 弾の方向を計算
-                Vector3 bulletDirection = {
+                Vector3 bulletDirection = 
+                {
                     std::cos(angle), // X成分
                     0.0f,            // Y成分
                     std::sin(angle)  // Z成分
@@ -205,7 +250,7 @@ void Enemy::Attack()
                 auto bullet = std::make_unique<EnemyBullet>();
                 bullet->Initialize();
                 bullet->SetPosition({ position_.x,position_.y + 0.5f,position_.z }); // 敵の位置より少し上を初期位置に設定
-                bullet->SetVelocity(bulletDirection * 0.2f); // 弾の速度を設定
+                bullet->SetVelocity(bulletDirection * 0.2f);
                 bullet->UpdateModel();
 
                 // 弾をリストに追加
@@ -213,13 +258,161 @@ void Enemy::Attack()
             }
 
             // クールダウンを設定
-            attackCooldown = 60 * 4;
+            attackCooldown_ = 60 * 4;
         } 
         else
         {
-            --attackCooldown; // クールダウンを減少
+			if (attackCooldown_ >= 300)
+			{
+                attackCooldown_ = 60 * 4;
+			}
+
+            // クールダウンを減少
+            --attackCooldown_;
         }
     }
+}
+
+void Enemy::PopMotion()
+{
+    float t = float(popMotion_.count) / popMotion_.maxCount;
+    float scale = Ease::OutBack(t); // 0〜1 の範囲で膨らみつつ出現
+	Vector3 one(1.0f, 1.0f, 1.0f);
+    scale_ = one * scale;
+
+	if (popMotion_.count < popMotion_.maxCount)
+	{
+		popMotion_.count++;
+	}
+    else
+	{
+        // モーション終了 カウントリセット
+		popMotion_.isActive = false; 
+        popMotion_.count = 0;
+	}
+}
+
+void Enemy::MoveMotion()
+{
+    // 進行度（0〜1）
+    float t = float(moveMotion_.count) / moveMotion_.maxCount;
+
+    // 上下にゆっくり波打つ動き
+    float wave = std::sin(t * std::numbers::pi_v<float>) * 0.3f;
+
+   // position_ += Vector3(0.0f, wave, 0.0f);
+
+	//SetPosition(position_ + Vector3(0.0f, wave, 0.0f));
+
+	if (moveMotion_.count < moveMotion_.maxCount)
+	{
+		moveMotion_.count++;
+	}
+    else
+	{
+        // モーション終了 カウントリセット
+		moveMotion_.isActive = false;
+		moveMotion_.count = 0; 
+	}
+}
+
+void Enemy::AttackMotion()
+{
+    // 溜め
+    if (attackMotion_.count <= 20)
+    {
+        float t = float(attackMotion_.count) / 20.0f; // 0〜1
+        float ease = (t <= 0.5f)
+            ? Ease::OutSine(t * 2.0f)               // 0〜0.5  → 縮小
+            : Ease::OutSine((1.0f - t) * 2.0f);     // 0.5〜1  → 元に戻す
+
+        float scaleValue = 1.0f - ease * 0.3f;
+        scale_ = Vector3(scaleValue, scaleValue, scaleValue);
+
+        float shake = ((attackMotion_.count % 2 == 0) ? 1 : -1) * 0.05f;
+        object_->SetPosition(position_ + Vector3(shake, 0, shake));
+    }
+    // 攻撃
+    else
+    {
+        // 攻撃フラグをリセット
+		isAttack_ = false;
+
+        if (attackMotion_.count == 21)
+        {
+            // 攻撃フラグを立てる
+            isAttack_ = true;
+        }
+
+        // Y軸回転
+        rotation_.y += 0.3f;
+        object_->SetRotate(rotation_);
+    }
+
+
+	if (attackMotion_.count < attackMotion_.maxCount)
+	{
+        attackMotion_.count++;
+	}
+    else
+	{
+		// モーション終了 カウントリセット
+		attackMotion_.isActive = false;
+        attackMotion_.count = 0; 
+	}
+}
+
+void Enemy::HitMotion()
+{
+    Vector3 shakeOffset =
+    {
+    ((hitMotion_.count % 2 == 0) ? 1.0f : -1.0f) * 0.15f,
+	0.0f, // Y軸は揺らさない
+    ((hitMotion_.count % 3 == 0) ? 1.0f : -1.0f) * 0.1f
+    };
+
+    SetPosition(position_ + shakeOffset);
+
+	if (hitMotion_.count < hitMotion_.maxCount)
+	{
+		hitMotion_.count++;
+	}
+    else
+	{
+        // モーション終了 カウントリセット
+		hitMotion_.isActive = false;
+		hitMotion_.count = 0;
+	}
+}
+
+void Enemy::DeadMotion()
+{
+    float t = float(deadMotion_.count) / deadMotion_.maxCount;
+
+    if (deadMotion_.count == 0) 
+    {
+        scale_ = Vector3(1.8f, 1.8f, 1.8f); // 初回だけ一気に膨らむ
+    }
+
+    // 徐々に縮む演出（1.8 → 0.0）
+    float scale = Lerp(1.8f, 0.0f, Ease::InCubic(t));
+    scale_ = (Vector3(scale, scale, scale));
+
+    position_.y += Ease::OutQuad(t) * 0.1f;
+
+    rotation_.y += 0.1f;
+	rotation_.x += 0.1f;
+
+	if (deadMotion_.count < deadMotion_.maxCount)
+	{
+		deadMotion_.count++;
+	}
+    else
+	{
+		// モーション終了&死亡処理
+		deadMotion_.isActive = false; 
+		isDead_ = true;
+	}
 }
 
 void Enemy::OnCollisionTrigger(const Collider* _other)
@@ -229,14 +422,19 @@ void Enemy::OnCollisionTrigger(const Collider* _other)
 		// プレイヤーの弾と衝突した場合
 		if (hp_ > 0)
 		{
+            // HP減少
 			hp_--;
+
+            // 被弾モーションを開始
+			hitMotion_.isActive = true;
 		}
         else
 		{
             // パーティクル
             ParticleEmitter::Emit("explosionGroup", position_, 6);
 
-			isDead_ = true;
+            // 死亡モーションを開始
+			deadMotion_.isActive = true;
 		}
 	}
 }

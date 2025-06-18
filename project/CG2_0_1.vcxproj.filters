@@ -255,6 +255,24 @@
     <ClCompile Include="gameEngine\particle\ParticleMotion.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorSpawn.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorMove.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorHitReact.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorAttack.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorDead.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameEngine\3d\Object3d.h">
@@ -441,6 +459,27 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="gameEngine\particle\ParticleMotion.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="gameEngine\math\Ease.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorState.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorSpawn.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorMove.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorHitReact.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorAttack.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorDead.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

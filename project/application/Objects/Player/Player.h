@@ -49,7 +49,7 @@ private: // 衝突判定
 	void OnCollision(const Collider* _other);
 
 	// 壁に衝突したときの処理
-	void WallCollision();
+	void CorrectOverlap();
 
 public: // ゲッター
 

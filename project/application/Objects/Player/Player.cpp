@@ -92,7 +92,7 @@ void Player::Update()
 	if (isWallCollision_)
 	{
 		// 壁に衝突した場合の処理
-		WallCollision();
+		CorrectOverlap();
 		isWallCollision_ = false;
 	}
 
@@ -217,7 +217,7 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		}
 		else
 		{
-			isDead_ = true;
+			//isDead_ = true;
 		}
 
 		isHitMoment_ = true;
@@ -249,7 +249,7 @@ void Player::OnCollision(const Collider* _other)
 	}
 }
 
-void Player::WallCollision()
+void Player::CorrectOverlap()
 {
 	Vector3 penetrationVector{};
 
