@@ -177,7 +177,7 @@
     <ClCompile Include="gameEngine\audio\Audio.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="LevelDataLoader.cpp">
+    <ClCompile Include="level_editor\LevelDataLoader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -287,7 +287,7 @@
     <ClInclude Include="gameEngine\audio\Audio.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="LevelDataLoader.h">
+    <ClInclude Include="level_editor\LevelDataLoader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

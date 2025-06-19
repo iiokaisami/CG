@@ -9,7 +9,7 @@
 #include <Model.h>
 #include <Object3d.h>
 
-#include "externals/json/json.hpp"
+#include "../externals/json/json.hpp"
 
 class LevelData 
 {
@@ -17,10 +17,11 @@ public:
 
 	struct ObjectData 
 	{
+		std::string type;
 		std::string fileName;
-		Vector3 translation{};
-		Vector3 rotation{};
-		Vector3 scale{ 1.0f, 1.0f, 1.0f };
+		Vector3 translation;
+		Vector3 rotation;
+		Vector3 scale;
 	};
 
 	std::vector<ObjectData> objects;
@@ -33,11 +34,11 @@ public:
 	static constexpr const char* kDefaultBaseDirectory = "resources/levels/";
 	static constexpr const char* kExtension = ".json";
 
-	LevelData* LoadLevelData(const std::string& fileName);
+	static std::unique_ptr<LevelData> LoadLevelData(const std::string& fileName);
 
 private:
 
-	void LoadObjectsRecursive(const nlohmann::json& objectsJson, LevelData& levelData);
+	static void LoadObjectRecursive(const nlohmann::json& objectJson, LevelData* levelData);
 
 	// ファイル読み込み 以下処理
 	/*
@@ -189,33 +190,4 @@ for (const auto& obj : levelData->objects) {
 	// シーンに登録
 	objects.push_back(newObj);
 }
-*/
-
-// 以下シーン制御クラス このように使いたい
-/*
-
-// レベルデータからオブジェクトを生成、配置
-for(auto& objectData : levelData->objects)
-{
-
-// ファイル名から登録済みのモデルを検索
-Model* model = nullptr;
-decltype(models)::iterator it = models.find(objectData.fileName);
-if (it != models.end())
-{
-	model = it->second;
-}
-// モデルを指定して3Dオブジェクトを生成
-Object3d* newObject = Object3d::Create(model);
-// 座標
-newObject->SetPosition(objectData.position);
-// 回転角
-newObject->SetRotate(objectData.rotation);
-// スケール
-newObject->SetScale(objectData.scale);
-// 解列に登録
-objects.push_back(newObject);
-
-}
-
 */

@@ -65,6 +65,34 @@ void TitleScene::Initialize()
 	soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
 	Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
 
+	// レベルデータの読み込み
+	levelData_  = LevelDataLoader::LoadLevelData("untitled");
+
+	if (levelData_)
+	{
+		for (const auto& obj : levelData_->objects)
+		{
+			// モデル検索
+			ModelManager::GetInstance()->LoadModel(obj.fileName);
+			Model* model = ModelManager::GetInstance()->FindModel(obj.fileName);
+			if (model == nullptr)
+			{
+				assert(false && "Model not found");
+				continue;
+			}
+
+			// object3dの生成
+			Object3d* object = new Object3d();
+			object->Initialize(obj.fileName);
+			object->SetPosition(obj.translation);
+			object->SetRotate(obj.rotation);
+			object->SetScale(obj.scale);
+			object3ds.push_back(object);
+		}
+	}
+
+
+
 }
 
 void TitleScene::Finalize()

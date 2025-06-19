@@ -9,6 +9,8 @@
 
 #include "../base/BaseScene.h"
 
+#include "../../level_editor/LevelDataLoader.h"
+
 class TitleScene : public BaseScene
 {
 public:
@@ -76,4 +78,8 @@ private:
 	float spotLightDecay = 2.0f;
 	float spotLightConsAngle = std::cos(std::numbers::pi_v<float> / 3.0f);
 	float spotLightCosFalloffStart = 1.0f;
+
+	// レベルデータローダー
+	std::unique_ptr<LevelData> levelData_ = nullptr;
+
 };
