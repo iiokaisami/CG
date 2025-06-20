@@ -19,6 +19,7 @@ void TitleScene::Initialize()
 	// --- 3Dオブジェクト ---
 	ModelManager::GetInstance()->LoadModel("sphere.obj");
 	ModelManager::GetInstance()->LoadModel("terrain.obj");
+	ModelManager::GetInstance()->LoadModel("cube.obj");
 
 	for (uint32_t i = 0; i < 3; ++i)
 	{
@@ -66,7 +67,7 @@ void TitleScene::Initialize()
 	Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
 
 	// レベルデータの読み込み
-	levelData_  = LevelDataLoader::LoadLevelData("untitled");
+	levelData_  = LevelDataLoader::LoadLevelData("test");
 
 	if (levelData_)
 	{
@@ -225,10 +226,10 @@ void TitleScene::Draw()
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
-	//for (auto& obj : object3ds)
-	//{
-		//obj->Draw();
-	//}
+	for (auto& obj : object3ds)
+	{
+		obj->Draw();
+	}
 	object3ds[0]->Draw();
 	if (isTerrainDraw)
 	{
