@@ -186,6 +186,10 @@ class MYADDON_OT_export_scene(bpy.types.Operator, bpy_extras.io_utils.ExportHelp
                 if(object.parent):
                     continue
 
+                # file_nameが未定義ならオブジェクト名を使って自動設定
+                if "file_name"not in object:
+                    object["file_name"] = object.name.lower() + ".obj"
+
                 #シーン直下のオブジェクトをルートノード(深さ0)とし、再起関数で走査
                 self.parse_scene_recursive_json(json_object_root["objects"], object, 0)
 
