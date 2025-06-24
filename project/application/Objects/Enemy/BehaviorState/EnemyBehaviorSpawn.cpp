@@ -25,8 +25,7 @@ void EnemyBehaviorSpawn::Update()
 	float t = float(motion_.count) / motion_.maxCount;
 	float scale = Ease::OutBack(t); // 0〜1 の範囲で膨らみつつ出現
 	Vector3 one(1.0f, 1.0f, 1.0f);
-	//scale_ = one * scale;
-
+	
 	pEnemy_->SetScale(one * scale);
 
 

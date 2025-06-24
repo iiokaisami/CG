@@ -26,7 +26,7 @@ void EnemyBehaviorMove::Update()
 	// 上下にゆっくり波打つ動き
 	float wave = std::sin(t * std::numbers::pi_v<float>) * 0.3f;
 
-	//position_ += Vector3(0.0f, wave, 0.0f);
+	//pEnemy_->SetPosition(position_ + Vector3(0.0f, wave, 0.0f));
 
 	pEnemy_->SetPosition(pEnemy_->GetPosition() + Vector3(0.0f, wave, 0.0f));
 

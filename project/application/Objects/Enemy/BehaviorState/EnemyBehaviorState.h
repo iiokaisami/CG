@@ -19,6 +19,13 @@ public:
 
 protected:
 
+	struct Transform
+	{
+		Vector3 position = { 0.0f, 0.0f, 0.0f };
+		Vector3 rotation = { 0.0f, 0.0f, 0.0f };
+		Vector3 scale = { 1.0f, 1.0f, 1.0f };
+	};
+
 	struct Motion
 	{
 		// モーションがアクティブかどうか
@@ -27,6 +34,8 @@ protected:
 		uint32_t count = 0;
 		// Maxカウント
 		uint32_t maxCount = 30;
+		// トランスフォーム
+		Transform transform;
 	};
 
 	void MotionCount(Motion _motion);

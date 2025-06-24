@@ -62,33 +62,42 @@ void Enemy::Finalize()
 
 void Enemy::Update()
 {
-    object_->SetPosition(position_);
-	object_->SetRotate(rotation_);
+    /*object_->SetPosition(position_);
+    object_->SetRotate(rotation_);
 	object_->SetScale(scale_);
-    object_->Update();
+    object_->Update();*/
 
     ///////////////////////////////////////////////
 
-    if (popMotion_.isActive)
-    {
-        PopMotion();
-    }
-    if (moveMotion_.isActive)
-    {
-        MoveMotion();
-    }
-    if (attackMotion_.isActive)
-    {
-        AttackMotion();
-    }
     if (hitMotion_.isActive)
     {
         HitMotion();
     }
-    if (deadMotion_.isActive)
+    else if (moveMotion_.isActive)
+    {
+        MoveMotion();
+    }
+    else if (popMotion_.isActive)
+    {
+        PopMotion();
+    }
+    else if (deadMotion_.isActive)
     {
         DeadMotion();
     }
+    else if (attackMotion_.isActive)
+    {
+        AttackMotion();
+    }
+    else
+    {
+        object_->SetPosition(position_);
+        object_->SetRotate(rotation_);
+        object_->SetScale(scale_);
+    }
+
+    object_->Update();
+    
 
     ///////////////////////////////////////////////
 
@@ -160,7 +169,6 @@ void Enemy::ImGuiDraw()
 	ImGui::SliderFloat3("position", &position_.x, -30.0f, 30.0f);
 	ImGui::SliderFloat3("rotation", &rotation_.x, -3.14f, 3.14f);
 	ImGui::SliderFloat3("scale", &scale_.x, 0.0f, 10.0f);
-
 
     ImGui::End();
 
@@ -280,6 +288,8 @@ void Enemy::PopMotion()
 	Vector3 one(1.0f, 1.0f, 1.0f);
     scale_ = one * scale;
 
+	object_->SetScale(scale_);
+
 	if (popMotion_.count < popMotion_.maxCount)
 	{
 		popMotion_.count++;
@@ -366,12 +376,14 @@ void Enemy::HitMotion()
 {
     Vector3 shakeOffset =
     {
-    ((hitMotion_.count % 2 == 0) ? 1.0f : -1.0f) * 0.15f,
+    ((hitMotion_.count % 2 == 0) ? 1.0f : -1.0f) /** 0.1f*/,
 	0.0f, // Y軸は揺らさない
-    ((hitMotion_.count % 3 == 0) ? 1.0f : -1.0f) * 0.1f
+    ((hitMotion_.count % 3 == 0) ? 1.0f : -1.0f) /** 0.1f*/
     };
 
-    SetPosition(position_ + shakeOffset);
+    Vector3 originPos = GetPosition();
+
+    object_->SetPosition(originPos + shakeOffset);
 
 	if (hitMotion_.count < hitMotion_.maxCount)
 	{
@@ -397,11 +409,15 @@ void Enemy::DeadMotion()
     // 徐々に縮む演出（1.8 → 0.0）
     float scale = Lerp(1.8f, 0.0f, Ease::InCubic(t));
     scale_ = (Vector3(scale, scale, scale));
-
+    
     position_.y += Ease::OutQuad(t) * 0.1f;
 
     rotation_.y += 0.1f;
 	rotation_.x += 0.1f;
+
+	object_->SetPosition(position_);
+	object_->SetRotate(rotation_);
+	object_->SetScale(scale_);
 
 	if (deadMotion_.count < deadMotion_.maxCount)
 	{
