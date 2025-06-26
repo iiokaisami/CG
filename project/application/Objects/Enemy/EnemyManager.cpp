@@ -25,7 +25,8 @@ void EnemyManager::Update()
 		enemy->Update();
 		toPlayerDistance_.push_back(enemy->GetToPlayer());
 	}
-	// isDeatエネミーがたったら削除
+
+	// isDeat がたったら削除
 	pEnemies_.erase(
 		std::remove_if(
 			pEnemies_.begin(), 

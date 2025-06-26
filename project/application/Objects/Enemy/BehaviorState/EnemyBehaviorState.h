@@ -1,6 +1,7 @@
 #pragma once
 
 #include <sstream>
+#include <Vector3.h>
 
 class Enemy;
 
@@ -16,6 +17,9 @@ public:
 	
 	// 更新
 	virtual void Update() = 0;
+
+	// モーションのカウント等をリセット
+	virtual void ResetMotion() = 0;
 
 protected:
 
@@ -38,7 +42,11 @@ protected:
 		Transform transform;
 	};
 
-	void MotionCount(Motion _motion);
+	// モーションのカウント
+	void MotionCount(Motion& _motion);
+
+	// 敵のトランスフォームをmotion_.transformにセット
+	void TransformUpdate(Enemy* _pEnemy);
 
 	std::string stateName_;
 	Enemy* pEnemy_ = nullptr;

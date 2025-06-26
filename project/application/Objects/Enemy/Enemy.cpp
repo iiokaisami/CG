@@ -2,6 +2,13 @@
 
 #include <Ease.h>
 
+// BehaviorState
+#include "BehaviorState/EnemyBehaviorSpawn.h"
+#include "BehaviorState/EnemyBehaviorMove.h"
+#include "BehaviorState/EnemyBehaviorAttack.h"
+#include "BehaviorState/EnemyBehaviorHitReact.h"
+#include "BehaviorState/EnemyBehaviorDead.h"
+
 void Enemy::Initialize()
 {
     // --- 3Dオブジェクト ---
@@ -12,10 +19,10 @@ void Enemy::Initialize()
 
     object_->SetPosition(position_);
     object_->SetRotate(rotation_);
-
     // 仮置き
-    scale_ = { 0.1f,0.1f,0.1f };
+    scale_ = { 1.0f,1.0f,1.0f };
 	object_->SetScale(scale_);
+
 
     colliderManager_ = ColliderManager::GetInstance();
 
@@ -33,7 +40,12 @@ void Enemy::Initialize()
     // ステータス
     hp_ = 3;
     isDead_ = false;
-	popMotion_.isActive = true;
+
+    // モーションステート
+    ChangeBehaviorState(std::make_unique<EnemyBehaviorSpawn>(this));
+
+	// 出現時は無敵状態
+    isInvincible_ = true;
 }
 
 void Enemy::Finalize()
@@ -62,54 +74,22 @@ void Enemy::Finalize()
 
 void Enemy::Update()
 {
-    /*object_->SetPosition(position_);
-    object_->SetRotate(rotation_);
-	object_->SetScale(scale_);
-    object_->Update();*/
-
-    ///////////////////////////////////////////////
-
-    if (hitMotion_.isActive)
-    {
-        HitMotion();
-    }
-    else if (moveMotion_.isActive)
-    {
-        MoveMotion();
-    }
-    else if (popMotion_.isActive)
-    {
-        PopMotion();
-    }
-    else if (deadMotion_.isActive)
-    {
-        DeadMotion();
-    }
-    else if (attackMotion_.isActive)
-    {
-        AttackMotion();
-    }
-    else
-    {
-        object_->SetPosition(position_);
-        object_->SetRotate(rotation_);
-        object_->SetScale(scale_);
-    }
+	// 各行動ステートの更新
+	pBehaviorState_->Update();
 
     object_->Update();
-    
 
-    ///////////////////////////////////////////////
+    // プレイヤーとの距離を計算
+    float distanceToPlayer = position_.Distance(playerPosition_);
 
-    // 出現モーションが終わるまで動かない
-	if (!popMotion_.isActive)
+    if (distanceToPlayer <= kStopChasingDistance)
+    {
+        isFarFromPlayer_ = true;
+	}
+    else
 	{
-        // 移動
-        Move();
-	
-        // 攻撃
-        Attack();
-    }
+		isFarFromPlayer_ = false;
+	}
 
 	// 敵の弾の削除
     pBullets_.erase(
@@ -143,8 +123,7 @@ void Enemy::Update()
 		CorrectOverlap(collisionWallAABB_);
         isWallCollision_ = false;
     }
-
-    
+   
 }
 
 void Enemy::Draw()
@@ -170,6 +149,21 @@ void Enemy::ImGuiDraw()
 	ImGui::SliderFloat3("rotation", &rotation_.x, -3.14f, 3.14f);
 	ImGui::SliderFloat3("scale", &scale_.x, 0.0f, 10.0f);
 
+    // オブジェクトのトランスフォーム  
+    Vector3 objPos = object_->GetPosition();
+    Vector3 objRot = object_->GetRotate();
+    Vector3 objScale = object_->GetScale();
+
+    if (ImGui::SliderFloat3("object position", &objPos.x, -30.0f, 30.0f)) {
+        object_->SetPosition(objPos);
+    }
+    if (ImGui::SliderFloat3("object rotation", &objRot.x, -3.14f, 3.14f)) {
+        object_->SetRotate(objRot);
+    }
+    if (ImGui::SliderFloat3("object scale", &objScale.x, 0.0f, 10.0f)) {
+        object_->SetScale(objScale);
+    }
+
     ImGui::End();
 
 	for (auto& bullet : pBullets_)
@@ -180,24 +174,15 @@ void Enemy::ImGuiDraw()
 
 void Enemy::Move()
 {
-    // プレイヤーとの距離を計算
-    float distanceToPlayer = position_.Distance(playerPosition_);
 
-    if (distanceToPlayer <= kStopChasingDistance)
+    if (isFarFromPlayer_)
     {
         // プレイヤーとの距離が一定以下の場合、追尾を停止(0にすると色々まずかった)
-        moveVelocity_ = { 0.000001f, 0.0f, 0.0f };
-
-		// 移動モーションを無効にする
-        moveMotion_.isActive = false;
-        
+        moveVelocity_ = { 0.000001f, 0.0f, 0.0f };        
         return;
     }
     else
     {
-        // 追尾中は移動モーションを有効にする
-		moveMotion_.isActive = true; 
-
         // 敵弾から自キャラへのベクトルを計算
         toPlayer_ = playerPosition_ - position_;
 
@@ -217,223 +202,63 @@ void Enemy::Move()
 
         moveVelocity_.y = 0.0f;
         position_ += moveVelocity_;
+
+		SetPosition(position_);
+		SetRotation(rotation_);
+		SetScale(scale_);
+
+		ObjectTransformSet(position_, rotation_, scale_);
     }
 }
 
 void Enemy::Attack()
 {
-    // プレイヤーとの距離を計算
-    float distanceToPlayer = position_.Distance(playerPosition_);
+    // 弾の数と間隔角度
+    const int bulletCount = 36;
+    const float angleStep = 360.0f / bulletCount;
 
-    // 発射条件: プレイヤーとの距離が一定以下
-    if (distanceToPlayer <= kStopChasingDistance)
+    for (int i = 0; i < bulletCount; ++i)
     {
-        // 一定間隔で弾を発射
-        if (attackCooldown_ <= 0)
+        // 弾の角度を計算 (ラジアンに変換)
+        float angle = DirectX::XMConvertToRadians(i * angleStep);
+
+        // 弾の方向を計算
+        Vector3 bulletDirection =
         {
-            // 攻撃モーションを開始
-			attackMotion_.isActive = true; 
-        }
+            std::cos(angle), // X成分
+            0.0f,            // Y成分
+            std::sin(angle)  // Z成分
+        };
 
-        if (isAttack_)
-        {
-            // 弾の数と間隔角度
-            const int bulletCount = 36; 
-            const float angleStep = 360.0f / bulletCount;
+        // 弾を生成
+        auto bullet = std::make_unique<EnemyBullet>();
+        bullet->Initialize();
+        bullet->SetPosition({ position_.x,position_.y + 0.5f,position_.z }); // 敵の位置より少し上を初期位置に設定
+        bullet->SetVelocity(bulletDirection * 0.2f);
+        bullet->UpdateModel();
 
-            for (int i = 0; i < bulletCount; ++i)
-            {
-                // 弾の角度を計算 (ラジアンに変換)
-                float angle = DirectX::XMConvertToRadians(i * angleStep);
-
-                // 弾の方向を計算
-                Vector3 bulletDirection = 
-                {
-                    std::cos(angle), // X成分
-                    0.0f,            // Y成分
-                    std::sin(angle)  // Z成分
-                };
-
-                // 弾を生成
-                auto bullet = std::make_unique<EnemyBullet>();
-                bullet->Initialize();
-                bullet->SetPosition({ position_.x,position_.y + 0.5f,position_.z }); // 敵の位置より少し上を初期位置に設定
-                bullet->SetVelocity(bulletDirection * 0.2f);
-                bullet->UpdateModel();
-
-                // 弾をリストに追加
-                pBullets_.push_back(std::move(bullet));
-            }
-
-            // クールダウンを設定
-            attackCooldown_ = 60 * 4;
-        } 
-        else
-        {
-			if (attackCooldown_ >= 300)
-			{
-                attackCooldown_ = 60 * 4;
-			}
-
-            // クールダウンを減少
-            --attackCooldown_;
-        }
+        // 弾をリストに追加
+        pBullets_.push_back(std::move(bullet));
     }
 }
-
-void Enemy::PopMotion()
-{
-    float t = float(popMotion_.count) / popMotion_.maxCount;
-    float scale = Ease::OutBack(t); // 0〜1 の範囲で膨らみつつ出現
-	Vector3 one(1.0f, 1.0f, 1.0f);
-    scale_ = one * scale;
-
-	object_->SetScale(scale_);
-
-	if (popMotion_.count < popMotion_.maxCount)
-	{
-		popMotion_.count++;
-	}
-    else
-	{
-        // モーション終了 カウントリセット
-		popMotion_.isActive = false; 
-        popMotion_.count = 0;
-	}
-}
-
-void Enemy::MoveMotion()
-{
-    // 進行度（0〜1）
-    float t = float(moveMotion_.count) / moveMotion_.maxCount;
-
-    // 上下にゆっくり波打つ動き
-    float wave = std::sin(t * std::numbers::pi_v<float>) * 0.3f;
-
-   // position_ += Vector3(0.0f, wave, 0.0f);
-
-	//SetPosition(position_ + Vector3(0.0f, wave, 0.0f));
-
-	if (moveMotion_.count < moveMotion_.maxCount)
-	{
-		moveMotion_.count++;
-	}
-    else
-	{
-        // モーション終了 カウントリセット
-		moveMotion_.isActive = false;
-		moveMotion_.count = 0; 
-	}
-}
-
-void Enemy::AttackMotion()
-{
-    // 溜め
-    if (attackMotion_.count <= 20)
-    {
-        float t = float(attackMotion_.count) / 20.0f; // 0〜1
-        float ease = (t <= 0.5f)
-            ? Ease::OutSine(t * 2.0f)               // 0〜0.5  → 縮小
-            : Ease::OutSine((1.0f - t) * 2.0f);     // 0.5〜1  → 元に戻す
-
-        float scaleValue = 1.0f - ease * 0.3f;
-        scale_ = Vector3(scaleValue, scaleValue, scaleValue);
-
-        float shake = ((attackMotion_.count % 2 == 0) ? 1 : -1) * 0.05f;
-        object_->SetPosition(position_ + Vector3(shake, 0, shake));
-    }
-    // 攻撃
-    else
-    {
-        // 攻撃フラグをリセット
-		isAttack_ = false;
-
-        if (attackMotion_.count == 21)
-        {
-            // 攻撃フラグを立てる
-            isAttack_ = true;
-        }
-
-        // Y軸回転
-        rotation_.y += 0.3f;
-        object_->SetRotate(rotation_);
-    }
-
-
-	if (attackMotion_.count < attackMotion_.maxCount)
-	{
-        attackMotion_.count++;
-	}
-    else
-	{
-		// モーション終了 カウントリセット
-		attackMotion_.isActive = false;
-        attackMotion_.count = 0; 
-	}
-}
-
-void Enemy::HitMotion()
-{
-    Vector3 shakeOffset =
-    {
-    ((hitMotion_.count % 2 == 0) ? 1.0f : -1.0f) /** 0.1f*/,
-	0.0f, // Y軸は揺らさない
-    ((hitMotion_.count % 3 == 0) ? 1.0f : -1.0f) /** 0.1f*/
-    };
-
-    Vector3 originPos = GetPosition();
-
-    object_->SetPosition(originPos + shakeOffset);
-
-	if (hitMotion_.count < hitMotion_.maxCount)
-	{
-		hitMotion_.count++;
-	}
-    else
-	{
-        // モーション終了 カウントリセット
-		hitMotion_.isActive = false;
-		hitMotion_.count = 0;
-	}
-}
-
-void Enemy::DeadMotion()
-{
-    float t = float(deadMotion_.count) / deadMotion_.maxCount;
-
-    if (deadMotion_.count == 0) 
-    {
-        scale_ = Vector3(1.8f, 1.8f, 1.8f); // 初回だけ一気に膨らむ
-    }
-
-    // 徐々に縮む演出（1.8 → 0.0）
-    float scale = Lerp(1.8f, 0.0f, Ease::InCubic(t));
-    scale_ = (Vector3(scale, scale, scale));
     
-    position_.y += Ease::OutQuad(t) * 0.1f;
 
-    rotation_.y += 0.1f;
-	rotation_.x += 0.1f;
+void Enemy::ChangeBehaviorState(std::unique_ptr<EnemyBehaviorState> _pState)
+{
+    pBehaviorState_ = std::move(_pState);
+    pBehaviorState_->Initialize();
+}
 
-	object_->SetPosition(position_);
-	object_->SetRotate(rotation_);
-	object_->SetScale(scale_);
-
-	if (deadMotion_.count < deadMotion_.maxCount)
-	{
-		deadMotion_.count++;
-	}
-    else
-	{
-		// モーション終了&死亡処理
-		deadMotion_.isActive = false; 
-		isDead_ = true;
-	}
+void Enemy::ObjectTransformSet(const Vector3& _position, const Vector3& _rotation, const Vector3& _scale)
+{
+    object_->SetPosition(_position);
+    object_->SetRotate(_rotation);
+    object_->SetScale(_scale);
 }
 
 void Enemy::OnCollisionTrigger(const Collider* _other)
 {
-	if (_other->GetColliderID() == "PlayerBullet")
+	if (_other->GetColliderID() == "PlayerBullet" && !isInvincible_)
 	{
 		// プレイヤーの弾と衝突した場合
 		if (hp_ > 0)
@@ -441,16 +266,7 @@ void Enemy::OnCollisionTrigger(const Collider* _other)
             // HP減少
 			hp_--;
 
-            // 被弾モーションを開始
-			hitMotion_.isActive = true;
-		}
-        else
-		{
-            // パーティクル
-            ParticleEmitter::Emit("explosionGroup", position_, 6);
-
-            // 死亡モーションを開始
-			deadMotion_.isActive = true;
+			isHit_ = true;
 		}
 	}
 }

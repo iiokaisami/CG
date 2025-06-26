@@ -31,7 +31,7 @@ public:
 	// 敵の初期化
 	void EnemyInit(const Vector3& pos);
 
-	// 敵のウェーブステート
+	// 敵のウェーブステート切り替え
 	void ChangeState(std::unique_ptr<EnemyWaveState>_pState);
 
 public: // ゲッター

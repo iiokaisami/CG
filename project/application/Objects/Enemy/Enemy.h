@@ -2,7 +2,7 @@
 
 #include "../../BaseObject/GameObject.h"
 #include "Bullet/EnemyBullet.h"
-#include "../../../gameEngine/math/MyMath.h"
+#include "BehaviorState/EnemyBehaviorState.h"
 #include"../../Collider/ColliderManager.h"
 #include "../../../gameEngine/particle/ParticleEmitter.h"
 
@@ -41,20 +41,11 @@ public:
 	// 攻撃
 	void Attack();
 
-	// 出現モーション
-	void PopMotion();
+	// 行動ステート切り替え
+	void ChangeBehaviorState(std::unique_ptr<EnemyBehaviorState> _pState);
 
-	// 移動モーション
-	void MoveMotion();
-
-	// 攻撃モーション
-	void AttackMotion();
-
-	// 被弾モーション
-	void HitMotion();
-
-	// 死亡モーション
-	void DeadMotion();
+	// objectのtransformをセット
+	void ObjectTransformSet(const Vector3& _position, const Vector3& _rotation, const Vector3& _scale);
 
 private: // 衝突判定
 
@@ -75,6 +66,12 @@ public: // ゲッター
 	// プレイヤーとの距離
 	Vector3 GetToPlayer() const { return toPlayer_; }
 
+	// 被弾フラグ
+	bool IsHit() const { return isHit_; }
+
+	// プレイヤーとの距離が一定以上かどうか
+	bool IsFarFromPlayer() const { return isFarFromPlayer_; }
+
 public: // セッター
 
 	// プレイヤーの位置をセット
@@ -82,6 +79,20 @@ public: // セッター
 
 	// エネミーの位置をセット
 	void SetEnemyPosition(Vector3 _enemyPosition) { position_ = _enemyPosition; }
+
+	// 無敵フラグをセット
+	void SetIsInvincible(bool _isInvincible) { isInvincible_ = _isInvincible; }
+
+	// 被弾フラグをセット
+	void SetIsHit(bool _isHit) { isHit_ = _isHit; }
+
+	// 死亡フラグをセット
+	void SetIsDead(bool _isDead) { isDead_ = _isDead; }
+
+	// オブジェクトのtransformをセット
+	void SetObjectPosition(const Vector3& _position) { object_->SetPosition(_position); }
+	void SetObjectRotation(const Vector3& _rotation) { object_->SetRotate(_rotation); }
+	void SetObjectScale(const Vector3& _scale) { object_->SetScale(_scale); }
 
 public: // 構造体
 
@@ -116,16 +127,6 @@ private:
 	// 追尾停止距離
 	const float kStopChasingDistance = 15.0f;
 
-	// 出現モーション
-	Motion popMotion_ = {false,0,30};
-	// 移動モーション
-	Motion moveMotion_ = { false,0,30 };
-	// 攻撃モーション
-	Motion attackMotion_ = { false,0,30 };
-	// 被弾モーション
-	Motion hitMotion_ = { false,0,30 };
-	// 死亡モーション
-	Motion deadMotion_ = { false,0,30 };
 
 	// 死亡
 	bool isDead_ = false;
@@ -133,16 +134,23 @@ private:
 	// 弾
 	std::vector<std::unique_ptr<EnemyBullet>> pBullets_ = {};
 
-	// 攻撃フラグ
-	bool isAttack_ = false;
-	// 攻撃クールタイム
-	uint32_t attackCooldown_ = 0;
-
 	// 壁に衝突したかどうか
 	bool isWallCollision_ = false;
 	
 	// 衝突相手のaabb
 	AABB collisionWallAABB_ = {};
+
+	// 行動ステート
+	std::unique_ptr<EnemyBehaviorState> pBehaviorState_ = nullptr;
+
+	// 無敵フラグ(出現時等攻撃を受けなくさせる)
+	bool isInvincible_ = true;
+
+	// 被弾フラグ
+	bool isHit_ = false;
+
+	// プレイヤーとの距離が一定以上かどうか
+	bool isFarFromPlayer_ = false;
 
 };
 

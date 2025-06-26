@@ -14,5 +14,8 @@ public:
 	// 更新
 	void Update() override;
 
+	// モーションのリセット
+	void ResetMotion() override;
+
 };
 

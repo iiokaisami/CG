@@ -4,9 +4,6 @@
 
 #include "../Enemy.h"
 #include "EnemyBehaviorMove.h"
-#include "EnemyBehaviorAttack.h"
-#include "EnemyBehaviorHitReact.h"
-#include "EnemyBehaviorDead.h"
 
 EnemyBehaviorSpawn::EnemyBehaviorSpawn(Enemy* _pEnemy) : EnemyBehaviorState("Spawn", _pEnemy)
 {
@@ -22,13 +19,35 @@ void EnemyBehaviorSpawn::Initialize()
 
 void EnemyBehaviorSpawn::Update()
 {
+	// 敵のトランスフォームをmotion_.transformにセット
+	TransformUpdate(pEnemy_);
+
+	// イージングの進行度（0〜1）
 	float t = float(motion_.count) / motion_.maxCount;
-	float scale = Ease::OutBack(t); // 0〜1 の範囲で膨らみつつ出現
+	motion_.transform.scale.x = Ease::OutBack(t);
+	motion_.transform.scale.y = Ease::OutBack(t);
+	motion_.transform.scale.z = Ease::OutBack(t);
 	Vector3 one(1.0f, 1.0f, 1.0f);
 	
-	pEnemy_->SetScale(one * scale);
+	//pEnemy_->SetScale(one * motion_.transform.scale);
 
+	pEnemy_->SetObjectPosition(motion_.transform.position);
+	pEnemy_->SetObjectRotation(motion_.transform.rotation);
+	pEnemy_->SetObjectScale(one * motion_.transform.scale);
 
+	// モーションカウントを更新
 	MotionCount(motion_);
 
+	if (!motion_.isActive)
+	{
+		// 無敵状態を解除
+		pEnemy_->SetIsInvincible(false);
+
+		// スポーンモーションが終了したら、次の状態に移行
+		pEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorMove>(pEnemy_));
+	}
+}
+
+void EnemyBehaviorSpawn::ResetMotion()
+{
 }
