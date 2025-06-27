@@ -11,10 +11,14 @@ void BoxFilterPass::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, 
 
     HRESULT hr = constantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappedCB_));
     assert(SUCCEEDED(hr) && "Failed to map constant buffer");
+    hr;
 }
 
 void BoxFilterPass::Draw(ID3D12GraphicsCommandList* cmdList, D3D12_GPU_DESCRIPTOR_HANDLE inputSrvHandle, ID3D12Resource* inputResource, D3D12_RESOURCE_STATES& currentState)
 {
+    currentState;
+    inputResource;
+
     if (!isActive_)
     {
         return;

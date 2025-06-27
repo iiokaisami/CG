@@ -4,7 +4,7 @@
 #include <random> 
 
 #include "Particle.h"
-#include "DirectXCommon.h"
+#include "../base/DirectXCommon.h"
 
 #include "ParticleManager.h"
 

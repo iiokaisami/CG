@@ -10,12 +10,16 @@ void NoneEffectPass::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager,
 	constantBuffer_ = dxCommon->CreateUploadBuffer(sizeof(cbData_));
 	HRESULT hr = constantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappedCB_));
 	assert(SUCCEEDED(hr) && "Failed to map constant buffer");
+	hr;
 
 	cbData_.dummy = 0.0f; // ダミー値
 }
 
 void NoneEffectPass::Draw(ID3D12GraphicsCommandList* cmdList, D3D12_GPU_DESCRIPTOR_HANDLE inputSrvHandle, ID3D12Resource* inputResource, D3D12_RESOURCE_STATES& currentState)
 {
+	currentState;
+	inputResource;
+
 	if (!isActive_)
 	{
 		return;

@@ -33,7 +33,7 @@
 #include "postEffect/BoxFilterPass.h"
 #include "postEffect/GaussianFilterPass.h"
 
-#include "../../ParticleEmitter.h"
+#include "../particle/ParticleEmitter.h"
 
 #include "../../scene/base/SceneManager.h"
 #include "../../scene/base/SceneFactory.h"   
@@ -74,6 +74,7 @@ protected:
 	std::unique_ptr<WinApp> winApp = nullptr;
 	std::unique_ptr<DirectXCommon> dxCommon = nullptr;
 	std::unique_ptr<SrvManager> srvManager = nullptr;
+	std::unique_ptr<ModelCommon> modelCommon = nullptr;
 	Input* input = nullptr;
 	Audio* audio = nullptr;
 

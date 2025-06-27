@@ -11,12 +11,16 @@ void GaussianFilterPass::Initialize(DirectXCommon* dxCommon, SrvManager* srvMana
 
     HRESULT hr = constantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappedCB_));
     assert(SUCCEEDED(hr) && "Failed to map constant buffer");
+    hr;
 
 	cbData_.intensity = 3.0f; // 初期値
 }
 
 void GaussianFilterPass::Draw(ID3D12GraphicsCommandList* cmdList, D3D12_GPU_DESCRIPTOR_HANDLE inputSrvHandle, ID3D12Resource* inputResource, D3D12_RESOURCE_STATES& currentState)
 {
+    currentState;
+    inputResource;
+
     if (!isActive_)
     {
         return;
