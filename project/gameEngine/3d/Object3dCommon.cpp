@@ -134,9 +134,9 @@ void Object3dCommon::CreateRootSignature()
 	rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderをコンパイル 
-	vertexShaderBlob_ = dxCommon_->CompileShader(L"Resources/shaders/Object3d.VS.hlsl", L"vs_6_0");
+	vertexShaderBlob_ = dxCommon_->CompileShader(L"resources/shaders/Object3d.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob_ != nullptr);
-	pixelShaderBlob_ = dxCommon_->CompileShader(L"Resources/shaders/Object3d.PS.hlsl", L"ps_6_0");
+	pixelShaderBlob_ = dxCommon_->CompileShader(L"resources/shaders/Object3d.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob_ != nullptr);
 
 	// DepthStencilStateの設定

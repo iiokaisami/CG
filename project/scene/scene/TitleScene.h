@@ -38,7 +38,7 @@ private:
 	Vector3 cameraRotate_{};
 
 	// 2Dスプライト
-	//std::vector<Sprite*>sprites = {};
+	std::vector<Sprite*>sprites = {};
 
 	// 3Dオブジェクト
 	std::vector<Object3d*> object3ds = {};

@@ -31,7 +31,7 @@ void ModelManager::LoadModel(const std::string& filePath)
 {
 	// ファイルパスからディレクトリとファイル名を抽出
 	std::filesystem::path path(filePath);
-	std::string directory = "resources/models/" + path.parent_path().string();
+	std::string directory = "resources/models" + path.parent_path().string();
 	std::string fileName = path.filename().string(); // ファイル名だけを抽出
 
 	// 読み込み済みモデルを検索

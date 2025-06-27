@@ -24,8 +24,16 @@
 #include "ModelManager.h"
 #include "SrvManager.h"
 #include "Audio.h"
+#include "RenderTexture.h"
 
-#include "../../ParticleEmitter.h"
+#include "postEffect/PostEffectManager.h"
+#include "postEffect/NoneEffectPass.h"
+#include "postEffect/GrayscalePass.h"
+#include "postEffect/VignettePass.h"
+#include "postEffect/BoxFilterPass.h"
+#include "postEffect/GaussianFilterPass.h"
+
+#include "../particle/ParticleManager.h"
 
 #include "../../scene/base/SceneManager.h"
 #include "../../scene/base/SceneFactory.h"   
@@ -66,6 +74,7 @@ protected:
 	std::unique_ptr<WinApp> winApp = nullptr;
 	std::unique_ptr<DirectXCommon> dxCommon = nullptr;
 	std::unique_ptr<SrvManager> srvManager = nullptr;
+	std::unique_ptr<ModelCommon> modelCommon = nullptr;
 	Input* input = nullptr;
 	Audio* audio = nullptr;
 
@@ -77,7 +86,20 @@ protected:
 	Object3dCommon* object3dCommon = nullptr;
 	ModelManager* modelManager = nullptr;
 
+	std::unique_ptr <RenderTexture> renderTexture = nullptr;
+
+	std::unique_ptr<PostEffectManager> postEffectManager = nullptr;
+	std::unique_ptr<NoneEffectPass> noneEffectPass = nullptr;
+	std::unique_ptr<GrayscalePass> grayscalePass = nullptr;
+	std::unique_ptr<VignettePass> vignettePass = nullptr;
+	std::unique_ptr<BoxFilterPass> boxFilterPass = nullptr;
+	std::unique_ptr<GaussianFilterPass> gaussianFilterPass = nullptr;
+
 	ParticleManager* particleManager = nullptr;
+
+	D3D12_GPU_DESCRIPTOR_HANDLE inputSrv;
+	Microsoft::WRL::ComPtr<ID3D12Resource> inputRes;
+	D3D12_RESOURCE_STATES state;
 
 #ifdef _DEBUG
 

@@ -3,13 +3,17 @@
 #include <unordered_map>
 #include <random> 
 #include <TextureManager.h>
-
-#include "MyMath.h"
-#include "DirectXCommon.h"
-#include "SrvManager.h"
-#include "Particle.h"
-#include "CameraManager.h"
 #include <Object3d.h>
+#include <numbers>
+#include <MyMath.h>
+#include <DirectXCommon.h>
+#include <SrvManager.h>
+#include <Camera.h>
+
+#include "Particle.h"
+#include "ParticleMotion.h"
+#include "MeshBuilder.h"
+#include "ModelCommon.h"
 
 class Object3dCommon;
 
@@ -27,14 +31,26 @@ struct ParticleForGPU
 	Vector4 color;
 };
 
+
 struct ParticleGroup
 {
 	MaterialData materialData;
 	std::list<Particle> particleList;
 	uint32_t srvIndex;
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource;
-	uint32_t instanceCount;
+	uint32_t instanceCount = 0;
 	ParticleForGPU* instancingData;
+	std::string motionName = "Homing";
+};
+
+struct EmitSetting {
+	std::string groupName;
+	std::string motionName;
+	Vector3 emitPosition;
+	float interval;
+	uint32_t emitCount = 1;
+	float timer = 0.0f;
+	bool isLooping = false;
 };
 
 class ParticleManager
@@ -45,7 +61,7 @@ public:
 
 
 	// 初期化
-	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
+	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, ModelCommon* modelCommon);
 
 	// 終了
 	void Finalize();
@@ -57,7 +73,11 @@ public:
 	void CreateRootSignature();
 
 	// パーティクルグループの生成
-	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath);
+	// name: パーティクルグループの名前
+	// textureFilePath: テクスチャファイルのパス
+	// modelFilePath: モデルファイルのパス
+	// type: パーティクルのタイプ（"Default", "Ring", "Cylinder", "Slash"など）
+	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, const std::string& type = "Default", const std::string& motionName = "Homing");
 
 	// 更新
 	void Update();
@@ -65,9 +85,12 @@ public:
 	// 描画
 	void Draw();
 
-	void Emit(const std::string name, const Vector3& position, uint32_t count);
+	void Emit(const std::string groupName, const Vector3& position, uint32_t count, uint32_t interval);
 
-	Particle MakeNewParticle(std::mt19937& randomEngine, const Vector3& position);
+	void AddEmitterSetting(const EmitSetting& setting);
+
+	// 形、動きをそれぞれ確認できる関数
+	void DebugUI();
 
 public: // セッター
 
@@ -75,7 +98,7 @@ public: // セッター
 
 private: // 構造体
 
-	struct Transform
+	struct TransformData
 	{
 		Vector3 scale;
 		Vector3 rotate;
@@ -116,7 +139,8 @@ private: // 構造体
 	};
 
 	// 頂点データの初期化（座標など）
-	struct Vertex {
+	struct Vertex 
+	{
 		float position[3];
 		float color[4];
 	};
@@ -174,11 +198,22 @@ private:
 
 	const float kDeltaTime_ = 1.0f / 60.0f;
 
-	Transform transform_;
+	TransformData transform_;
 	Matrix4x4 backToFrontMatrix_;
 	//modelマテリアる用のリソースを作る。今回color1つ分のサイズを用意する
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
 	//マテリアルにデータを書き込む	
-	Material* materialData_ = nullptr;
-	Model* model_ = nullptr;
+	Material* materialData_ = nullptr; 
+	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
+	ModelCommon* modelCommon_ = nullptr;
+
+
+	// モデルのビューをキャッシュする用
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
+
+	// Cylinderの向き
+	std::string direction_ = "UP";
+
+	std::vector<EmitSetting> emitSettings_;
+
 };

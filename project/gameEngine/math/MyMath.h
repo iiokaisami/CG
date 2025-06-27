@@ -74,6 +74,13 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 // 座標変換
 Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 
+// -----補間-----
+// 線形補間
+float Lerp(const float& v1, const float& v2, float t);
+// ベクトルの線形補間
+Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
+Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t);
+
 namespace MyMath 
 {
 	inline float cot(float a) { return cos(a) / sin(a); }

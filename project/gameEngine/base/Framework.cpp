@@ -49,6 +49,9 @@ void Framework::Initialize()
 	srvManager = std::make_unique<SrvManager>();
 	srvManager->Initialize(dxCommon.get());
 
+	modelCommon = std::make_unique<ModelCommon>();
+	modelCommon->Initialize(dxCommon.get());
+
 	// キーボード入力
 	input = Input::GetInstance();
 	input->Initialize(winApp.get());
@@ -76,14 +79,37 @@ void Framework::Initialize()
 	modelManager = ModelManager::GetInstance();
 	modelManager->Initialize(dxCommon.get());
 
+	// レンダーテクスチャ
+	renderTexture = std::make_unique<RenderTexture>();
+	renderTexture->Initialize(dxCommon.get(), srvManager.get(), WinApp::kClientWidth, WinApp::kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, Vector4(0.1f, 0.25f, 0.5f, 1.0f));
+
+	// ポストエフェクト
+	noneEffectPass = std::make_unique<NoneEffectPass>();
+	noneEffectPass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/NoneEffect.VS.hlsl", L"resources/shaders/NoneEffect.PS.hlsl");
+	grayscalePass = std::make_unique<GrayscalePass>();
+	grayscalePass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/Grayscale.VS.hlsl", L"resources/shaders/Grayscale.PS.hlsl");
+	vignettePass = std::make_unique<VignettePass>();
+	vignettePass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/Vignette.VS.hlsl", L"resources/shaders/Vignette.PS.hlsl");
+	boxFilterPass = std::make_unique<BoxFilterPass>();
+	boxFilterPass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/BoxFilter.VS.hlsl", L"resources/shaders/BoxFilter.PS.hlsl");
+	gaussianFilterPass = std::make_unique<GaussianFilterPass>();
+	gaussianFilterPass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/GaussianFilter.VS.hlsl", L"resources/shaders/GaussianFilter.PS.hlsl");
+
+	postEffectManager = std::make_unique<PostEffectManager>();
+	postEffectManager->SetNoneEffect(std::move(noneEffectPass));
+	postEffectManager->AddPass("Grayscale", std::move(grayscalePass));
+	postEffectManager->AddPass("Vignette", std::move(vignettePass));
+	postEffectManager->AddPass("BoxFilter", std::move(boxFilterPass));
+	postEffectManager->AddPass("GaussianFilter", std::move(gaussianFilterPass));
+	
+
 	// パーティクル	
 	particleManager = ParticleManager::GetInstance();
-	particleManager->Initialize(dxCommon.get(),srvManager.get());
+	particleManager->Initialize(dxCommon.get(),srvManager.get(),modelCommon.get());
 
-
-	// パーティクル	
-	particleManager = ParticleManager::GetInstance();
-	particleManager->Initialize(dxCommon.get(), srvManager.get());
+	inputSrv = renderTexture->GetSRVHandle();
+	inputRes = renderTexture->GetResource();
+	state = renderTexture->GetCurrentState();
 
 #ifdef _DEBUG
 
@@ -91,6 +117,7 @@ void Framework::Initialize()
 	imGuiManager->Initialize(winApp.get(), dxCommon.get());
 
 #endif // _DEBUG
+		
 }
 
 void Framework::Finalize()
@@ -122,6 +149,14 @@ void Framework::Finalize()
 	object3dCommon->Finalize();
 
 	modelManager->Finalize();
+
+	// レンダーテクスチャ解放
+	renderTexture.reset();
+	renderTexture = nullptr;
+	
+
+
+	particleManager->Finalize();
 
 #ifdef _DEBUG
 	// ImGuiManager解放

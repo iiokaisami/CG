@@ -19,12 +19,22 @@ public:
 
 	void Draw();
 
+	void UpdateVertexBuffer();
+
+	void UpdateIndexBuffer();
+
+	void ClearVertexData();
+
+	void CopyFrom(const Model& other);
+
 public: // セッター
 
 	void SetEnableLighting(bool enable);
 	void SetEnableDirectionalLight(bool enable);
 	void SetEnablePointLight(bool enable);
 	void SetEnableSpotLight(bool enable);
+
+	void SetModelCommon(ModelCommon* modelCommon) { modelCommon_ = modelCommon; }
 
 private: // 構造体、関数
 
@@ -71,6 +81,7 @@ private: // 構造体、関数
 	struct  ModelData
 	{
 		std::vector<VertexData> vertices;
+		std::vector<uint32_t> indices;
 		MaterialData material;
 		Node rootNode;
 	};
@@ -95,8 +106,23 @@ public: // ゲッター
 	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView()const { return vertexBufferView_; }
 	ModelData GetModelData() { return modelData_; }
 
+	uint32_t GetVertexCount() const { return static_cast<uint32_t>(modelData_.vertices.size()); }
+
+	uint32_t GetIndexCount() const { return static_cast<uint32_t>(modelData_.indices.size()); }
+
+	D3D12_INDEX_BUFFER_VIEW GetIndexBufferView() const { return indexBufferView_; }
+
+public: // セッター
+
+	// Vertexを入れる
+	void AddVertex(const Vector4& position, const Vector2& texcoord, const Vector3& normal);
+
+	// indexを入れる
+	void AddIndex(uint32_t index);
+
+
 private:
-	
+
 	ModelCommon* modelCommon_ = nullptr;
 
 	// Objファイルのデータ
@@ -117,5 +143,11 @@ private:
 
 	// Transform
 	Transform transform_;
+
+	// GPU上のインデックスバッファ
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_{};
+	// GPU上にセットするためのビュー
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
+
 };
 
