@@ -3,34 +3,41 @@
 #include <unordered_map>
 #include <random> 
 
-#include "Particle.h"
-#include "../base/DirectXCommon.h"
-
 #include "ParticleManager.h"
 
 class ParticleEmitter
 {
 public:
 
-	ParticleEmitter
-	(
-		std::mt19937 randomEngine,
-		std::unordered_map<std::string, ParticleGroup>& particleGroups, 
-		float emissionInterval
-	);
+	// 非インスタンス化でも使える静的ユーティリティとして提供
+	static void Emit(const std::string& groupName, const Vector3& position, uint32_t count = 10, uint32_t interval = 1);
 
-	void Update(float deltaTime);
+	static void StartLoop(const std::string& groupName, const std::string& motionName, const Vector3& position, uint32_t count = 10, float interval = 1.0f);
+	
+	// --- 以下はインスタンス用：必要なら使う ---
 
-	void Emit(const std::string& name, const Vector3& translate, uint32_t count);
+	ParticleEmitter(ParticleManager* manager, const std::string& groupName, const std::string& motionName = "Homing")
+		: manager_(manager), groupName_(groupName), motionName_(motionName)
+	{
+	}
+
+	// 単発エミット
+	void EmitOnce(const Vector3& position, uint32_t count = 10, float interval = 1.0f);
+
+	// ループエミット（manager に設定を追加）
+	void StartLoopEmit(const Vector3& position, uint32_t count, float interval);
+
 
 private:
 
-	// 乱数生成
-	std::mt19937 randomEngine_;
+	// Managerクラス
+	ParticleManager* manager_ = nullptr;
+	
+	// グループ名
+	std::string groupName_;
+	
+	// モーション名
+	std::string motionName_;
 
-	std::unordered_map<std::string, ParticleGroup> particleGroups_;
-
-	float emissionInterval_;  // 発生間隔
-	float nextEmissionTime_;  // 次回発生時刻
 };
 

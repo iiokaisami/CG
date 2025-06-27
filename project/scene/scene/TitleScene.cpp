@@ -4,6 +4,9 @@
 
 void TitleScene::Initialize()
 {
+	// 必ず先頭でカメラを全クリア
+	cameraManager.ClearAllCameras();
+
 	camera_ = std::make_shared<Camera>();
 	camera_->SetRotate({ 0.3f,0.0f,0.0f });
 	camera_->SetPosition({ 0.0f,4.0f,-20.0f });
@@ -40,21 +43,18 @@ void TitleScene::Initialize()
 		object3ds.push_back(object);
 	}
 
-	//for (uint32_t i = 0; i < 1; ++i)
-	//{
-	//	Sprite* sprite = new Sprite();
-	//	
-	//	if (i == 0) {
-	//		sprite->Initialize("uvChecker.png", { 0,0 }, color_, { 0,0 });
-	//	}
-	//	
-	//	sprites.push_back(sprite);
-
-	//	/*Vector2 size = sprite->GetSize();
-	//	size.x = 370.0f;
-	//	size.y = 370.0f;
-	//	sprite->SetSize(size);*/
-	//}
+	for (uint32_t i = 0; i < 1; ++i)
+	{
+		Sprite* sprite = new Sprite();
+		
+		if (i == 0)
+		{
+			sprite->Initialize("title.png", { 0,0 }, { 1.0f,1.0f,1.0f,1.0f }, { 0,0 });
+		}
+		
+		sprites.push_back(sprite);
+	 
+	}
 
 	// --- サウンド ---
 	soundData_ = Audio::GetInstance()->LoadWav("fanfare.wav");
@@ -71,10 +71,10 @@ void TitleScene::Finalize()
 		delete obj;
 	}
 
-	/*for (Sprite* sprite : sprites)
+	for (Sprite* sprite : sprites)
 	{
 		delete sprite;
-	}*/
+	}
 
 	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData_);
 	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData2_);
@@ -96,13 +96,13 @@ void TitleScene::Update()
 
 	object3ds[0]->SetScale(scale_);
 
-	/*for (Sprite* sprite : sprites)
+	for (Sprite* sprite : sprites)
 	{
 		sprite->Update();
 
 		sprite->SetColor(color_);
 
-	}*/
+	}
 
 
 
@@ -186,10 +186,10 @@ void TitleScene::Draw()
 	// 描画前処理(Sprite)
 	SpriteCommon::GetInstance()->CommonDrawSetting();
 
-	/*for (Sprite* sprite : sprites)
+	for (Sprite* sprite : sprites)
 	{
 		sprite->Draw();
-	}*/
+	}
 
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();

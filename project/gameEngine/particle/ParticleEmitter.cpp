@@ -1,45 +1,50 @@
 #include "ParticleEmitter.h"
 
-ParticleEmitter::ParticleEmitter
-(
-    std::mt19937 randomEngine, 
-    std::unordered_map<std::string, ParticleGroup>& particleGroups,
-    float emissionInterval
-)
-    : randomEngine_(randomEngine), 
-    particleGroups_(particleGroups),
-    emissionInterval_(emissionInterval), 
-    nextEmissionTime_(0.0f)
+void ParticleEmitter::Emit(const std::string& groupName, const Vector3& position, uint32_t count, uint32_t interval)
 {
+	if (auto manager = ParticleManager::GetInstance())
+	{
+		manager->Emit(groupName, position, count, interval);
+	}
 }
 
-void ParticleEmitter::Update(float deltaTime)
+void ParticleEmitter::StartLoop(const std::string& groupName, const std::string& motionName, const Vector3& position, uint32_t count, float interval)
 {
-    // 次回の発生時刻を進める
-    nextEmissionTime_ -= deltaTime;
-
-    // 発生時刻を超えたらパーティクルを発生
-    if (nextEmissionTime_ <= 0.0f)
-    {
-        // パーティクルを発生させる
-        for (auto& group : particleGroups_)
-        {
-            ParticleGroup& particleGroup = group.second;
-
-            // Emit関数を呼び出してパーティクルを発生
-            Emit(group.first, particleGroup.particleList.front().transform.translate, 10); // 例として10個のパーティクルを発生させる
-        }
-
-        // 次回発生時刻を設定
-        nextEmissionTime_ += emissionInterval_;
-    }
+	if (auto manager = ParticleManager::GetInstance())
+	{
+		EmitSetting setting;
+		setting.groupName = groupName;
+		setting.motionName = motionName;
+		setting.emitPosition = position;
+		setting.interval = interval;
+		setting.emitCount = count;
+		setting.isLooping = true;
+		manager->AddEmitterSetting(setting);
+	}
 }
 
-void ParticleEmitter::Emit(const std::string& name, const Vector3& translate, uint32_t count)
+void ParticleEmitter::EmitOnce(const Vector3& position, uint32_t count, float interval)
 {
-    // ParticleManagerが登録済みか確認し、Emitを呼び出す
-    assert(particleGroups_.find(name) != particleGroups_.end() && "Particle group not found!");
+	if (manager_) 
+	{
+		manager_->Emit(groupName_, position, count, static_cast<uint32_t>(interval));
+	}
+}
 
-    // ParticleManagerにEmitを呼び出してパーティクルを生成
-    ParticleManager::GetInstance()->Emit(name, translate, count, 1);
+void ParticleEmitter::StartLoopEmit(const Vector3& position, uint32_t count, float interval)
+{
+	if (!manager_)
+	{
+		return;
+	}
+
+	EmitSetting setting;
+	setting.groupName = groupName_;
+	setting.motionName = motionName_;
+	setting.emitPosition = position;
+	setting.interval = interval;
+	setting.emitCount = count;
+	setting.isLooping = true;
+
+	manager_->AddEmitterSetting(setting);
 }

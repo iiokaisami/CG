@@ -3,6 +3,11 @@
 #include <Framework.h>
 
 #include "../base/BaseScene.h"
+#include "../../application/Objects/Player/Player.h"
+#include "../../application/Objects/Enemy/EnemyManager.h"
+#include "../../application/Objects/Field/Field.h"
+#include "../../application/Objects/Field/Wall.h"
+#include "../../application/Collider/ColliderManager.h"
 
 class GamePlayScene : public BaseScene
 {
@@ -20,28 +25,51 @@ public:
 	// 描画
 	void Draw() override;
 
+	// カメラ処理
+	void CameraUpdate();
+
+	// カメラシェイク
+	void CameraShake();
+
+	// カメラ追尾
+	void CameraFollowZoom();
+
+
 private:
 
 	CameraManager& cameraManager = CameraManager::GetInstance();
-	std::shared_ptr<Camera> camera1 = std::make_shared<Camera>();
-	std::shared_ptr<Camera> camera2 = std::make_shared<Camera>();
+	std::shared_ptr<Camera> camera1 = nullptr;
+	std::shared_ptr<Camera> camera2 = nullptr;
     
+	// 衝突判定
+	ColliderManager* colliderManager_ = nullptr;
+
     uint32_t activeIndex = 0;
-	Vector3 camera1Rotate = { 0.0f,0.0f,0.0f };
-	Vector3 camera1Position = { 0.0f,4.0f,0.0f };
+	Vector3 camera1Rotate = { -0.9f,0.0f,0.0f };
+	Vector3 camera1Position = { 0.0f,-20.0f,0.0f };
 	Vector3 camera2Rotate = { 0.0f,0.0f,0.0f };
 	Vector3 camera2Position = { 0.0f,4.0f,0.0f };
-	
+
 	// 2Dスプライト
-	std::vector<Sprite*>sprites = {};
+	//std::vector<Sprite*>sprites = {};
 
-	// 3Dオブジェクト
-	std::vector<Object3d*> object3ds = {};
+	// プレイヤー
+	std::unique_ptr<Player> pPlayer_ = nullptr;
 
-	// 透明チェック
-	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
+	// エネミー
+	std::unique_ptr<EnemyManager> pEnemyManager_ = nullptr;
 
-	// 位置
-	Vector3 position_ = { 0.0f,0.0f,0.0f };
+	// フィールド
+	std::unique_ptr<Field> pField_ = nullptr;
+
+	// 壁
+	std::vector<std::unique_ptr<Wall>> pWalls_;
+
+	
+	// カメラが静止時に追従する基準位置
+	Vector3 cameraRestCenter_; 
+	// カメラが現在静止モードかどうか
+	bool cameraIsResting_ = true;
+
 };
 

@@ -24,7 +24,6 @@ void MyGame::Initialize()
 	loadAudioThread.join();
 
 	// パーティクルグループの生成
-	//particleManager->CreateParticleGroup("RingGroup", "resources/images/monsterBall.png", "plane.obj", "Ring");
 	particleManager->CreateParticleGroup("slash", "resources/images/gradationLine.png", "plane.obj", "Ring", "Slash");
 	particleManager->CreateParticleGroup("magic1Group", "resources/images/gradationLine.png", "plane.obj", "Cylinder", "Magic1");
 	particleManager->CreateParticleGroup("magic2Group", "resources/images/white.png", "plane.obj", "Triangle", "Magic2");
@@ -33,7 +32,7 @@ void MyGame::Initialize()
 
 	particleManager->CreateParticleGroup("homingGroup", "resources/images/white.png", "plane.obj", "Ring", "Homing");
 	particleManager->CreateParticleGroup("flameGroup", "resources/images/white.png", "plane.obj", "Ring", "Flame");
-	particleManager->CreateParticleGroup("explosionGroup", "resources/images/white.png", "plane.obj", "Ring", "Explosion");
+	particleManager->CreateParticleGroup("explosionGroup", "resources/images/white.png", "plane.obj", "Helix", "Explosion");
 	
 
 	particleManager->Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1, 1000000);
@@ -137,7 +136,7 @@ void MyGame::Update()
 
 #ifdef _DEBUG
 
-	particleManager->DebugUI();
+	//particleManager->DebugUI();
 
 	if (ImGui::CollapsingHeader("Grayscale"))
 	{
@@ -324,6 +323,8 @@ void MyGame::LoadModel()
 	ModelManager::GetInstance()->LoadModel("cube.obj");
 	ModelManager::GetInstance()->LoadModel("axis.obj");
 	ModelManager::GetInstance()->LoadModel("plane.obj");
+	ModelManager::GetInstance()->LoadModel("sphere.obj");
+	ModelManager::GetInstance()->LoadModel("terrain.obj");
 }
 
 void MyGame::LoadSound()

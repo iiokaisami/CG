@@ -33,7 +33,7 @@
 #include "postEffect/BoxFilterPass.h"
 #include "postEffect/GaussianFilterPass.h"
 
-#include "../particle/ParticleEmitter.h"
+#include "../particle/ParticleManager.h"
 
 #include "../../scene/base/SceneManager.h"
 #include "../../scene/base/SceneFactory.h"   

@@ -97,7 +97,7 @@ private:
 		bool enable;
 	};
 
-public:
+public: // ライト
 
 	// 座標変換行列データ生成
 	void CreateTransformationMatrixData();
