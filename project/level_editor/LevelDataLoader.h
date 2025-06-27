@@ -40,4 +40,4 @@ private:
 
 	static void LoadObjectRecursive(const nlohmann::json& objectJson, LevelData* levelData);
 
-}
+};
