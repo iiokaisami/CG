@@ -201,6 +201,7 @@ void MyGame::Update()
 		{
 			postEffectManager->SetActiveEffect("BoxFilter", useBoxFilter);
 		}
+	}
 	if (ImGui::CollapsingHeader("Grayscale"))
 	{
 		static bool useGrayscale = false;
@@ -263,26 +264,6 @@ void MyGame::Update()
 		{
 			postEffectManager->SetActiveEffect("BoxFilter", useBoxFilter);
 		}
-
-		static float blurIntensity = 1.0f;
-		ImGui::SliderFloat("Box Blur Intensity", &blurIntensity, 0.1f, 1.0f);
-		postEffectManager->GetPassAs<BoxFilterPass>("BoxFilter")->SetIntensity(blurIntensity);
-	}
-
-	if (ImGui::CollapsingHeader("GaussianFilter"))
-	{
-		static bool useGaussianFilter = false;
-		if (ImGui::Checkbox("Use GaussianFilter", &useGaussianFilter))
-		{
-			postEffectManager->SetActiveEffect("GaussianFilter", useGaussianFilter);
-		}
-
-		static float gaussianIntensity = 1.0f;
-		ImGui::SliderFloat("Gaussian Blur Intensity", &gaussianIntensity, 0.1f, 5.0f);
-		postEffectManager->GetPassAs<GaussianFilterPass>("GaussianFilter")->SetIntensity(gaussianIntensity);
-	}
-
-#endif // _DEBUG
 
 		static float blurIntensity = 1.0f;
 		ImGui::SliderFloat("Box Blur Intensity", &blurIntensity, 0.1f, 1.0f);
