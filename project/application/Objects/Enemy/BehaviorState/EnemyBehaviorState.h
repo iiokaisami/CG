@@ -9,7 +9,7 @@ class EnemyBehaviorState
 {
 public:
 
-	EnemyBehaviorState(const std::string& _state, Enemy* _pEnemy) : pEnemy_(_pEnemy) {};
+	EnemyBehaviorState(const std::string& _state, Enemy* _pEnemy) :stateName_(_state), pEnemy_(_pEnemy) {};
 	virtual ~EnemyBehaviorState();
 	
 	// 初期化
