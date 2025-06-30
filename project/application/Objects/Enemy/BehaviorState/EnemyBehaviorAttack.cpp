@@ -97,7 +97,7 @@ void EnemyBehaviorAttack::Update()
 	// 攻撃クールダウンの管理
     if (attackCooldown_ >= 300)
     {
-        attackCooldown_ = 60 * 4;
+        attackCooldown_ = 60 * 3;
     }
 
     // クールダウンを減少
