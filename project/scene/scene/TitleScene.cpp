@@ -58,9 +58,9 @@ void TitleScene::Initialize()
 
 	// --- サウンド ---
 	soundData_ = Audio::GetInstance()->LoadWav("fanfare.wav");
-	Audio::GetInstance()->PlayWave(soundData_, false, 0.2f);
+	//Audio::GetInstance()->PlayWave(soundData_, false, 0.2f);
 	soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
-	Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
+	//Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
 
 }
 

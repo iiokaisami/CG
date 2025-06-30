@@ -24,9 +24,9 @@ void EnemyBehaviorHitReact::Update()
 
 	Vector3 shakeOffset =
 	{
-	((motion_.count % 2 == 0) ? 1.0f : -1.0f) /** 0.1f*/,
+	((motion_.count % 2 == 0) ? 1.0f : -1.0f) * 0.1f,
 	0.0f, // Y軸は揺らさない
-	((motion_.count % 3 == 0) ? 1.0f : -1.0f) /** 0.1f*/
+	((motion_.count % 3 == 0) ? 1.0f : -1.0f) * 0.1f
 	};
 
 	Vector3 originPos = pEnemy_->GetPosition();
