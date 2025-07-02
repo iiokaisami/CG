@@ -200,69 +200,6 @@ void MyGame::Update()
 		{
 			postEffectManager->SetActiveEffect("BoxFilter", useBoxFilter);
 		}
-	}
-	if (ImGui::CollapsingHeader("Grayscale"))
-	{
-		static bool useGrayscale = false;
-		if (ImGui::Checkbox("UseGrayscale", &useGrayscale))
-		{
-			postEffectManager->SetActiveEffect("Grayscale", useGrayscale);
-		}
-		if (ImGui::Button("1"))
-		{
-			if (useGrayscale_ == 1)
-			{
-				useGrayscale_ = 0;
-			} 
-			else 
-			{
-				useGrayscale_ = 1;
-			}
-		}
-		if (ImGui::Button("2"))
-		{
-			if (useGrayscale_ == 2)
-			{
-				useGrayscale_ = 0;
-			}
-			else
-			{
-				useGrayscale_ = 2;
-			}
-		}
-
-		// 現在値を表示
-		ImGui::Text("useGrayscale_ = %u", useGrayscale_);
-
-		// 値をGrayscalePassに反映
-		postEffectManager->GetPassAs<GrayscalePass>("Grayscale")->SetUseGrayscale(useGrayscale_);
-
-	}
-
-	if (ImGui::CollapsingHeader("Vignette"))
-	{
-
-		static bool useVignette = false;
-		if (ImGui::Checkbox("Use Vignette", &useVignette))
-		{
-			// ポストエフェクトマネージャに切り替えを伝える関数を作る想定
-			postEffectManager->SetActiveEffect("Vignette",useVignette);
-		}
-
-		// VignetteのパラメータをImGuiで調整する
-		if (ImGui::SliderFloat("Vignette Radius", &vignetteRadius_, 0.0f, 5.0f))
-		{
-			postEffectManager->GetPassAs<VignettePass>("Vignette")->SetStrength(vignetteRadius_);
-		}
-	}
-
-	if (ImGui::CollapsingHeader("BoxFilter"))
-	{
-		static bool useBoxFilter = false;
-		if (ImGui::Checkbox("Use BoxFilter", &useBoxFilter))
-		{
-			postEffectManager->SetActiveEffect("BoxFilter", useBoxFilter);
-		}
 
 		static float blurIntensity = 1.0f;
 		ImGui::SliderFloat("Box Blur Intensity", &blurIntensity, 0.1f, 1.0f);
@@ -280,6 +217,15 @@ void MyGame::Update()
 		static float gaussianIntensity = 1.0f;
 		ImGui::SliderFloat("Gaussian Blur Intensity", &gaussianIntensity, 0.1f, 5.0f);
 		postEffectManager->GetPassAs<GaussianFilterPass>("GaussianFilter")->SetIntensity(gaussianIntensity);
+	}
+
+	if (ImGui::CollapsingHeader("Outline"))
+	{
+		static bool useOutline = false;
+		if (ImGui::Checkbox("Use Outline", &useOutline))
+		{
+			postEffectManager->SetActiveEffect("Outline", useOutline);
+		}
 	}
 
 #endif // _DEBUG

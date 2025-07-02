@@ -94,6 +94,8 @@ void Framework::Initialize()
 	boxFilterPass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/BoxFilter.VS.hlsl", L"resources/shaders/BoxFilter.PS.hlsl");
 	gaussianFilterPass = std::make_unique<GaussianFilterPass>();
 	gaussianFilterPass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/GaussianFilter.VS.hlsl", L"resources/shaders/GaussianFilter.PS.hlsl");
+	outlinePass = std::make_unique<OutlinePass>();
+	outlinePass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/LuminaceBasedOutline.VS.hlsl", L"resources/shaders/DepthBasedOutline.PS.hlsl");
 
 	postEffectManager = std::make_unique<PostEffectManager>();
 	postEffectManager->SetNoneEffect(std::move(noneEffectPass));
@@ -101,6 +103,7 @@ void Framework::Initialize()
 	postEffectManager->AddPass("Vignette", std::move(vignettePass));
 	postEffectManager->AddPass("BoxFilter", std::move(boxFilterPass));
 	postEffectManager->AddPass("GaussianFilter", std::move(gaussianFilterPass));
+	postEffectManager->AddPass("Outline", std::move(outlinePass));
 	
 
 	// パーティクル	

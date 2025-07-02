@@ -32,6 +32,7 @@
 #include "postEffect/VignettePass.h"
 #include "postEffect/BoxFilterPass.h"
 #include "postEffect/GaussianFilterPass.h"
+#include "postEffect/OutlinePass.h"
 
 #include "../particle/ParticleManager.h"
 
@@ -94,6 +95,7 @@ protected:
 	std::unique_ptr<VignettePass> vignettePass = nullptr;
 	std::unique_ptr<BoxFilterPass> boxFilterPass = nullptr;
 	std::unique_ptr<GaussianFilterPass> gaussianFilterPass = nullptr;
+	std::unique_ptr<OutlinePass> outlinePass = nullptr;
 
 	ParticleManager* particleManager = nullptr;
 

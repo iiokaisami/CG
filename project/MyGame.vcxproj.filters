@@ -216,6 +216,9 @@
     <ClCompile Include="gameEngine\particle\ParticleMotion.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="gameEngine\base\postEffect\OutlinePass.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameEngine\3d\Object3d.h">
@@ -365,6 +368,9 @@
     <ClInclude Include="gameEngine\math\Ease.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="gameEngine\base\postEffect\OutlinePass.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Object3d.hlsli" />
@@ -375,6 +381,7 @@
     <None Include="resources\shaders\BoxFilter.hlsli" />
     <None Include="resources\shaders\GaussianFilter.hlsli" />
     <None Include="resources\shaders\NoneEffect.hlsli" />
+    <None Include="resources\shaders\LuminaceBasedOutline.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\Object3d.PS.hlsl" />
@@ -391,5 +398,8 @@
     <FxCompile Include="resources\shaders\GaussianFilter.VS.hlsl" />
     <FxCompile Include="resources\shaders\NoneEffect.PS.hlsl" />
     <FxCompile Include="resources\shaders\NoneEffect.VS.hlsl" />
+    <FxCompile Include="resources\shaders\LuminaceBasedOutline.PS.hlsl" />
+    <FxCompile Include="resources\shaders\LuminaceBasedOutline.VS.hlsl" />
+    <FxCompile Include="resources\shaders\DepthBasedOutline.PS.hlsl" />
   </ItemGroup>
 </Project>
