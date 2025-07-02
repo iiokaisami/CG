@@ -1,8 +1,8 @@
 #include "LuminaceBasedOutline.hlsli"
 
-cbuffer OutlineCB : register(b0)
+cbuffer MaterialCB : register(b0)
 {
-    float intensity;
+    matrix projectionInverse;
 };
 
 Texture2D<float4> gTexture : register(t0);
@@ -69,7 +69,8 @@ PixelShaderOutput main(VertexShaderOutput input)
     weight = saturate(weight);
     
     PixelShaderOutput output;
-    output.color.rgb = (1.0f - weight) * gTexture.Sample(gSampler, input.texcoord).rgb;
+    //output.color.rgb = (1.0f - weight) * gTexture.Sample(gSampler, input.texcoord).rgb;
+    output.color.rgb = (1.0f, 1.0f, 1.0f);
     output.color.a = 1.0f;
     
     return output;
