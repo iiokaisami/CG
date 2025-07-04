@@ -245,9 +245,9 @@ void MyGame::Draw()
 	// Skyboxの描画
 	skybox->Draw();
 
-	//sceneManager_->Draw();   // 実際の描画
+	sceneManager_->Draw();   // 実際の描画
 
-	//particleManager->Draw();
+	particleManager->Draw();
 
 	renderTexture->EndRender();
 
