@@ -50,6 +50,8 @@ public: // セッター
 
 	void SetGraphicsRootDescriptorTable(UINT RootParameterIndex, uint32_t srvIndex);
 
+	void SetIsCubeMap(bool isCubeMap) { isCubeMap_ = isCubeMap; }
+
 private:
 
 	DirectXCommon* dxCommon_ = nullptr;
@@ -66,5 +68,9 @@ private:
 
 	// テクスチャキャッシュ
 	std::unordered_map<std::string, uint32_t> textureIndices_;
+
+	// キューブマップかどうか
+	bool isCubeMap_ = false; 
+
 };
 

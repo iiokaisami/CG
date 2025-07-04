@@ -41,6 +41,11 @@ void MyGame::Initialize()
 	ParticleMotion::SetDirection("UP");
 
 	useExampleGroup_ = true;
+
+
+	TextureManager::GetInstance()->LoadTexture("resources/images/rostock_laage_airport_4k.dds");
+	uint32_t cubeSrvIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath("resources/images/rostock_laage_airport_4k.dds");
+	skybox->SetCubeMapSrvIndex(cubeSrvIndex);
 }
 
 void MyGame::Finalize()
@@ -64,6 +69,9 @@ void MyGame::Finalize()
 void MyGame::Update()
 {
 	Framework::Update();
+
+	// Skyboxの更新
+	skybox->Update();
 
 	if (time > 9.0f)
 	{
@@ -234,8 +242,12 @@ void MyGame::Draw()
 
 	srvManager->PreDraw();
 
-	sceneManager_->Draw();   // 実際の描画
-	particleManager->Draw();
+	// Skyboxの描画
+	skybox->Draw();
+
+	//sceneManager_->Draw();   // 実際の描画
+
+	//particleManager->Draw();
 
 	renderTexture->EndRender();
 

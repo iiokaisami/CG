@@ -201,6 +201,13 @@ public: // ゲッター
 		return samplerHeap_->GetGPUDescriptorHandleForHeapStart();
 	}
 
+	// DXC Utilsを取得
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentRTVHandle()  const 
+	{
+		UINT index = static_cast<UINT>(swapChain_->GetCurrentBackBufferIndex());
+		return rtvHandles_[index];
+	}
+
 private:
 
 	// FPS固定初期化
