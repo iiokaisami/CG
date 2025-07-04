@@ -108,29 +108,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="application\Objects\Enemy\Enemy.cpp" />
-    <ClCompile Include="application\Objects\Field\Field.cpp" />
-    <ClCompile Include="application\Objects\Enemy\Bullet\EnemyBullet.cpp" />
-    <ClCompile Include="application\Collider\Collider.cpp" />
-    <ClCompile Include="application\Collider\ColliderManager.cpp" />
-    <ClCompile Include="application\Objects\Enemy\EnemyManager.cpp" />
-    <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveState.cpp" />
-    <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveStage1.cpp" />
-    <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveStage2.cpp" />
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorAttack.cpp" />
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorDead.cpp" />
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorHitReact.cpp" />
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorMove.cpp" />
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorSpawn.cpp" />
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorState.cpp" />
     <ClCompile Include="scene\scene\ClearScene.cpp" />
     <ClCompile Include="gameEngine\base\postEffect\BoxFilterPass.cpp" />
     <ClCompile Include="gameEngine\base\postEffect\BasePostEffectPass.cpp" />
     <ClCompile Include="gameEngine\audio\Audio.cpp" />
     <ClCompile Include="gameEngine\math\Quaternion.cpp" />
-    <ClCompile Include="application\BaseObject\GameObject.cpp" />
-    <ClCompile Include="application\Objects\Player\Player.cpp" />
-    <ClCompile Include="application\Objects\Player\Bullet\PlayerBullet.cpp" />
     <ClCompile Include="scene\scene\GameOverScene.cpp" />
     <ClCompile Include="gameEngine\base\RenderTexture.cpp" />
     <ClCompile Include="gameEngine\base\postEffect\IPostEffectPass.cpp" />
@@ -174,34 +156,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="gameEngine\particle\ParticleManager.cpp" />
     <ClCompile Include="scene\scene\TitleScene.cpp" />
     <ClCompile Include="gameEngine\base\postEffect\VignettePass.cpp" />
-    <ClCompile Include="application\Objects\Field\Wall.cpp" />
     <ClCompile Include="Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="application\Objects\Enemy\Enemy.h" />
-    <ClInclude Include="application\Objects\Field\Field.h" />
-    <ClInclude Include="application\Objects\Enemy\Bullet\EnemyBullet.h" />
-    <ClInclude Include="application\Collider\Collider.h" />
-    <ClInclude Include="application\Collider\ColliderManager.h" />
-    <ClInclude Include="application\Objects\Enemy\EnemyManager.h" />
-    <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveState.h" />
-    <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveStage1.h" />
-    <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveStage2.h" />
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorAttack.h" />
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorDead.h" />
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorHitReact.h" />
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorMove.h" />
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorSpawn.h" />
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorState.h" />
     <ClInclude Include="gameEngine\math\Ease.h" />
     <ClInclude Include="scene\scene\ClearScene.h" />
     <ClInclude Include="gameEngine\base\postEffect\BoxFilterPass.h" />
     <ClInclude Include="gameEngine\base\postEffect\BasePostEffectPass.h" />
     <ClInclude Include="gameEngine\audio\Audio.h" />
     <ClInclude Include="gameEngine\math\Quaternion.h" />
-    <ClInclude Include="application\BaseObject\GameObject.h" />
-    <ClInclude Include="application\Objects\Player\Player.h" />
-    <ClInclude Include="application\Objects\Player\Bullet\PlayerBullet.h" />
     <ClInclude Include="scene\scene\GameOverScene.h" />
     <ClInclude Include="gameEngine\base\RenderTexture.h" />
     <ClInclude Include="gameEngine\base\postEffect\IPostEffectPass.h" />
@@ -244,8 +207,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="gameEngine\particle\ParticleEmitter.h" />
     <ClInclude Include="gameEngine\particle\ParticleManager.h" />
     <ClInclude Include="scene\scene\TitleScene.h" />
-    <ClInclude Include="application\Collider\Shape.h" />
-    <ClInclude Include="application\Objects\Field\Wall.h" />
     <ClInclude Include="gameEngine\base\postEffect\VignettePass.h" />
     <ClInclude Include="Skybox.h" />
   </ItemGroup>
