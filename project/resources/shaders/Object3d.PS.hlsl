@@ -10,6 +10,7 @@ struct Material
     int halfphongReflection;
     int pointLight;
     int spotLight;
+    int enableTexture;
 };
 
 struct DirectionalLight
@@ -40,12 +41,19 @@ struct SpotLight
     float cosFalloffStart;
 };
 
+struct EnableTexture
+{
+    
+};
+
+
 ConstantBuffer<Material> gMaterial : register(b0);
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
 ConstantBuffer<Camera> gCamera : register(b2);
 ConstantBuffer<PointLight> gPointLight : register(b3);
 ConstantBuffer<SpotLight> gSpotLight : register(b4);
 Texture2D<float4> gTexture : register(t0);
+TextureCube<float4> gEnvironmentTexture : register(t1);
 SamplerState gSampler : register(s0);
 
 struct PixelShaderOutput
@@ -149,6 +157,18 @@ PixelShaderOutput main(VertexShaderOutput input)
      
         output.color.rgb = diffuseSpotLight + specularSpotLight;
     }
+    else if(gMaterial.enableTexture)
+    {
+        // 環境マップ
+        output.color.rgb = float3(0.0f, 0.0f, 0.0f);
+        
+        float3 cameraToPosition = normalize(gCamera.worldPosition - input.worldPosition);
+        float3 reflectedVector = reflect(-cameraToPosition, normalize(input.normal));
+        float4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
+        
+        output.color.rgb += environmentColor.rgb;
+
+    }
     else
     {
         output.color = gMaterial.color * textureColor;
@@ -156,5 +176,3 @@ PixelShaderOutput main(VertexShaderOutput input)
     
     return output;
 }
-
-

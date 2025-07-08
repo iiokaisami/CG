@@ -33,6 +33,7 @@ public: // セッター
 	void SetEnableDirectionalLight(bool enable);
 	void SetEnablePointLight(bool enable);
 	void SetEnableSpotLight(bool enable);
+	void SetEnvironment(bool enable);
 
 	void SetModelCommon(ModelCommon* modelCommon) { modelCommon_ = modelCommon; }
 
@@ -69,6 +70,7 @@ private: // 構造体、関数
 		int32_t halfphongReflection;
 		int32_t pointLight;
 		int32_t spotLight;
+		int32_t environment;
 	};
 
 	struct  Node

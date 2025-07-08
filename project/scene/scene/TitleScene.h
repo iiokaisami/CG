@@ -56,6 +56,7 @@ private:
 	bool enableDirectionalLight = false;
 	bool enablePointLight = false;
 	bool enableSpotLight = false;
+	bool enableEnvironment = false;
 
 	// ライトの詳細設定用変数
 	Vector3 directionalLightColor = { 1.0f, 1.0f, 1.0f };

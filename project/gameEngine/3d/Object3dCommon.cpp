@@ -34,7 +34,7 @@ void Object3dCommon::CreateRootSignature()
 
 	//ディスクリプタレンジの生成
 	descriptorRange_[0].BaseShaderRegister = 0;
-	descriptorRange_[0].NumDescriptors = 1;
+	descriptorRange_[0].NumDescriptors = 2;
 	descriptorRange_[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRange_[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 	
@@ -72,6 +72,11 @@ void Object3dCommon::CreateRootSignature()
 	rootParameters_[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters_[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters_[6].Descriptor.ShaderRegister = 4;
+
+	// 新しいCBVを追加
+	rootParameters_[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters_[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters_[7].Descriptor.ShaderRegister = 5;
 
 	descriptionRootSignature_.pParameters = rootParameters_;					//ルートパラメータ配列へのポインタ
 	descriptionRootSignature_.NumParameters = _countof(rootParameters_);		//配列の長さ

@@ -158,6 +158,8 @@ void TitleScene::Update()
 		ImGui::SliderFloat("Spot Light Cos FalloffStart", &spotLightCosFalloffStart, 0.0f, 1.0f);
 	}
 
+	ImGui::Checkbox("Enable Environment", &enableEnvironment);
+
 	ImGui::End();
 
 #endif // _DEBUG
@@ -199,8 +201,13 @@ void TitleScene::Draw()
 	//	obj->Draw();
 	//}
 
-	object3ds[1]->Draw();
+	object3ds[0]->Draw();
 	
+	if (isTerrainDraw)
+	{
+		object3ds[1]->Draw();
+	}
+
 }
 
 void TitleScene::SetLightSettings()
@@ -229,5 +236,8 @@ void TitleScene::SetLightSettings()
 		obj->SetSpotLightDecay(spotLightDecay);
 		obj->SetSpotLightConsAngle(spotLightConsAngle);
 		obj->SetSpotLightCosFalloffStart(spotLightCosFalloffStart);
+
+		obj->IsEnvironment(enableEnvironment);
+
 	}
 }

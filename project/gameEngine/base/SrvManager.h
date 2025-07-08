@@ -18,7 +18,7 @@ public:
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(uint32_t index);
 
 	// SRV生成 (テクスチャ用)
-	void CreateSRVforTexture2D(uint32_t srvIndex, ID3D12Resource* pResource, DXGI_FORMAT Format, UINT MipLevels);
+	void CreateSRVforTexture2D(uint32_t srvIndex, ID3D12Resource* pResource, DXGI_FORMAT Format, UINT MipLevels, const DirectX::TexMetadata& metadata);
 	// SRV生成 (Structured Buffer用)
 	void CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource* pResource, UINT numElements, UINT structureByteStride);
 
@@ -50,8 +50,6 @@ public: // セッター
 
 	void SetGraphicsRootDescriptorTable(UINT RootParameterIndex, uint32_t srvIndex);
 
-	void SetIsCubeMap(bool isCubeMap) { isCubeMap_ = isCubeMap; }
-
 private:
 
 	DirectXCommon* dxCommon_ = nullptr;
@@ -68,9 +66,6 @@ private:
 
 	// テクスチャキャッシュ
 	std::unordered_map<std::string, uint32_t> textureIndices_;
-
-	// キューブマップかどうか
-	bool isCubeMap_ = false; 
 
 };
 

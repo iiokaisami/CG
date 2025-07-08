@@ -33,6 +33,9 @@ void Object3d::Initialize(const std::string& filePath)
 
 	// スポットライトリソースを作る
 	CreateSpotLight();
+
+	// 環境マップリソースを作る
+	CreateEnvironment();
 }
 
 void Object3d::Update()
@@ -44,6 +47,7 @@ void Object3d::Update()
 	model_->SetEnableDirectionalLight(directionalLightData_->enable);
 	model_->SetEnablePointLight(pointLightData_->enable);
 	model_->SetEnableSpotLight(spotLightData_->enable);
+	model_->SetEnvironment(environmentData_->enable);
 
 
 
@@ -155,6 +159,16 @@ void Object3d::CreateSpotLight()
 	spotLightData_->consAngle = std::cos(std::numbers::pi_v<float> / 3.0f);
 	spotLightData_->cosFalloffStart = 1.0f;
 	spotLightData_->enable = false;
+}
+
+void Object3d::CreateEnvironment()
+{
+	// 環境マップリソースを作る
+	environmentResource_ = object3dCommon_->GetDxCommon()->CreateBufferResource(sizeof(Environment));
+	// 書き込むためのアドレス
+	environmentResource_->Map(0, nullptr, reinterpret_cast<void**>(&environmentData_));
+	// デフォルト値は以下のようにしておく
+	environmentData_->enable = false;
 }
 
 std::string Object3d::GetModel() const

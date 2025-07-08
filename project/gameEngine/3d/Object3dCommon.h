@@ -88,7 +88,7 @@ private:
 
 
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature_{};
-	D3D12_ROOT_PARAMETER rootParameters_[7] = {};
+	D3D12_ROOT_PARAMETER rootParameters_[8] = {};
 	D3D12_STATIC_SAMPLER_DESC staticSamplers_[1] = {};
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs_[3] = {};
 };

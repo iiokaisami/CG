@@ -97,7 +97,12 @@ private:
 		bool enable;
 	};
 
-public: // ライト
+	struct Environment
+	{
+		bool enable;
+	};
+
+public: // ライト等
 
 	// 座標変換行列データ生成
 	void CreateTransformationMatrixData();
@@ -164,6 +169,10 @@ public: // ライト
 	//ライトのオンオフ
 	void SetLighting(bool enable) { enableLighting = enable; }
 
+	// 環境マップ
+	void CreateEnvironment();
+	void IsEnvironment(bool enable) { environmentData_->enable = enable; }
+
 private:
 
 	Object3dCommon* object3dCommon_ = nullptr;
@@ -182,6 +191,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource_{};
 	// スポットライトリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource_{};
+	// 環境マップリソース
+	Microsoft::WRL::ComPtr<ID3D12Resource> environmentResource_{};
 
 
 	//// バッファリソース内のデータを指すポインタ
@@ -190,6 +201,7 @@ private:
 	CameraForGPU* cameraData_ = nullptr;
 	PointLight* pointLightData_ = nullptr;
 	SpotLight* spotLightData_ = nullptr;
+	Environment* environmentData_ = nullptr;
 
 
 
