@@ -2,11 +2,11 @@
 
 #include <Ease.h>
 
-#include "../Enemy.h"
+#include "../NormalEnemy.h"
 #include "EnemyBehaviorMove.h"
 #include "EnemyBehaviorDead.h"
 
-EnemyBehaviorHitReact::EnemyBehaviorHitReact(Enemy* _pEnemy) : EnemyBehaviorState("Hit", _pEnemy)
+EnemyBehaviorHitReact::EnemyBehaviorHitReact(NormalEnemy* _pNormalEnemy) : EnemyBehaviorState("Hit", _pNormalEnemy)
 {
 	motion_.isActive = true;
 	motion_.count = 0;
@@ -20,7 +20,7 @@ void EnemyBehaviorHitReact::Initialize()
 void EnemyBehaviorHitReact::Update()
 {
 	// 敵のトランスフォームをmotion_.transformにセット
-	TransformUpdate(pEnemy_);
+	TransformUpdate(pNormalEnemy_);
 
 	Vector3 shakeOffset =
 	{
@@ -29,9 +29,9 @@ void EnemyBehaviorHitReact::Update()
 	((motion_.count % 3 == 0) ? 1.0f : -1.0f) * 0.1f
 	};
 
-	Vector3 originPos = pEnemy_->GetPosition();
+	Vector3 originPos = pNormalEnemy_->GetPosition();
 
-	pEnemy_->SetObjectPosition(originPos + shakeOffset);
+	pNormalEnemy_->SetObjectPosition(originPos + shakeOffset);
 
 	// モーションカウントを更新
 	MotionCount(motion_);
@@ -39,10 +39,10 @@ void EnemyBehaviorHitReact::Update()
 	if (!motion_.isActive)
 	{
 		// 無敵状態を解除
-		pEnemy_->SetIsInvincible(false);
+		pNormalEnemy_->SetIsInvincible(false);
 
 		// ヒットリアクションモーションが終了したら、移動モーションに切り替え
-		pEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorMove>(pEnemy_));
+		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorMove>(pNormalEnemy_));
 	}
 
 }

@@ -186,7 +186,7 @@
     <ClCompile Include="application\Objects\Player\Bullet\PlayerBullet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="application\Objects\Enemy\Enemy.cpp">
+    <ClCompile Include="application\Objects\Enemy\NormalEnemy.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="application\BaseObject\GameObject.cpp">
@@ -271,6 +271,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorDead.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="TrapEnemy.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -389,7 +392,7 @@
     <ClInclude Include="application\Objects\Player\Bullet\PlayerBullet.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="application\Objects\Enemy\Enemy.h">
+    <ClInclude Include="application\Objects\Enemy\NormalEnemy.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="application\BaseObject\GameObject.h">
@@ -480,6 +483,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorDead.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="TrapEnemy.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

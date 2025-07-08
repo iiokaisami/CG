@@ -6,7 +6,7 @@ class EnemyBehaviorDead : public EnemyBehaviorState
 {
 public:
 
-	EnemyBehaviorDead(Enemy* _pEnemy);
+	EnemyBehaviorDead(NormalEnemy* _pNormalEnemy);
 	
 	// 初期化
 	void Initialize() override;

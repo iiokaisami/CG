@@ -6,7 +6,7 @@ class EnemyBehaviorMove : public EnemyBehaviorState
 {
 public:
 
-	EnemyBehaviorMove(Enemy* _pEnemy);
+	EnemyBehaviorMove(NormalEnemy* _pNormalEnemy);
 	
 	// 初期化
 	void Initialize() override;

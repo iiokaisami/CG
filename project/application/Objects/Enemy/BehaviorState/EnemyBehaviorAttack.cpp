@@ -2,26 +2,28 @@
 
 #include <Ease.h>
 
-#include "../Enemy.h"
+#include "../NormalEnemy.h"
 #include "EnemyBehaviorMove.h"
 #include "EnemyBehaviorHitReact.h"
 #include "EnemyBehaviorDead.h"
 
-EnemyBehaviorAttack::EnemyBehaviorAttack(Enemy* _pEnemy) : EnemyBehaviorState("Attack", _pEnemy)
+EnemyBehaviorAttack::EnemyBehaviorAttack(NormalEnemy* _pNormalEnemy) : EnemyBehaviorState("Attack", _pNormalEnemy)
 {
 	// モーションの初期化
 	motion_.count = 0;
 	motion_.maxCount = 30; // 攻撃モーションのカウントを設定
+   
 }
 
 void EnemyBehaviorAttack::Initialize()
 {
+    attackCooldown_ = 10;
 }
 
 void EnemyBehaviorAttack::Update()
 {
 	// 敵のトランスフォームをmotion_.transformにセット
-	TransformUpdate(pEnemy_);
+	TransformUpdate(pNormalEnemy_);
 
     // 溜め
     if (motion_.isActive)
@@ -36,10 +38,10 @@ void EnemyBehaviorAttack::Update()
             float scaleValue = 1.0f - ease * 0.3f;
             motion_.transform.scale = Vector3(scaleValue, scaleValue, scaleValue);
 			//pEnemy_->SetScale(motion_.transform.scale);
-			pEnemy_->SetObjectScale(motion_.transform.scale);
+			pNormalEnemy_->SetObjectScale(motion_.transform.scale);
 
             float shake = ((motion_.count % 2 == 0) ? 1 : -1) * 0.05f;
-			pEnemy_->SetObjectPosition(motion_.transform.position + Vector3(shake, 0, shake));
+			pNormalEnemy_->SetObjectPosition(motion_.transform.position + Vector3(shake, 0, shake));
             
         }
         // 攻撃
@@ -57,7 +59,7 @@ void EnemyBehaviorAttack::Update()
 
             // Y軸回転
             motion_.transform.rotation.y += 0.3f;
-			pEnemy_->SetRotation(motion_.transform.rotation);
+			pNormalEnemy_->SetRotation(motion_.transform.rotation);
 
         }
     }
@@ -65,39 +67,33 @@ void EnemyBehaviorAttack::Update()
 	// モーションカウントを更新
 	MotionCount(motion_);
 
-	if (pEnemy_->GetHP() <= 0)
+	if (pNormalEnemy_->GetHP() <= 0)
 	{
 		// HPが0以下なら、死亡モーションに切り替え
-		pEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorDead>(pEnemy_));
+		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorDead>(pNormalEnemy_));
         return;
 	} 
-    else if (pEnemy_->IsHit())
+    else if (pNormalEnemy_->IsHit())
 	{
 		// ヒットフラグをリセット
-		pEnemy_->SetIsHit(false);
+		pNormalEnemy_->SetIsHit(false);
         // 無敵化
-        pEnemy_->SetIsInvincible(true);
+        pNormalEnemy_->SetIsInvincible(true);
 		// ヒットしたら、ヒットリアクションモーションに切り替え
-		pEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorHitReact>(pEnemy_));
+		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorHitReact>(pNormalEnemy_));
 		return;
 	}
-    else if (!pEnemy_->IsFarFromPlayer())
+    else if (!pNormalEnemy_->IsFarFromPlayer())
 	{
 		// プレイヤーとの距離が一定以上の場合、移動モーションに切り替え
-		pEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorMove>(pEnemy_));
+		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorMove>(pNormalEnemy_));
         return;
 	}
     else if(!motion_.isActive && motion_.count >= motion_.maxCount)
     {
         // ステートが切り替わらなかったらもう一度
 		ResetMotion();
-    }
 
-
-	// 攻撃クールダウンの管理
-    if (attackCooldown_ >= 300)
-    {
-        attackCooldown_ = 60 * 3;
     }
 
     // クールダウンを減少
@@ -108,12 +104,13 @@ void EnemyBehaviorAttack::Update()
     {
         // 攻撃モーションを開始
         motion_.isActive = true;
+        attackCooldown_ = 60 * 3;
     }
 
 	// フラグが立っている場合、攻撃を実行
     if (isAttack_)
     {
-        pEnemy_->Attack();
+        pNormalEnemy_->Attack();
     }
 
 }

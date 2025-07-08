@@ -2,12 +2,12 @@
 
 #include <Ease.h>
 
-#include "../Enemy.h"
+#include "../NormalEnemy.h"
 #include "EnemyBehaviorAttack.h"
 #include "EnemyBehaviorHitReact.h"
 #include "EnemyBehaviorDead.h"
 
-EnemyBehaviorMove::EnemyBehaviorMove(Enemy* _pEnemy) : EnemyBehaviorState("Move", _pEnemy)
+EnemyBehaviorMove::EnemyBehaviorMove(NormalEnemy* _pNormalEnemy) : EnemyBehaviorState("Move", _pNormalEnemy)
 {
 	motion_.isActive = true;
 	motion_.count = 0;
@@ -21,31 +21,31 @@ void EnemyBehaviorMove::Initialize()
 void EnemyBehaviorMove::Update()
 {
 	// 敵のトランスフォームをmotion_.transformにセット
-	TransformUpdate(pEnemy_);
+	TransformUpdate(pNormalEnemy_);
 
 	// 動く前に切り替え処理
-	if (pEnemy_->GetHP() <= 0)
+	if (pNormalEnemy_->GetHP() <= 0)
 	{
 		// HPが0以下なら、死亡モーションに切り替え
-		pEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorDead>(pEnemy_));
+		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorDead>(pNormalEnemy_));
 		return;
 	}
-	else if (pEnemy_->IsHit())
+	else if (pNormalEnemy_->IsHit())
 	{
 		// ヒットフラグをリセット
-		pEnemy_->SetIsHit(false);
+		pNormalEnemy_->SetIsHit(false);
 
 		// 無敵化
-		pEnemy_->SetIsInvincible(true);
+		pNormalEnemy_->SetIsInvincible(true);
 
 		// ヒットしたら、ヒットリアクションモーションに切り替え
-		pEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorHitReact>(pEnemy_));
+		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorHitReact>(pNormalEnemy_));
 		return;
 	}
-	else if (pEnemy_->IsFarFromPlayer())
+	else if (pNormalEnemy_->IsFarFromPlayer())
 	{
 		// プレイヤーとの距離が一定以下の場合、攻撃モーションに切り替え
-		pEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorAttack>(pEnemy_));
+		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorAttack>(pNormalEnemy_));
 		return;
 	}
 	else
@@ -62,13 +62,13 @@ void EnemyBehaviorMove::Update()
 
 	motion_.transform.position += Vector3(0.0f, wave, 0.0f); // Y軸方向に波打つ
 
-	pEnemy_->SetPosition(motion_.transform.position);
+	pNormalEnemy_->SetPosition(motion_.transform.position);
 
 	// モーションカウントを更新
 	MotionCount(motion_);
 
 	// 移動
-	pEnemy_->Move();
+	pNormalEnemy_->Move();
 
 }
 

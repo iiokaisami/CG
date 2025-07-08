@@ -11,7 +11,7 @@ void EnemyManager::Initialize()
 
 void EnemyManager::Finalize()
 {
-	for (auto& enemy : pEnemies_)
+	for (auto& enemy : pNormalEnemies_)
 	{
 		enemy->Finalize();
 	}
@@ -19,7 +19,7 @@ void EnemyManager::Finalize()
 
 void EnemyManager::Update()
 {
-	for (auto& enemy : pEnemies_)
+	for (auto& enemy : pNormalEnemies_)
 	{
 		enemy->SetPlayerPosition(playerPosition_);
 		enemy->Update();
@@ -27,11 +27,11 @@ void EnemyManager::Update()
 	}
 
 	// isDeat がたったら削除
-	pEnemies_.erase(
+	pNormalEnemies_.erase(
 		std::remove_if(
-			pEnemies_.begin(), 
-			pEnemies_.end(),
-			[this](std::unique_ptr<Enemy>& enemy)
+			pNormalEnemies_.begin(),
+			pNormalEnemies_.end(),
+			[this](std::unique_ptr<NormalEnemy>& enemy)
 			{
 				if (enemy->IsDead())
 				{
@@ -44,7 +44,7 @@ void EnemyManager::Update()
 				}
 				return false;
 			}),
-		pEnemies_.end()
+		pNormalEnemies_.end()
 	);
 
 	// ウェーブステートの更新
@@ -69,7 +69,7 @@ void EnemyManager::Update()
 
 void EnemyManager::Draw()
 {
-	for (auto& enemy : pEnemies_)
+	for (auto& enemy : pNormalEnemies_)
 	{
 		enemy->Draw();
 	}
@@ -77,7 +77,7 @@ void EnemyManager::Draw()
 
 void EnemyManager::ImGuiDraw()
 {
-	for (auto& enemy : pEnemies_)
+	for (auto& enemy : pNormalEnemies_)
 	{
 		enemy->ImGuiDraw();
 	}
@@ -86,14 +86,14 @@ void EnemyManager::ImGuiDraw()
 void EnemyManager::EnemyInit(const Vector3& pos)
 {
 	// エネミー
-	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+	std::unique_ptr<NormalEnemy> enemy = std::make_unique<NormalEnemy>();
 	enemy->SetPosition(pos);
 	enemy->Initialize();
 	enemy->SetPlayerPosition(playerPosition_);
 	enemy->Update();
 
 	// 敵を登録
-	pEnemies_.push_back(std::move(enemy));
+	pNormalEnemies_.push_back(std::move(enemy));
 	
 	// 敵のカウントを増やす
 	enemyCount_++;

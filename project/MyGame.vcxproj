@@ -108,7 +108,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="application\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="application\Objects\Enemy\NormalEnemy.cpp" />
     <ClCompile Include="application\Objects\Field\Field.cpp" />
     <ClCompile Include="application\Objects\Enemy\Bullet\EnemyBullet.cpp" />
     <ClCompile Include="application\Collider\Collider.cpp" />
@@ -175,9 +175,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="scene\scene\TitleScene.cpp" />
     <ClCompile Include="gameEngine\base\postEffect\VignettePass.cpp" />
     <ClCompile Include="application\Objects\Field\Wall.cpp" />
+    <ClCompile Include="TrapEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="application\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="application\Objects\Enemy\NormalEnemy.h" />
     <ClInclude Include="application\Objects\Field\Field.h" />
     <ClInclude Include="application\Objects\Enemy\Bullet\EnemyBullet.h" />
     <ClInclude Include="application\Collider\Collider.h" />
@@ -246,6 +247,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\Collider\Shape.h" />
     <ClInclude Include="application\Objects\Field\Wall.h" />
     <ClInclude Include="gameEngine\base\postEffect\VignettePass.h" />
+    <ClInclude Include="TrapEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

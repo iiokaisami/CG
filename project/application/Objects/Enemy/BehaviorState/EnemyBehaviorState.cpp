@@ -1,6 +1,6 @@
 #include "EnemyBehaviorState.h"
 
-#include "../Enemy.h"
+#include "../NormalEnemy.h"
 
 EnemyBehaviorState::~EnemyBehaviorState()
 {
@@ -20,12 +20,12 @@ void EnemyBehaviorState::MotionCount(Motion& _motion)
 	}
 }
 
-void EnemyBehaviorState::TransformUpdate(Enemy* _pEnemy)
+void EnemyBehaviorState::TransformUpdate(NormalEnemy* _pNormalEnemy)
 {
-	if (_pEnemy)
+	if (_pNormalEnemy)
 	{
-		motion_.transform.position = _pEnemy->GetPosition();
-		motion_.transform.rotation = _pEnemy->GetRotation();
-		motion_.transform.scale = _pEnemy->GetScale();
+		motion_.transform.position = _pNormalEnemy->GetPosition();
+		motion_.transform.rotation = _pNormalEnemy->GetRotation();
+		motion_.transform.scale = _pNormalEnemy->GetScale();
 	}
 }

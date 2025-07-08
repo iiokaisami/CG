@@ -1,4 +1,4 @@
-#include "Enemy.h"
+#include "NormalEnemy.h"
 
 #include <Ease.h>
 
@@ -9,7 +9,7 @@
 #include "BehaviorState/EnemyBehaviorHitReact.h"
 #include "BehaviorState/EnemyBehaviorDead.h"
 
-void Enemy::Initialize()
+void NormalEnemy::Initialize()
 {
     // --- 3Dオブジェクト ---
     object_ = std::make_unique<Object3d>();
@@ -33,8 +33,8 @@ void Enemy::Initialize()
     collider_.SetShapeData(&aabb_);
     collider_.SetShape(Shape::AABB);
     collider_.SetAttribute(colliderManager_->GetNewAttribute(collider_.GetColliderID()));
-    collider_.SetOnCollisionTrigger(std::bind(&Enemy::OnCollisionTrigger, this, std::placeholders::_1));
-	collider_.SetOnCollision(std::bind(&Enemy::OnCollision, this, std::placeholders::_1));
+    collider_.SetOnCollisionTrigger(std::bind(&NormalEnemy::OnCollisionTrigger, this, std::placeholders::_1));
+	collider_.SetOnCollision(std::bind(&NormalEnemy::OnCollision, this, std::placeholders::_1));
     colliderManager_->RegisterCollider(&collider_);
 
     // ステータス
@@ -48,7 +48,7 @@ void Enemy::Initialize()
     isInvincible_ = true;
 }
 
-void Enemy::Finalize()
+void NormalEnemy::Finalize()
 {
 	for (auto& bullet : pBullets_)
 	{
@@ -72,7 +72,7 @@ void Enemy::Finalize()
     colliderManager_->DeleteCollider(&collider_);
 }
 
-void Enemy::Update()
+void NormalEnemy::Update()
 {
 	// 各行動ステートの更新
 	pBehaviorState_->Update();
@@ -126,7 +126,7 @@ void Enemy::Update()
    
 }
 
-void Enemy::Draw()
+void NormalEnemy::Draw()
 {
     object_->Draw();
 
@@ -137,11 +137,11 @@ void Enemy::Draw()
 	}
 }
 
-void Enemy::Draw2D()
+void NormalEnemy::Draw2D()
 {
 }
 
-void Enemy::ImGuiDraw()
+void NormalEnemy::ImGuiDraw()
 {
 	ImGui::Begin("Enemy");
 
@@ -172,7 +172,7 @@ void Enemy::ImGuiDraw()
 	}
 }
 
-void Enemy::Move()
+void NormalEnemy::Move()
 {
 
     if (isFarFromPlayer_)
@@ -211,7 +211,7 @@ void Enemy::Move()
     }
 }
 
-void Enemy::Attack()
+void NormalEnemy::Attack()
 {
     // 弾の数と間隔角度
     const int bulletCount = 36;
@@ -243,20 +243,20 @@ void Enemy::Attack()
 }
     
 
-void Enemy::ChangeBehaviorState(std::unique_ptr<EnemyBehaviorState> _pState)
+void NormalEnemy::ChangeBehaviorState(std::unique_ptr<EnemyBehaviorState> _pState)
 {
     pBehaviorState_ = std::move(_pState);
     pBehaviorState_->Initialize();
 }
 
-void Enemy::ObjectTransformSet(const Vector3& _position, const Vector3& _rotation, const Vector3& _scale)
+void NormalEnemy::ObjectTransformSet(const Vector3& _position, const Vector3& _rotation, const Vector3& _scale)
 {
     object_->SetPosition(_position);
     object_->SetRotate(_rotation);
     object_->SetScale(_scale);
 }
 
-void Enemy::OnCollisionTrigger(const Collider* _other)
+void NormalEnemy::OnCollisionTrigger(const Collider* _other)
 {
 	if (_other->GetColliderID() == "PlayerBullet" && !isInvincible_)
 	{
@@ -271,7 +271,7 @@ void Enemy::OnCollisionTrigger(const Collider* _other)
 	}
 }
 
-void Enemy::OnCollision(const Collider* _other)
+void NormalEnemy::OnCollision(const Collider* _other)
 {
     if (_other->GetColliderID() == "Enemy")
     {
@@ -298,7 +298,7 @@ void Enemy::OnCollision(const Collider* _other)
     }
 }
 
-void Enemy::CorrectOverlap(const AABB _anyAABB)
+void NormalEnemy::CorrectOverlap(const AABB _anyAABB)
 {
     Vector3 penetrationVector{};
 

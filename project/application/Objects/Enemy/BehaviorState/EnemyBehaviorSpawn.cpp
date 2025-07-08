@@ -2,10 +2,10 @@
 
 #include <Ease.h>
 
-#include "../Enemy.h"
+#include "../NormalEnemy.h"
 #include "EnemyBehaviorMove.h"
 
-EnemyBehaviorSpawn::EnemyBehaviorSpawn(Enemy* _pEnemy) : EnemyBehaviorState("Spawn", _pEnemy)
+EnemyBehaviorSpawn::EnemyBehaviorSpawn(NormalEnemy* _pNormalEnemy) : EnemyBehaviorState("Spawn", _pNormalEnemy)
 {
 	// モーションの初期化
 	motion_.isActive = true;
@@ -20,7 +20,7 @@ void EnemyBehaviorSpawn::Initialize()
 void EnemyBehaviorSpawn::Update()
 {
 	// 敵のトランスフォームをmotion_.transformにセット
-	TransformUpdate(pEnemy_);
+	TransformUpdate(pNormalEnemy_);
 
 	// イージングの進行度（0〜1）
 	float t = float(motion_.count) / motion_.maxCount;
@@ -28,12 +28,10 @@ void EnemyBehaviorSpawn::Update()
 	motion_.transform.scale.y = Ease::OutBack(t);
 	motion_.transform.scale.z = Ease::OutBack(t);
 	Vector3 one(1.0f, 1.0f, 1.0f);
-	
-	//pEnemy_->SetScale(one * motion_.transform.scale);
 
-	pEnemy_->SetObjectPosition(motion_.transform.position);
-	pEnemy_->SetObjectRotation(motion_.transform.rotation);
-	pEnemy_->SetObjectScale(one * motion_.transform.scale);
+	pNormalEnemy_->SetObjectPosition(motion_.transform.position);
+	pNormalEnemy_->SetObjectRotation(motion_.transform.rotation);
+	pNormalEnemy_->SetObjectScale(one * motion_.transform.scale);
 
 	// モーションカウントを更新
 	MotionCount(motion_);
@@ -41,10 +39,10 @@ void EnemyBehaviorSpawn::Update()
 	if (!motion_.isActive)
 	{
 		// 無敵状態を解除
-		pEnemy_->SetIsInvincible(false);
+		pNormalEnemy_->SetIsInvincible(false);
 
 		// スポーンモーションが終了したら、次の状態に移行
-		pEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorMove>(pEnemy_));
+		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorMove>(pNormalEnemy_));
 	}
 }
 

@@ -10,12 +10,12 @@
 #include <Sprite.h>
 #include <Framework.h>
 
-class Enemy : public GameObject
+class NormalEnemy : public GameObject
 {
 public:
 
-	Enemy() = default;
-	~Enemy() = default;
+	NormalEnemy() = default;
+	~NormalEnemy() = default;
 
 	// 初期化
 	void Initialize() override;
@@ -93,19 +93,6 @@ public: // セッター
 	void SetObjectPosition(const Vector3& _position) { object_->SetPosition(_position); }
 	void SetObjectRotation(const Vector3& _rotation) { object_->SetRotate(_rotation); }
 	void SetObjectScale(const Vector3& _scale) { object_->SetScale(_scale); }
-
-public: // 構造体
-
-	struct Motion
-	{
-		// モーションがアクティブかどうか
-		bool isActive = false;
-		// カウント
-		uint32_t count = 0;
-		// Maxカウント
-		uint32_t maxCount = 30;
-
-	};
 
 private:
 

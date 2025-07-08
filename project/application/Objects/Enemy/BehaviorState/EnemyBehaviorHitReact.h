@@ -6,7 +6,7 @@ class EnemyBehaviorHitReact : public EnemyBehaviorState
 {
 public:
 
-	EnemyBehaviorHitReact(Enemy* _pEnemy);
+	EnemyBehaviorHitReact(NormalEnemy* _pNormalEnemy);
 	
 	// 初期化
 	void Initialize() override;

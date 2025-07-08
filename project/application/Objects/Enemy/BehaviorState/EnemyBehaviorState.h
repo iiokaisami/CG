@@ -3,13 +3,13 @@
 #include <sstream>
 #include <Vector3.h>
 
-class Enemy;
+class NormalEnemy;
 
 class EnemyBehaviorState
 {
 public:
 
-	EnemyBehaviorState(const std::string& _state, Enemy* _pEnemy) :stateName_(_state), pEnemy_(_pEnemy) {};
+	EnemyBehaviorState(const std::string& _state, NormalEnemy* _pNormalEnemy) :stateName_(_state), pNormalEnemy_(_pNormalEnemy) {};
 	virtual ~EnemyBehaviorState();
 	
 	// 初期化
@@ -46,10 +46,10 @@ protected:
 	void MotionCount(Motion& _motion);
 
 	// 敵のトランスフォームをmotion_.transformにセット
-	void TransformUpdate(Enemy* _pEnemy);
+	void TransformUpdate(NormalEnemy* _pEnemy);
 
 	std::string stateName_;
-	Enemy* pEnemy_ = nullptr;
+	NormalEnemy* pNormalEnemy_ = nullptr;
 
 	Motion motion_;
 

@@ -2,9 +2,9 @@
 
 #include <Ease.h>
 
-#include "../Enemy.h"
+#include "../NormalEnemy.h"
 
-EnemyBehaviorDead::EnemyBehaviorDead(Enemy* _pEnemy) : EnemyBehaviorState("Dead", _pEnemy)
+EnemyBehaviorDead::EnemyBehaviorDead(NormalEnemy* _pNormalEnemy) : EnemyBehaviorState("Dead", _pNormalEnemy)
 {
 	motion_.isActive = true;
 	motion_.count = 0;
@@ -18,7 +18,7 @@ void EnemyBehaviorDead::Initialize()
 void EnemyBehaviorDead::Update()
 {
 	// 敵のトランスフォームをmotion_.transformにセット
-	TransformUpdate(pEnemy_);
+	TransformUpdate(pNormalEnemy_);
 
 	float t = float(motion_.count) / motion_.maxCount;
 
@@ -36,9 +36,9 @@ void EnemyBehaviorDead::Update()
 	motion_.transform.rotation.y += 0.1f;
 	motion_.transform.rotation.x += 0.1f;
 
-	pEnemy_->SetObjectPosition(motion_.transform.position);
-	pEnemy_->SetObjectRotation(motion_.transform.rotation);
-	pEnemy_->SetObjectScale(motion_.transform.scale);
+	pNormalEnemy_->SetObjectPosition(motion_.transform.position);
+	pNormalEnemy_->SetObjectRotation(motion_.transform.rotation);
+	pNormalEnemy_->SetObjectScale(motion_.transform.scale);
 
 
 	// モーションカウントを更新
@@ -47,7 +47,7 @@ void EnemyBehaviorDead::Update()
 	if (!motion_.isActive)
 	{
 		// 死亡モーションが終了したら、敵を削除
-		pEnemy_->SetIsDead(true);
+		pNormalEnemy_->SetIsDead(true);
 
 		// パーティクル
 		ParticleEmitter::Emit("explosionGroup", motion_.transform.position, 6);

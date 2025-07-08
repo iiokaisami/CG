@@ -3,7 +3,7 @@
 #include <vector>
 #include <Framework.h>
 
-#include "Enemy.h"
+#include "NormalEnemy.h"
 #include "WaveState/EnemyWaveState.h"
 
 class EnemyManager
@@ -56,7 +56,7 @@ public: // セッター
 private:
 
 	// エネミー
-	std::vector<std::unique_ptr<Enemy>> pEnemies_;
+	std::vector<std::unique_ptr<NormalEnemy>> pNormalEnemies_;
 	
 	// 敵の数
 	uint32_t enemyCount_ = 0;
