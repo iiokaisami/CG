@@ -2,7 +2,7 @@
 
 #include <Ease.h>
 
-#include "../NormalEnemy.h"
+#include "../../NormalEnemy.h"
 
 EnemyBehaviorDead::EnemyBehaviorDead(NormalEnemy* _pNormalEnemy) : EnemyBehaviorState("Dead", _pNormalEnemy)
 {

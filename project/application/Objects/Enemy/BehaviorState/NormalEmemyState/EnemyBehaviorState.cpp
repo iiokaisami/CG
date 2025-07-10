@@ -1,6 +1,6 @@
 #include "EnemyBehaviorState.h"
 
-#include "../NormalEnemy.h"
+#include "../../NormalEnemy.h"
 
 EnemyBehaviorState::~EnemyBehaviorState()
 {

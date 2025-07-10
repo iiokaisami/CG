@@ -255,25 +255,25 @@
     <ClCompile Include="gameEngine\particle\ParticleMotion.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorState.cpp">
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorSpawn.cpp">
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorSpawn.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorMove.cpp">
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorMove.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorHitReact.cpp">
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorHitReact.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorAttack.cpp">
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorAttack.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorDead.cpp">
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorDead.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="TrapEnemy.cpp">
+    <ClCompile Include="application\Objects\Enemy\TrapEnemy.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -467,25 +467,25 @@
     <ClInclude Include="gameEngine\math\Ease.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorState.h">
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorSpawn.h">
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorSpawn.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorMove.h">
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorMove.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorHitReact.h">
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorHitReact.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorAttack.h">
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorAttack.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorDead.h">
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorDead.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="TrapEnemy.h">
+    <ClInclude Include="application\Objects\Enemy\TrapEnemy.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

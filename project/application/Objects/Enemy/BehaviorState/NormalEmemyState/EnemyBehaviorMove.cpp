@@ -2,7 +2,7 @@
 
 #include <Ease.h>
 
-#include "../NormalEnemy.h"
+#include "../../NormalEnemy.h"
 #include "EnemyBehaviorAttack.h"
 #include "EnemyBehaviorHitReact.h"
 #include "EnemyBehaviorDead.h"

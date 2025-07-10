@@ -117,12 +117,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveState.cpp" />
     <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveStage1.cpp" />
     <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveStage2.cpp" />
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorAttack.cpp" />
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorDead.cpp" />
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorHitReact.cpp" />
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorMove.cpp" />
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorSpawn.cpp" />
-    <ClCompile Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorState.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorAttack.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorDead.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorHitReact.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorMove.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorSpawn.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorState.cpp" />
     <ClCompile Include="scene\scene\ClearScene.cpp" />
     <ClCompile Include="gameEngine\base\postEffect\BoxFilterPass.cpp" />
     <ClCompile Include="gameEngine\base\postEffect\BasePostEffectPass.cpp" />
@@ -175,7 +175,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="scene\scene\TitleScene.cpp" />
     <ClCompile Include="gameEngine\base\postEffect\VignettePass.cpp" />
     <ClCompile Include="application\Objects\Field\Wall.cpp" />
-    <ClCompile Include="TrapEnemy.cpp" />
+    <ClCompile Include="application\Objects\Enemy\TrapEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\Objects\Enemy\NormalEnemy.h" />
@@ -187,12 +187,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveState.h" />
     <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveStage1.h" />
     <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveStage2.h" />
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorAttack.h" />
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorDead.h" />
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorHitReact.h" />
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorMove.h" />
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorSpawn.h" />
-    <ClInclude Include="application\Objects\Enemy\BehaviorState\EnemyBehaviorState.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorAttack.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorDead.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorHitReact.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorMove.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorSpawn.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\NormalEmemyState\EnemyBehaviorState.h" />
     <ClInclude Include="gameEngine\math\Ease.h" />
     <ClInclude Include="scene\scene\ClearScene.h" />
     <ClInclude Include="gameEngine\base\postEffect\BoxFilterPass.h" />
@@ -247,7 +247,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\Collider\Shape.h" />
     <ClInclude Include="application\Objects\Field\Wall.h" />
     <ClInclude Include="gameEngine\base\postEffect\VignettePass.h" />
-    <ClInclude Include="TrapEnemy.h" />
+    <ClInclude Include="application\Objects\Enemy\TrapEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

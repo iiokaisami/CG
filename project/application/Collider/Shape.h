@@ -5,7 +5,6 @@
 enum class Shape
 {
     Sphere,
-    Polygon,
     OBB,
     AABB,
 };

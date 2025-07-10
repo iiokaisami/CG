@@ -3,11 +3,11 @@
 #include <Ease.h>
 
 // BehaviorState
-#include "BehaviorState/EnemyBehaviorSpawn.h"
-#include "BehaviorState/EnemyBehaviorMove.h"
-#include "BehaviorState/EnemyBehaviorAttack.h"
-#include "BehaviorState/EnemyBehaviorHitReact.h"
-#include "BehaviorState/EnemyBehaviorDead.h"
+#include "BehaviorState/NormalEmemyState/EnemyBehaviorSpawn.h"
+#include "BehaviorState/NormalEmemyState/EnemyBehaviorMove.h"
+#include "BehaviorState/NormalEmemyState/EnemyBehaviorAttack.h"
+#include "BehaviorState/NormalEmemyState/EnemyBehaviorHitReact.h"
+#include "BehaviorState/NormalEmemyState/EnemyBehaviorDead.h"
 
 void NormalEnemy::Initialize()
 {

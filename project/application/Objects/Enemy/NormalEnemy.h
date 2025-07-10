@@ -2,7 +2,7 @@
 
 #include "../../BaseObject/GameObject.h"
 #include "Bullet/EnemyBullet.h"
-#include "BehaviorState/EnemyBehaviorState.h"
+#include "BehaviorState/NormalEmemyState/EnemyBehaviorState.h"
 #include"../../Collider/ColliderManager.h"
 #include "../../../gameEngine/particle/ParticleEmitter.h"
 
