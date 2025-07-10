@@ -176,7 +176,7 @@ void Framework::Update()
 {
 	// シーンマネージャーの更新
 	sceneManager_->Update();
-
+	
 	// 入力更新
 	input->Update();
 

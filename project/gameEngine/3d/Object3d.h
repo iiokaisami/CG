@@ -35,6 +35,8 @@ public: // セッター
 
 	void SetPosition(const Vector3& translate) { transform_.translate = translate; }
 
+	void SetEnvironmentMapHandle(D3D12_GPU_DESCRIPTOR_HANDLE handle, bool useEnvironmentMap);
+
 public: // ゲッター
 
 	const Vector3& GetScale() const { return transform_.scale; }
@@ -203,7 +205,7 @@ private:
 	SpotLight* spotLightData_ = nullptr;
 	Environment* environmentData_ = nullptr;
 
-
+	D3D12_GPU_DESCRIPTOR_HANDLE environmentMapHandle_ = { 0 };
 
 	Transform transform_{};
 

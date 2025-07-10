@@ -29,7 +29,7 @@ public:
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
 	// テクスチャファイルの読み込み
-	void LoadTexture(const std::string& filePath);
+	void LoadTexture(const std::string& filePath, bool forceCubeMap = false);
 
 public: // ゲッター
 
@@ -41,6 +41,8 @@ public: // ゲッター
 
 	// テクスチャ番号からGPUハンドルを所得
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(const std::string& filePath);
+
+	SrvManager* GetSrvManager() const { return srvManager_; }
 
 
 private: // 構造体

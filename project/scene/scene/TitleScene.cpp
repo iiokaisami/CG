@@ -62,6 +62,12 @@ void TitleScene::Initialize()
 	soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
 	Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
 
+
+	// 環境マップ
+	cubeMapPath_ = "resources/images/rostock_laage_airport_4k.dds";
+	TextureManager::GetInstance()->LoadTexture(cubeMapPath_);
+	cubeSrvIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(cubeMapPath_);
+	cubeHandle_ = TextureManager::GetInstance()->GetSrvManager()->GetGPUDescriptorHandle(cubeSrvIndex_);
 }
 
 void TitleScene::Finalize()
@@ -93,6 +99,10 @@ void TitleScene::Update()
 	{
 		obj->Update();
 	}
+
+	//rotate_.x += 0.01f;
+
+	object3ds[0]->SetRotate(rotate_);
 
 	object3ds[0]->SetScale(scale_);
 
@@ -212,6 +222,15 @@ void TitleScene::Draw()
 
 void TitleScene::SetLightSettings()
 {
+	if (enableEnvironment)
+	{
+		object3ds[0]->SetEnvironmentMapHandle(cubeHandle_, true);
+	}
+	else
+	{
+		object3ds[0]->SetEnvironmentMapHandle({ 0 }, false);
+	}
+
 	for (auto& obj : object3ds)
 	{
 		obj->SetLighting(enableLighting);
@@ -237,7 +256,14 @@ void TitleScene::SetLightSettings()
 		obj->SetSpotLightConsAngle(spotLightConsAngle);
 		obj->SetSpotLightCosFalloffStart(spotLightCosFalloffStart);
 
-		obj->IsEnvironment(enableEnvironment);
-
+		//obj->IsEnvironment(enableEnvironment);
+		/*if (enableEnvironment)
+		{
+			obj->SetEnvironmentMapHandle(cubeHandle_,true);
+		}
+		else
+		{
+			obj->SetEnvironmentMapHandle({ 0 },false);
+		}*/
 	}
 }

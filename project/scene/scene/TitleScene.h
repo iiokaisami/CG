@@ -42,6 +42,7 @@ private:
 	std::vector<Object3d*> object3ds = {};
 	Vector3 position_ = { 0.0f,0.0f,-10.0f };
 	Vector3 scale_{};
+	Vector3 rotate_{ 0.0f,0.0f,0.0f };
 
 
 	// 透明チェック
@@ -77,4 +78,9 @@ private:
 	float spotLightDecay = 2.0f;
 	float spotLightConsAngle = std::cos(std::numbers::pi_v<float> / 3.0f);
 	float spotLightCosFalloffStart = 1.0f;
+
+    std::string cubeMapPath_ = "";
+	uint32_t cubeSrvIndex_ = 0u;
+	D3D12_GPU_DESCRIPTOR_HANDLE cubeHandle_ = { 0 };
+
 };

@@ -61,19 +61,12 @@ void Skybox::Draw()
 {
 	ID3D12GraphicsCommandList* cmdList = dxCommon_->GetCommandList().Get();
 
-
-	//// 描画先のRTV/DSV設定
-	//auto rtvHandle = dxCommon_->GetCurrentRTVHandle();
-	//auto dsvHandle = dxCommon_->GetDSVHandle();
-	//cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
-
 	// パイプラインとルートシグネチャ設定
 	cmdList->SetGraphicsRootSignature(rootSignature_.Get());
 	cmdList->SetPipelineState(pipelineState_.Get());
 
 	// ルートパラメータ  定数バッファ b0（VS用）
 	cmdList->SetGraphicsRootConstantBufferView(0, constantBuffer_->GetGPUVirtualAddress());
-	//cmdList->SetGraphicsRootConstantBufferView(1, constantBuffer_->GetGPUVirtualAddress());
 	cmdList->SetGraphicsRootConstantBufferView(1, materialBuffer_->GetGPUVirtualAddress());
 
 	// ルートパラメータ  SRV (CubeMap) をピクセルシェーダーに渡す（Descriptor Table）
