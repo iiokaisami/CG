@@ -325,3 +325,11 @@ void Model::SetEnvironment(bool enable)
 	}
 }
 
+void Model::SetEnvironmentStrength(float strength)
+{
+	if (materialData_)
+	{
+		materialData_->environmentStrength = strength;
+	}
+}
+

@@ -48,6 +48,7 @@ void Object3d::Update()
 	model_->SetEnablePointLight(pointLightData_->enable);
 	model_->SetEnableSpotLight(spotLightData_->enable);
 	model_->SetEnvironment(environmentData_->enable);
+	model_->SetEnvironmentStrength(environmentData_->strength);
 
 
 
@@ -182,6 +183,7 @@ void Object3d::CreateEnvironment()
 	environmentResource_->Map(0, nullptr, reinterpret_cast<void**>(&environmentData_));
 	// デフォルト値は以下のようにしておく
 	environmentData_->enable = false;
+	environmentData_->strength = 0.5f;
 }
 
 std::string Object3d::GetModel() const

@@ -102,6 +102,7 @@ private:
 	struct Environment
 	{
 		bool enable;
+		float strength;
 	};
 
 public: // ライト等
@@ -174,6 +175,7 @@ public: // ライト等
 	// 環境マップ
 	void CreateEnvironment();
 	void IsEnvironment(bool enable) { environmentData_->enable = enable; }
+	void SetEnvironmentStrength(float strength) { environmentData_->strength = strength; }
 
 private:
 

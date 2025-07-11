@@ -79,8 +79,10 @@ private:
 	float spotLightConsAngle = std::cos(std::numbers::pi_v<float> / 3.0f);
 	float spotLightCosFalloffStart = 1.0f;
 
+	// 環境マップ
     std::string cubeMapPath_ = "";
 	uint32_t cubeSrvIndex_ = 0u;
 	D3D12_GPU_DESCRIPTOR_HANDLE cubeHandle_ = { 0 };
+	float environmentStrength_ = 1.0f;
 
 };

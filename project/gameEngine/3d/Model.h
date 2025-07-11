@@ -27,16 +27,6 @@ public:
 
 	void CopyFrom(const Model& other);
 
-public: // セッター
-
-	void SetEnableLighting(bool enable);
-	void SetEnableDirectionalLight(bool enable);
-	void SetEnablePointLight(bool enable);
-	void SetEnableSpotLight(bool enable);
-	void SetEnvironment(bool enable);
-
-	void SetModelCommon(ModelCommon* modelCommon) { modelCommon_ = modelCommon; }
-
 private: // 構造体、関数
 
 	struct Transform
@@ -71,6 +61,7 @@ private: // 構造体、関数
 		int32_t pointLight;
 		int32_t spotLight;
 		int32_t environment;
+		float environmentStrength;
 	};
 
 	struct  Node
@@ -122,6 +113,14 @@ public: // セッター
 	// indexを入れる
 	void AddIndex(uint32_t index);
 
+	void SetEnableLighting(bool enable);
+	void SetEnableDirectionalLight(bool enable);
+	void SetEnablePointLight(bool enable);
+	void SetEnableSpotLight(bool enable);
+	void SetEnvironment(bool enable);
+	void SetEnvironmentStrength(float strength);
+
+	void SetModelCommon(ModelCommon* modelCommon) { modelCommon_ = modelCommon; }
 
 private:
 

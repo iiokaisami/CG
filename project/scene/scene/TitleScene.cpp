@@ -169,6 +169,10 @@ void TitleScene::Update()
 	}
 
 	ImGui::Checkbox("Enable Environment", &enableEnvironment);
+	if (enableEnvironment)
+	{
+		ImGui::SliderFloat("Environment Strength", &environmentStrength_, 0.0f, 1.0f);
+	}
 
 	ImGui::End();
 
@@ -225,10 +229,11 @@ void TitleScene::SetLightSettings()
 	if (enableEnvironment)
 	{
 		object3ds[0]->SetEnvironmentMapHandle(cubeHandle_, true);
+		object3ds[0]->SetEnvironmentStrength(environmentStrength_);
 	}
 	else
 	{
-		object3ds[0]->SetEnvironmentMapHandle({ 0 }, false);
+		object3ds[0]->SetEnvironmentMapHandle({}, false);
 	}
 
 	for (auto& obj : object3ds)
@@ -256,14 +261,5 @@ void TitleScene::SetLightSettings()
 		obj->SetSpotLightConsAngle(spotLightConsAngle);
 		obj->SetSpotLightCosFalloffStart(spotLightCosFalloffStart);
 
-		//obj->IsEnvironment(enableEnvironment);
-		/*if (enableEnvironment)
-		{
-			obj->SetEnvironmentMapHandle(cubeHandle_,true);
-		}
-		else
-		{
-			obj->SetEnvironmentMapHandle({ 0 },false);
-		}*/
 	}
 }

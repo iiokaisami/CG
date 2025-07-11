@@ -11,6 +11,7 @@ struct Material
     int pointLight;
     int spotLight;
     int enableTexture;
+    float environmentStrength;
 };
 
 struct DirectionalLight
@@ -41,9 +42,10 @@ struct SpotLight
     float cosFalloffStart;
 };
 
-struct EnableTexture
+struct Enviroment
 {
-    
+    int enable;
+    float strength;
 };
 
 
@@ -157,7 +159,7 @@ PixelShaderOutput main(VertexShaderOutput input)
      
         output.color.rgb = diffuseSpotLight + specularSpotLight;
     }
-    else if(gMaterial.enableTexture)
+    else if (gMaterial.enableTexture && gMaterial.environmentStrength > 0.0f)
     {
         // 環境マップ
         output.color.rgb = float3(0.0f, 0.0f, 0.0f);
@@ -165,9 +167,9 @@ PixelShaderOutput main(VertexShaderOutput input)
         float3 cameraToPosition = normalize(gCamera.worldPosition - input.worldPosition);
         float3 reflectedVector = reflect(-cameraToPosition, normalize(input.normal));
         float4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
-        
-        output.color.rgb += environmentColor.rgb;
 
+        // 映り込みの強さで加算ブレンド
+        output.color.rgb += environmentColor.rgb * gMaterial.environmentStrength;
     }
     else
     {
