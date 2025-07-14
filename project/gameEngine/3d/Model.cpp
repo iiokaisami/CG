@@ -316,3 +316,20 @@ void Model::SetEnableSpotLight(bool enable)
 		materialData_->spotLight = enable ? 1 : 0;
 	}
 }
+
+void Model::SetEnvironment(bool enable)
+{
+	if (materialData_)
+	{
+		materialData_->environment = enable ? 1 : 0;
+	}
+}
+
+void Model::SetEnvironmentStrength(float strength)
+{
+	if (materialData_)
+	{
+		materialData_->environmentStrength = strength;
+	}
+}
+

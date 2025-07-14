@@ -50,7 +50,7 @@ void TitleScene::Initialize()
 		if (i == 0)
 		{
 			sprite->Initialize("title.png", { 0,0 }, { 1.0f,1.0f,1.0f,1.0f }, { 0,0 });
-		}
+		}		
 		
 		sprites.push_back(sprite);
 	 
@@ -62,6 +62,12 @@ void TitleScene::Initialize()
 	soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
 	//Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
 
+
+	// 環境マップ
+	cubeMapPath_ = "resources/images/rostock_laage_airport_4k.dds";
+	TextureManager::GetInstance()->LoadTexture(cubeMapPath_);
+	cubeSrvIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(cubeMapPath_);
+	cubeHandle_ = TextureManager::GetInstance()->GetSrvManager()->GetGPUDescriptorHandle(cubeSrvIndex_);
 }
 
 void TitleScene::Finalize()
@@ -93,6 +99,10 @@ void TitleScene::Update()
 	{
 		obj->Update();
 	}
+
+	//rotate_.x += 0.01f;
+
+	object3ds[0]->SetRotate(rotate_);
 
 	object3ds[0]->SetScale(scale_);
 
@@ -158,6 +168,12 @@ void TitleScene::Update()
 		ImGui::SliderFloat("Spot Light Cos FalloffStart", &spotLightCosFalloffStart, 0.0f, 1.0f);
 	}
 
+	ImGui::Checkbox("Enable Environment", &enableEnvironment);
+	if (enableEnvironment)
+	{
+		ImGui::SliderFloat("Environment Strength", &environmentStrength_, 0.0f, 1.0f);
+	}
+
 	ImGui::End();
 
 #endif // _DEBUG
@@ -199,12 +215,27 @@ void TitleScene::Draw()
 	//	obj->Draw();
 	//}
 
-	object3ds[1]->Draw();
+	object3ds[0]->Draw();
 	
+	if (isTerrainDraw)
+	{
+		object3ds[1]->Draw();
+	}
+
 }
 
 void TitleScene::SetLightSettings()
 {
+	if (enableEnvironment)
+	{
+		object3ds[0]->SetEnvironmentMapHandle(cubeHandle_, true);
+		object3ds[0]->SetEnvironmentStrength(environmentStrength_);
+	}
+	else
+	{
+		object3ds[0]->SetEnvironmentMapHandle({}, false);
+	}
+
 	for (auto& obj : object3ds)
 	{
 		obj->SetLighting(enableLighting);
@@ -229,5 +260,6 @@ void TitleScene::SetLightSettings()
 		obj->SetSpotLightDecay(spotLightDecay);
 		obj->SetSpotLightConsAngle(spotLightConsAngle);
 		obj->SetSpotLightCosFalloffStart(spotLightCosFalloffStart);
+
 	}
 }

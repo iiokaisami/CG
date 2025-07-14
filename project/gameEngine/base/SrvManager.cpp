@@ -58,15 +58,26 @@ D3D12_GPU_DESCRIPTOR_HANDLE SrvManager::GetGPUDescriptorHandle(uint32_t index)
     return handleGPU;
 }
 
-void SrvManager::CreateSRVforTexture2D(uint32_t srvIndex, ID3D12Resource* pResource, DXGI_FORMAT Format, UINT MipLevels)
+void SrvManager::CreateSRVforTexture2D(uint32_t srvIndex, ID3D12Resource* pResource, DXGI_FORMAT Format, UINT MipLevels, const DirectX::TexMetadata& metadata)
 {
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 
     // 各項目を埋める
     srvDesc.Format = Format;
     srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-    srvDesc.Texture2D.MipLevels = MipLevels;
+
+    if (metadata.IsCubemap())
+    {
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+		srvDesc.TextureCube.MostDetailedMip = 0; // 最も詳細なミップレベル
+		srvDesc.TextureCube.MipLevels = UINT_MAX; // ミップレベルの数
+		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f; // 最小LODクランプ値
+    }
+    else
+    {
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+        srvDesc.Texture2D.MipLevels = MipLevels;
+    }
 
     dxCommon_->GetDevice()->CreateShaderResourceView(pResource, &srvDesc, GetCPUDescriptorHandle(srvIndex));
 
@@ -88,7 +99,7 @@ void SrvManager::CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource*
     srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE; // フラグを設定
 
     srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER; // 修正: D3D12_SRV_DIMENSION_BUFFERに変更
+    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER; // D3D12_SRV_DIMENSION_BUFFERに変更
 
     dxCommon_->GetDevice()->CreateShaderResourceView(pResource, &srvDesc, GetCPUDescriptorHandle(srvIndex));
 }
@@ -191,7 +202,7 @@ uint32_t SrvManager::LoadTexture(const std::string& textureFilePath)
     textureData.pData = mipImages.GetImages()->pixels;
     textureData.RowPitch = static_cast<LONG_PTR>(mipImages.GetImages()->rowPitch);
     textureData.SlicePitch = static_cast<LONG_PTR>(mipImages.GetImages()->slicePitch);
-
+    
     // サブリソース更新
     UpdateSubresources(
         dxCommon_->GetCommandList().Get(),
@@ -214,7 +225,7 @@ uint32_t SrvManager::LoadTexture(const std::string& textureFilePath)
 
     // SRV作成
     uint32_t srvIndex = Allocate();
-    CreateSRVforTexture2D(srvIndex, textureResource.Get(), textureResource->GetDesc().Format, textureResource->GetDesc().MipLevels);
+    CreateSRVforTexture2D(srvIndex, textureResource.Get(), textureResource->GetDesc().Format, textureResource->GetDesc().MipLevels,metadata);
 
     // デバッグログ
     D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = GetGPUDescriptorHandle(srvIndex);

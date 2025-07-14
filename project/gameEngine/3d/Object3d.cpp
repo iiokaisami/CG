@@ -33,6 +33,9 @@ void Object3d::Initialize(const std::string& filePath)
 
 	// スポットライトリソースを作る
 	CreateSpotLight();
+
+	// 環境マップリソースを作る
+	CreateEnvironment();
 }
 
 void Object3d::Update()
@@ -44,6 +47,8 @@ void Object3d::Update()
 	model_->SetEnableDirectionalLight(directionalLightData_->enable);
 	model_->SetEnablePointLight(pointLightData_->enable);
 	model_->SetEnableSpotLight(spotLightData_->enable);
+	model_->SetEnvironment(environmentData_->enable);
+	model_->SetEnvironmentStrength(environmentData_->strength);
 
 
 
@@ -77,6 +82,13 @@ void Object3d::Draw()
 	// スポットライトCBufferの場所を設定
 	object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(6, spotLightResource_->GetGPUVirtualAddress());
 
+	if (environmentMapHandle_.ptr != 0) 
+	{
+		//object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, environmentMapHandle_);
+		//SetGraphicsRootDescriptorTable
+		object3dCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(8, environmentMapHandle_);
+	}
+
 	if (model_)
 	{
 		model_->Draw();
@@ -87,6 +99,12 @@ void Object3d::SetModel(const std::string& filePath)
 {
 	model_ = ModelManager::GetInstance()->FindModel(filePath);
 	modelFilePath_ = filePath;
+}
+
+void Object3d::SetEnvironmentMapHandle(D3D12_GPU_DESCRIPTOR_HANDLE handle, bool useEnvironmentMap)
+{
+	environmentMapHandle_ = handle;
+	environmentData_->enable = useEnvironmentMap;
 }
 
 void Object3d::CreateTransformationMatrixData()
@@ -155,6 +173,17 @@ void Object3d::CreateSpotLight()
 	spotLightData_->consAngle = std::cos(std::numbers::pi_v<float> / 3.0f);
 	spotLightData_->cosFalloffStart = 1.0f;
 	spotLightData_->enable = false;
+}
+
+void Object3d::CreateEnvironment()
+{
+	// 環境マップリソースを作る
+	environmentResource_ = object3dCommon_->GetDxCommon()->CreateBufferResource(sizeof(Environment));
+	// 書き込むためのアドレス
+	environmentResource_->Map(0, nullptr, reinterpret_cast<void**>(&environmentData_));
+	// デフォルト値は以下のようにしておく
+	environmentData_->enable = false;
+	environmentData_->strength = 0.5f;
 }
 
 std::string Object3d::GetModel() const

@@ -35,6 +35,8 @@ public: // セッター
 
 	void SetPosition(const Vector3& translate) { transform_.translate = translate; }
 
+	void SetEnvironmentMapHandle(D3D12_GPU_DESCRIPTOR_HANDLE handle, bool useEnvironmentMap);
+
 public: // ゲッター
 
 	const Vector3& GetScale() const { return transform_.scale; }
@@ -97,7 +99,13 @@ private:
 		bool enable;
 	};
 
-public: // ライト
+	struct Environment
+	{
+		bool enable;
+		float strength;
+	};
+
+public: // ライト等
 
 	// 座標変換行列データ生成
 	void CreateTransformationMatrixData();
@@ -164,6 +172,11 @@ public: // ライト
 	//ライトのオンオフ
 	void SetLighting(bool enable) { enableLighting = enable; }
 
+	// 環境マップ
+	void CreateEnvironment();
+	void IsEnvironment(bool enable) { environmentData_->enable = enable; }
+	void SetEnvironmentStrength(float strength) { environmentData_->strength = strength; }
+
 private:
 
 	Object3dCommon* object3dCommon_ = nullptr;
@@ -182,6 +195,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource_{};
 	// スポットライトリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource_{};
+	// 環境マップリソース
+	Microsoft::WRL::ComPtr<ID3D12Resource> environmentResource_{};
 
 
 	//// バッファリソース内のデータを指すポインタ
@@ -190,8 +205,9 @@ private:
 	CameraForGPU* cameraData_ = nullptr;
 	PointLight* pointLightData_ = nullptr;
 	SpotLight* spotLightData_ = nullptr;
+	Environment* environmentData_ = nullptr;
 
-
+	D3D12_GPU_DESCRIPTOR_HANDLE environmentMapHandle_ = { 0 };
 
 	Transform transform_{};
 

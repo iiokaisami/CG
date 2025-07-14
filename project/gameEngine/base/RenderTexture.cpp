@@ -49,8 +49,17 @@ void RenderTexture::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, 
 
     dxCommon_->GetDevice()->CreateRenderTargetView(texture_.Get(), nullptr, rtvHandle_);
 
+    // 仮のTexMetadataを作成
+    DirectX::TexMetadata metadata = {};
+    metadata.width = width_;
+    metadata.height = height_;
+    metadata.depth = 1;
+    metadata.arraySize = 1;
+    metadata.mipLevels = 1;
+    metadata.format = format_;
+
     srvIndex_ = srvManager_->Allocate();
-    srvManager_->CreateSRVforTexture2D(srvIndex_, texture_.Get(), format, 1);
+    srvManager_->CreateSRVforTexture2D(srvIndex_, texture_.Get(), format, 1, metadata);
 
     currentState_ = D3D12_RESOURCE_STATE_RENDER_TARGET;
 }

@@ -111,6 +111,10 @@ void Framework::Initialize()
 	inputRes = renderTexture->GetResource();
 	state = renderTexture->GetCurrentState();
 
+	// Skybox
+	skybox = std::make_unique<Skybox>();
+	skybox->Initialize(dxCommon.get(), srvManager.get());
+
 #ifdef _DEBUG
 
 	imGuiManager = std::make_unique<ImGuiManager>();
@@ -158,6 +162,9 @@ void Framework::Finalize()
 
 	particleManager->Finalize();
 
+	// skybox解放
+	skybox->Finalize();
+
 #ifdef _DEBUG
 	// ImGuiManager解放
 	imGuiManager->Finalize();
@@ -169,7 +176,7 @@ void Framework::Update()
 {
 	// シーンマネージャーの更新
 	sceneManager_->Update();
-
+	
 	// 入力更新
 	input->Update();
 

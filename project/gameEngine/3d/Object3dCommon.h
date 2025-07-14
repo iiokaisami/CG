@@ -65,7 +65,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_ = nullptr;
 
 	//ディスクリプタレンジの生成
-	D3D12_DESCRIPTOR_RANGE descriptorRange_[1]{};
+	D3D12_DESCRIPTOR_RANGE descriptorRange_[2]{};
 	//DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc_{};
 	//InputLayout
@@ -88,7 +88,7 @@ private:
 
 
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature_{};
-	D3D12_ROOT_PARAMETER rootParameters_[7] = {};
+	D3D12_ROOT_PARAMETER rootParameters_[9] = {};
 	D3D12_STATIC_SAMPLER_DESC staticSamplers_[1] = {};
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs_[3] = {};
 };

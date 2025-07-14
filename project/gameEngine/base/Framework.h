@@ -38,6 +38,8 @@
 #include "../../scene/base/SceneManager.h"
 #include "../../scene/base/SceneFactory.h"   
 
+#include "../../Skybox.h"
+
 #ifdef _DEBUG
 
 #include "../../ImGuiManager.h"
@@ -100,6 +102,8 @@ protected:
 	D3D12_GPU_DESCRIPTOR_HANDLE inputSrv;
 	Microsoft::WRL::ComPtr<ID3D12Resource> inputRes;
 	D3D12_RESOURCE_STATES state;
+
+	std::unique_ptr<Skybox> skybox = nullptr;
 
 #ifdef _DEBUG
 
