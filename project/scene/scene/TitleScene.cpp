@@ -231,10 +231,7 @@ void TitleScene::SetLightSettings()
 		object3ds[0]->SetEnvironmentMapHandle(cubeHandle_, true);
 		object3ds[0]->SetEnvironmentStrength(environmentStrength_);
 	}
-	else
-	{
-		object3ds[0]->SetEnvironmentMapHandle({}, false);
-	}
+	
 
 	for (auto& obj : object3ds)
 	{
