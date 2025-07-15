@@ -84,6 +84,7 @@ private:
 		float radius;
 		float decay;
 		bool enable;
+		char padding[3];
 	};
 
 	struct SpotLight

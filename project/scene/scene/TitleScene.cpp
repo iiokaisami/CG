@@ -95,6 +95,9 @@ void TitleScene::Update()
 	camera_->SetRotate(cameraRotate_);
 
 
+	// ライトの設定
+	SetLightSettings();
+	// モデル更新
 	for (auto& obj : object3ds)
 	{
 		obj->Update();
@@ -178,8 +181,7 @@ void TitleScene::Update()
 
 #endif // _DEBUG
 
-	// ライトの設定
-	SetLightSettings();
+	
 
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
 	{
