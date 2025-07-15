@@ -86,6 +86,8 @@
     <ClCompile Include="application\Objects\Field\Wall.cpp" />
     <ClCompile Include="application\Objects\Enemy\TrapEnemy.cpp" />
     <ClCompile Include="application\BaseObject\GameObject.cpp" />
+    <ClCompile Include="application\Objects\Player\Bullet\PlayerBullet.cpp" />
+    <ClCompile Include="application\Objects\Player\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\Objects\Enemy\NormalEnemy.h" />
@@ -156,6 +158,8 @@
     <ClInclude Include="application\Objects\Enemy\TrapEnemy.h" />
     <ClInclude Include="application\BaseObject\GameObject.h" />
     <ClInclude Include="application\Collider\Shape.h" />
+    <ClInclude Include="application\Objects\Player\Bullet\PlayerBullet.h" />
+    <ClInclude Include="application\Objects\Player\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\BoxFilter.hlsli" />

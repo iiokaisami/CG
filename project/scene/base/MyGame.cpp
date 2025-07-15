@@ -247,7 +247,7 @@ void MyGame::Draw()
 
 	sceneManager_->Draw();   // 実際の描画
 
-	//particleManager->Draw();
+	particleManager->Draw();
 
 	renderTexture->EndRender();
 
