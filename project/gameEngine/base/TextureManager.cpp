@@ -75,7 +75,9 @@ void TextureManager::LoadTexture(const std::string& filePath, bool forceCubeMap)
 		assert(!forceCubeMap or meta.IsCubemap()); // forceCubeMap時は必ずキューブマップ
 		assert(!forceCubeMap or meta.arraySize == 6);
 	}
-	
+	meta;
+	forceCubeMap;
+
 	// ★ ここでmetaの内容を出力
 	const auto& meta2 = mipImages.GetMetadata();
 	OutputDebugStringA(std::format(

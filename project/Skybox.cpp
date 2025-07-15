@@ -278,5 +278,5 @@ void Skybox::CreatePipelineState()
 
 	HRESULT hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&pipelineState_));
 	assert(SUCCEEDED(hr));
-
+	hr;
 }
