@@ -39,6 +39,9 @@ public:
 	// 攻撃
 	void Attack();
 
+	// 回避
+	void Evade();
+
 
 private: // 衝突判定
 
@@ -97,6 +100,26 @@ private:
 
 	// 衝突相手のAABB
 	AABB collisionWallAABB_;
+
+	// 回避フラグ
+	bool isEvading_ = false;
+	// 回避時間
+	int evadeTime_ = 0;
+	// 回避時間の最大値
+	const int kEvadeTimeMax_ = 30;
+	// 回避速度
+	Vector3 evadeSpeed_ = { 0.2f,0.0f,0.2f };
+	// 回避方向
+	Vector3 evadeDirection_ = { 0.0f,0.0f,0.0f };
+	// 回避中のフレーム数
+	int evadeFrame_ = 0;
+	const int kEvadeDuration_ = 30; // 回避の持続時間
+	// 回避速度
+	const float kEvadeSpeed_ = 0.2f;
+
+	float evadeStartRotationX_ = 0.0f; // 回避開始時のx軸角度
+	float evadeTargetRotationX_ = 0.0f; // 回避中の目標x軸角度
+	const float kEvadeRotateAngle_ = 3.14f * 4.0f; // 1回転(360度) 
 
 };
 

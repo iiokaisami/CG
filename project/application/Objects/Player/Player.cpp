@@ -66,11 +66,15 @@ void Player::Update()
 	object_->SetScale(scale_);
 	object_->Update();
 
-	// 移動
-	Move();
-	
-	// 攻撃
-	Attack();
+	// 回避処理
+	Evade();
+
+	// 回避中は移動・攻撃を無効化
+	if (!isEvading_) 
+	{
+		Move();
+		Attack();
+	}
 
 	// 弾の削除
 	pBullets_.remove_if([](PlayerBullet* bullet)
@@ -131,6 +135,9 @@ void Player::ImGuiDraw()
 	{
 		isHitMoment_ = true;
 	}
+
+	// HP
+	ImGui::Text("HP: %.0f", hp_);
 
 	ImGui::End();
 
@@ -206,9 +213,55 @@ void Player::Attack()
 	countCoolDownFrame_--;
 }
 
+void Player::Evade()
+{
+	// 回避入力（例：左Shiftキー）
+	if (!isEvading_ && Input::GetInstance()->PushKey(DIK_LSHIFT))
+	{
+		// 移動方向がある場合のみ回避
+		if (moveVelocity_.x != 0.0f or moveVelocity_.z != 0.0f) 
+		{
+			isEvading_ = true;
+			evadeFrame_ = kEvadeDuration_;
+			// 現在の移動方向を回避方向として保存
+			evadeDirection_ = moveVelocity_;
+			// 正規化
+			float len = std::sqrt(evadeDirection_.x * evadeDirection_.x + evadeDirection_.z * evadeDirection_.z);
+			if (len > 0.0f) 
+			{
+				evadeDirection_.x /= len;
+				evadeDirection_.z /= len;
+			}
+			// 回避開始時のx軸角度を保存
+			evadeStartRotationX_ = rotation_.x;
+			// 目標角度を設定（1回転分加算）
+			evadeTargetRotationX_ = evadeStartRotationX_ + kEvadeRotateAngle_;
+		}
+	}
+
+	if (isEvading_)
+	{
+		// 回避移動
+		position_ += evadeDirection_ * kEvadeSpeed_;
+
+		// 回避中のx軸回転（線形補間で速めに回す）
+		float t = 1.0f - static_cast<float>(evadeFrame_) / static_cast<float>(kEvadeDuration_);
+		rotation_.x = evadeStartRotationX_ + (evadeTargetRotationX_ - evadeStartRotationX_) * t;
+
+		evadeFrame_--;
+		if (evadeFrame_ <= 0)
+		{
+			isEvading_ = false;
+			// 回避終了時に元の角度に戻す
+			rotation_.x = evadeStartRotationX_;
+		}
+	}
+}
+
 void Player::OnCollisionTrigger(const Collider* _other)
 {
-	if (_other->GetColliderID() == "EnemyBullet")
+
+	if (_other->GetColliderID() == "EnemyBullet" && !isEvading_)
 	{
 		// プレイヤーのHPを減少
 		if (hp_ > 0)
@@ -223,7 +276,7 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		isHitMoment_ = true;
 	} 
 	
-	if (_other->GetColliderID() == "Enemy")
+	if (_other->GetColliderID() == "Enemy" && !isEvading_)
 	{
 		// プレイヤーのHPを減少
 		if (hp_ > 0)
