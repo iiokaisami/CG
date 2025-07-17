@@ -15,6 +15,13 @@ class LevelData
 {
 public:
 
+	// プレイヤーのスポーンデータ
+	struct PlayerSpawnData
+	{
+		Vector3 position;
+		Vector3 rotation;
+	};
+
 	struct ObjectData 
 	{
 		std::string type;
@@ -22,6 +29,9 @@ public:
 		Vector3 translation;
 		Vector3 rotation;
 		Vector3 scale;
+
+		// プレイヤー配列
+		std::vector<PlayerSpawnData> players;
 	};
 
 	std::vector<ObjectData> objects;

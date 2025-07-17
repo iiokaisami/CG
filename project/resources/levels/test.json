@@ -21,7 +21,6 @@
                     1.0
                 ]
             },
-            "disable_export": true,
             "file_name": "cube.obj"
         },
         {
@@ -69,13 +68,13 @@
             "file_name": "camera.obj"
         },
         {
-            "type": "MESH",
-            "name": "Cube.001",
+            "type": "PlayerSpawn",
+            "name": "PlayerSpawn",
             "transform": {
                 "translation": [
                     0.0,
                     0.0,
-                    2.95259952545166
+                    2.908257246017456
                 ],
                 "rotation": [
                     0.0,
@@ -88,17 +87,16 @@
                     1.0
                 ]
             },
-            "disable_export": false,
-            "file_name": "cube.obj"
+            "file_name": "playerspawn.obj"
         },
         {
-            "type": "MESH",
-            "name": "Cube.002",
+            "type": "PlayerSpawn",
+            "name": "PlayerSpawn.001",
             "transform": {
                 "translation": [
                     0.0,
-                    0.0,
-                    5.4621405601501465
+                    6.119775772094727,
+                    0.8530672192573547
                 ],
                 "rotation": [
                     0.0,
@@ -111,8 +109,95 @@
                     1.0
                 ]
             },
-            "disable_export": true,
-            "file_name": "cube.obj"
+            "file_name": "playerspawn.001.obj"
+        },
+        {
+            "type": "PlayerSpawn",
+            "name": "PlayerSpawn.002",
+            "transform": {
+                "translation": [
+                    6.703157424926758,
+                    0.0,
+                    1.7460201978683472
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "playerspawn.002.obj"
+        },
+        {
+            "type": "PlayerSpawn",
+            "name": "PlayerSpawn.003",
+            "transform": {
+                "translation": [
+                    -7.275558948516846,
+                    0.0,
+                    1.5562002658843994
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "playerspawn.003.obj"
+        },
+        {
+            "type": "PlayerSpawn",
+            "name": "PlayerSpawn.004",
+            "transform": {
+                "translation": [
+                    0.0,
+                    -8.343332290649414,
+                    1.6455252170562744
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "playerspawn.004.obj"
+        },
+        {
+            "type": "PlayerSpawn",
+            "name": "PlayerSpawn.005",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    -9.357826232910156
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "playerspawn.005.obj"
         }
     ]
 }

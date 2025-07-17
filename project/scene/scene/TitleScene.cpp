@@ -86,10 +86,31 @@ void TitleScene::Initialize()
 			object->SetRotate(obj.rotation);
 			object->SetScale(obj.scale);
 			object3ds.push_back(object);
+
+			// レベルエディタプレイヤー確認用
+			if (!obj.players.empty())
+			{
+				for (const auto& player : obj.players)
+				{
+					// モデル検索
+					ModelManager::GetInstance()->LoadModel("player.obj");
+					Model* model = ModelManager::GetInstance()->FindModel("player.obj");
+					if (model == nullptr)
+					{
+						assert(false && "Model not found");
+						continue;
+					}
+
+					Object3d* playerObj = new Object3d();
+					playerObj->Initialize("player.obj");
+					playerObj->SetPosition(player.position);
+					playerObj->SetRotate(player.rotation);
+					playerObj->SetScale({ 1.0f, 1.0f, 1.0f });
+					object3ds.push_back(playerObj);
+				}
+			}
 		}
 	}
-
-
 
 }
 

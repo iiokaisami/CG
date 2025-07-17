@@ -72,6 +72,30 @@ void LevelDataLoader::LoadObjectRecursive(const nlohmann::json& objectJson, Leve
 
         levelData->objects.emplace_back(std::move(data));
     }
+    // プレイヤー発生ポイント
+    else if (type.compare("PlayerSpawn") == 0)
+    {
+		// playersに要素を1つ追加
+        LevelData::PlayerSpawnData playerData;
+
+        // positionの数値を書き込む
+        if (objectJson.contains("position"))
+        {
+            const auto& pos = objectJson["position"];
+            playerData.position = { pos[0], pos[1], pos[2] };
+        }
+
+		// rotationの数値を書き込む
+        if (objectJson.contains("rotation"))
+        {
+            const auto& rot = objectJson["rotation"];
+            playerData.rotation = { rot[0], rot[1], rot[2] };
+        }
+
+        //levelData->players.push_back(playerData);
+		levelData->objects.back().players.push_back(playerData);
+
+    }
 
     // 再帰 子オブジェクトの走査
     if (objectJson.contains("children")) 
