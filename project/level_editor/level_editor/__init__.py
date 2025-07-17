@@ -15,6 +15,7 @@ from .export_scene import MYADDON_OT_export_scene
 from .collider import MYADDON_OT_add_collider, OBJECT_PT_collider
 from .draw_collider import DrawCollider
 from .my_menu import TOPBAR_MT_my_menu  
+from .disabled import MYADDON_OT_add_disable_flag, OBJECT_PT_disable_flag
 
 bl_info = {
     "name":"level_editor",
@@ -72,6 +73,8 @@ classes = (
     MYADDON_OT_add_collider,
     OBJECT_PT_file_name,
     OBJECT_PT_collider,
+    MYADDON_OT_add_disable_flag,
+    OBJECT_PT_disable_flag,
 )
 
 if __name__ == "__main__":
