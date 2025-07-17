@@ -143,7 +143,7 @@ void TitleScene::Update()
 
 	//ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
 
-	ImGui::SliderFloat3("cameraPosition", &cameraPosition_.x, -20.0f, 20.0f);
+	ImGui::SliderFloat3("cameraPosition", &cameraPosition_.x, -70.0f, 20.0f);
 	ImGui::SliderFloat3("cameraRotate", &cameraRotate_.x, -3.14f, 3.14f);
 
 	ImGui::SliderFloat3("sphere scale", &scale_.x, 0.0f, 10.0f);
@@ -227,12 +227,6 @@ void TitleScene::Draw()
 	{
 		obj->Draw();
 	}
-	object3ds[0]->Draw();
-	if (isTerrainDraw)
-	{
-		object3ds[1]->Draw();
-	}
-	object3ds[2]->Draw();
 }
 
 void TitleScene::SetLightSettings()

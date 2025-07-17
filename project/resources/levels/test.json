@@ -21,6 +21,7 @@
                     1.0
                 ]
             },
+            "disable_export": true,
             "file_name": "cube.obj"
         },
         {
@@ -69,12 +70,12 @@
         },
         {
             "type": "MESH",
-            "name": "立方体",
+            "name": "Cube.001",
             "transform": {
                 "translation": [
                     0.0,
-                    5.736387729644775,
-                    2.108870506286621
+                    0.0,
+                    2.95259952545166
                 ],
                 "rotation": [
                     0.0,
@@ -87,16 +88,17 @@
                     1.0
                 ]
             },
+            "disable_export": false,
             "file_name": "cube.obj"
         },
         {
             "type": "MESH",
-            "name": "立方体.001",
+            "name": "Cube.002",
             "transform": {
                 "translation": [
-                    4.823361873626709,
-                    -4.179973125457764,
-                    2.108870506286621
+                    0.0,
+                    0.0,
+                    5.4621405601501465
                 ],
                 "rotation": [
                     0.0,
@@ -109,6 +111,7 @@
                     1.0
                 ]
             },
+            "disable_export": true,
             "file_name": "cube.obj"
         }
     ]

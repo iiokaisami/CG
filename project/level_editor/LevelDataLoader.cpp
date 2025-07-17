@@ -32,6 +32,17 @@ void LevelDataLoader::LoadObjectRecursive(const nlohmann::json& objectJson, Leve
 {
     assert(objectJson.contains("type") && objectJson["type"].is_string());
 
+    if (objectJson.contains("disable_export"))
+    {
+        // 有効無効フラグ
+        bool disabled = objectJson["disable_export"].get<bool>();
+        if (!disabled)
+        {
+            // このオブジェクトは配置しない
+            return;
+        }
+    }
+
     std::string type = objectJson["type"];
 
     if (type == "MESH")
@@ -41,6 +52,13 @@ void LevelDataLoader::LoadObjectRecursive(const nlohmann::json& objectJson, Leve
 
         if (objectJson.contains("file_name")) 
         {
+            std::string fileName = objectJson["file_name"];
+            // すでに .obj で終わっていなければ付与
+			// 4文字以下の場合 or 最後の4文字が ".obj" でない場合
+            if (fileName.length() < 4 or fileName.substr(fileName.length() - 4) != ".obj") 
+            {
+                fileName += ".obj";
+            }
             data.fileName = objectJson["file_name"];
         }
 
