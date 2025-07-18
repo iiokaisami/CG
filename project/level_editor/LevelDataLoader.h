@@ -29,12 +29,14 @@ public:
 		Vector3 translation;
 		Vector3 rotation;
 		Vector3 scale;
-
-		// プレイヤー配列
-		std::vector<PlayerSpawnData> players;
 	};
 
 	std::vector<ObjectData> objects;
+
+
+	// プレイヤー配列
+	std::vector<PlayerSpawnData> players;
+
 };
 
 class LevelDataLoader

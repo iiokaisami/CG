@@ -88,9 +88,9 @@ void TitleScene::Initialize()
 			object3ds.push_back(object);
 
 			// レベルエディタプレイヤー確認用
-			if (!obj.players.empty())
+			if (!levelData_->players.empty())
 			{
-				for (const auto& player : obj.players)
+				for (const auto& player : levelData_->players)
 				{
 					// モデル検索
 					ModelManager::GetInstance()->LoadModel("player.obj");
@@ -206,6 +206,16 @@ void TitleScene::Update()
 		ImGui::SliderFloat("Spot Light Decay", &spotLightDecay, 0.0f, 1.0f);
 		ImGui::SliderFloat("Spot Light Cons Angle", &spotLightConsAngle, 0.0f, 10.0f);
 		ImGui::SliderFloat("Spot Light Cos FalloffStart", &spotLightCosFalloffStart, 0.0f, 1.0f);
+	}
+
+	// object3dsの座標をImGuiで編集
+	for (size_t i = 0; i < object3ds.size(); ++i)
+	{
+		Vector3 pos = object3ds[i]->GetPosition();
+		if (ImGui::SliderFloat3(("Object" + std::to_string(i) + " Pos").c_str(), &pos.x, -10.0f, 10.0f))
+		{
+			object3ds[i]->SetPosition(pos);
+		}
 	}
 
 	ImGui::End();

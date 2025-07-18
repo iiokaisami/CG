@@ -73,28 +73,32 @@ void LevelDataLoader::LoadObjectRecursive(const nlohmann::json& objectJson, Leve
         levelData->objects.emplace_back(std::move(data));
     }
     // プレイヤー発生ポイント
-    else if (type.compare("PlayerSpawn") == 0)
+    else if (type == "PlayerSpawn")
     {
-		// playersに要素を1つ追加
+        // players に要素を 1 つ追加
         LevelData::PlayerSpawnData playerData;
 
-        // positionの数値を書き込む
-        if (objectJson.contains("position"))
+        // transform 情報が存在すれば位置と回転を取得
+        if (objectJson.contains("transform")) 
         {
-            const auto& pos = objectJson["position"];
-            playerData.position = { pos[0], pos[1], pos[2] };
+            const auto& t = objectJson["transform"];
+
+            // position の数値を書き込む
+            if (t.contains("translation")) 
+            {
+                const auto& pos = t["translation"];
+                playerData.position = {-1.0f * pos[0], pos[2], -1.0f * pos[1] };
+            }
+
+            // rotation の数値を書き込む（Blenderとの座標系補正が必要なら -1.0f を掛ける）
+            if (t.contains("rotation")) 
+            {
+                const auto& rot = t["rotation"];
+                playerData.rotation = { -1.0f * rot[0], 3.14f + rot[1], -1.0f * rot[2] };
+            }
         }
 
-		// rotationの数値を書き込む
-        if (objectJson.contains("rotation"))
-        {
-            const auto& rot = objectJson["rotation"];
-            playerData.rotation = { rot[0], rot[1], rot[2] };
-        }
-
-        //levelData->players.push_back(playerData);
-		levelData->objects.back().players.push_back(playerData);
-
+        levelData->players.push_back(playerData);
     }
 
     // 再帰 子オブジェクトの走査
