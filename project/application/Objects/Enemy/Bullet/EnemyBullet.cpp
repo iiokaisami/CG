@@ -43,6 +43,12 @@ void EnemyBullet::Update()
 	aabb_.max = position_ + object_->GetScale();
 	collider_.SetPosition(position_);
 
+	// 残り寿命に応じてスケールを小さくする
+	float t = static_cast<float>(deathTimer_) / static_cast<float>(kLifeTime);
+	t = std::clamp(t, 0.0f, 1.0f);
+	scale_ = { 0.7f * t, 0.7f * t, 0.7f * t };
+
+
 	//時間経過でデス
 	if (--deathTimer_ <= 0) {
 		isDead_ = true;

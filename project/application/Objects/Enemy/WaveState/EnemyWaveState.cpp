@@ -25,74 +25,65 @@ void EnemyWaveState::LoadCSV(const std::string& csvPath)
 void EnemyWaveState::UpdateEnemyPopCommands(EnemyManager* _pEnemyManager)
 {
 	//待機処理
-	if (isEnemyWaiting_)
+	if (isEnemyWaiting_) 
 	{
 		enemyWaitingTimer_--;
 
 		if (enemyWaitingTimer_ <= 0)
 		{
-			//待機完了
 			isEnemyWaiting_ = false;
 		}
 		return;
 	}
 
-
-	//1行分の文字列を入れる変数
 	std::string line;
 
-	//コマンドループ
-	while (getline(enemyPopCommands_, line))
+	while (getline(enemyPopCommands_, line)) 
 	{
-		//1行分の文字列を入れる変数
 		std::istringstream line_stream(line);
-
 		std::string word;
-		// ,区切りで行の先頭列を取得
-		getline(line_stream, word, ',');
 
-		// "//"から始まる行はコメント
+		getline(line_stream, word, ','); // コマンド取得
+
+		// コメント行をスキップ
 		if (word.find("//") == 0)
 		{
-			//コメント行を飛ばす
 			continue;
 		}
 
-
-		// POSITONコマンド
-		if (word.find("POSITION") == 0)
+		// POSITONコマンド（NormalEnemy or TrapEnemy）
+		if (word == "POSITION")
 		{
 
-			// X座標
+			// 敵タイプ（例: "Normal", "Trap"）
+			std::string enemyType;
+			getline(line_stream, enemyType, ',');
+
+			// X, Y, Z 座標を取得
 			getline(line_stream, word, ',');
-			float x = (float)atoi(word.c_str());
+			float x = static_cast<float>(atof(word.c_str()));
 
-			// Y座標
 			getline(line_stream, word, ',');
-			float y = (float)atoi(word.c_str());
+			float y = static_cast<float>(atof(word.c_str()));
 
-			// Z座標
 			getline(line_stream, word, ',');
-			float z = (float)atoi(word.c_str());
+			float z = static_cast<float>(atof(word.c_str()));
 
-			// 敵発生
-			_pEnemyManager->EnemyInit({ x,y,z });
-
+			if (enemyType == "Normal")
+			{
+				_pEnemyManager->NormalEnemyInit({ x, y, z });
+			} else if (enemyType == "Trap") {
+				_pEnemyManager->TrapEnemyInit({ x, y, z });
+			}
 		}
 		// WAITコマンド
-		else if (word.find("WAIT") == 0)
+		else if (word == "WAIT")
 		{
-
 			getline(line_stream, word, ',');
+			int waitTime = atoi(word.c_str());
 
-			// 待ち時間
-			int32_t waitTime = atoi(word.c_str());
-
-			//待機時間
 			isEnemyWaiting_ = true;
 			enemyWaitingTimer_ = waitTime;
-
-			//コマンドループを抜ける
 			break;
 		}
 	}

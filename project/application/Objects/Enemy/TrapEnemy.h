@@ -1,7 +1,8 @@
 #pragma once
 
 #include "../../BaseObject/GameObject.h"
-// ここに弾的なやつ
+#include "Bullet/VignetteTrap.h"
+#include "Bullet/TimeBomb.h"
 #include "BehaviorState/NormalEmemyState/EnemyBehaviorState.h"
 #include"../../../gameEngine/Collider/ColliderManager.h"
 
@@ -54,6 +55,21 @@ private: // 衝突判定
 	// 衝突時の押し出し処理
 	void CorrectOverlap(const AABB _anyAABB);
 
+public: // ゲッター
+
+	// デスフラグ
+	bool IsDead() const { return isDead_; }
+	// 被弾フラグ
+	bool IsHit() const { return isHit_; }
+	// 罠設置のクールタイム完了フラグ
+	bool IsTrapCooldownComplete() const { return isTrapCooldownComplete_; }
+	// プレイヤーとの距離が一定以上かどうか
+	bool IsFarFromPlayer() const { return isFarFromPlayer_; }
+
+public: // セッター
+
+	Vector3 SetPlayerPosition(const Vector3& _playerPosition) { return playerPosition_ = _playerPosition; }
+
 private:
 
 	// 3Dオブジェクト
@@ -72,19 +88,23 @@ private:
 	Vector3 playerPosition_{};
 	Vector3 toPlayer_{};
 	// 追尾停止・開始距離
-	const float kTooCloseDistance = 15.0f;
-	const float kTooFarDistance = 30.0f;
+	const float kTooCloseDistance = 3.0f;
+	const float kTooFarDistance = 20.0f;
 
 
 	// 死亡
 	bool isDead_ = false;
 
 	// 罠
+	std::vector<std::unique_ptr<TimeBomb>> pTimeBomb_ = {};
+	std::vector<std::unique_ptr<VignetteTrap>> pVignetteTrap_ = {};
 	
 	// 罠設置のクールタイム	
 	float trapCooldown_ = 0.0f;
 	// 罠設置のクールタイムの最大値
 	const float kMaxTrapCooldown = 60.0f * 4;
+	// クールタイム完了フラグ
+	bool isTrapCooldownComplete_ = false;
 
 
 	// 壁に衝突したかどうか

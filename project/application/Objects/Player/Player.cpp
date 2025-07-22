@@ -272,7 +272,7 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		}
 		else
 		{
-			isDead_ = true;
+			//isDead_ = true;
 		}
 
 		isHitMoment_ = true;
@@ -287,7 +287,7 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		} 
 		else
 		{
-			isDead_ = true;
+			//isDead_ = true;
 		}
 		isHitMoment_ = true;
 	}

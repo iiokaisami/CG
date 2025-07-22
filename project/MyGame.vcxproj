@@ -176,6 +176,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="gameEngine\base\postEffect\VignettePass.cpp" />
     <ClCompile Include="application\Objects\Field\Wall.cpp" />
     <ClCompile Include="application\Objects\Enemy\TrapEnemy.cpp" />
+    <ClCompile Include="application\Objects\Enemy\Bullet\TimeBomb.cpp" />
+    <ClCompile Include="application\Objects\Enemy\Bullet\VignetteTrap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\Objects\Enemy\NormalEnemy.h" />
@@ -248,6 +250,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\Objects\Field\Wall.h" />
     <ClInclude Include="gameEngine\base\postEffect\VignettePass.h" />
     <ClInclude Include="application\Objects\Enemy\TrapEnemy.h" />
+    <ClInclude Include="application\Objects\Enemy\Bullet\TimeBomb.h" />
+    <ClInclude Include="application\Objects\Enemy\Bullet\VignetteTrap.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

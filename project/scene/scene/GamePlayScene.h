@@ -32,7 +32,7 @@ public:
 	void CameraShake();
 
 	// カメラ追尾
-	void CameraFollowZoom();
+	void CameraFollow();
 
 
 private:

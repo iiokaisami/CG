@@ -41,8 +41,47 @@ void TrapEnemy::Initialize()
 
 void TrapEnemy::Finalize()
 {
-
     colliderManager_->DeleteCollider(&collider_);
+
+    // 罠
+	for (auto& trap : pTimeBomb_)
+	{
+		trap->SetIsDead(true);
+		trap->Finalize();
+	}
+
+	pTimeBomb_.erase(
+		std::remove_if(pTimeBomb_.begin(), pTimeBomb_.end(), [](std::unique_ptr<TimeBomb>& trap)
+			{
+				if (trap->IsDead())
+				{
+					trap->Finalize();
+					return true;
+				}
+				return false;
+			}),
+		pTimeBomb_.end()
+	);
+
+    for (auto& trap : pVignetteTrap_)
+    {
+		trap->SetIsDead(true);
+		trap->Finalize();
+    }
+
+	pVignetteTrap_.erase(
+		std::remove_if(pVignetteTrap_.begin(), pVignetteTrap_.end(), [](std::unique_ptr<VignetteTrap>& trap)
+			{
+				if (trap->IsDead())
+				{
+					trap->Finalize();
+					return true;
+				}
+				return false;
+			}),
+		pVignetteTrap_.end()
+	);
+
 }
 
 void TrapEnemy::Update()
@@ -51,6 +90,10 @@ void TrapEnemy::Update()
 
     // プレイヤーとの距離を計算
     float distanceToPlayer = position_.Distance(playerPosition_);
+
+	isEscape_ = false;
+	isApproach_ = false;
+	isStopAndTrap_ = false;
 
     // 距離に応じてフラグを更新
     if (distanceToPlayer < kTooCloseDistance) 
@@ -75,6 +118,45 @@ void TrapEnemy::Update()
     // トラップ設置
     SetTrap();
 
+    // 罠の削除
+	pTimeBomb_.erase(
+		std::remove_if(pTimeBomb_.begin(), pTimeBomb_.end(), [](std::unique_ptr<TimeBomb>& trap)
+			{
+				if (trap->IsDead())
+				{
+					trap->Finalize();
+					return true;
+				}
+				return false;
+			}),
+		pTimeBomb_.end()
+	);
+
+	pVignetteTrap_.erase(
+		std::remove_if(pVignetteTrap_.begin(), pVignetteTrap_.end(), [](std::unique_ptr<VignetteTrap>& trap)
+			{
+				if (trap->IsDead())
+				{
+					trap->Finalize();
+					return true;
+				}
+				return false;
+			}),
+		pVignetteTrap_.end()
+	);
+
+    // 罠の更新
+	for (auto& trap : pTimeBomb_)
+	{
+		trap->SetTrapLandingPosition(playerPosition_);
+		trap->Update();
+	}
+
+	for (auto& trap : pVignetteTrap_)
+	{
+		trap->SetTrapLandingPosition(playerPosition_);
+		trap->Update();
+	}
 
     // aabbの更新
     aabb_.min = position_ - object_->GetScale();
@@ -93,6 +175,16 @@ void TrapEnemy::Update()
 void TrapEnemy::Draw()
 {
     object_->Draw();
+
+	// 罠の描画
+	for (auto& trap : pTimeBomb_)
+	{
+		trap->Draw();
+	}
+	for (auto& trap : pVignetteTrap_)
+	{
+		trap->Draw();
+	}
 }
 
 void TrapEnemy::Draw2D()
@@ -116,17 +208,17 @@ void TrapEnemy::Move()
     Vector3 direction = Normalize(toPlayer_);
     moveVelocity_ = Normalize(moveVelocity_);
 
-	if (isEscape_)
+	if (isEscape_ or !isTrapCooldownComplete_)
 	{
 		// 離れる
-		moveVelocity_ = Slerp(moveVelocity_, direction, 0.1f);
+		moveVelocity_ = Slerp(moveVelocity_, -direction, 0.1f);
 	}
     else if (isApproach_)
 	{
 		// 近づく
-		moveVelocity_ = Slerp(moveVelocity_, -direction, 0.1f);
+		moveVelocity_ = Slerp(moveVelocity_, direction, 0.1f);
 	}
-    else if (isStopAndTrap_)
+    else if (isStopAndTrap_ && isTrapCooldownComplete_)
 	{
 		// 罠を設置するため停止
 		moveVelocity_ = { 0.0f, 0.0f, 0.0f };
@@ -146,6 +238,8 @@ void TrapEnemy::Move()
 
 void TrapEnemy::SetTrap()
 {
+	isTrapCooldownComplete_ = false;
+    
 	if (isStopAndTrap_)
 	{
 		// 罠を設置する処理
@@ -161,6 +255,8 @@ void TrapEnemy::SetTrap()
         } 
         else
         {
+            // クールタイム完了フラグを立てる
+			isTrapCooldownComplete_ = true;
             // クールタイムをリセット
             trapCooldown_ = 0.0f; 
         }

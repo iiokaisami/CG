@@ -4,6 +4,7 @@
 #include <Framework.h>
 
 #include "NormalEnemy.h"
+#include "TrapEnemy.h"
 #include "WaveState/EnemyWaveState.h"
 
 class EnemyManager
@@ -29,7 +30,8 @@ public:
 	void ImGuiDraw();
 
 	// 敵の初期化
-	void EnemyInit(const Vector3& pos);
+	void NormalEnemyInit(const Vector3& pos);
+	void TrapEnemyInit(const Vector3& pos);
 
 	// 敵のウェーブステート切り替え
 	void ChangeState(std::unique_ptr<EnemyWaveState>_pState);
@@ -57,7 +59,9 @@ private:
 
 	// エネミー
 	std::vector<std::unique_ptr<NormalEnemy>> pNormalEnemies_;
-	
+	// トラップエネミー
+	std::vector<std::unique_ptr<TrapEnemy>> pTrapEnemies_;
+
 	// 敵の数
 	uint32_t enemyCount_ = 0;
 
