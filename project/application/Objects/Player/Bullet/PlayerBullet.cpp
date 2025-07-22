@@ -4,7 +4,7 @@ void PlayerBullet::Initialize()
 {
 	// --- 3Dオブジェクト ---
   	object_ = std::make_unique<Object3d>();
-	object_->Initialize("cube.obj");
+	object_->Initialize("playerBullet.obj");
 
 	object_->SetPosition(position_);
 	object_->SetRotate(rotation_);

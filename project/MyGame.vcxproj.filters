@@ -195,10 +195,10 @@
     <ClCompile Include="application\Objects\Enemy\Bullet\EnemyBullet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="application\Collider\ColliderManager.cpp">
+    <ClCompile Include="gameEngine\Collider\ColliderManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="application\Collider\Collider.cpp">
+    <ClCompile Include="gameEngine\Collider\Collider.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="scene\scene\GameOverScene.cpp">
@@ -401,13 +401,13 @@
     <ClInclude Include="application\Objects\Enemy\Bullet\EnemyBullet.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="application\Collider\ColliderManager.h">
+    <ClInclude Include="gameEngine\Collider\ColliderManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="application\Collider\Collider.h">
+    <ClInclude Include="gameEngine\Collider\Collider.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="application\Collider\Shape.h">
+    <ClInclude Include="gameEngine\Collider\Shape.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="scene\scene\GameOverScene.h">

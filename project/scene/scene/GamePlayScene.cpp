@@ -277,17 +277,17 @@ void GamePlayScene::CameraFollowZoom()
 	// 距離が近い→カメラ寄る、距離が遠い→カメラ引く
 	const float minDist = 5.0f;
 	const float maxDist = 50.0f;
-	const float nearZ = -15.0f;
+	const float nearZ = -12.0f;
 	const float farZ = -40.0f;
 	float t = std::clamp((minDistance - minDist) / (maxDist - minDist), 0.0f, 1.0f);
 	float cameraZ = std::lerp(nearZ, farZ, t);
 
 	// カメラの理想的な相対位置
-	Vector3 offset = { 0.0f, 70.0f, cameraZ };
+	Vector3 offset = { 0.0f, 80.0f, cameraZ };
 	Vector3 targetPos = playerPos + offset;
 
 	// カメラの回転
-	Vector3 targetRot = { 1.2f, 0.0f, 0.0f };
+	Vector3 targetRot = { 2.0f, 0.0f, 0.0f };
 
 	// 補間で滑らかに追従
 	Vector3 currentPos = camera1->GetPosition();

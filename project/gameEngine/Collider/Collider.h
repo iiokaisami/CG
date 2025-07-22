@@ -7,7 +7,7 @@
 #include<variant>
 
 #include"Shape.h"
-#include"../BaseObject/GameObject.h"
+#include"../../application/BaseObject/GameObject.h"
 
 class ColliderManager;
 

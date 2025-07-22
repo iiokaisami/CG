@@ -4,7 +4,7 @@ void Field::Initialize()
 {
 	// --- 3Dオブジェクト ---
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("cube.obj");
+	object_->Initialize("field.obj");
 	
 	position_ = { 0.0f,0.0f,0.0f };
 	object_->SetPosition(position_);

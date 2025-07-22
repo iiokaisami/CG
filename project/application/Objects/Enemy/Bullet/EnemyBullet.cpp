@@ -4,7 +4,7 @@ void EnemyBullet::Initialize()
 {
 	// --- 3Dオブジェクト ---
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("cube.obj");
+	object_->Initialize("enemyBullet.obj");
 
 	object_->SetPosition(position_);
 	object_->SetRotate(rotation_);
@@ -80,7 +80,7 @@ void EnemyBullet::UpdateModel()
 
 void EnemyBullet::OnCollisionTrigger(const Collider* _other)
 {
-	if (_other->GetColliderID() == "Player")
+	if (_other->GetColliderID() == "Player" && !_other->GetOwner()->IsActive())
 	{
 		isDead_ = true;
 	} 

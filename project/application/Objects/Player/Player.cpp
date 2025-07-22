@@ -4,7 +4,7 @@ void Player::Initialize()
 {
 	// --- 3Dオブジェクト ---
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("cube.obj");
+	object_->Initialize("player.obj");
 
 
 	position_ = { 0.2f,0.7f,-1.2f };
@@ -68,6 +68,8 @@ void Player::Update()
 
 	// 回避処理
 	Evade();
+	// アクティブフラグに回避フラグを入れる
+	isActive_ = isEvading_;
 
 	// 回避中は移動・攻撃を無効化
 	if (!isEvading_) 

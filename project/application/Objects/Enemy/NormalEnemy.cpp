@@ -13,7 +13,7 @@ void NormalEnemy::Initialize()
 {
     // --- 3Dオブジェクト ---
     object_ = std::make_unique<Object3d>();
-    object_->Initialize("cube.obj");
+    object_->Initialize("normalEnemy.obj");
 
     moveVelocity_ = { 0.1f,0.1f,0.0f };
 
@@ -214,7 +214,7 @@ void NormalEnemy::Move()
 void NormalEnemy::Attack()
 {
     // 弾の数と間隔角度
-    const int bulletCount = 36;
+    const int bulletCount = 24;
     const float angleStep = 360.0f / bulletCount;
 
     for (int i = 0; i < bulletCount; ++i)

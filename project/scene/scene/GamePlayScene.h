@@ -7,7 +7,7 @@
 #include "../../application/Objects/Enemy/EnemyManager.h"
 #include "../../application/Objects/Field/Field.h"
 #include "../../application/Objects/Field/Wall.h"
-#include "../../application/Collider/ColliderManager.h"
+#include "../../gameEngine/Collider/ColliderManager.h"
 
 class GamePlayScene : public BaseScene
 {

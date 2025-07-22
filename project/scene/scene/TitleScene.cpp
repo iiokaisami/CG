@@ -20,9 +20,6 @@ void TitleScene::Initialize()
 	camera_->SetRotate(cameraRotate_);
 
 	// --- 3Dオブジェクト ---
-	ModelManager::GetInstance()->LoadModel("sphere.obj");
-	ModelManager::GetInstance()->LoadModel("terrain.obj");
-
 	for (uint32_t i = 0; i < 2; ++i)
 	{
 		Object3d* object = new Object3d();

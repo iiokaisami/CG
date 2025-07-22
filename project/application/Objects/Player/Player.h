@@ -2,7 +2,7 @@
 
 #include "../../BaseObject/GameObject.h"
 #include "Bullet/PlayerBullet.h"
-#include"../../Collider/ColliderManager.h"
+#include"../../../gameEngine/Collider/ColliderManager.h"
 
 #include <Object3d.h>
 #include <Sprite.h>
