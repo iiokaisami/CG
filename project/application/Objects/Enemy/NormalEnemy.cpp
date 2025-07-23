@@ -41,7 +41,7 @@ void NormalEnemy::Initialize()
     hp_ = 3;
     isDead_ = false;
 
-    // モーションステート
+    // 行動ステート
     ChangeBehaviorState(std::make_unique<EnemyBehaviorSpawn>(this));
 
 	// 出現時は無敵状態

@@ -72,7 +72,9 @@ void EnemyWaveState::UpdateEnemyPopCommands(EnemyManager* _pEnemyManager)
 			if (enemyType == "Normal")
 			{
 				_pEnemyManager->NormalEnemyInit({ x, y, z });
-			} else if (enemyType == "Trap") {
+			} 
+			else if (enemyType == "Trap") 
+			{
 				_pEnemyManager->TrapEnemyInit({ x, y, z });
 			}
 		}

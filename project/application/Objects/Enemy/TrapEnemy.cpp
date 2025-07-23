@@ -1,5 +1,13 @@
 #include "TrapEnemy.h"
 
+// BehaviorState
+#include "BehaviorState/TrapEnemyState/TrapEnemyBehaviorSpawn.h"
+#include "BehaviorState/TrapEnemyState/TrapEnemyBehaviorMove.h"
+#include "BehaviorState/TrapEnemyState/TrapEnemyBehaviorSetTrap.h"
+#include "BehaviorState/TrapEnemyState/TrapEnemyBehaviorHitReact.h"
+#include "BehaviorState/TrapEnemyState/TrapEnemyBehaviorDead.h"
+
+
 void TrapEnemy::Initialize()
 {
     // --- 3Dオブジェクト ---
@@ -32,8 +40,8 @@ void TrapEnemy::Initialize()
     hp_ = 3;
     isDead_ = false;
 
-    // モーションステート
-    //ChangeBehaviorState(std::make_unique<EnemyBehaviorSpawn>(this));
+    // 行動ステート
+    ChangeBehaviorState(std::make_unique<TrapEnemyBehaviorSpawn>(this));
 
     // 出現時は無敵状態
     isInvincible_ = true;
@@ -86,6 +94,9 @@ void TrapEnemy::Finalize()
 
 void TrapEnemy::Update()
 {
+    // 各行動ステートの更新
+    pBehaviorState_->Update();
+
     object_->Update();
 
     // プレイヤーとの距離を計算
@@ -111,12 +122,6 @@ void TrapEnemy::Update()
 		// 罠を設置する
 		isStopAndTrap_ = true;
     }
-
-    // 移動
-    Move();
-
-    // トラップ設置
-    SetTrap();
 
     // 罠の削除
 	pTimeBomb_.erase(
@@ -148,13 +153,11 @@ void TrapEnemy::Update()
     // 罠の更新
 	for (auto& trap : pTimeBomb_)
 	{
-		trap->SetTrapLandingPosition(playerPosition_);
 		trap->Update();
 	}
 
 	for (auto& trap : pVignetteTrap_)
 	{
-		trap->SetTrapLandingPosition(playerPosition_);
 		trap->Update();
 	}
 
@@ -208,7 +211,7 @@ void TrapEnemy::Move()
     Vector3 direction = Normalize(toPlayer_);
     moveVelocity_ = Normalize(moveVelocity_);
 
-	if (isEscape_ or !isTrapCooldownComplete_)
+	if (isEscape_)
 	{
 		// 離れる
 		moveVelocity_ = Slerp(moveVelocity_, -direction, 0.1f);
@@ -221,7 +224,7 @@ void TrapEnemy::Move()
     else if (isStopAndTrap_ && isTrapCooldownComplete_)
 	{
 		// 罠を設置するため停止
-		moveVelocity_ = { 0.0f, 0.0f, 0.0f };
+		moveVelocity_ = { 0.0f, 0.0f, 0.00001f };
 	}
     
 
@@ -236,32 +239,41 @@ void TrapEnemy::Move()
     ObjectTransformSet(position_, rotation_, scale_);
 }
 
-void TrapEnemy::SetTrap()
+
+void TrapEnemy::TrapInit(bool _isNextTrapTimeBomb)
 {
-	isTrapCooldownComplete_ = false;
-    
-	if (isStopAndTrap_)
-	{
-		// 罠を設置する処理
-        
-		// 罠設置後はフラグをリセット
-		isStopAndTrap_ = false;
-	}
-    else
+    if (_isNextTrapTimeBomb && isTrapCooldownComplete_)
     {
-        if (trapCooldown_ <= kMaxTrapCooldown)
-        {
-            trapCooldown_ += 1.0f;
-        } 
-        else
-        {
-            // クールタイム完了フラグを立てる
-			isTrapCooldownComplete_ = true;
-            // クールタイムをリセット
-            trapCooldown_ = 0.0f; 
-        }
+        // TimeBomb発射
+        auto timeBomb = std::make_unique<TimeBomb>();
+        timeBomb->Initialize();
+        timeBomb->SetPosition(position_);
+        timeBomb->SetTrapLandingPosition(playerPosition_);
+        timeBomb->LaunchTrap();
+        timeBomb->UpdateModel();
+        pTimeBomb_.push_back(std::move(timeBomb));
+    } 
+	else if (!_isNextTrapTimeBomb && isTrapCooldownComplete_)
+    {
+        // VignetteTrap発射
+        auto vignetteTrap = std::make_unique<VignetteTrap>();
+        vignetteTrap->Initialize();
+        vignetteTrap->SetPosition(position_);
+        vignetteTrap->SetTrapLandingPosition(playerPosition_);
+        vignetteTrap->LaunchTrap();
+        vignetteTrap->UpdateModel();
+        pVignetteTrap_.push_back(std::move(vignetteTrap));
     }
 
+    // フラグ反転
+    _isNextTrapTimeBomb = !_isNextTrapTimeBomb;
+
+}
+
+void TrapEnemy::ChangeBehaviorState(std::unique_ptr<TrapEnemyBehaviorState> _pState)
+{
+    pBehaviorState_ = std::move(_pState);
+    pBehaviorState_->Initialize();
 }
 
 void TrapEnemy::ObjectTransformSet(const Vector3& _position, const Vector3& _rotation, const Vector3& _scale)

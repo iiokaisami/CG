@@ -77,9 +77,6 @@ public: // セッター
 	// プレイヤーの位置をセット
 	void SetPlayerPosition(Vector3 _playerPosition) { playerPosition_ = _playerPosition; }
 
-	// エネミーの位置をセット
-	void SetEnemyPosition(Vector3 _enemyPosition) { position_ = _enemyPosition; }
-
 	// 無敵フラグをセット
 	void SetIsInvincible(bool _isInvincible) { isInvincible_ = _isInvincible; }
 

@@ -3,8 +3,9 @@
 #include "../../BaseObject/GameObject.h"
 #include "Bullet/VignetteTrap.h"
 #include "Bullet/TimeBomb.h"
-#include "BehaviorState/NormalEmemyState/EnemyBehaviorState.h"
+#include "BehaviorState/TrapEnemyState/TrapEnemyBehaviorState.h"
 #include"../../../gameEngine/Collider/ColliderManager.h"
+#include "../../../gameEngine/particle/ParticleEmitter.h"
 
 #include <Object3d.h>
 #include <Sprite.h>
@@ -39,7 +40,13 @@ public:
 	void Move();
 
 	// 罠設置
-	void SetTrap();
+	void SetTrap(bool _isNextTrapTimeBomb);
+
+	// 罠初期化
+	void TrapInit(bool _isNextTrapTimeBomb);
+
+	// 行動ステート切り替え
+	void ChangeBehaviorState(std::unique_ptr<TrapEnemyBehaviorState> _pState);
 
 	// objectのtransformをセット
 	void ObjectTransformSet(const Vector3& _position, const Vector3& _rotation, const Vector3& _scale);
@@ -70,6 +77,23 @@ public: // セッター
 
 	Vector3 SetPlayerPosition(const Vector3& _playerPosition) { return playerPosition_ = _playerPosition; }
 
+	// 無敵フラグをセット
+	void SetIsInvincible(bool _isInvincible) { isInvincible_ = _isInvincible; }
+
+	// 被弾フラグをセット
+	void SetIsHit(bool _isHit) { isHit_ = _isHit; }
+
+	// 死亡フラグをセット
+	void SetIsDead(bool _isDead) { isDead_ = _isDead; }
+
+	// オブジェクトのtransformをセット
+	void SetObjectPosition(const Vector3& _position) { object_->SetPosition(_position); }
+	void SetObjectRotation(const Vector3& _rotation) { object_->SetRotate(_rotation); }
+	void SetObjectScale(const Vector3& _scale) { object_->SetScale(_scale); }
+
+	// 罠設置完了フラグセット
+	void SetIsTrapCooldownComplete(bool _isTrapCooldownComplete) { isTrapCooldownComplete_ = _isTrapCooldownComplete; }
+
 private:
 
 	// 3Dオブジェクト
@@ -87,8 +111,9 @@ private:
 	// プレイヤーの位置
 	Vector3 playerPosition_{};
 	Vector3 toPlayer_{};
-	// 追尾停止・開始距離
+	// 追尾停止距離
 	const float kTooCloseDistance = 3.0f;
+	// 追尾開始距離
 	const float kTooFarDistance = 20.0f;
 
 
@@ -99,13 +124,8 @@ private:
 	std::vector<std::unique_ptr<TimeBomb>> pTimeBomb_ = {};
 	std::vector<std::unique_ptr<VignetteTrap>> pVignetteTrap_ = {};
 	
-	// 罠設置のクールタイム	
-	float trapCooldown_ = 0.0f;
-	// 罠設置のクールタイムの最大値
-	const float kMaxTrapCooldown = 60.0f * 4;
 	// クールタイム完了フラグ
 	bool isTrapCooldownComplete_ = false;
-
 
 	// 壁に衝突したかどうか
 	bool isWallCollision_ = false;
@@ -114,7 +134,7 @@ private:
 	AABB collisionWallAABB_ = {};
 
 	// 行動ステート
-
+	std::unique_ptr<TrapEnemyBehaviorState> pBehaviorState_ = nullptr;
 
 	// 離れる
 	bool isEscape_ = false;

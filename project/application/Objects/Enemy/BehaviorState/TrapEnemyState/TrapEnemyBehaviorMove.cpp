@@ -1,46 +1,47 @@
-#include "EnemyBehaviorMove.h"
+#include "TrapEnemyBehaviorMove.h"
 
 #include <Ease.h>
 
-#include "../../NormalEnemy.h"
-#include "EnemyBehaviorAttack.h"
-#include "EnemyBehaviorHitReact.h"
+#include "../../TrapEnemy.h"
+#include "TrapEnemyBehaviorSetTrap.h"
+#include "TrapEnemyBehaviorHitReact.h"
 
-EnemyBehaviorMove::EnemyBehaviorMove(NormalEnemy* _pNormalEnemy) : EnemyBehaviorState("Move", _pNormalEnemy)
+TrapEnemyBehaviorMove::TrapEnemyBehaviorMove(TrapEnemy* _pTrapEnemy) : TrapEnemyBehaviorState("Move", _pTrapEnemy)
 {
 	motion_.isActive = true;
 	motion_.count = 0;
 	motion_.maxCount = 30; // 移動モーションのカウントを設定
 }
 
-void EnemyBehaviorMove::Initialize()
+void TrapEnemyBehaviorMove::Initialize()
 {
 }
 
-void EnemyBehaviorMove::Update()
+void TrapEnemyBehaviorMove::Update()
 {
+
 	// 敵のトランスフォームをmotion_.transformにセット
-	TransformUpdate(pNormalEnemy_);
+	TransformUpdate(pTrapEnemy_);
 
 	// 動く前に切り替え処理
-	if (pNormalEnemy_->IsHit())
+	if (pTrapEnemy_->IsHit())
 	{
 		// ヒットフラグをリセット
-		pNormalEnemy_->SetIsHit(false);
+		pTrapEnemy_->SetIsHit(false);
 
 		// 無敵化
-		pNormalEnemy_->SetIsInvincible(true);
+		pTrapEnemy_->SetIsInvincible(true);
 
 		// ヒットしたら、ヒットリアクションモーションに切り替え
-		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorHitReact>(pNormalEnemy_));
+		pTrapEnemy_->ChangeBehaviorState(std::make_unique<TrapEnemyBehaviorHitReact>(pTrapEnemy_));
 		return;
 	}
-	else if (pNormalEnemy_->IsFarFromPlayer())
+	else if (pTrapEnemy_->IsFarFromPlayer())
 	{
 		// プレイヤーとの距離が一定以下の場合、攻撃モーションに切り替え
-		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorAttack>(pNormalEnemy_));
+		pTrapEnemy_->ChangeBehaviorState(std::make_unique<TrapEnemyBehaviorSetTrap>(pTrapEnemy_));
 		return;
-	}
+	} 
 	else
 	{
 		// ステートが切り替わらなかったらもう一度
@@ -58,17 +59,16 @@ void EnemyBehaviorMove::Update()
 	motion_.transform.scale = Vector3(scaleWaveX, scaleWaveY, 1.0f);
 
 	// スケールをセット
-	pNormalEnemy_->SetScale(motion_.transform.scale);
+	pTrapEnemy_->SetScale(motion_.transform.scale);
 
 	// モーションカウントを更新
 	MotionCount(motion_);
 
 	// 移動
-	pNormalEnemy_->Move();
-
+	pTrapEnemy_->Move();
 }
 
-void EnemyBehaviorMove::ResetMotion()
+void TrapEnemyBehaviorMove::ResetMotion()
 {
 	motion_.isActive = true;
 	motion_.count = 0;

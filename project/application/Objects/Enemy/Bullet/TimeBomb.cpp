@@ -6,7 +6,7 @@ void TimeBomb::Initialize()
 {
 	// --- 3Dオブジェクト ---
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("timeBomb.obj");
+	object_->Initialize("bomb.obj");
 
 	object_->SetPosition(position_);
 	object_->SetRotate(rotation_);
@@ -34,6 +34,26 @@ void TimeBomb::Finalize()
 
 void TimeBomb::Update()
 {
+	// 物理挙動（放物線運動）
+	if (isLaunchingTrap_) 
+	{
+		// 重力加速度
+		const float gravity = -9.8f;
+		// 1フレームの時間（例: 1/60秒）
+		const float deltaTime = 1.0f / 60.0f;
+
+		// 速度に重力を加算
+		velocity_.y += gravity * deltaTime;
+
+		// 位置を速度で更新
+		position_ += velocity_ * deltaTime;
+	}
+
+	if ((position_ - landingPosition_).Length() < 0.1f)
+	{
+		isLaunchingTrap_ = false;
+	}
+
 	UpdateModel();
 	
 	rotation_ += {0.1f, 0.1f, 0.0f};

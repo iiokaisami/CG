@@ -1,5 +1,7 @@
 #include "VignetteTrap.h"
 
+#include <numbers>
+
 void VignetteTrap::Initialize()
 {
 	// --- 3Dオブジェクト ---
@@ -33,6 +35,26 @@ void VignetteTrap::Finalize()
 
 void VignetteTrap::Update()
 {
+	// 物理挙動（放物線運動）
+	if (isLaunchingTrap_)
+	{
+		// 重力加速度
+		const float gravity = -9.8f;
+		// 1フレームの時間（例: 1/60秒）
+		const float deltaTime = 1.0f / 60.0f;
+
+		// 速度に重力を加算
+		velocity_.y += gravity * deltaTime;
+
+		// 位置を速度で更新
+		position_ += velocity_ * deltaTime;
+	}
+
+	if ((position_ - landingPosition_).Length() < 0.1f)
+	{
+		isLaunchingTrap_ = false;
+	}
+
 	UpdateModel();
 
 	rotation_ += {0.1f, 0.1f, 0.0f};
