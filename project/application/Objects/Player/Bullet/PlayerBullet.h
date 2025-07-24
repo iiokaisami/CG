@@ -38,15 +38,11 @@ private: // 衝突判定
 
 public: // ゲッター
 
-	bool IsDead() const { return isDead_; }
-
 	void RunSetMask();
 
 	Vector3 SetVelocity(const Vector3 _velocity) { return velocity_ = _velocity; }
 
 public: // セッター
-
-	bool SetIsDead(const bool _isDead) { return isDead_ = _isDead; }
 
 private: // メンバ変数
 
@@ -66,8 +62,5 @@ private: // メンバ変数
 
 	//デスタイマー
 	int32_t deathTimer_ = kLifeTime;
-
-	//デスグラフ
-	bool isDead_ = false;
 
 };

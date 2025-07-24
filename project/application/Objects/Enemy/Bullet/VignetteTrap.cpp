@@ -102,15 +102,25 @@ void VignetteTrap::LaunchTrap()
 
 void VignetteTrap::OnCollisionTrigger(const Collider* _other)
 {
-	if (_other->GetColliderID() == "PlayerBullet")
+	if (_other->GetColliderID() != "Field" && 
+		_other->GetColliderID() != "Wall" && 
+		_other->GetColliderID() != "EnemyBullet" &&
+		_other->GetColliderID() != "TrapEnemy")
 	{
-		// プレイヤーの弾と衝突した場合
-		isDead_ = true; // デスフラグを立てる
+		// 床と壁、敵の弾以外に当たると死亡
+		isDead_ = true;
 	}
+
+	// プレイヤーとの衝突
 	if (_other->GetColliderID() == "Player")
 	{
-		// プレイヤーと衝突した場合
-		isDead_ = true; // デスフラグを立てる
+		// 暗闇効果を適用
+	}
+
+	// ノーマルエネミーとの衝突
+	if (_other->GetColliderID() == "NormalEnemy")
+	{
+		// 敵に行動不能を適用
 	}
 }
 

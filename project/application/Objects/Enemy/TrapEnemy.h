@@ -61,8 +61,6 @@ private: // 衝突判定
 
 public: // ゲッター
 
-	// デスフラグ
-	bool IsDead() const { return isDead_; }
 	// 被弾フラグ
 	bool IsHit() const { return isHit_; }
 	// 罠設置のクールタイム完了フラグ
@@ -79,9 +77,6 @@ public: // セッター
 
 	// 被弾フラグをセット
 	void SetIsHit(bool _isHit) { isHit_ = _isHit; }
-
-	// 死亡フラグをセット
-	void SetIsDead(bool _isDead) { isDead_ = _isDead; }
 
 	// オブジェクトのtransformをセット
 	void SetObjectPosition(const Vector3& _position) { object_->SetPosition(_position); }
@@ -114,10 +109,6 @@ private:
 	const float kTooCloseDistance = 6.0f;
 	// 追尾開始距離
 	const float kTooFarDistance = 20.0f;
-
-
-	// 死亡
-	bool isDead_ = false;
 
 	// 罠
 	std::vector<std::unique_ptr<TimeBomb>> pTimeBomb_ = {};

@@ -14,13 +14,13 @@ public:
     virtual void Draw() = 0;
     virtual void Finalize() = 0;
 
-
 public: // ゲッター
 
     virtual Vector3 GetScale() const { return scale_; };
     virtual Vector3 GetRotation() const { return rotation_; };
     virtual Vector3 GetPosition() const { return position_; };
     virtual float   GetHP() const { return hp_; };
+	virtual bool IsDead() const { return isDead_; }
 	virtual bool IsActive() const { return isActive_; }
 
 public: // セッター
@@ -29,7 +29,8 @@ public: // セッター
     virtual void SetRotation(const Vector3& _rotation) { rotation_ = _rotation; };
     virtual void SetPosition(const Vector3& _position) { position_ = _position; };
     virtual void SetHP(float _hp) { hp_ = _hp; };
-	virtual void SetActive(bool _isActive) { isActive_ = _isActive; };
+	virtual void SetIsDead(bool _isDead) { isDead_ = _isDead; };
+	virtual void SetIsActive(bool _isActive) { isActive_ = _isActive; };
 
 
 protected: // メンバー
@@ -38,7 +39,9 @@ protected: // メンバー
     Vector3 scale_;
     Vector3 rotation_;
     Vector3 position_;
-    float   hp_;
+    float hp_;
+    // デスフラグ
+	bool isDead_ = false; 
     // オブジェクトがアクティブかどうか(回避中など判定を付けたくない場合等)
 	bool isActive_ = true;
 };

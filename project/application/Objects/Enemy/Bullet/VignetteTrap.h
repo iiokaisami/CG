@@ -39,11 +39,8 @@ private: // 衝突判定
 
 public: // ゲッター
 
-	bool IsDead() const { return isDead_; }
 
 public: // セッター
-
-	bool SetIsDead(const bool _isDead) { return isDead_ = _isDead; }
 
 	Vector3 SetVelocity(const Vector3 _velocity) { return velocity_ = _velocity; }
 
@@ -60,11 +57,6 @@ private:
 	Collider collider_;
 	AABB aabb_;
 	
-	// 寿命
-	//static const uint32_t kLifeTime = 120; // 2秒 いらない？
-
-	// 死亡フラグ
-	bool isDead_ = false;
 
 	// 着弾地点
 	Vector3 landingPosition_{};

@@ -2,6 +2,7 @@
 
 #include "../../../BaseObject/GameObject.h"
 #include"../../../../gameEngine/Collider/ColliderManager.h"
+#include "../../../gameEngine/particle/ParticleEmitter.h"
 
 #include <Object3d.h>
 
@@ -33,17 +34,19 @@ public:
 	// 放物線上に発射
 	void LaunchTrap();
 
-private: // 衝突判定
+private:
 
-	void OnCollisionTrigger(const Collider* _other);
+	// 衝突処理
+	void OnSetCollisionTrigger(const Collider* _other);
+	void OnExplosionTrigger(const Collider* _other);
+
+
+	// 爆発処理
+	void Explode();
 
 public: // ゲッター
 
-	bool IsDead() const { return isDead_; }
-
 public: // セッター
-
-	bool SetIsDead(const bool _isDead) { return isDead_ = _isDead; }
 
 	Vector3 SetVelocity(const Vector3 _velocity) { return velocity_ = _velocity; }
 
@@ -57,14 +60,27 @@ private:
 
 	// 当たり判定関係
 	ColliderManager* colliderManager_ = nullptr;
-	Collider collider_;
-	AABB aabb_;
+	// 設置判定
+	Collider setCollider_;
+	AABB setAABB_;
+	// 爆発判定
+	std::string explosionObjectName_;
+	Collider explosionCollider_;
+	AABB explosionAABB_;
 
-	// 寿命
-	//static const uint32_t kLifeTime = 120; // 2秒 いらない？
 
-	// 死亡フラグ
-	bool isDead_ = false;
+	// 爆発フラグ
+	bool isExploded_ = false;
+	// 初期スケールと目標スケール
+	Vector3 startScale = { 1.0f, 1.0f, 1.0f };
+	Vector3 endScale = { 2.0f, 2.0f, 2.0f };
+	// 経過時間とスケール
+	float elapsedTime = 0.0f;
+	float duration = 1.0f; // 1秒間
+	Vector3 currentScale;
+
+	// 相手のHP
+	float anyHP_ = 0.0f;
 
 	// 着弾地点
 	Vector3 landingPosition_{};

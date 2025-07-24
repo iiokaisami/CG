@@ -17,19 +17,31 @@ void TimeBomb::Initialize()
 	
 	// 当たり判定
 	colliderManager_ = ColliderManager::GetInstance();
-	objectName_ = "TimeBomb";
-	collider_.SetOwner(this);
-	collider_.SetColliderID(objectName_);
-	collider_.SetShapeData(&aabb_);
-	collider_.SetShape(Shape::AABB);
-	collider_.SetAttribute(colliderManager_->GetNewAttribute(collider_.GetColliderID()));
-	collider_.SetOnCollisionTrigger(std::bind(&TimeBomb::OnCollisionTrigger, this, std::placeholders::_1));
-	colliderManager_->RegisterCollider(&collider_);
+	// 設置判定用
+	objectName_ = "SetTimeBomb";
+	setCollider_.SetOwner(this);
+	setCollider_.SetColliderID(objectName_);
+	setCollider_.SetShapeData(&setAABB_);
+	setCollider_.SetShape(Shape::AABB);
+	setCollider_.SetAttribute(colliderManager_->GetNewAttribute(setCollider_.GetColliderID()));
+	setCollider_.SetOnCollisionTrigger(std::bind(&TimeBomb::OnSetCollisionTrigger, this, std::placeholders::_1));
+	colliderManager_->RegisterCollider(&setCollider_);
+	// 爆発判定用
+	explosionObjectName_ = "ExplosionTimeBomb";
+	explosionCollider_.SetOwner(this);
+	explosionCollider_.SetColliderID(explosionObjectName_);
+	explosionCollider_.SetShapeData(&explosionAABB_);
+	explosionCollider_.SetShape(Shape::AABB);
+	explosionCollider_.SetAttribute(colliderManager_->GetNewAttribute(explosionCollider_.GetColliderID()));
+	explosionCollider_.SetOnCollisionTrigger(std::bind(&TimeBomb::OnExplosionTrigger, this, std::placeholders::_1));
+	colliderManager_->RegisterCollider(&explosionCollider_);
+
 }
 
 void TimeBomb::Finalize()
 {
-	colliderManager_->DeleteCollider(&collider_);
+	colliderManager_->DeleteCollider(&setCollider_);
+	colliderManager_->DeleteCollider(&explosionCollider_);
 }
 
 void TimeBomb::Update()
@@ -58,15 +70,23 @@ void TimeBomb::Update()
 	
 	rotation_ += {0.1f, 0.1f, 0.0f};
 	
-	aabb_.min = position_ - object_->GetScale();
-	aabb_.max = position_ + object_->GetScale();
-	collider_.SetPosition(position_);
+	// 設置判定の更新
+	setAABB_.min = position_ - object_->GetScale();
+	setAABB_.max = position_ + object_->GetScale();
+	setCollider_.SetPosition(position_);
+	// 爆発判定の更新
+	explosionAABB_.min = position_ - object_->GetScale();
+	explosionAABB_.max = position_ + object_->GetScale();
+	explosionCollider_.SetPosition(position_);
 	
 }
 
 void TimeBomb::Draw()
 {
-	object_->Draw();
+	if (!isExploded_)
+	{
+		object_->Draw();
+	}
 }
 
 void TimeBomb::ImGuiDraw()
@@ -100,17 +120,48 @@ void TimeBomb::LaunchTrap()
 	velocity_.y = (diff.y - 0.5f * gravity * flightTime_ * flightTime_) / flightTime_;
 }
 
-void TimeBomb::OnCollisionTrigger(const Collider* _other)
+void TimeBomb::OnSetCollisionTrigger(const Collider* _other)
 {
-	if (_other->GetColliderID() == "PlayerBullet")
+	// プレイヤーとの衝突
+	if (_other->GetColliderID() == "Player" or _other->GetColliderID() == "NormalEnemy")
 	{
-		// プレイヤーの弾と衝突した場合
-		isDead_ = true; // デスフラグを立てる
+		// 爆発
+		isExploded_ = true;
+		
 	}
-	if (_other->GetColliderID() == "Player")
+
+}
+
+void TimeBomb::OnExplosionTrigger(const Collider* _other)
+{
+	if (isExploded_ &&(_other->GetColliderID() == "Player" or _other->GetColliderID() == "NormalEnemy"))
 	{
-		// プレイヤーと衝突した場合
-		isDead_ = true; // デスフラグを立てる
+		isDead_ = true;
+		// パーティクル起動
+		ParticleEmitter::Emit("explosionGroup", position_, 6);
+	}
+}
+
+void TimeBomb::Explode()
+{
+	// 爆発処理
+	if (isExploded_)
+	{
+
+		// scaleを徐々に大きくして判定を広げる
+		elapsedTime += 1.0f/60.0f;
+
+		// 経過割合（0.0〜1.0）
+		float t = std::clamp(elapsedTime / duration, 0.0f, 1.0f);
+
+		// Lerpでスケール補間
+		currentScale = Lerp(startScale, endScale, t);
+
+		// スケールを適用
+		SetScale(currentScale); // あなたのオブジェクト用関数
+
+		// 爆発後はオブジェクトを削除
+		isDead_ = true;
 	}
 }
 

@@ -26,7 +26,7 @@ void NormalEnemy::Initialize()
 
     colliderManager_ = ColliderManager::GetInstance();
 
-    objectName_ = "Enemy";
+    objectName_ = "NormalEnemy";
 
     collider_.SetOwner(this);
     collider_.SetColliderID(objectName_);

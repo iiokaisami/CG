@@ -30,7 +30,7 @@ void Player::Initialize()
 	colliderManager_->RegisterCollider(&collider_);
 
 	// ステータス
-	hp_ = 3;
+	hp_ = 13;
 	isDead_ = false;
 
 	// パーティクル
@@ -263,7 +263,8 @@ void Player::Evade()
 void Player::OnCollisionTrigger(const Collider* _other)
 {
 
-	if (_other->GetColliderID() == "EnemyBullet" && !isEvading_)
+	if (!isEvading_ && (_other->GetColliderID() == "EnemyBullet" or
+		_other->GetColliderID() == "NormalEnemy"))
 	{
 		// プレイヤーのHPを減少
 		if (hp_ > 0)
@@ -277,21 +278,19 @@ void Player::OnCollisionTrigger(const Collider* _other)
 
 		isHitMoment_ = true;
 	} 
-	
-	if (_other->GetColliderID() == "Enemy" && !isEvading_)
+
+	if (!isEvading_ && _other->GetColliderID() == "ExplosionTimeBomb")
 	{
 		// プレイヤーのHPを減少
 		if (hp_ > 0)
 		{
-			hp_--;
-		} 
-		else
+			hp_ -= 1.5f;
+		} else
 		{
 			//isDead_ = true;
 		}
 		isHitMoment_ = true;
 	}
-
 }
 
 void Player::OnCollision(const Collider* _other)

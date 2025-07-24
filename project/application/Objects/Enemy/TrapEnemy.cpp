@@ -297,7 +297,7 @@ void TrapEnemy::OnCollisionTrigger(const Collider* _other)
 
 void TrapEnemy::OnCollision(const Collider* _other)
 {
-    if (_other->GetColliderID() == "Enemy" or _other->GetColliderID() == "TrapEnemy")
+    if (_other->GetColliderID() == "NormalEnemy" or _other->GetColliderID() == "TrapEnemy")
     {
 
         // 敵の位置

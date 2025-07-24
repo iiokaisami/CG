@@ -56,9 +56,6 @@ private: // 衝突判定
 
 public: // ゲッター
 
-	// デスフラグ
-	bool IsDead() const { return isDead_; }
-
 	bool IsHitMoment() const { return isHitMoment_; }
 
 	Vector3 GetVelocity() const { return moveVelocity_; }
@@ -88,9 +85,6 @@ private:
 	// 移動速度
 	Vector3 moveVelocity_{};
 	Vector3 moveSpeed_ = { 0.1f,0.0f,0.1f };
-
-	// 死亡フラグ
-	bool isDead_ = false;
 
 	// ヒットした瞬間のフラグ
 	bool isHitMoment_ = false;

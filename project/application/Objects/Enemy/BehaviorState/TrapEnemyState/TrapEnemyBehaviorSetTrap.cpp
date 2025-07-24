@@ -25,7 +25,6 @@ void TrapEnemyBehaviorSetTrap::Update()
     TransformUpdate(pTrapEnemy_);
 
     const int expandTime = 15;
-    const int totalTime = 30;
 
     if (motion_.isActive)
     {

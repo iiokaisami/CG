@@ -60,9 +60,6 @@ private: // 衝突判定
 
 public: // ゲッター
 
-	// 死亡フラグ
-	bool IsDead() const { return isDead_; }
-
 	// プレイヤーとの距離
 	Vector3 GetToPlayer() const { return toPlayer_; }
 
@@ -82,9 +79,6 @@ public: // セッター
 
 	// 被弾フラグをセット
 	void SetIsHit(bool _isHit) { isHit_ = _isHit; }
-
-	// 死亡フラグをセット
-	void SetIsDead(bool _isDead) { isDead_ = _isDead; }
 
 	// オブジェクトのtransformをセット
 	void SetObjectPosition(const Vector3& _position) { object_->SetPosition(_position); }
@@ -110,10 +104,6 @@ private:
 	Vector3 toPlayer_{};
 	// 追尾停止距離
 	const float kStopChasingDistance = 15.0f;
-
-
-	// 死亡
-	bool isDead_ = false;
 
 	// 弾
 	std::vector<std::unique_ptr<EnemyBullet>> pBullets_ = {};

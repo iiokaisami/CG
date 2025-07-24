@@ -53,7 +53,8 @@ void PlayerBullet::Update()
 	ParticleEmitter::Emit("slash", position_, 1);
 
 	//時間経過でデス
-	if (--deathTimer_ <= 0) {
+	if (--deathTimer_ <= 0)
+	{
 		isDead_ = true;
 	}
 
