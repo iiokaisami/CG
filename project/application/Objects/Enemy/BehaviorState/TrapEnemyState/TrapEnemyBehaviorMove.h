@@ -17,5 +17,13 @@ public:
 	// モーションのリセット
 	void ResetMotion() override;
 
+
+private:
+
+	// 罠設置のクールタイム	
+	uint32_t trapCooldown_ = 0;
+	// クールタイムの最大値
+	const uint32_t kMaxTrapCooldown = 60 * 3;
+
 };
 

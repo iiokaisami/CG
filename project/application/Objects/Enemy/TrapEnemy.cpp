@@ -25,7 +25,7 @@ void TrapEnemy::Initialize()
 
     colliderManager_ = ColliderManager::GetInstance();
 
-    objectName_ = "Enemy";
+    objectName_ = "TrapEnemy";
 
     collider_.SetOwner(this);
     collider_.SetColliderID(objectName_);
@@ -221,6 +221,7 @@ void TrapEnemy::Move()
 		// 近づく
 		moveVelocity_ = Slerp(moveVelocity_, direction, 0.1f);
 	}
+    // 距離が適切かつ罠のクールタイムが無かったら疑似停止
     else if (isStopAndTrap_ && isTrapCooldownComplete_)
 	{
 		// 罠を設置するため停止
@@ -240,9 +241,9 @@ void TrapEnemy::Move()
 }
 
 
-void TrapEnemy::TrapInit(bool _isNextTrapTimeBomb)
+void TrapEnemy::TrapInit()
 {
-    if (_isNextTrapTimeBomb && isTrapCooldownComplete_)
+    if (isNextTrapTimeBomb_ && isTrapCooldownComplete_)
     {
         // TimeBomb発射
         auto timeBomb = std::make_unique<TimeBomb>();
@@ -253,7 +254,7 @@ void TrapEnemy::TrapInit(bool _isNextTrapTimeBomb)
         timeBomb->UpdateModel();
         pTimeBomb_.push_back(std::move(timeBomb));
     } 
-	else if (!_isNextTrapTimeBomb && isTrapCooldownComplete_)
+	else if (!isNextTrapTimeBomb_ && isTrapCooldownComplete_)
     {
         // VignetteTrap発射
         auto vignetteTrap = std::make_unique<VignetteTrap>();
@@ -264,10 +265,6 @@ void TrapEnemy::TrapInit(bool _isNextTrapTimeBomb)
         vignetteTrap->UpdateModel();
         pVignetteTrap_.push_back(std::move(vignetteTrap));
     }
-
-    // フラグ反転
-    _isNextTrapTimeBomb = !_isNextTrapTimeBomb;
-
 }
 
 void TrapEnemy::ChangeBehaviorState(std::unique_ptr<TrapEnemyBehaviorState> _pState)
@@ -285,10 +282,44 @@ void TrapEnemy::ObjectTransformSet(const Vector3& _position, const Vector3& _rot
 
 void TrapEnemy::OnCollisionTrigger(const Collider* _other)
 {
+    if (_other->GetColliderID() == "PlayerBullet" && !isInvincible_)
+    {
+        // プレイヤーの弾と衝突した場合
+        if (hp_ > 0)
+        {
+            // HP減少
+            hp_--;
+
+            isHit_ = true;
+        }
+    }
 }
 
 void TrapEnemy::OnCollision(const Collider* _other)
 {
+    if (_other->GetColliderID() == "Enemy" or _other->GetColliderID() == "TrapEnemy")
+    {
+
+        // 敵の位置
+        Vector3 enemyPosition = _other->GetOwner()->GetPosition();
+
+        // 敵同士が重ならないようにする
+        Vector3 direction = position_ - enemyPosition;
+        direction.Normalize();
+        float distance = 2.5f; // 敵同士の間の距離を調整するための値
+
+        // 互いに重ならないように少しずつ位置を調整
+        if ((position_ - enemyPosition).Length() < distance)
+        {
+            position_ += direction * 0.1f; // 微調整のための値
+        }
+    }
+
+    if (_other->GetColliderID() == "Wall")
+    {
+        isWallCollision_ = true;
+        collisionWallAABB_ = *_other->GetAABB();
+    }
 }
 
 void TrapEnemy::CorrectOverlap(const AABB _anyAABB)

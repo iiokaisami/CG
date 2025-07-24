@@ -82,18 +82,10 @@ void PlayerBullet::ImGuiDraw()
 
 void PlayerBullet::OnCollisionTrigger(const Collider* _other)
 {
-	if (_other->GetColliderID() == "Enemy")
+	if (_other->GetColliderID() != "Player" && _other->GetColliderID() != "Field")
 	{
 		isDead_ = true;
 	}  
-	if (_other->GetColliderID() == "EnemyBullet")
-	{
-		isDead_ = true;
-	}
-	if (_other->GetColliderID() == "Wall")
-	{
-		isDead_ = true;
-	}
 }
 
 void PlayerBullet::RunSetMask()

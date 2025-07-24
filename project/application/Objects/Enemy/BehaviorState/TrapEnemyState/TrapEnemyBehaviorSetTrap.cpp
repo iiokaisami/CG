@@ -12,11 +12,11 @@ TrapEnemyBehaviorSetTrap::TrapEnemyBehaviorSetTrap(TrapEnemy* _pTrapEnemy) : Tra
 	// モーションの初期化
 	motion_.count = 0;
 	motion_.maxCount = 30; // 攻撃モーションのカウントを設定
+	motion_.isActive = true;
 }
 
 void TrapEnemyBehaviorSetTrap::Initialize()
 {
-	trapCooldown_ = 10;	
 }
 
 void TrapEnemyBehaviorSetTrap::Update()
@@ -55,6 +55,7 @@ void TrapEnemyBehaviorSetTrap::Update()
         else
         {
             // 通常サイズ
+            isSetTrap_ = false;
             motion_.transform.scale = Vector3(1.0f, 1.0f, 1.0f);
             pTrapEnemy_->SetObjectScale(motion_.transform.scale);
             pTrapEnemy_->SetObjectPosition(motion_.transform.position);
@@ -77,42 +78,23 @@ void TrapEnemyBehaviorSetTrap::Update()
         pTrapEnemy_->ChangeBehaviorState(std::make_unique<TrapEnemyBehaviorHitReact>(pTrapEnemy_));
         return;
     } 
-    else if (!pTrapEnemy_->IsFarFromPlayer())
+    else if (!motion_.isActive)
     {
-        // プレイヤーとの距離が一定以上の場合、移動モーションに切り替え
+        // 1設置完了したら移動モーションに切り替え
         pTrapEnemy_->ChangeBehaviorState(std::make_unique<TrapEnemyBehaviorMove>(pTrapEnemy_));
         return;
     } 
-    else if (!motion_.isActive && motion_.count >= motion_.maxCount)
-    {
-        // ステートが切り替わらなかったらもう一度
-        ResetMotion();
-
-    }
-
+   
     // モーションカウントを更新
     MotionCount(motion_);
 
-    // 罠設置が完了フラグを切り替える
-    isTrapCooldownComplete_ = (trapCooldown_ > kMaxTrapCooldown);
-    pTrapEnemy_->SetIsTrapCooldownComplete(isTrapCooldownComplete_);
-
-    // クールタイム進行
-    trapCooldown_--;
-    
     if(isSetTrap_)
     {
-        pTrapEnemy_->TrapInit(isNextTrapTimeBomb_);
-        trapCooldown_ = kMaxTrapCooldown;
+        pTrapEnemy_->TrapInit();
+        // フラグ反転
+        pTrapEnemy_->ChangeIsNextTrapTimeBomb();
     }
-
-    // 一定間隔で弾を発射
-    if (trapCooldown_ <= 0)
-    {
-        // 攻撃モーションを開始
-        motion_.isActive = true;
-        trapCooldown_ = 60 * 6;
-    }
+   
 }
 
 void TrapEnemyBehaviorSetTrap::ResetMotion()

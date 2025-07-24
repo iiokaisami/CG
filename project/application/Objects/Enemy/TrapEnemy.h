@@ -39,11 +39,8 @@ public:
 	// 移動
 	void Move();
 
-	// 罠設置
-	void SetTrap(bool _isNextTrapTimeBomb);
-
 	// 罠初期化
-	void TrapInit(bool _isNextTrapTimeBomb);
+	void TrapInit();
 
 	// 行動ステート切り替え
 	void ChangeBehaviorState(std::unique_ptr<TrapEnemyBehaviorState> _pState);
@@ -70,8 +67,8 @@ public: // ゲッター
 	bool IsHit() const { return isHit_; }
 	// 罠設置のクールタイム完了フラグ
 	bool IsTrapCooldownComplete() const { return isTrapCooldownComplete_; }
-	// プレイヤーとの距離が一定以上かどうか
-	bool IsFarFromPlayer() const { return isFarFromPlayer_; }
+	// 罠を設置する距離かどうかのフラグ
+	bool IsStopAndTrap() const { return isStopAndTrap_; }
 
 public: // セッター
 
@@ -93,6 +90,8 @@ public: // セッター
 
 	// 罠設置完了フラグセット
 	void SetIsTrapCooldownComplete(bool _isTrapCooldownComplete) { isTrapCooldownComplete_ = _isTrapCooldownComplete; }
+	// 次の罠がTimeBombかVignetteTrapかのフラグ反転
+	void ChangeIsNextTrapTimeBomb() { isNextTrapTimeBomb_ = !isNextTrapTimeBomb_; }
 
 private:
 
@@ -112,7 +111,7 @@ private:
 	Vector3 playerPosition_{};
 	Vector3 toPlayer_{};
 	// 追尾停止距離
-	const float kTooCloseDistance = 3.0f;
+	const float kTooCloseDistance = 6.0f;
 	// 追尾開始距離
 	const float kTooFarDistance = 20.0f;
 
@@ -126,6 +125,8 @@ private:
 	
 	// クールタイム完了フラグ
 	bool isTrapCooldownComplete_ = false;
+	// 次の罠がTimeBombかVignetteTrapかのフラグ
+	bool isNextTrapTimeBomb_ = true;
 
 	// 壁に衝突したかどうか
 	bool isWallCollision_ = false;
@@ -149,9 +150,6 @@ private:
 
 	// 被弾フラグ
 	bool isHit_ = false;
-
-	// プレイヤーとの距離が一定以上かどうか
-	bool isFarFromPlayer_ = false;
 
 };
 

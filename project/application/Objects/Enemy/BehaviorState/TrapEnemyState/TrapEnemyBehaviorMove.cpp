@@ -15,6 +15,7 @@ TrapEnemyBehaviorMove::TrapEnemyBehaviorMove(TrapEnemy* _pTrapEnemy) : TrapEnemy
 
 void TrapEnemyBehaviorMove::Initialize()
 {
+	trapCooldown_ = kMaxTrapCooldown;
 }
 
 void TrapEnemyBehaviorMove::Update()
@@ -22,6 +23,18 @@ void TrapEnemyBehaviorMove::Update()
 
 	// 敵のトランスフォームをmotion_.transformにセット
 	TransformUpdate(pTrapEnemy_);
+
+	// クールタイムが完了しているかどうかをチェック
+	pTrapEnemy_->SetIsTrapCooldownComplete((trapCooldown_ <= 0));
+
+	// クールタイム進行
+	trapCooldown_--;
+
+	// 0になったら元に戻す
+	if (trapCooldown_ < 0)
+	{
+		trapCooldown_ = kMaxTrapCooldown;
+	}
 
 	// 動く前に切り替え処理
 	if (pTrapEnemy_->IsHit())
@@ -36,7 +49,7 @@ void TrapEnemyBehaviorMove::Update()
 		pTrapEnemy_->ChangeBehaviorState(std::make_unique<TrapEnemyBehaviorHitReact>(pTrapEnemy_));
 		return;
 	}
-	else if (pTrapEnemy_->IsFarFromPlayer())
+	else if (pTrapEnemy_->IsStopAndTrap() && pTrapEnemy_->IsTrapCooldownComplete())
 	{
 		// プレイヤーとの距離が一定以下の場合、攻撃モーションに切り替え
 		pTrapEnemy_->ChangeBehaviorState(std::make_unique<TrapEnemyBehaviorSetTrap>(pTrapEnemy_));
@@ -66,6 +79,7 @@ void TrapEnemyBehaviorMove::Update()
 
 	// 移動
 	pTrapEnemy_->Move();
+
 }
 
 void TrapEnemyBehaviorMove::ResetMotion()
