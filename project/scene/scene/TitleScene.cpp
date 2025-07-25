@@ -93,7 +93,7 @@ void TitleScene::Initialize()
 				for (const auto& player : levelData_->players)
 				{
 					// モデル検索
-					ModelManager::GetInstance()->LoadModel("player.obj");
+					ModelManager::GetInstance()->LoadModel("player/player.obj");
 					Model* model = ModelManager::GetInstance()->FindModel("player.obj");
 					if (model == nullptr)
 					{
@@ -107,6 +107,28 @@ void TitleScene::Initialize()
 					playerObj->SetRotate(player.rotation);
 					playerObj->SetScale({ 1.0f, 1.0f, 1.0f });
 					object3ds.push_back(playerObj);
+				}
+			}
+
+			// レベルエディタ敵キャラ確認用
+			if (!levelData_->enemies.empty())
+			{
+				for (const auto& enemy : levelData_->enemies)
+				{
+					// モデル検索
+					ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
+					Model* model = ModelManager::GetInstance()->FindModel("enemy.obj");
+					if (model == nullptr)
+					{
+						assert(false && "Model not found");
+						continue;
+					}
+					Object3d* enemyObj = new Object3d();
+					enemyObj->Initialize("enemy.obj");
+					enemyObj->SetPosition(enemy.position);
+					enemyObj->SetRotate(enemy.rotation);
+					enemyObj->SetScale({ 1.0f, 1.0f, 1.0f });
+					object3ds.push_back(enemyObj);
 				}
 			}
 		}

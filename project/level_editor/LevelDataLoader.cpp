@@ -100,6 +100,30 @@ void LevelDataLoader::LoadObjectRecursive(const nlohmann::json& objectJson, Leve
 
         levelData->players.push_back(playerData);
     }
+	// 敵キャラ発生ポイント
+	else if (type == "EnemySpawn")
+	{
+		// enemies に要素を 1 つ追加
+		LevelData::EnemySpawnData enemyData;
+		// transform 情報が存在すれば位置と回転を取得
+		if (objectJson.contains("transform"))
+		{
+			const auto& t = objectJson["transform"];
+			// position の数値を書き込む
+			if (t.contains("translation"))
+			{
+				const auto& pos = t["translation"];
+				enemyData.position = { -1.0f * pos[0], pos[2], -1.0f * pos[1] };
+			}
+			// rotation の数値を書き込む（Blenderとの座標系補正が必要なら -1.0f を掛ける）
+			if (t.contains("rotation"))
+			{
+				const auto& rot = t["rotation"];
+				enemyData.rotation = { -1.0f * rot[0], 3.14f + rot[1], -1.0f * rot[2] };
+			}
+		}
+		levelData->enemies.push_back(enemyData);
+	}
 
     // 再帰 子オブジェクトの走査
     if (objectJson.contains("children")) 

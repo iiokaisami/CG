@@ -72,9 +72,9 @@
             "name": "PlayerSpawn",
             "transform": {
                 "translation": [
+                    6.027209758758545,
                     0.0,
-                    0.0,
-                    2.6150622367858887
+                    0.0
                 ],
                 "rotation": [
                     0.0,
@@ -94,9 +94,9 @@
             "name": "PlayerSpawn.001",
             "transform": {
                 "translation": [
-                    -7.971209526062012,
+                    2.6901016235351562,
                     0.0,
-                    0.0
+                    3.284804105758667
                 ],
                 "rotation": [
                     0.0,
@@ -112,13 +112,79 @@
             "file_name": "playerspawn.001.obj"
         },
         {
+            "type": "EnemySpawn",
+            "name": "EnemySpawn",
+            "transform": {
+                "translation": [
+                    -6.233971118927002,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "enemyspawn.obj"
+        },
+        {
+            "type": "EnemySpawn",
+            "name": "EnemySpawn.001",
+            "transform": {
+                "translation": [
+                    -2.986760139465332,
+                    0.0,
+                    3.479872703552246
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "enemyspawn.001.obj"
+        },
+        {
+            "type": "EnemySpawn",
+            "name": "EnemySpawn.002",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    1.8346666097640991
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "enemyspawn.002.obj"
+        },
+        {
             "type": "PlayerSpawn",
             "name": "PlayerSpawn.002",
             "transform": {
                 "translation": [
                     0.0,
-                    6.642472743988037,
-                    -3.0520455837249756
+                    0.0,
+                    5.428437232971191
                 ],
                 "rotation": [
                     0.0,

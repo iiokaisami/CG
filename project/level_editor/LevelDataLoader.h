@@ -22,6 +22,13 @@ public:
 		Vector3 rotation;
 	};
 
+	// 敵キャラのスポーンデータ
+	struct EnemySpawnData
+	{
+		Vector3 position;
+		Vector3 rotation;
+	};
+
 	struct ObjectData 
 	{
 		std::string type;
@@ -36,6 +43,9 @@ public:
 
 	// プレイヤー配列
 	std::vector<PlayerSpawnData> players;
+
+	// 敵キャラ配列
+	std::vector<EnemySpawnData> enemies;
 
 };
 
