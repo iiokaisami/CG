@@ -24,17 +24,18 @@ void TrapEnemyBehaviorMove::Update()
 	// 敵のトランスフォームをmotion_.transformにセット
 	TransformUpdate(pTrapEnemy_);
 
-	// クールタイムが完了しているかどうかをチェック
-	pTrapEnemy_->SetIsTrapCooldownComplete((trapCooldown_ <= 0));
+	// 0になったら元に戻す
+	if (trapCooldown_ == 0)
+	{
+		trapCooldown_ = kMaxTrapCooldown;
+	}
 
 	// クールタイム進行
 	trapCooldown_--;
 
-	// 0になったら元に戻す
-	if (trapCooldown_ < 0)
-	{
-		trapCooldown_ = kMaxTrapCooldown;
-	}
+	// クールタイムが完了しているかどうかをチェック
+	pTrapEnemy_->SetIsTrapCooldownComplete((trapCooldown_ <= 0));
+
 
 	// 動く前に切り替え処理
 	if (pTrapEnemy_->IsHit())

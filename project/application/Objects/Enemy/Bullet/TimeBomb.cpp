@@ -122,19 +122,23 @@ void TimeBomb::LaunchTrap()
 
 void TimeBomb::OnSetCollisionTrigger(const Collider* _other)
 {
-	// プレイヤーとの衝突
-	if (_other->GetColliderID() == "Player" or _other->GetColliderID() == "NormalEnemy")
+	// プレイヤー、ノーマルエネミー、プレイヤーの弾と衝突した場合
+	if (_other->GetColliderID() == "Player" or 
+		_other->GetColliderID() == "NormalEnemy" or 
+		_other->GetColliderID() == "PlayerBullet")
 	{
-		// 爆発
+		// 爆発状態へ
 		isExploded_ = true;
-		
 	}
 
 }
 
 void TimeBomb::OnExplosionTrigger(const Collider* _other)
 {
-	if (isExploded_ &&(_other->GetColliderID() == "Player" or _other->GetColliderID() == "NormalEnemy"))
+	if (isExploded_ &&
+		(_other->GetColliderID() == "Player" or 
+			_other->GetColliderID() == "NormalEnemy" or
+			_other->GetColliderID() == "PlayerBullet"))
 	{
 		isDead_ = true;
 		// パーティクル起動
