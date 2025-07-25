@@ -16,7 +16,7 @@ from .collider import MYADDON_OT_add_collider, OBJECT_PT_collider
 from .draw_collider import DrawCollider
 from .my_menu import TOPBAR_MT_my_menu  
 from .disabled import MYADDON_OT_add_disable_flag, OBJECT_PT_disable_flag
-from .spawn import MYADDON_OT_spawn_import_symbol, MYADDON_OT_spawn_create_symbol
+from .spawn import MYADDON_OT_spawn_import_symbol, MYADDON_OT_spawn_create_symbol, MYADDON_OT_spawn_create_player_symbol, MYADDON_OT_spawn_create_enemy_symbol, SpawnNames
 
 bl_info = {
     "name":"level_editor",
@@ -78,6 +78,8 @@ classes = (
     OBJECT_PT_disable_flag,
     MYADDON_OT_spawn_import_symbol,
     MYADDON_OT_spawn_create_symbol,
+    MYADDON_OT_spawn_create_player_symbol, 
+    MYADDON_OT_spawn_create_enemy_symbol
 )
 
 if __name__ == "__main__":
