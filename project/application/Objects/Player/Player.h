@@ -53,9 +53,6 @@ private: // 衝突判定
 	// 衝突中の処理
 	void OnCollision(const Collider* _other);
 
-	// 壁に衝突したときの処理
-	void CorrectOverlap();
-
 	// 暗闇トラップに衝突したときの処理
 	void HitVignetteTrap();
 
@@ -94,9 +91,6 @@ private:
 	// ヒットした瞬間のフラグ
 	bool isHitMoment_ = false;
 
-	// 壁に衝突したかどうか
-	bool isWallCollision_ = false;
-
 	// 暗闇トラップに当たったかどうか
 	bool isHitVignetteTrap_ = false;
 	// 暗闇を徐々に戻すフラグ
@@ -108,9 +102,6 @@ private:
 	// vignetteの強さ
 	float vignetteStrength_ = 0.0f;
 
-
-	// 衝突相手のAABB
-	AABB collisionWallAABB_;
 
 	// 回避フラグ
 	bool isEvading_ = false;

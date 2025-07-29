@@ -55,9 +55,6 @@ private: // 衝突判定
 	// 衝突中の処理
 	void OnCollision(const Collider* _other);
 
-	// 衝突時の押し出し処理
-	void CorrectOverlap(const AABB _anyAABB);
-
 	// 暗闇トラップに衝突したときの処理
 	void HitVignetteTrap();
 
@@ -71,6 +68,9 @@ public: // ゲッター
 
 	// プレイヤーとの距離が一定以上かどうか
 	bool IsFarFromPlayer() const { return isFarFromPlayer_; }
+
+	// 暗闇フラグ
+	bool IsHitVignetteTrap() const { return isHitVignetteTrap_; }
 
 public: // セッター
 
@@ -111,12 +111,6 @@ private:
 	// 弾
 	std::vector<std::unique_ptr<EnemyBullet>> pBullets_ = {};
 
-	// 壁に衝突したかどうか
-	bool isWallCollision_ = false;
-	
-	// 衝突相手のaabb
-	AABB collisionWallAABB_ = {};
-
 	// 行動ステート
 	std::unique_ptr<EnemyBehaviorState> pBehaviorState_ = nullptr;
 
@@ -128,6 +122,14 @@ private:
 
 	// プレイヤーとの距離が一定以上かどうか
 	bool isFarFromPlayer_ = false;
+
+	// 暗闇トラップに当たったかどうか
+	bool isHitVignetteTrap_ = false;
+	// 暗闇効果最大時間
+	const uint32_t kMaxVignetteTime = 60 * 3;
+	// 暗闇タイマー
+	uint32_t vignetteTime_ = kMaxVignetteTime;
+
 
 };
 

@@ -117,13 +117,8 @@ void NormalEnemy::Update()
     aabb_.max.y += 1.0f;
     collider_.SetPosition(position_);
 
-    // 壁に衝突した場合の処理
-    if (isWallCollision_)
-    {
-		CorrectOverlap(collisionWallAABB_);
-        isWallCollision_ = false;
-    }
-   
+	// 暗闇処理(エネミーは動かなくさせる)
+
 }
 
 void NormalEnemy::Draw()
@@ -282,11 +277,21 @@ void NormalEnemy::OnCollisionTrigger(const Collider* _other)
             }
         }
     }
+
+    if (_other->GetColliderID() == "VignetteTrap")
+    {
+        if (_other->GetOwner()->IsActive())
+        {
+            // VignetteTrapに当たった場合
+            isHitVignetteTrap_ = true;
+        }
+    }
 }
 
 void NormalEnemy::OnCollision(const Collider* _other)
 {
-    if (_other->GetColliderID() == "Enemy" or _other->GetColliderID() == "TrapEnemy")
+    if (_other->GetColliderID() == "NormalEnemy" or 
+        _other->GetColliderID() == "TrapEnemy")
     {
         
         // 敵の位置
@@ -306,71 +311,34 @@ void NormalEnemy::OnCollision(const Collider* _other)
 
     if (_other->GetColliderID() == "Wall")
     {
-        isWallCollision_ = true;
-        collisionWallAABB_ = *_other->GetAABB();
+        // 相手のAABBを取得
+        const AABB* otherAABB = _other->GetAABB();
+        
+        if (otherAABB)
+        {
+            // 自分のAABBと位置を渡して補正
+            CorrectOverlap(*otherAABB, aabb_, position_);
+        }
     }
 }
 
-void NormalEnemy::CorrectOverlap(const AABB _anyAABB)
+void NormalEnemy::HitVignetteTrap()
 {
-    Vector3 penetrationVector{};
+    // 暗闇トラップに当たったら
+	if (isHitVignetteTrap_)
+	{
+		// パーティクルを生成
 
-    // 壁との重なりを計算
-    // x軸(左右)
-    float overlapLeftX = _anyAABB.max.x - aabb_.min.x;
-    float overlapRightX = aabb_.max.x - _anyAABB.min.x;
-    float correctionX = 0.0f;
-
-    if (overlapLeftX < overlapRightX)
-    {
-        correctionX = overlapLeftX;
-    } else
-    {
-        correctionX = -overlapRightX;
+        // タイマー更新
+        if (vignetteTime_ > 0)
+        {
+            vignetteTime_--;
+        } else
+        {
+            // 明るくする準備
+            isHitVignetteTrap_ = false;
+            // タイマーをリセット
+            vignetteTime_ = kMaxVignetteTime;
+        }
     }
-
-    // y軸(上下)
-    float overlapBelowY = _anyAABB.max.y - aabb_.min.y;
-    float overlapAboveY = aabb_.max.y - _anyAABB.min.y;
-    float correctionY = 0.0f;
-
-    if (overlapBelowY < overlapAboveY)
-    {
-        correctionY = overlapBelowY;
-    } else
-    {
-        correctionY = -overlapAboveY;
-    }
-
-    // z軸(前後)
-    float overlapBackZ = _anyAABB.max.z - aabb_.min.z;
-    float overlapFrontZ = aabb_.max.z - _anyAABB.min.z;
-    float correctionZ = 0.0f;
-
-    if (overlapBackZ < overlapFrontZ)
-    {
-        correctionZ = overlapBackZ;
-    } else
-    {
-        correctionZ = -overlapFrontZ;
-    }
-
-    // 最小の重なりを持つ軸を選択
-    float absX = std::abs(correctionX);
-    float absY = std::abs(correctionY);
-    float absZ = std::abs(correctionZ);
-
-    if (absX <= absY && absX <= absZ)
-    {
-        penetrationVector.x = correctionX;
-    } else if (absY <= absZ)
-    {
-        penetrationVector.y = correctionY;
-    } else
-    {
-        penetrationVector.z = correctionZ;
-    }
-
-    // 位置を修正
-    position_ += penetrationVector;
 }

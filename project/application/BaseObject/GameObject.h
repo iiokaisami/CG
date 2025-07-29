@@ -3,6 +3,8 @@
 #include <Vector3.h>
 #include <string>
 
+#include "../../gameEngine/Collider/Shape.h"
+
 class GameObject
 {
 public:
@@ -34,6 +36,12 @@ public: // セッター
 
 
 protected: // メンバー
+
+    // 衝突時の押し出し処理
+    void CorrectOverlap(const AABB& otherAABB, AABB& selfAABB, Vector3& position);
+
+	// AABBの重なり判定
+    bool IsAABBOverlap(const AABB& a, const AABB& b);
 
     std::string objectName_;
     Vector3 scale_;

@@ -76,12 +76,12 @@ void TimeBomb::Update()
 		wallCollisionCooldown_--;
 	}
 
-	if (isWallCollision_ && wallCollisionCooldown_ <= 0)
+	if (wallCollisionCooldown_ <= 0 && isWallCollision_)
 	{
 		// 壁に衝突した場合の処理
 		ReflectOnWallCollision();
+		wallCollisionCooldown_ = 1;
 		isWallCollision_ = false;
-		wallCollisionCooldown_ = 5;
 	}
 
 	UpdateModel();
@@ -155,9 +155,22 @@ void TimeBomb::OnSetCollision(const Collider* _other)
 {
 	if (_other->GetColliderID() == "Wall")
 	{
-		isWallCollision_ = true;
 		collisionWallAABB_ = *_other->GetAABB();
+		isWallCollision_ = true;
 	}
+
+	if (_other->GetColliderID() == "TrapEnemy" or
+		_other->GetColliderID() == "VignetteTrap" or
+		_other->GetColliderID() == "SetTimeBomb")
+	{
+		const AABB* otherAABB = _other->GetAABB();
+
+		if (otherAABB && IsAABBOverlap(setAABB_, *otherAABB))
+		{
+			CorrectOverlap(*otherAABB, setAABB_, position_);
+		}
+	}
+
 }
 
 void TimeBomb::OnExplosionTrigger(const Collider* _other)

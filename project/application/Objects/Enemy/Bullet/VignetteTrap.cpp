@@ -44,7 +44,7 @@ void VignetteTrap::Update()
 	{
 		// 重力加速度
 		const float gravity = -9.8f;
-		// 1フレームの時間（例: 1/60秒）
+		// 1フレームの時間
 		const float deltaTime = 1.0f / 60.0f;
 
 		// 速度に重力を加算
@@ -66,12 +66,12 @@ void VignetteTrap::Update()
 		wallCollisionCooldown_--;
 	}
 
-	if (isWallCollision_ && wallCollisionCooldown_ <= 0)
+	if (wallCollisionCooldown_ <= 0 && isWallCollision_)
 	{
 		// 壁に衝突した場合の処理
 		ReflectOnWallCollision();
+		wallCollisionCooldown_ = 1;
 		isWallCollision_ = false;
-		wallCollisionCooldown_ = 5;
 	}
 
 	UpdateModel();
@@ -115,7 +115,7 @@ void VignetteTrap::LaunchTrap()
 	velocity_.x = diff.x / flightTime_;
 	velocity_.z = diff.z / flightTime_;
 
-	// Y方向の初速度（放物線のために加速度を考慮）
+	// Y方向の初速度
 	velocity_.y = (diff.y - 0.5f * gravity * flightTime_ * flightTime_) / flightTime_;
 }
 
@@ -134,8 +134,21 @@ void VignetteTrap::OnCollision(const Collider* _other)
 {
 	if (_other->GetColliderID() == "Wall")
 	{
-		isWallCollision_ = true;
+		// 反射処理用のAABBを取得
 		collisionWallAABB_ = *_other->GetAABB();
+		isWallCollision_ = true;
+	}
+
+	if (_other->GetColliderID() == "TrapEnemy" or
+		_other->GetColliderID() == "VignetteTrap" or
+		_other->GetColliderID() == "SetTimeBomb")
+	{
+		const AABB* otherAABB = _other->GetAABB();
+
+		if (otherAABB)
+		{
+			CorrectOverlap(*otherAABB, aabb_, position_);
+		}
 	}
 }
 

@@ -35,7 +35,7 @@ void EnemyBehaviorMove::Update()
 		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorHitReact>(pNormalEnemy_));
 		return;
 	}
-	else if (pNormalEnemy_->IsFarFromPlayer())
+	else if (pNormalEnemy_->IsFarFromPlayer() && !pNormalEnemy_->IsHitVignetteTrap())
 	{
 		// プレイヤーとの距離が一定以下の場合、攻撃モーションに切り替え
 		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorAttack>(pNormalEnemy_));
@@ -64,8 +64,10 @@ void EnemyBehaviorMove::Update()
 	MotionCount(motion_);
 
 	// 移動
-	pNormalEnemy_->Move();
-
+	if (!pNormalEnemy_->IsHitVignetteTrap())
+	{
+		pNormalEnemy_->Move();
+	}
 }
 
 void EnemyBehaviorMove::ResetMotion()

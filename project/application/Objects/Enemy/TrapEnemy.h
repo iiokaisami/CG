@@ -56,9 +56,6 @@ private: // 衝突判定
 	// 衝突中の処理
 	void OnCollision(const Collider* _other);
 
-	// 衝突時の押し出し処理
-	void CorrectOverlap(const AABB _anyAABB);
-
 public: // ゲッター
 
 	// 被弾フラグ
@@ -118,12 +115,6 @@ private:
 	bool isTrapCooldownComplete_ = false;
 	// 次の罠がTimeBombかVignetteTrapかのフラグ
 	bool isNextTrapTimeBomb_ = true;
-
-	// 壁に衝突したかどうか
-	bool isWallCollision_ = false;
-
-	// 衝突相手のaabb
-	AABB collisionWallAABB_ = {};
 
 	// 行動ステート
 	std::unique_ptr<TrapEnemyBehaviorState> pBehaviorState_ = nullptr;
