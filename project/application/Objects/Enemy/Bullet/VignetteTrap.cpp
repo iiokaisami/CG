@@ -25,6 +25,7 @@ void VignetteTrap::Initialize()
 	collider_.SetShape(Shape::AABB);
 	collider_.SetAttribute(colliderManager_->GetNewAttribute(collider_.GetColliderID()));
 	collider_.SetOnCollisionTrigger(std::bind(&VignetteTrap::OnCollisionTrigger, this, std::placeholders::_1));
+	collider_.SetOnCollision(std::bind(&VignetteTrap::OnCollision, this, std::placeholders::_1));
 	colliderManager_->RegisterCollider(&collider_);
 }
 
@@ -35,6 +36,9 @@ void VignetteTrap::Finalize()
 
 void VignetteTrap::Update()
 {
+	// 着弾していなければ判定を付けない
+	isActive_ = !isLaunchingTrap_;
+
 	// 物理挙動（放物線運動）
 	if (isLaunchingTrap_)
 	{
@@ -50,9 +54,24 @@ void VignetteTrap::Update()
 		position_ += velocity_ * deltaTime;
 	}
 
-	if ((position_ - landingPosition_).Length() < 0.1f)
+	if ((position_ - landingPosition_).Length() < 0.1f or position_.y <= 0.5f)
 	{
 		isLaunchingTrap_ = false;
+		velocity_ = { 0.0f, 0.0f, 0.0f }; // 着弾時に速度をリセット
+	}
+
+	// 壁との反射クールタイム
+	if (wallCollisionCooldown_ > 0)
+	{
+		wallCollisionCooldown_--;
+	}
+
+	if (isWallCollision_ && wallCollisionCooldown_ <= 0)
+	{
+		// 壁に衝突した場合の処理
+		ReflectOnWallCollision();
+		isWallCollision_ = false;
+		wallCollisionCooldown_ = 5;
 	}
 
 	UpdateModel();
@@ -102,26 +121,54 @@ void VignetteTrap::LaunchTrap()
 
 void VignetteTrap::OnCollisionTrigger(const Collider* _other)
 {
-	if (_other->GetColliderID() != "Field" && 
-		_other->GetColliderID() != "Wall" && 
-		_other->GetColliderID() != "EnemyBullet" &&
-		_other->GetColliderID() != "TrapEnemy")
+	if (isActive_ && (_other->GetColliderID() == "Player" or 
+		_other->GetColliderID() == "PlayerBullet" or
+		_other->GetColliderID() == "NormalEnemy"))
 	{
-		// 床と壁、敵の弾以外に当たると死亡
+		// 死亡
 		isDead_ = true;
 	}
+}
 
-	// プレイヤーとの衝突
-	if (_other->GetColliderID() == "Player")
+void VignetteTrap::OnCollision(const Collider* _other)
+{
+	if (_other->GetColliderID() == "Wall")
 	{
-		// 暗闇効果を適用
+		isWallCollision_ = true;
+		collisionWallAABB_ = *_other->GetAABB();
+	}
+}
+
+void VignetteTrap::ReflectOnWallCollision()
+{
+	// 重なり補正と同じく、軸ごとの重なり量を調べる
+	float overlapLeftX = collisionWallAABB_.max.x - aabb_.min.x;
+	float overlapRightX = aabb_.max.x - collisionWallAABB_.min.x;
+	float correctionX = (overlapLeftX < overlapRightX) ? overlapLeftX : -overlapRightX;
+
+	float overlapBackZ = collisionWallAABB_.max.z - aabb_.min.z;
+	float overlapFrontZ = aabb_.max.z - collisionWallAABB_.min.z;
+	float correctionZ = (overlapBackZ < overlapFrontZ) ? overlapBackZ : -overlapFrontZ;
+
+	float absX = std::abs(correctionX);
+	float absZ = std::abs(correctionZ);
+
+	// 目標地点を反転
+	if (absX <= absZ)
+	{
+		landingPosition_.x = position_.x + (position_.x - landingPosition_.x);
+		// 壁の外側に十分押し出す
+		position_.x += (correctionX + (correctionX > 0 ? 0.5f : -0.5f));
+	} 
+	else
+	{
+		landingPosition_.z = position_.z + (position_.z - landingPosition_.z);
+		// 壁の外側に十分押し出す
+		position_.z += (correctionZ + (correctionZ > 0 ? 0.5f : -0.5f));
 	}
 
-	// ノーマルエネミーとの衝突
-	if (_other->GetColliderID() == "NormalEnemy")
-	{
-		// 敵に行動不能を適用
-	}
+	// ここで新しい放物線運動を再計算
+	LaunchTrap();
 }
 
 void VignetteTrap::SetTrapLandingPosition(const Vector3& _playerPosition)

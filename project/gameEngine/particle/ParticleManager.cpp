@@ -14,7 +14,8 @@ ParticleManager* ParticleManager::instance_ = nullptr;
 
 ParticleManager* ParticleManager::GetInstance()
 {
-    if (instance_ == nullptr) {
+    if (instance_ == nullptr) 
+    {
         instance_ = new ParticleManager();
     }
     return instance_;

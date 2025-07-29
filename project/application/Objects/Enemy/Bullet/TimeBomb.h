@@ -38,11 +38,15 @@ private:
 
 	// 衝突処理
 	void OnSetCollisionTrigger(const Collider* _other);
+	void OnSetCollision(const Collider* _other);
 	void OnExplosionTrigger(const Collider* _other);
 
 
 	// 爆発処理
 	void Explode();
+
+	// 壁との反発処理
+	void ReflectOnWallCollision();
 
 public: // ゲッター
 
@@ -82,6 +86,13 @@ private:
 	// 相手のHP
 	float anyHP_ = 0.0f;
 
+	// 壁との衝突フラグ
+	bool isWallCollision_ = false;
+	// 衝突した壁のAABB
+	AABB collisionWallAABB_;
+	// 反射のクールタイム
+	uint32_t wallCollisionCooldown_ = 0;
+
 	// 着弾地点
 	Vector3 landingPosition_{};
 	// 速度
@@ -90,6 +101,7 @@ private:
 	bool isLaunchingTrap_ = false; 
 	// 着弾までの時間
 	float flightTime_ = 1.0f;
+
 
 };
 

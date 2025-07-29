@@ -58,6 +58,9 @@ private: // 衝突判定
 	// 衝突時の押し出し処理
 	void CorrectOverlap(const AABB _anyAABB);
 
+	// 暗闇トラップに衝突したときの処理
+	void HitVignetteTrap();
+
 public: // ゲッター
 
 	// プレイヤーとの距離

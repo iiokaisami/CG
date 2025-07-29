@@ -4,6 +4,8 @@
 #include "Bullet/PlayerBullet.h"
 #include"../../../gameEngine/Collider/ColliderManager.h"
 
+#include "postEffect/PostEffectManager.h"
+
 #include <Object3d.h>
 #include <Sprite.h>
 #include <Framework.h>
@@ -54,6 +56,9 @@ private: // 衝突判定
 	// 壁に衝突したときの処理
 	void CorrectOverlap();
 
+	// 暗闇トラップに衝突したときの処理
+	void HitVignetteTrap();
+
 public: // ゲッター
 
 	bool IsHitMoment() const { return isHitMoment_; }
@@ -92,21 +97,33 @@ private:
 	// 壁に衝突したかどうか
 	bool isWallCollision_ = false;
 
+	// 暗闇トラップに当たったかどうか
+	bool isHitVignetteTrap_ = false;
+	// 暗闇を徐々に戻すフラグ
+	bool isFadingOut_ = false;
+	// 暗闇効果最大時間
+	const uint32_t kMaxVignetteTime = 60 * 3;
+	// 暗闇タイマー
+	uint32_t vignetteTime_ = kMaxVignetteTime;
+	// vignetteの強さ
+	float vignetteStrength_ = 0.0f;
+
+
 	// 衝突相手のAABB
 	AABB collisionWallAABB_;
 
 	// 回避フラグ
 	bool isEvading_ = false;
 	// 回避時間
-	int evadeTime_ = 0;
+	uint32_t evadeTime_ = 0;
 	// 回避時間の最大値
-	const int kEvadeTimeMax_ = 30;
+	const uint32_t kEvadeTimeMax_ = 30;
 	// 回避速度
 	Vector3 evadeSpeed_ = { 0.2f,0.0f,0.2f };
 	// 回避方向
 	Vector3 evadeDirection_ = { 0.0f,0.0f,0.0f };
 	// 回避中のフレーム数
-	int evadeFrame_ = 0;
+	int32_t evadeFrame_ = 0;
 	const int kEvadeDuration_ = 30; // 回避の持続時間
 	// 回避速度
 	const float kEvadeSpeed_ = 0.2f;

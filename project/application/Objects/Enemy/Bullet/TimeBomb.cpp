@@ -25,6 +25,7 @@ void TimeBomb::Initialize()
 	setCollider_.SetShape(Shape::AABB);
 	setCollider_.SetAttribute(colliderManager_->GetNewAttribute(setCollider_.GetColliderID()));
 	setCollider_.SetOnCollisionTrigger(std::bind(&TimeBomb::OnSetCollisionTrigger, this, std::placeholders::_1));
+	setCollider_.SetOnCollision(std::bind(&TimeBomb::OnSetCollision, this, std::placeholders::_1));
 	colliderManager_->RegisterCollider(&setCollider_);
 	// 爆発判定用
 	explosionObjectName_ = "ExplosionTimeBomb";
@@ -46,6 +47,9 @@ void TimeBomb::Finalize()
 
 void TimeBomb::Update()
 {
+	// 着弾していなければ判定を付けない
+	isActive_ = !isLaunchingTrap_;
+
 	// 物理挙動（放物線運動）
 	if (isLaunchingTrap_) 
 	{
@@ -61,9 +65,23 @@ void TimeBomb::Update()
 		position_ += velocity_ * deltaTime;
 	}
 
-	if ((position_ - landingPosition_).Length() < 0.1f)
+	if ((position_ - landingPosition_).Length() < 0.1f or position_.y <= 0.5f)
 	{
 		isLaunchingTrap_ = false;
+	}
+
+	// 壁との反射クールタイム
+	if (wallCollisionCooldown_ > 0)
+	{
+		wallCollisionCooldown_--;
+	}
+
+	if (isWallCollision_ && wallCollisionCooldown_ <= 0)
+	{
+		// 壁に衝突した場合の処理
+		ReflectOnWallCollision();
+		isWallCollision_ = false;
+		wallCollisionCooldown_ = 5;
 	}
 
 	UpdateModel();
@@ -123,14 +141,23 @@ void TimeBomb::LaunchTrap()
 void TimeBomb::OnSetCollisionTrigger(const Collider* _other)
 {
 	// プレイヤー、ノーマルエネミー、プレイヤーの弾と衝突した場合
-	if (_other->GetColliderID() == "Player" or 
+	if (isActive_ && (_other->GetColliderID() == "Player" or 
 		_other->GetColliderID() == "NormalEnemy" or 
-		_other->GetColliderID() == "PlayerBullet")
+		_other->GetColliderID() == "PlayerBullet"))
 	{
 		// 爆発状態へ
 		isExploded_ = true;
 	}
 
+}
+
+void TimeBomb::OnSetCollision(const Collider* _other)
+{
+	if (_other->GetColliderID() == "Wall")
+	{
+		isWallCollision_ = true;
+		collisionWallAABB_ = *_other->GetAABB();
+	}
 }
 
 void TimeBomb::OnExplosionTrigger(const Collider* _other)
@@ -167,6 +194,38 @@ void TimeBomb::Explode()
 		// 爆発後はオブジェクトを削除
 		isDead_ = true;
 	}
+}
+
+void TimeBomb::ReflectOnWallCollision()
+{
+
+	// 重なり補正と同じく、軸ごとの重なり量を調べる
+	float overlapLeftX = collisionWallAABB_.max.x - setAABB_.min.x;
+	float overlapRightX = setAABB_.max.x - collisionWallAABB_.min.x;
+	float correctionX = (overlapLeftX < overlapRightX) ? overlapLeftX : -overlapRightX;
+
+	float overlapBackZ = collisionWallAABB_.max.z - setAABB_.min.z;
+	float overlapFrontZ = setAABB_.max.z - collisionWallAABB_.min.z;
+	float correctionZ = (overlapBackZ < overlapFrontZ) ? overlapBackZ : -overlapFrontZ;
+
+	float absX = std::abs(correctionX);
+	float absZ = std::abs(correctionZ);
+
+	// 目標地点を反転
+	if (absX <= absZ)
+	{
+		landingPosition_.x = position_.x + (position_.x - landingPosition_.x);
+		// 壁の外側に十分押し出す
+		position_.x += (correctionX + (correctionX > 0 ? 0.5f : -0.5f));
+	} else
+	{
+		landingPosition_.z = position_.z + (position_.z - landingPosition_.z);
+		// 壁の外側に十分押し出す
+		position_.z += (correctionZ + (correctionZ > 0 ? 0.5f : -0.5f));
+	}
+
+	// ここで新しい放物線運動を再計算
+	LaunchTrap();
 }
 
 void TimeBomb::SetTrapLandingPosition(const Vector3& _playerPosition)

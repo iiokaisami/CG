@@ -272,11 +272,14 @@ void NormalEnemy::OnCollisionTrigger(const Collider* _other)
 
     if (!isInvincible_ && _other->GetColliderID() == "ExplosionTimeBomb")
     {
-        // プレイヤーのHPを減少
-        if (hp_ > 0)
+        if (_other->GetOwner()->IsActive())
         {
-            hp_ -= 1.5f;
-            isHit_ = true;
+            // プレイヤーのHPを減少
+            if (hp_ > 0)
+            {
+                hp_ -= 1.5f;
+                isHit_ = true;
+            }
         }
     }
 }

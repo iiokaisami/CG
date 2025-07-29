@@ -107,6 +107,9 @@ void Player::Update()
 	aabb_.max = position_ + object_->GetScale();
 	aabb_.max.y += 1.0f;
 	collider_.SetPosition(position_);
+
+	// 暗闇処理
+	HitVignetteTrap();
 }
 
 void Player::Draw()
@@ -172,7 +175,7 @@ void Player::Move()
 	}
 
 	// 移動ベクトルがゼロでない場合にプレイヤーの向きを補間で更新
-	if (moveVelocity_.x != 0.0f || moveVelocity_.z != 0.0f)
+	if (moveVelocity_.x != 0.0f or moveVelocity_.z != 0.0f)
 	{
 		float targetAngle = std::atan2(moveVelocity_.x, moveVelocity_.z);
 		const float rotationSpeed = 0.1f;
@@ -188,10 +191,11 @@ void Player::Attack()
 	if (Input::GetInstance()->PushKey(DIK_SPACE))
 	{
 		/// プレイヤーの向きに合わせて弾の速度を変更
-		Vector3 bulletVelocity = {
-			std::cosf(rotation_.x) * std::sinf(rotation_.y),    // x
+		Vector3 bulletVelocity =
+		{
+			std::cosf(rotation_.x) * std::sinf(rotation_.y),     // x
 			std::sinf(-rotation_.x),                             // y
-			std::cosf(rotation_.x) * std::cosf(rotation_.y)     // z
+			std::cosf(rotation_.x) * std::cosf(rotation_.y)      // z
 		};
 
 		if (countCoolDownFrame_ <= 0)
@@ -217,7 +221,7 @@ void Player::Attack()
 
 void Player::Evade()
 {
-	// 回避入力（例：左Shiftキー）
+	// 回避入力（左Shiftキー）
 	if (!isEvading_ && Input::GetInstance()->PushKey(DIK_LSHIFT))
 	{
 		// 移動方向がある場合のみ回避
@@ -281,15 +285,28 @@ void Player::OnCollisionTrigger(const Collider* _other)
 
 	if (!isEvading_ && _other->GetColliderID() == "ExplosionTimeBomb")
 	{
-		// プレイヤーのHPを減少
-		if (hp_ > 0)
+		if (_other->GetOwner()->IsActive())
 		{
-			hp_ -= 1.5f;
-		} else
-		{
-			//isDead_ = true;
+			// プレイヤーのHPを減少
+			if (hp_ > 0)
+			{
+				hp_ -= 1.5f;
+			}
+			else
+			{
+				//isDead_ = true;
+			}
+			isHitMoment_ = true;
 		}
-		isHitMoment_ = true;
+	}
+
+	if (!isEvading_ && _other->GetColliderID() == "VignetteTrap")
+	{
+		if (_other->GetOwner()->IsActive())
+		{
+			// VignetteTrapに当たった場合
+			isHitVignetteTrap_ = true;
+		}
 	}
 }
 
@@ -371,4 +388,66 @@ void Player::CorrectOverlap()
 
 	// 位置を修正
 	position_ += penetrationVector;
+}
+
+void Player::HitVignetteTrap()
+{
+	// フェードアウト中の処理
+	if (isFadingOut_)
+	{
+		static const float fadeDuration = 30.0f;
+		static float fadeTimer = 0.0f;
+
+		fadeTimer++;
+		float t = fadeTimer / fadeDuration;
+		t = std::clamp(t, 0.0f, 1.0f);
+		vignetteStrength_ = std::lerp(1.8f, 0.0f, t);
+
+		PostEffectManager::GetInstance()->GetPassAs<VignettePass>("Vignette")->SetStrength(vignetteStrength_);
+
+		if (t >= 1.0f)
+		{
+			// 完了：すべてリセット
+			isFadingOut_ = false;
+			fadeTimer = 0.0f;
+			vignetteStrength_ = 0.0f;
+			PostEffectManager::GetInstance()->SetActiveEffect("Vignette", isHitVignetteTrap_);
+		}
+
+		return;
+	}
+
+	// 通常の効果中
+	if (isHitVignetteTrap_)
+	{
+		if (vignetteTime_ > 150)
+		{
+			// フェードイン
+			float t = 1.0f - static_cast<float>(kMaxVignetteTime - vignetteTime_) / 30.0f;
+			t = std::clamp(t, 0.0f, 1.0f);
+			vignetteStrength_ = std::lerp(1.8f, 0.0f, t);
+		}
+		else
+		{
+			vignetteStrength_ = 1.8f;
+		}
+
+		// vignetteの強さを設定
+		PostEffectManager::GetInstance()->SetActiveEffect("Vignette", isHitVignetteTrap_);
+		PostEffectManager::GetInstance()->GetPassAs<VignettePass>("Vignette")->SetStrength(vignetteStrength_);
+
+		// タイマー更新
+		if (vignetteTime_ > 0)
+		{
+			vignetteTime_--;
+		}
+		else
+		{
+			// 明るくする準備
+			isHitVignetteTrap_ = false;
+			isFadingOut_ = true;
+			// タイマーをリセット
+			vignetteTime_ = kMaxVignetteTime;
+		}
+	}
 }

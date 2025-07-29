@@ -88,7 +88,7 @@ protected:
 
 	std::unique_ptr <RenderTexture> renderTexture = nullptr;
 
-	std::unique_ptr<PostEffectManager> postEffectManager = nullptr;
+	PostEffectManager* postEffectManager = nullptr;
 	std::unique_ptr<NoneEffectPass> noneEffectPass = nullptr;
 	std::unique_ptr<GrayscalePass> grayscalePass = nullptr;
 	std::unique_ptr<VignettePass> vignettePass = nullptr;

@@ -94,6 +94,9 @@ void TrapEnemy::Finalize()
 
 void TrapEnemy::Update()
 {
+    // アクティブフラグに代入
+    isActive_ = !isInvincible_;
+
     // 各行動ステートの更新
     pBehaviorState_->Update();
 

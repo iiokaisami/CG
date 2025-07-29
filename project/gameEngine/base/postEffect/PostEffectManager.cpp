@@ -1,6 +1,17 @@
 #include "PostEffectManager.h"
 
-void PostEffectManager::AddPass(const std::string& name, std::unique_ptr<IPostEffectPass> pass) 
+PostEffectManager* PostEffectManager::instance_ = nullptr;
+
+PostEffectManager* PostEffectManager::GetInstance()
+{
+    if (instance_ == nullptr)
+    {
+        instance_ = new PostEffectManager();
+    }
+    return instance_;
+}
+
+void PostEffectManager::AddPass(const std::string& name, std::unique_ptr<IPostEffectPass> pass)
 {
     pass->SetActive(false);
     passes_[name] = std::move(pass);

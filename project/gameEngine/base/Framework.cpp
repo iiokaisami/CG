@@ -95,7 +95,7 @@ void Framework::Initialize()
 	gaussianFilterPass = std::make_unique<GaussianFilterPass>();
 	gaussianFilterPass->Initialize(dxCommon.get(), srvManager.get(), L"resources/shaders/GaussianFilter.VS.hlsl", L"resources/shaders/GaussianFilter.PS.hlsl");
 
-	postEffectManager = std::make_unique<PostEffectManager>();
+	postEffectManager = PostEffectManager::GetInstance();
 	postEffectManager->SetNoneEffect(std::move(noneEffectPass));
 	postEffectManager->AddPass("Grayscale", std::move(grayscalePass));
 	postEffectManager->AddPass("Vignette", std::move(vignettePass));

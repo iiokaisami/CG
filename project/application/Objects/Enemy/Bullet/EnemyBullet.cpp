@@ -86,16 +86,11 @@ void EnemyBullet::UpdateModel()
 
 void EnemyBullet::OnCollisionTrigger(const Collider* _other)
 {
-	if (_other->GetColliderID() == "Player" && !_other->GetOwner()->IsActive())
+	if (!_other->GetOwner()->IsActive() && _other->GetColliderID() == "Player" or
+		_other->GetColliderID() == "PlayerBullet" or
+		_other->GetColliderID() == "Wall" or
+		_other->GetColliderID() == "TrapEnemy")
 	{
 		isDead_ = true;
 	} 
-	if (_other->GetColliderID() == "PlayerBullet")
-	{
-		isDead_ = true;
-	}
-	if (_other->GetColliderID() == "Wall")
-	{
-		isDead_ = true;
-	}
 }
