@@ -8,6 +8,7 @@
 #include <Vector3.h>
 
 #include "../base/BaseScene.h"
+#include "../../gameEngine/particle/ParticleEmitter.h"
 
 class TitleScene : public BaseScene
 {
@@ -76,4 +77,8 @@ private:
 	float spotLightDecay = 2.0f;
 	float spotLightConsAngle = std::cos(std::numbers::pi_v<float> / 3.0f);
 	float spotLightCosFalloffStart = 1.0f;
+
+	// パーティクル用変数
+	float time_ = 0.0f;
+
 };

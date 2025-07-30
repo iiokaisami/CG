@@ -53,6 +53,15 @@ void VignetteTrap::Update()
 		// 位置を速度で更新
 		position_ += velocity_ * deltaTime;
 	}
+	else
+	{
+		// 地面に埋まらないようにする
+		if (position_.y < 0.5f)
+		{
+			position_.y = 0.5f;
+			velocity_.y = 0.0f; // Y方向の速度をリセット
+		}
+	}
 
 	if ((position_ - landingPosition_).Length() < 0.1f or position_.y <= 0.5f)
 	{

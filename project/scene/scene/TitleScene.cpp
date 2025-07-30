@@ -1,5 +1,6 @@
 #include "TitleScene.h"
 
+#include <cmath>
 #include <ModelManager.h>
 
 void TitleScene::Initialize()
@@ -59,6 +60,7 @@ void TitleScene::Initialize()
 	soundData2_ = Audio::GetInstance()->LoadWav("BGM.wav");
 	//Audio::GetInstance()->PlayWave(soundData2_, true, 0.2f);
 
+	ParticleEmitter::Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1);
 }
 
 void TitleScene::Finalize()
@@ -81,6 +83,19 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
+	if (time_ > 9.0f)
+	{
+		time_ = 0.0f;
+	}
+
+	time_ += 1.0f / 60.0f;
+
+	
+	if (std::fmod(time_, 1.0f) < 0.1f)
+	{
+		ParticleEmitter::Emit("magic2Group", { 0.0f,1.0f,0.0f }, 5);
+	}
+
 	camera_->Update();
 	camera_->SetPosition(cameraPosition_);
 	camera_->SetRotate(cameraRotate_);

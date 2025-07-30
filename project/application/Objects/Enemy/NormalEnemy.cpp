@@ -118,7 +118,7 @@ void NormalEnemy::Update()
     collider_.SetPosition(position_);
 
 	// 暗闇処理(エネミーは動かなくさせる)
-
+    HitVignetteTrap();
 }
 
 void NormalEnemy::Draw()
@@ -328,14 +328,16 @@ void NormalEnemy::HitVignetteTrap()
 	if (isHitVignetteTrap_)
 	{
 		// パーティクルを生成
+        ParticleEmitter::Emit("vignetteGroup", { position_.x, position_.y + 1.0f,position_.z }, 3);
 
         // タイマー更新
         if (vignetteTime_ > 0)
         {
             vignetteTime_--;
-        } else
+        } 
+        else
         {
-            // 明るくする準備
+            // 終了
             isHitVignetteTrap_ = false;
             // タイマーをリセット
             vignetteTime_ = kMaxVignetteTime;

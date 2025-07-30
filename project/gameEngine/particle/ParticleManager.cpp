@@ -325,17 +325,6 @@ void ParticleManager::Update()
             (*it).color.w = alpha;
 
 
-           /* Matrix4x4 SRT =
-                MakeScaleMatrix((*it).transform.scale) *
-                MakeRotateXMatrix((*it).transform.rotate.x) *
-                MakeRotateYMatrix((*it).transform.rotate.y) *
-                MakeRotateZMatrix((*it).transform.rotate.z) *
-                MakeTranslateMatrix((*it).transform.translate);
-
-            Matrix4x4 worldMatrix = SRT * billboardMatrix;
-            Matrix4x4 wVPMatrix = worldMatrix * viewMatrix * projectionMatrix;*/
-
-
             // SRTからTranslateを分離
             Matrix4x4 SR =
                 MakeScaleMatrix((*it).transform.scale) *
@@ -351,8 +340,9 @@ void ParticleManager::Update()
 
             Matrix4x4 wVPMatrix = worldMatrix * viewMatrix * projectionMatrix;
 
-
-            if (count < 1024) { // SRVバッファの最大数に安全チェック
+            // SRVバッファの最大数に安全チェック
+            if (count < 1024)
+            { 
                 Particlegroup.instancingData[count].WVP = wVPMatrix;
                 Particlegroup.instancingData[count].world = worldMatrix;
                 Particlegroup.instancingData[count].color = it->color;
@@ -373,7 +363,7 @@ void ParticleManager::Update()
         if (setting.isLooping && particleGroups.contains(setting.groupName))
         {
             // パーティクルを発生
-            Emit(setting.groupName, setting.emitPosition, setting.emitCount, 1);
+            Emit(setting.groupName, setting.emitPosition, setting.emitCount);
 
         }
     }
@@ -425,7 +415,7 @@ void ParticleManager::Draw()
 
 }
 
-void ParticleManager::Emit(const std::string groupName, const Vector3& position, uint32_t count, uint32_t interval)
+void ParticleManager::Emit(const std::string groupName, const Vector3& position, uint32_t count)
 {
     // グループごとのmotionNameを使うEmit
     auto it = particleGroups.find(groupName);
@@ -436,7 +426,6 @@ void ParticleManager::Emit(const std::string groupName, const Vector3& position,
 
     EmitSetting newSetting;
     newSetting.groupName = groupName;
-    newSetting.interval = static_cast<float>(interval);
     newSetting.motionName = it->second.motionName;
     newSetting.emitCount = count;
     newSetting.emitPosition = position;
@@ -463,7 +452,6 @@ void ParticleManager::AddEmitterSetting(const EmitSetting& setting)
     native.groupName = setting.groupName;
     native.motionName = setting.motionName;
     native.emitPosition = setting.emitPosition;
-    native.interval = setting.interval;
     native.emitCount = setting.emitCount;
     native.timer = setting.timer;
     native.isLooping = setting.isLooping;
@@ -487,8 +475,10 @@ void ParticleManager::DebugUI()
     // Motion 一覧取得
     const auto& motionMap = ParticleMotion::GetAll();
     static std::vector<std::string> motionNames;
-    if (motionNames.empty()) {
-        for (const auto& [name, _] : motionMap) {
+    if (motionNames.empty())
+    {
+        for (const auto& [name, _] : motionMap)
+        {
             motionNames.push_back(name);
         }
     }
@@ -549,7 +539,7 @@ void ParticleManager::DebugUI()
         if (ImGui::Button("Emit Particle") && selectedGroupIndex < groupNames.size()) 
         {
             const std::string& groupToEmit = groupNames[selectedGroupIndex];
-            Emit(groupToEmit, emitPosition, emitCount,1);
+            Emit(groupToEmit, emitPosition, emitCount);
         }
 
         // --- ループ Emit の開始・停止 ---

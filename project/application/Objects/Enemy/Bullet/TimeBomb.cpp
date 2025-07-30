@@ -69,6 +69,15 @@ void TimeBomb::Update()
 	{
 		isLaunchingTrap_ = false;
 	}
+	else
+	{
+		// 地面に埋まらないようにする
+		if (position_.y < 0.5f)
+		{
+			position_.y = 0.5f;
+			velocity_.y = 0.0f; // Y方向の速度をリセット
+		}
+	}
 
 	// 壁との反射クールタイム
 	if (wallCollisionCooldown_ > 0)
