@@ -38,11 +38,20 @@ void EnemyBehaviorHitReact::Update()
 
 	if (!motion_.isActive)
 	{
-		// 無敵状態を解除
-		pNormalEnemy_->SetIsInvincible(false);
+		if (pNormalEnemy_->GetHP() <= 0)
+		{
+			// HPが0以下なら、死亡モーションに切り替え
+			pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorDead>(pNormalEnemy_));
+			return;
+		} 
+		else
+		{
+			// 無敵状態を解除
+			pNormalEnemy_->SetIsInvincible(false);
 
-		// ヒットリアクションモーションが終了したら、移動モーションに切り替え
-		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorMove>(pNormalEnemy_));
+			// ヒットリアクションモーションが終了したら、移動モーションに切り替え
+			pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorMove>(pNormalEnemy_));
+		}
 	}
 
 }

@@ -162,11 +162,26 @@ void GamePlayScene::Update()
 
 	ImGui::Begin("PlayScene");
 
-	ImGui::SliderFloat3("camera1Position", &camera1Position.x, -100.0f, 100.0f);
-	ImGui::SliderFloat3("camera1Rotate", &camera1Rotate.x, -10.0f, 10.0f);
+	// camera1
+	Vector3 cam1Pos = camera1->GetPosition();
+	Vector3 cam1Rot = camera1->GetRotate();
+	if (ImGui::SliderFloat3("camera1Position", &cam1Pos.x, -100.0f, 100.0f)) {
+		camera1->SetPosition(cam1Pos);
+	}
+	if (ImGui::SliderFloat3("camera1Rotate", &cam1Rot.x, -10.0f, 10.0f)) {
+		camera1->SetRotate(cam1Rot);
+	}
 
-	ImGui::SliderFloat3("camera2Position", &camera2Position.x, -100.0f, 100.0f);
-	ImGui::SliderFloat3("camera2Rotate", &camera2Rotate.x, -10.0f, 10.0f);
+	// camera2
+	Vector3 cam2Pos = camera2->GetPosition();
+	Vector3 cam2Rot = camera2->GetRotate();
+	if (ImGui::SliderFloat3("camera2Position", &cam2Pos.x, -100.0f, 100.0f)) {
+		camera2->SetPosition(cam2Pos);
+	}
+	if (ImGui::SliderFloat3("camera2Rotate", &cam2Rot.x, -10.0f, 10.0f)) {
+		camera2->SetRotate(cam2Rot);
+	}
+
 
 	ImGui::End();
 
@@ -225,8 +240,9 @@ void GamePlayScene::CameraUpdate()
 	// カメラのシェイク
 	CameraShake();
 
-	// カメラの追従・引き
-	CameraFollowZoom();
+	// カメラの追従
+	CameraFollow();
+
 }
 
 void GamePlayScene::CameraShake()
@@ -259,41 +275,23 @@ void GamePlayScene::CameraShake()
 	}
 }
 
-void GamePlayScene::CameraFollowZoom()
+void GamePlayScene::CameraFollow()
 {
-
-	if (!camera1 or !pPlayer_ or pEnemyManager_->GetToPlayerDistance().empty())
+	if (!camera1 or !pPlayer_) 
 	{
 		return;
 	}
 
 	Vector3 playerPos = pPlayer_->GetPosition();
 
-	// 敵との最短距離を取得
-	float minDistance = std::numeric_limits<float>::max();
-	for (const Vector3& vec : pEnemyManager_->GetToPlayerDistance())
-	{
-		float dist = vec.Length();
-		minDistance = std::min(minDistance, dist);
-	}
+	// 固定のオフセット（プレイヤーから見たカメラ位置）
+	Vector3 offset = { 0.0f, 80.0f, -20.0f };  // Y: 高さ、Z: 後方
 
-	// ズーム(カメラのZ位置)を距離に応じて変化
-	// 距離が近い→カメラ寄る、距離が遠い→カメラ引く
-	const float minDist = 5.0f;
-	const float maxDist = 50.0f;
-	const float nearZ = -15.0f;
-	const float farZ = -40.0f;
-	float t = std::clamp((minDistance - minDist) / (maxDist - minDist), 0.0f, 1.0f);
-	float cameraZ = std::lerp(nearZ, farZ, t);
-
-	// カメラの理想的な相対位置
-	Vector3 offset = { 0.0f, 70.0f, cameraZ };
+	// 追従先の位置・回転
 	Vector3 targetPos = playerPos + offset;
+	Vector3 targetRot = { 2.0f, 0.0f, 0.0f };  // やや下向き
 
-	// カメラの回転
-	Vector3 targetRot = { 1.2f, 0.0f, 0.0f };
-
-	// 補間で滑らかに追従
+	// 滑らかに補間して追従
 	Vector3 currentPos = camera1->GetPosition();
 	Vector3 nextPos;
 	nextPos.Lerp(currentPos, targetPos, 0.8f);

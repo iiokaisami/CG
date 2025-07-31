@@ -15,10 +15,16 @@ void EnemyManager::Finalize()
 	{
 		enemy->Finalize();
 	}
+
+	for (auto& enemy : pNormalEnemies_)
+	{
+		enemy->Finalize();
+	}
 }
 
 void EnemyManager::Update()
 {
+	// ノーマルエネミーの更新
 	for (auto& enemy : pNormalEnemies_)
 	{
 		enemy->SetPlayerPosition(playerPosition_);
@@ -47,6 +53,32 @@ void EnemyManager::Update()
 		pNormalEnemies_.end()
 	);
 
+	// トラップエネミーの更新
+	for (auto& enemy : pTrapEnemies_)
+	{
+		enemy->SetPlayerPosition(playerPosition_);
+		enemy->Update();
+	}
+
+	// isDead がたったら削除
+	pTrapEnemies_.erase(
+		std::remove_if(
+			pTrapEnemies_.begin(),
+			pTrapEnemies_.end(),
+			[this](std::unique_ptr<TrapEnemy>& enemy)
+			{
+				if (enemy->IsDead())
+				{
+					enemy->Finalize();
+					// 敵のカウントを減らす
+					enemyCount_--;
+					return true;
+				}
+				return false;
+			}),
+		pTrapEnemies_.end()
+	);
+
 	// ウェーブステートの更新
 	pState_->Update();
 	
@@ -73,6 +105,11 @@ void EnemyManager::Draw()
 	{
 		enemy->Draw();
 	}
+
+	for (auto& enemy : pTrapEnemies_)
+	{
+		enemy->Draw();
+	}
 }
 
 void EnemyManager::ImGuiDraw()
@@ -81,11 +118,16 @@ void EnemyManager::ImGuiDraw()
 	{
 		enemy->ImGuiDraw();
 	}
+
+	for (auto& enemy : pTrapEnemies_)
+	{
+		enemy->ImGuiDraw();
+	}
 }
 
-void EnemyManager::EnemyInit(const Vector3& pos)
+void EnemyManager::NormalEnemyInit(const Vector3& pos)
 {
-	// エネミー
+	// ノーマルエネミー
 	std::unique_ptr<NormalEnemy> enemy = std::make_unique<NormalEnemy>();
 	enemy->SetPosition(pos);
 	enemy->Initialize();
@@ -94,7 +136,23 @@ void EnemyManager::EnemyInit(const Vector3& pos)
 
 	// 敵を登録
 	pNormalEnemies_.push_back(std::move(enemy));
-	
+
+	// 敵のカウントを増やす
+	enemyCount_++;
+}
+
+void EnemyManager::TrapEnemyInit(const Vector3& pos)
+{
+	// トラップエネミー
+	std::unique_ptr<TrapEnemy> trapEnemy = std::make_unique<TrapEnemy>();
+	trapEnemy->SetPosition(pos);
+	trapEnemy->Initialize();
+	trapEnemy->SetPlayerPosition(playerPosition_);
+	trapEnemy->Update();
+
+	// 敵を登録
+	pTrapEnemies_.push_back(std::move(trapEnemy));
+
 	// 敵のカウントを増やす
 	enemyCount_++;
 }

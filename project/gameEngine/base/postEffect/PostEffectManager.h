@@ -11,6 +11,8 @@ class PostEffectManager
 {
 public:
 
+    static PostEffectManager* GetInstance();
+
     void AddPass(const std::string& name, std::unique_ptr<IPostEffectPass> pass);
     // 1つのみ有効
     void SetActiveEffect(const std::string& name, bool active);
@@ -31,6 +33,9 @@ public:
     }
 
 private:
+
+    // インスタンス
+	static PostEffectManager* instance_;
 
     std::unordered_map<std::string, std::unique_ptr<IPostEffectPass>> passes_;
 

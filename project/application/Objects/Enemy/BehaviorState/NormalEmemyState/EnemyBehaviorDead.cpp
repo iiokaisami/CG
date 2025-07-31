@@ -50,7 +50,7 @@ void EnemyBehaviorDead::Update()
 		pNormalEnemy_->SetIsDead(true);
 
 		// パーティクル
-		ParticleEmitter::Emit("explosionGroup", motion_.transform.position, 6);
+		ParticleEmitter::Emit("petalGroup", motion_.transform.position, 6);
 	}
 
 }

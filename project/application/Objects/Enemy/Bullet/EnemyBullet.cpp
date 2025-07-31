@@ -4,7 +4,7 @@ void EnemyBullet::Initialize()
 {
 	// --- 3Dオブジェクト ---
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("cube.obj");
+	object_->Initialize("enemyBullet.obj");
 
 	object_->SetPosition(position_);
 	object_->SetRotate(rotation_);
@@ -43,6 +43,12 @@ void EnemyBullet::Update()
 	aabb_.max = position_ + object_->GetScale();
 	collider_.SetPosition(position_);
 
+	// 残り寿命に応じてスケールを小さくする
+	float t = static_cast<float>(deathTimer_) / static_cast<float>(kLifeTime);
+	t = std::clamp(t, 0.0f, 1.0f);
+	scale_ = { 0.7f * t, 0.7f * t, 0.7f * t };
+
+
 	//時間経過でデス
 	if (--deathTimer_ <= 0) {
 		isDead_ = true;
@@ -80,16 +86,11 @@ void EnemyBullet::UpdateModel()
 
 void EnemyBullet::OnCollisionTrigger(const Collider* _other)
 {
-	if (_other->GetColliderID() == "Player")
+	if (!_other->GetOwner()->IsActive() && _other->GetColliderID() == "Player" or
+		_other->GetColliderID() == "PlayerBullet" or
+		_other->GetColliderID() == "Wall" or
+		_other->GetColliderID() == "TrapEnemy")
 	{
 		isDead_ = true;
 	} 
-	if (_other->GetColliderID() == "PlayerBullet")
-	{
-		isDead_ = true;
-	}
-	if (_other->GetColliderID() == "Wall")
-	{
-		isDead_ = true;
-	}
 }

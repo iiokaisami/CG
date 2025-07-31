@@ -1,7 +1,9 @@
-// コマンド,Time,Position
-WAIT,0,,
-POSITION,0,0.5,20
-WAIT,40,,
-POSITION,-10,0.5,10
-WAIT,40,,
-POSITION,10,0.5,0
+// コマンド,敵タイプ,Position
+WAIT,0,,,
+POSITION,Normal,30,0.5,20
+WAIT,40,,,
+POSITION,Trap,-10,0.5,10
+WAIT,40,,,
+POSITION,Normal,10,0.5,0
+WAIT,20,,,
+POSITION,Trap,5,0.5,-10

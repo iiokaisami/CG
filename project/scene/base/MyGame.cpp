@@ -32,10 +32,9 @@ void MyGame::Initialize()
 
 	particleManager->CreateParticleGroup("homingGroup", "resources/images/white.png", "plane.obj", "Ring", "Homing");
 	particleManager->CreateParticleGroup("flameGroup", "resources/images/white.png", "plane.obj", "Ring", "Flame");
-	particleManager->CreateParticleGroup("explosionGroup", "resources/images/white.png", "plane.obj", "Helix", "Explosion");
-	
 
-	particleManager->Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1, 1000000);
+	particleManager->CreateParticleGroup("explosionGroup", "resources/images/white.png", "plane.obj", "Ring", "Explosion");
+	particleManager->CreateParticleGroup("vignetteGroup", "resources/images/black.png", "plane.obj", "Ring", "Wiggle");
 
 	// Cylinderを出すときに向き指定する
 	ParticleMotion::SetDirection("UP");
@@ -80,63 +79,59 @@ void MyGame::Update()
 
 	time += 1.0f / 60.0f;
 
-	if (std::fmod(time, 1.0f) < 0.1f)
-	{
-		particleManager->Emit("magic2Group", { 0.0f,1.0f,0.0f }, 5, 1);
-	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_1))
 	{
-		particleManager->Emit("slash", { 0.0f,2.0f,0.0f }, 3, 1);
+		particleManager->Emit("slash", { 0.0f,2.0f,0.0f }, 3);
 	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_2))
 	{
-		particleManager->Emit("laserGroup", { 0.0f,1.0f,0.0f }, 3, 5);
+		particleManager->Emit("laserGroup", { 0.0f,1.0f,0.0f }, 3);
 	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_3))
 	{
-		particleManager->Emit("petalGroup", { 0.0f,1.0f,0.0f }, 10, 100);
+		particleManager->Emit("petalGroup", { 0.0f,1.0f,0.0f }, 10);
 		isPetal_ = !isPetal_;
 	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_4))
 	{
-		particleManager->Emit("homingGroup", { 0.0f,1.0f,0.0f }, 3, 100);
+		particleManager->Emit("homingGroup", { 0.0f,1.0f,0.0f }, 3);
 		isHoming_ = !isHoming_;
 	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_5))
 	{
-		particleManager->Emit("flameGroup", { 0.0f,1.0f,0.0f }, 5, 100);
+		particleManager->Emit("flameGroup", { 0.0f,1.0f,0.0f }, 5);
 		isFlame_ = !isFlame_;
 	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_6))
 	{
-		particleManager->Emit("explosionGroup", { 0.0f,1.0f,0.0f }, 3, 100);
+		particleManager->Emit("explosionGroup", { 0.0f,1.0f,0.0f }, 3);
 		isExplosion_ = !isExplosion_;
 	}
 
 	if (std::fmod(time, 0.8f) < 0.1f && isPetal_)
 	{
-		particleManager->Emit("petalGroup", { 0.0f,1.0f,0.0f }, 8, 1);
+		particleManager->Emit("petalGroup", { 0.0f,1.0f,0.0f }, 8);
 	}
 
 	if (std::fmod(time, 1.0f) < 0.1f && isHoming_)
 	{
-		particleManager->Emit("homingGroup", { 0.0f,1.0f,0.0f }, 3, 1);
+		particleManager->Emit("homingGroup", { 0.0f,1.0f,0.0f }, 3);
 	}
 
 	if (std::fmod(time, 0.8f) < 0.1f && isFlame_)
 	{
-		particleManager->Emit("flameGroup", { 0.0f,1.0f,0.0f }, 5, 1);
+		particleManager->Emit("flameGroup", { 0.0f,1.0f,0.0f }, 5);
 	}
 
 	if (std::fmod(time, 1.0f) < 0.1f && isExplosion_)
 	{
-		particleManager->Emit("explosionGroup", { 0.0f,1.0f,0.0f }, 3, 1);
+		particleManager->Emit("explosionGroup", { 0.0f,1.0f,0.0f }, 3);
 	}
 
 
@@ -270,10 +265,18 @@ void MyGame::Draw()
 void MyGame::LoadModel()
 {
 	ModelManager::GetInstance()->LoadModel("cube.obj");
-	ModelManager::GetInstance()->LoadModel("axis.obj");
 	ModelManager::GetInstance()->LoadModel("plane.obj");
 	ModelManager::GetInstance()->LoadModel("sphere.obj");
 	ModelManager::GetInstance()->LoadModel("terrain.obj");
+	ModelManager::GetInstance()->LoadModel("player/player.obj");
+	ModelManager::GetInstance()->LoadModel("player/bullet/playerBullet.obj");
+	ModelManager::GetInstance()->LoadModel("enemy/normal/normalEnemy.obj");
+	ModelManager::GetInstance()->LoadModel("enemy/normal/bullet/enemyBullet.obj");
+	ModelManager::GetInstance()->LoadModel("enemy/trap/trapEnemy.obj");
+	ModelManager::GetInstance()->LoadModel("enemy/trap/timeBomb/bomb.obj");
+	ModelManager::GetInstance()->LoadModel("enemy/trap/vignette/vignette.obj");
+	ModelManager::GetInstance()->LoadModel("wall/wall.obj");
+	ModelManager::GetInstance()->LoadModel("field/field.obj");
 }
 
 void MyGame::LoadSound()

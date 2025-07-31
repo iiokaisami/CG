@@ -5,7 +5,6 @@
 #include "../../NormalEnemy.h"
 #include "EnemyBehaviorAttack.h"
 #include "EnemyBehaviorHitReact.h"
-#include "EnemyBehaviorDead.h"
 
 EnemyBehaviorMove::EnemyBehaviorMove(NormalEnemy* _pNormalEnemy) : EnemyBehaviorState("Move", _pNormalEnemy)
 {
@@ -24,13 +23,7 @@ void EnemyBehaviorMove::Update()
 	TransformUpdate(pNormalEnemy_);
 
 	// 動く前に切り替え処理
-	if (pNormalEnemy_->GetHP() <= 0)
-	{
-		// HPが0以下なら、死亡モーションに切り替え
-		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorDead>(pNormalEnemy_));
-		return;
-	}
-	else if (pNormalEnemy_->IsHit())
+	if (pNormalEnemy_->IsHit())
 	{
 		// ヒットフラグをリセット
 		pNormalEnemy_->SetIsHit(false);
@@ -42,7 +35,7 @@ void EnemyBehaviorMove::Update()
 		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorHitReact>(pNormalEnemy_));
 		return;
 	}
-	else if (pNormalEnemy_->IsFarFromPlayer())
+	else if (pNormalEnemy_->IsFarFromPlayer() && !pNormalEnemy_->IsHitVignetteTrap())
 	{
 		// プレイヤーとの距離が一定以下の場合、攻撃モーションに切り替え
 		pNormalEnemy_->ChangeBehaviorState(std::make_unique<EnemyBehaviorAttack>(pNormalEnemy_));
@@ -57,19 +50,24 @@ void EnemyBehaviorMove::Update()
 	// イージング進行度（0〜1）
 	float t = float(motion_.count) / motion_.maxCount;
 
-	// 上下にゆっくり波打つ動き
-	float wave = std::sin(t * std::numbers::pi_v<float>) * 0.3f;
+	// ポヨポヨ拡大縮小（X・Y両方）
+	float scaleWaveX = 1.0f + std::sin(t * std::numbers::pi_v<float>) * 0.2f;
+	float scaleWaveY = 1.0f + std::cos(t * std::numbers::pi_v<float>) * 0.2f;
 
-	motion_.transform.position += Vector3(0.0f, wave, 0.0f); // Y軸方向に波打つ
+	// スケールを更新（X・Y両方ポヨポヨ）
+	motion_.transform.scale = Vector3(scaleWaveX, scaleWaveY, 1.0f);
 
-	pNormalEnemy_->SetPosition(motion_.transform.position);
+	// スケールをセット
+	pNormalEnemy_->SetScale(motion_.transform.scale);
 
 	// モーションカウントを更新
 	MotionCount(motion_);
 
 	// 移動
-	pNormalEnemy_->Move();
-
+	if (!pNormalEnemy_->IsHitVignetteTrap())
+	{
+		pNormalEnemy_->Move();
+	}
 }
 
 void EnemyBehaviorMove::ResetMotion()

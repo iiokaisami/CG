@@ -3,7 +3,7 @@
 #include "../../BaseObject/GameObject.h"
 #include "Bullet/EnemyBullet.h"
 #include "BehaviorState/NormalEmemyState/EnemyBehaviorState.h"
-#include"../../Collider/ColliderManager.h"
+#include"../../../gameEngine/Collider/ColliderManager.h"
 #include "../../../gameEngine/particle/ParticleEmitter.h"
 
 #include <Object3d.h>
@@ -55,13 +55,10 @@ private: // 衝突判定
 	// 衝突中の処理
 	void OnCollision(const Collider* _other);
 
-	// 衝突時の押し出し処理
-	void CorrectOverlap(const AABB _anyAABB);
+	// 暗闇トラップに衝突したときの処理
+	void HitVignetteTrap();
 
 public: // ゲッター
-
-	// 死亡フラグ
-	bool IsDead() const { return isDead_; }
 
 	// プレイヤーとの距離
 	Vector3 GetToPlayer() const { return toPlayer_; }
@@ -72,22 +69,19 @@ public: // ゲッター
 	// プレイヤーとの距離が一定以上かどうか
 	bool IsFarFromPlayer() const { return isFarFromPlayer_; }
 
+	// 暗闇フラグ
+	bool IsHitVignetteTrap() const { return isHitVignetteTrap_; }
+
 public: // セッター
 
 	// プレイヤーの位置をセット
 	void SetPlayerPosition(Vector3 _playerPosition) { playerPosition_ = _playerPosition; }
-
-	// エネミーの位置をセット
-	void SetEnemyPosition(Vector3 _enemyPosition) { position_ = _enemyPosition; }
 
 	// 無敵フラグをセット
 	void SetIsInvincible(bool _isInvincible) { isInvincible_ = _isInvincible; }
 
 	// 被弾フラグをセット
 	void SetIsHit(bool _isHit) { isHit_ = _isHit; }
-
-	// 死亡フラグをセット
-	void SetIsDead(bool _isDead) { isDead_ = _isDead; }
 
 	// オブジェクトのtransformをセット
 	void SetObjectPosition(const Vector3& _position) { object_->SetPosition(_position); }
@@ -114,18 +108,8 @@ private:
 	// 追尾停止距離
 	const float kStopChasingDistance = 15.0f;
 
-
-	// 死亡
-	bool isDead_ = false;
-
 	// 弾
 	std::vector<std::unique_ptr<EnemyBullet>> pBullets_ = {};
-
-	// 壁に衝突したかどうか
-	bool isWallCollision_ = false;
-	
-	// 衝突相手のaabb
-	AABB collisionWallAABB_ = {};
 
 	// 行動ステート
 	std::unique_ptr<EnemyBehaviorState> pBehaviorState_ = nullptr;
@@ -138,6 +122,14 @@ private:
 
 	// プレイヤーとの距離が一定以上かどうか
 	bool isFarFromPlayer_ = false;
+
+	// 暗闇トラップに当たったかどうか
+	bool isHitVignetteTrap_ = false;
+	// 暗闇効果最大時間
+	const uint32_t kMaxVignetteTime = 60 * 3;
+	// 暗闇タイマー
+	uint32_t vignetteTime_ = kMaxVignetteTime;
+
 
 };
 

@@ -4,7 +4,7 @@ void Player::Initialize()
 {
 	// --- 3Dオブジェクト ---
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("cube.obj");
+	object_->Initialize("player.obj");
 
 
 	position_ = { 0.2f,0.7f,-1.2f };
@@ -30,7 +30,7 @@ void Player::Initialize()
 	colliderManager_->RegisterCollider(&collider_);
 
 	// ステータス
-	hp_ = 3;
+	hp_ = 13;
 	isDead_ = false;
 
 	// パーティクル
@@ -66,11 +66,17 @@ void Player::Update()
 	object_->SetScale(scale_);
 	object_->Update();
 
-	// 移動
-	Move();
-	
-	// 攻撃
-	Attack();
+	// 回避処理
+	Evade();
+	// アクティブフラグに回避フラグを入れる
+	isActive_ = isEvading_;
+
+	// 回避中は移動・攻撃を無効化
+	if (!isEvading_) 
+	{
+		Move();
+		Attack();
+	}
 
 	// 弾の削除
 	pBullets_.remove_if([](PlayerBullet* bullet)
@@ -89,18 +95,14 @@ void Player::Update()
 		bullet->Update();
 	}
 
-	if (isWallCollision_)
-	{
-		// 壁に衝突した場合の処理
-		CorrectOverlap();
-		isWallCollision_ = false;
-	}
-
 	// AABBの更新
 	aabb_.min = position_ - object_->GetScale();
 	aabb_.max = position_ + object_->GetScale();
 	aabb_.max.y += 1.0f;
 	collider_.SetPosition(position_);
+
+	// 暗闇処理
+	HitVignetteTrap();
 }
 
 void Player::Draw()
@@ -131,6 +133,9 @@ void Player::ImGuiDraw()
 	{
 		isHitMoment_ = true;
 	}
+
+	// HP
+	ImGui::Text("HP: %.0f", hp_);
 
 	ImGui::End();
 
@@ -163,7 +168,7 @@ void Player::Move()
 	}
 
 	// 移動ベクトルがゼロでない場合にプレイヤーの向きを補間で更新
-	if (moveVelocity_.x != 0.0f || moveVelocity_.z != 0.0f)
+	if (moveVelocity_.x != 0.0f or moveVelocity_.z != 0.0f)
 	{
 		float targetAngle = std::atan2(moveVelocity_.x, moveVelocity_.z);
 		const float rotationSpeed = 0.1f;
@@ -179,10 +184,11 @@ void Player::Attack()
 	if (Input::GetInstance()->PushKey(DIK_SPACE))
 	{
 		/// プレイヤーの向きに合わせて弾の速度を変更
-		Vector3 bulletVelocity = {
-			std::cosf(rotation_.x) * std::sinf(rotation_.y),    // x
+		Vector3 bulletVelocity =
+		{
+			std::cosf(rotation_.x) * std::sinf(rotation_.y),     // x
 			std::sinf(-rotation_.x),                             // y
-			std::cosf(rotation_.x) * std::cosf(rotation_.y)     // z
+			std::cosf(rotation_.x) * std::cosf(rotation_.y)      // z
 		};
 
 		if (countCoolDownFrame_ <= 0)
@@ -206,9 +212,56 @@ void Player::Attack()
 	countCoolDownFrame_--;
 }
 
+void Player::Evade()
+{
+	// 回避入力（左Shiftキー）
+	if (!isEvading_ && Input::GetInstance()->PushKey(DIK_LSHIFT))
+	{
+		// 移動方向がある場合のみ回避
+		if (moveVelocity_.x != 0.0f or moveVelocity_.z != 0.0f) 
+		{
+			isEvading_ = true;
+			evadeFrame_ = kEvadeDuration_;
+			// 現在の移動方向を回避方向として保存
+			evadeDirection_ = moveVelocity_;
+			// 正規化
+			float len = std::sqrt(evadeDirection_.x * evadeDirection_.x + evadeDirection_.z * evadeDirection_.z);
+			if (len > 0.0f) 
+			{
+				evadeDirection_.x /= len;
+				evadeDirection_.z /= len;
+			}
+			// 回避開始時のx軸角度を保存
+			evadeStartRotationX_ = rotation_.x;
+			// 目標角度を設定（1回転分加算）
+			evadeTargetRotationX_ = evadeStartRotationX_ + kEvadeRotateAngle_;
+		}
+	}
+
+	if (isEvading_)
+	{
+		// 回避移動
+		position_ += evadeDirection_ * kEvadeSpeed_;
+
+		// 回避中のx軸回転（線形補間で速めに回す）
+		float t = 1.0f - static_cast<float>(evadeFrame_) / static_cast<float>(kEvadeDuration_);
+		rotation_.x = evadeStartRotationX_ + (evadeTargetRotationX_ - evadeStartRotationX_) * t;
+
+		evadeFrame_--;
+		if (evadeFrame_ <= 0)
+		{
+			isEvading_ = false;
+			// 回避終了時に元の角度に戻す
+			rotation_.x = evadeStartRotationX_;
+		}
+	}
+}
+
 void Player::OnCollisionTrigger(const Collider* _other)
 {
-	if (_other->GetColliderID() == "EnemyBullet")
+
+	if (!isEvading_ && (_other->GetColliderID() == "EnemyBullet" or
+		_other->GetColliderID() == "NormalEnemy"))
 	{
 		// プレイヤーのHPを減少
 		if (hp_ > 0)
@@ -217,104 +270,112 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		}
 		else
 		{
-			isDead_ = true;
+			//isDead_ = true;
 		}
 
 		isHitMoment_ = true;
 	} 
-	
-	if (_other->GetColliderID() == "Enemy")
+
+	if (!isEvading_ && _other->GetColliderID() == "ExplosionTimeBomb")
 	{
-		// プレイヤーのHPを減少
-		if (hp_ > 0)
+		if (_other->GetOwner()->IsActive())
 		{
-			hp_--;
-		} 
-		else
-		{
-			isDead_ = true;
+			// プレイヤーのHPを減少
+			if (hp_ > 0)
+			{
+				hp_ -= 1.5f;
+			}
+			else
+			{
+				//isDead_ = true;
+			}
+			isHitMoment_ = true;
 		}
-		isHitMoment_ = true;
 	}
 
+	if (!isEvading_ && _other->GetColliderID() == "VignetteTrap")
+	{
+		if (_other->GetOwner()->IsActive())
+		{
+			// VignetteTrapに当たった場合
+			isHitVignetteTrap_ = true;
+		}
+	}
 }
 
 void Player::OnCollision(const Collider* _other)
 {
-
 	if (_other->GetColliderID() == "Wall")
 	{
-		isWallCollision_ = true;
-		collisionWallAABB_ = *_other->GetAABB();
+		// 相手のAABBを取得
+		const AABB* otherAABB = _other->GetAABB();
+		
+		if (otherAABB) 
+		{
+			// 自分のAABBと位置を渡して補正
+			CorrectOverlap(*otherAABB, aabb_, position_);
+		}
 	}
 }
 
-void Player::CorrectOverlap()
+void Player::HitVignetteTrap()
 {
-	Vector3 penetrationVector{};
-
-	// 壁との重なりを計算
-
-	// x軸(左右)
-	float overlapLeftX = collisionWallAABB_.max.x - aabb_.min.x;
-	float overlapRightX = aabb_.max.x - collisionWallAABB_.min.x;
-	float correctionX = 0.0f;
-
-	if (overlapLeftX < overlapRightX)
+	// フェードアウト中の処理
+	if (isFadingOut_)
 	{
-		correctionX = overlapLeftX;
-	} 
-	else
-	{
-		correctionX = -overlapRightX;
+		static const float fadeDuration = 30.0f;
+		static float fadeTimer = 0.0f;
+
+		fadeTimer++;
+		float t = fadeTimer / fadeDuration;
+		t = std::clamp(t, 0.0f, 1.0f);
+		vignetteStrength_ = std::lerp(1.8f, 0.0f, t);
+
+		PostEffectManager::GetInstance()->GetPassAs<VignettePass>("Vignette")->SetStrength(vignetteStrength_);
+
+		if (t >= 1.0f)
+		{
+			// 完了：すべてリセット
+			isFadingOut_ = false;
+			fadeTimer = 0.0f;
+			vignetteStrength_ = 0.0f;
+			PostEffectManager::GetInstance()->SetActiveEffect("Vignette", isHitVignetteTrap_);
+		}
+
+		return;
 	}
 
-	// y軸(上下)
-	float overlapBelowY = collisionWallAABB_.max.y - aabb_.min.y;
-	float overlapAboveY = aabb_.max.y - collisionWallAABB_.min.y;
-	float correctionY = 0.0f;
+	// 通常の効果中
+	if (isHitVignetteTrap_)
+	{
+		if (vignetteTime_ > 150)
+		{
+			// フェードイン
+			float t = 1.0f - static_cast<float>(kMaxVignetteTime - vignetteTime_) / 30.0f;
+			t = std::clamp(t, 0.0f, 1.0f);
+			vignetteStrength_ = std::lerp(1.8f, 0.0f, t);
+		}
+		else
+		{
+			vignetteStrength_ = 1.8f;
+		}
 
-	if (overlapBelowY < overlapAboveY)
-	{
-		correctionY = overlapBelowY;
-	}
-	else
-	{
-		correctionY = -overlapAboveY;
-	}
+		// vignetteの強さを設定
+		PostEffectManager::GetInstance()->SetActiveEffect("Vignette", isHitVignetteTrap_);
+		PostEffectManager::GetInstance()->GetPassAs<VignettePass>("Vignette")->SetStrength(vignetteStrength_);
 
-	// z軸(前後)
-	float overlapBackZ = collisionWallAABB_.max.z - aabb_.min.z;
-	float overlapFrontZ = aabb_.max.z - collisionWallAABB_.min.z;
-	float correctionZ = 0.0f;
-
-	if (overlapBackZ < overlapFrontZ)
-	{
-		correctionZ = overlapBackZ;
+		// タイマー更新
+		if (vignetteTime_ > 0)
+		{
+			vignetteTime_--;
+		}
+		else
+		{
+			// 明るくする準備
+			isHitVignetteTrap_ = false;
+			isFadingOut_ = true;
+			// タイマーをリセット
+			vignetteTime_ = kMaxVignetteTime;
+		}
 	}
-	else
-	{
-		correctionZ = -overlapFrontZ;
-	}
-
-	// 最小の重なりを持つ軸を選択
-	float absX = std::abs(correctionX);
-	float absY = std::abs(correctionY);
-	float absZ = std::abs(correctionZ);
-
-	if (absX <= absY && absX <= absZ)
-	{
-		penetrationVector.x = correctionX;
-	} 
-	else if (absY <= absZ)
-	{
-		penetrationVector.y = correctionY;
-	}
-	else
-	{
-		penetrationVector.z = correctionZ;
-	}
-
-	// 位置を修正
-	position_ += penetrationVector;
 }

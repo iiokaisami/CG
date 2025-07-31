@@ -4,7 +4,7 @@ void PlayerBullet::Initialize()
 {
 	// --- 3Dオブジェクト ---
   	object_ = std::make_unique<Object3d>();
-	object_->Initialize("cube.obj");
+	object_->Initialize("playerBullet.obj");
 
 	object_->SetPosition(position_);
 	object_->SetRotate(rotation_);
@@ -53,7 +53,8 @@ void PlayerBullet::Update()
 	ParticleEmitter::Emit("slash", position_, 1);
 
 	//時間経過でデス
-	if (--deathTimer_ <= 0) {
+	if (--deathTimer_ <= 0)
+	{
 		isDead_ = true;
 	}
 
@@ -82,18 +83,10 @@ void PlayerBullet::ImGuiDraw()
 
 void PlayerBullet::OnCollisionTrigger(const Collider* _other)
 {
-	if (_other->GetColliderID() == "Enemy")
+	if (_other->GetColliderID() != "Player" && _other->GetColliderID() != "Field")
 	{
 		isDead_ = true;
 	}  
-	if (_other->GetColliderID() == "EnemyBullet")
-	{
-		isDead_ = true;
-	}
-	if (_other->GetColliderID() == "Wall")
-	{
-		isDead_ = true;
-	}
 }
 
 void PlayerBullet::RunSetMask()

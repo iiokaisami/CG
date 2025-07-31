@@ -1,14 +1,14 @@
 #include "ParticleEmitter.h"
 
-void ParticleEmitter::Emit(const std::string& groupName, const Vector3& position, uint32_t count, uint32_t interval)
+void ParticleEmitter::Emit(const std::string& groupName, const Vector3& position, uint32_t count)
 {
 	if (auto manager = ParticleManager::GetInstance())
 	{
-		manager->Emit(groupName, position, count, interval);
+		manager->Emit(groupName, position, count);
 	}
 }
 
-void ParticleEmitter::StartLoop(const std::string& groupName, const std::string& motionName, const Vector3& position, uint32_t count, float interval)
+void ParticleEmitter::StartLoop(const std::string& groupName, const std::string& motionName, const Vector3& position, uint32_t count)
 {
 	if (auto manager = ParticleManager::GetInstance())
 	{
@@ -16,22 +16,21 @@ void ParticleEmitter::StartLoop(const std::string& groupName, const std::string&
 		setting.groupName = groupName;
 		setting.motionName = motionName;
 		setting.emitPosition = position;
-		setting.interval = interval;
 		setting.emitCount = count;
 		setting.isLooping = true;
 		manager->AddEmitterSetting(setting);
 	}
 }
 
-void ParticleEmitter::EmitOnce(const Vector3& position, uint32_t count, float interval)
+void ParticleEmitter::EmitOnce(const Vector3& position, uint32_t count)
 {
 	if (manager_) 
 	{
-		manager_->Emit(groupName_, position, count, static_cast<uint32_t>(interval));
+		manager_->Emit(groupName_, position, count);
 	}
 }
 
-void ParticleEmitter::StartLoopEmit(const Vector3& position, uint32_t count, float interval)
+void ParticleEmitter::StartLoopEmit(const Vector3& position, uint32_t count)
 {
 	if (!manager_)
 	{
@@ -42,7 +41,6 @@ void ParticleEmitter::StartLoopEmit(const Vector3& position, uint32_t count, flo
 	setting.groupName = groupName_;
 	setting.motionName = motionName_;
 	setting.emitPosition = position;
-	setting.interval = interval;
 	setting.emitCount = count;
 	setting.isLooping = true;
 

@@ -1,5 +1,6 @@
 #include "TitleScene.h"
 
+#include <cmath>
 #include <ModelManager.h>
 
 void TitleScene::Initialize()
@@ -20,9 +21,6 @@ void TitleScene::Initialize()
 	camera_->SetRotate(cameraRotate_);
 
 	// --- 3Dオブジェクト ---
-	ModelManager::GetInstance()->LoadModel("sphere.obj");
-	ModelManager::GetInstance()->LoadModel("terrain.obj");
-
 	for (uint32_t i = 0; i < 2; ++i)
 	{
 		Object3d* object = new Object3d();
@@ -68,6 +66,7 @@ void TitleScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture(cubeMapPath_);
 	cubeSrvIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(cubeMapPath_);
 	cubeHandle_ = TextureManager::GetInstance()->GetSrvManager()->GetGPUDescriptorHandle(cubeSrvIndex_);
+	ParticleEmitter::Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1);
 }
 
 void TitleScene::Finalize()
@@ -90,6 +89,19 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
+	if (time_ > 9.0f)
+	{
+		time_ = 0.0f;
+	}
+
+	time_ += 1.0f / 60.0f;
+
+	
+	if (std::fmod(time_, 1.0f) < 0.1f)
+	{
+		ParticleEmitter::Emit("magic2Group", { 0.0f,1.0f,0.0f }, 5);
+	}
+
 	camera_->Update();
 	camera_->SetPosition(cameraPosition_);
 	camera_->SetRotate(cameraRotate_);

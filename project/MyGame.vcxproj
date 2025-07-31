@@ -112,8 +112,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="application\Objects\Enemy\NormalEnemy.cpp" />
     <ClCompile Include="application\Objects\Field\Field.cpp" />
     <ClCompile Include="application\Objects\Enemy\Bullet\EnemyBullet.cpp" />
-    <ClCompile Include="application\Collider\Collider.cpp" />
-    <ClCompile Include="application\Collider\ColliderManager.cpp" />
+    <ClCompile Include="gameEngine\Collider\Collider.cpp" />
+    <ClCompile Include="gameEngine\Collider\ColliderManager.cpp" />
     <ClCompile Include="application\Objects\Enemy\EnemyManager.cpp" />
     <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveState.cpp" />
     <ClCompile Include="application\Objects\Enemy\WaveState\EnemyWaveStage1.cpp" />
@@ -177,6 +177,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="application\Objects\Field\Wall.cpp" />
     <ClCompile Include="application\Objects\Enemy\TrapEnemy.cpp" />
+    <ClCompile Include="application\Objects\Enemy\Bullet\TimeBomb.cpp" />
+    <ClCompile Include="application\Objects\Enemy\Bullet\VignetteTrap.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorState.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorSpawn.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorDead.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorHitReact.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorMove.cpp" />
+    <ClCompile Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorSetTrap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\BaseObject\GameObject.h" />
@@ -184,8 +192,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\Objects\Enemy\NormalEnemy.h" />
     <ClInclude Include="application\Objects\Field\Field.h" />
     <ClInclude Include="application\Objects\Enemy\Bullet\EnemyBullet.h" />
-    <ClInclude Include="application\Collider\Collider.h" />
-    <ClInclude Include="application\Collider\ColliderManager.h" />
+    <ClInclude Include="gameEngine\Collider\Collider.h" />
+    <ClInclude Include="gameEngine\Collider\ColliderManager.h" />
     <ClInclude Include="application\Objects\Enemy\EnemyManager.h" />
     <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveState.h" />
     <ClInclude Include="application\Objects\Enemy\WaveState\EnemyWaveStage1.h" />
@@ -246,9 +254,19 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="gameEngine\particle\ParticleEmitter.h" />
     <ClInclude Include="gameEngine\particle\ParticleManager.h" />
     <ClInclude Include="scene\scene\TitleScene.h" />
+    <ClInclude Include="gameEngine\Collider\Shape.h" />
+    <ClInclude Include="application\Objects\Field\Wall.h" />
     <ClInclude Include="gameEngine\base\postEffect\VignettePass.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="application\Objects\Enemy\TrapEnemy.h" />
+    <ClInclude Include="application\Objects\Enemy\Bullet\TimeBomb.h" />
+    <ClInclude Include="application\Objects\Enemy\Bullet\VignetteTrap.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorState.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorSpawn.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorDead.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorHitReact.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorMove.h" />
+    <ClInclude Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorSetTrap.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

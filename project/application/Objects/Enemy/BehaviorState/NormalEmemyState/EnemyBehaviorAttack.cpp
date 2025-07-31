@@ -37,7 +37,6 @@ void EnemyBehaviorAttack::Update()
 
             float scaleValue = 1.0f - ease * 0.3f;
             motion_.transform.scale = Vector3(scaleValue, scaleValue, scaleValue);
-			//pEnemy_->SetScale(motion_.transform.scale);
 			pNormalEnemy_->SetObjectScale(motion_.transform.scale);
 
             float shake = ((motion_.count % 2 == 0) ? 1 : -1) * 0.05f;

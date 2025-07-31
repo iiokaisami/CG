@@ -4,7 +4,7 @@ void Wall::Initialize()
 {
 	// --- 3Dオブジェクト ---
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("cube.obj");
+	object_->Initialize("wall.obj");
 	position_ = { 0.0f,0.0f,-0.5f };
 	object_->SetPosition(position_);
 	object_->SetRotate(rotation_);

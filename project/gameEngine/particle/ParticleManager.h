@@ -47,7 +47,6 @@ struct EmitSetting {
 	std::string groupName;
 	std::string motionName;
 	Vector3 emitPosition;
-	float interval;
 	uint32_t emitCount = 1;
 	float timer = 0.0f;
 	bool isLooping = false;
@@ -85,7 +84,7 @@ public:
 	// 描画
 	void Draw();
 
-	void Emit(const std::string groupName, const Vector3& position, uint32_t count, uint32_t interval);
+	void Emit(const std::string groupName, const Vector3& position, uint32_t count);
 
 	void AddEmitterSetting(const EmitSetting& setting);
 

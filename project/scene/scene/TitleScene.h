@@ -8,6 +8,7 @@
 #include <Vector3.h>
 
 #include "../base/BaseScene.h"
+#include "../../gameEngine/particle/ParticleEmitter.h"
 
 class TitleScene : public BaseScene
 {
@@ -84,5 +85,9 @@ private:
 	uint32_t cubeSrvIndex_ = 0u;
 	D3D12_GPU_DESCRIPTOR_HANDLE cubeHandle_ = { 0 };
 	float environmentStrength_ = 1.0f;
+
+
+	// パーティクル用変数
+	float time_ = 0.0f;
 
 };

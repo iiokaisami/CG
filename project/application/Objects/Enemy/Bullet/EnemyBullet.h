@@ -1,10 +1,9 @@
 #pragma once
 
 #include "../../../BaseObject/GameObject.h"
-#include"../../../Collider/ColliderManager.h"
+#include"../../../../gameEngine/Collider/ColliderManager.h"
 
 #include <Object3d.h>
-#include <Sprite.h>
 
 class EnemyBullet : public GameObject
 {
@@ -39,11 +38,8 @@ private: // 衝突判定
 
 public: // ゲッター
 
-	bool IsDead() const { return isDead_; }
-	
-public: // セッター
 
-	bool SetIsDead(const bool _isDead) { return isDead_ = _isDead; }
+public: // セッター
 
 	Vector3 SetVelocity(const Vector3 _velocity) { return velocity_ = _velocity; }
 
@@ -65,9 +61,6 @@ private: // メンバ変数
 
 	// デスタイマー
 	uint32_t deathTimer_ = kLifeTime;
-
-	// デスフラグ
-	bool isDead_ = false;
 
 };
 
