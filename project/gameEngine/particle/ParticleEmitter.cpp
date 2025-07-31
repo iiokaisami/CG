@@ -30,7 +30,7 @@ void ParticleEmitter::EmitOnce(const Vector3& position, uint32_t count)
 	}
 }
 
-void ParticleEmitter::StartLoopEmit(const Vector3& position, uint32_t count, float interval)
+void ParticleEmitter::StartLoopEmit(const Vector3& position, uint32_t count)
 {
 	if (!manager_)
 	{

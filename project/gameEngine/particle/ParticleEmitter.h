@@ -25,7 +25,7 @@ public:
 	void EmitOnce(const Vector3& position, uint32_t count = 10);
 
 	// ループエミット（manager に設定を追加）
-	void StartLoopEmit(const Vector3& position, uint32_t count, float interval);
+	void StartLoopEmit(const Vector3& position, uint32_t count);
 
 
 private:
