@@ -8,7 +8,7 @@ void ParticleEmitter::Emit(const std::string& groupName, const Vector3& position
 	}
 }
 
-void ParticleEmitter::StartLoop(const std::string& groupName, const std::string& motionName, const Vector3& position, uint32_t count, float interval)
+void ParticleEmitter::StartLoop(const std::string& groupName, const std::string& motionName, const Vector3& position, uint32_t count)
 {
 	if (auto manager = ParticleManager::GetInstance())
 	{
