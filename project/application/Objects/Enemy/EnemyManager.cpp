@@ -11,7 +11,7 @@ void EnemyManager::Initialize()
 
 void EnemyManager::Finalize()
 {
-	for (auto& enemy : pNormalEnemies_)
+	for (auto& enemy : pTrapEnemies_)
 	{
 		enemy->Finalize();
 	}
