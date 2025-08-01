@@ -65,8 +65,8 @@ void LevelDataLoader::LoadObjectRecursive(const nlohmann::json& objectJson, Leve
         if (objectJson.contains("transform"))
         {
             const auto& t = objectJson["transform"];
-            data.translation = { t["translation"][0], t["translation"][1], t["translation"][2] };
-            data.rotation = { -1.0f * t["rotation"][0], -1.0f * t["rotation"][1], -1.0f * t["rotation"][2] };
+            data.translation = { -1.0f * t["translation"][0], t["translation"][1], -1.0f * t["translation"][2] };
+            data.rotation = { -1.0f * t["rotation"][0],  3.14f + t["rotation"][1], -1.0f * t["rotation"][2] };
             data.scale = { t["scaling"][0], t["scaling"][1], t["scaling"][2] };
         }
 
