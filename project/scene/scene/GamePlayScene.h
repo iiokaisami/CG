@@ -7,6 +7,7 @@
 #include "../../application/Objects/Enemy/EnemyManager.h"
 #include "../../application/Objects/Field/Field.h"
 #include "../../application/Objects/Field/Wall.h"
+#include "../../application/Objects/Field/Goal.h"
 #include "../../gameEngine/Collider/ColliderManager.h"
 
 class GamePlayScene : public BaseScene
@@ -65,6 +66,8 @@ private:
 	// 壁
 	std::vector<std::unique_ptr<Wall>> pWalls_;
 
+	// ゴール
+	std::unique_ptr<Goal> pGoal_ = nullptr;
 	
 	// カメラが静止時に追従する基準位置
 	Vector3 cameraRestCenter_; 

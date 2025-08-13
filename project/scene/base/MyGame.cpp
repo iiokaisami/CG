@@ -42,8 +42,8 @@ void MyGame::Initialize()
 	useExampleGroup_ = true;
 
 
-	TextureManager::GetInstance()->LoadTexture("resources/images/rostock_laage_airport_4k.dds",true);
-	uint32_t cubeSrvIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath("resources/images/rostock_laage_airport_4k.dds");
+	TextureManager::GetInstance()->LoadTexture("resources/images/studio.dds",true);
+	uint32_t cubeSrvIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath("resources/images/studio.dds");
 	skybox->SetCubeMapSrvIndex(cubeSrvIndex);
 }
 

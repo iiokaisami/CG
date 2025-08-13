@@ -51,7 +51,7 @@ void Skybox::Update()
 	};
 
 	// スケーリング（Skyboxを十分大きくする）
-	Matrix4x4 scale = MakeScaleMatrix({ 100.0f, 100.0f, 100.0f });
+	Matrix4x4 scale = MakeScaleMatrix({ 1000.0f, 1000.0f, 1000.0f });
 
 	Matrix4x4 wvp = scale * view * proj * flipZ;
 	memcpy(&mappedConstBuffer_->viewProj, &wvp, sizeof(Matrix4x4));

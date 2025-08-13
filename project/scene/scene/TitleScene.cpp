@@ -62,7 +62,7 @@ void TitleScene::Initialize()
 
 
 	// 環境マップ
-	cubeMapPath_ = "resources/images/rostock_laage_airport_4k.dds";
+	cubeMapPath_ = "resources/images/studio.dds";
 	TextureManager::GetInstance()->LoadTexture(cubeMapPath_);
 	cubeSrvIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(cubeMapPath_);
 	cubeHandle_ = TextureManager::GetInstance()->GetSrvManager()->GetGPUDescriptorHandle(cubeSrvIndex_);

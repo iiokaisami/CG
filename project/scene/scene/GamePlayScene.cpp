@@ -57,6 +57,10 @@ void GamePlayScene::Initialize()
 		pWalls_.push_back(std::move(wall));
 	}
 
+	// ゴールの初期化
+	pGoal_ = std::make_unique<Goal>();
+	pGoal_->Initialize();
+
 	// 追尾の初期化
 	cameraIsResting_ = true;
 	cameraRestCenter_ = pPlayer_->GetPosition() + Vector3{ 0.0f,70.0f,-20.0f };
@@ -83,6 +87,7 @@ void GamePlayScene::Finalize()
 	{
 		wall->Finalize();
 	}
+	pGoal_->Finalize();
 
 	/*for (Sprite* sprite : sprites)
 	{
@@ -154,6 +159,9 @@ void GamePlayScene::Update()
 		wall->Update();
 	}
 
+	// ゴールの更新
+	pGoal_->Update();
+	pGoal_->SetGoalVisible(pEnemyManager_->IsAllEnemyDefeated());
 
 
 #ifdef _DEBUG
@@ -192,12 +200,13 @@ void GamePlayScene::Update()
 	{
 		wall->ImGuiDraw();
 	}
+	pGoal_->ImGuiDraw();
 
 
 #endif // _DEBUG
 
 
-	if (Input::GetInstance()->TriggerKey(DIK_UP) or pEnemyManager_->IsAllEnemyDefeated())
+	if (Input::GetInstance()->TriggerKey(DIK_UP) or pGoal_->IsCleared())
 	{
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("CLEAR");
@@ -224,6 +233,8 @@ void GamePlayScene::Draw()
 	{
 		wall->Draw();
 	}
+
+	pGoal_->Draw();
 
 
 	// 描画前処理(Sprite)
