@@ -35,6 +35,12 @@ void Player::Initialize()
 
 	// パーティクル
 
+	// 環境マップ
+	cubeMapPath_ = "resources/images/studio.dds";
+	TextureManager::GetInstance()->LoadTexture(cubeMapPath_);
+	cubeSrvIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(cubeMapPath_);
+	cubeHandle_ = TextureManager::GetInstance()->GetSrvManager()->GetGPUDescriptorHandle(cubeSrvIndex_);
+
 }
 
 void Player::Finalize()
@@ -340,6 +346,11 @@ void Player::HitVignetteTrap()
 			fadeTimer = 0.0f;
 			vignetteStrength_ = 0.0f;
 			PostEffectManager::GetInstance()->SetActiveEffect("Vignette", isHitVignetteTrap_);
+
+			// 環境マップを無効化
+			environmentStrength_ = 0.0f;
+			object_->SetEnvironmentStrength(environmentStrength_);
+
 		}
 
 		return;
@@ -363,6 +374,12 @@ void Player::HitVignetteTrap()
 		// vignetteの強さを設定
 		PostEffectManager::GetInstance()->SetActiveEffect("Vignette", isHitVignetteTrap_);
 		PostEffectManager::GetInstance()->GetPassAs<VignettePass>("Vignette")->SetStrength(vignetteStrength_);
+
+		environmentStrength_ = 1.0f;
+
+		object_->SetEnvironmentMapHandle(cubeHandle_, true);
+		object_->SetEnvironmentStrength(environmentStrength_);
+
 
 		// タイマー更新
 		if (vignetteTime_ > 0)

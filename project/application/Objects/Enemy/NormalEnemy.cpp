@@ -47,12 +47,6 @@ void NormalEnemy::Initialize()
 	// 出現時は無敵状態
     isInvincible_ = true;
 
-    // 環境マップ
-    cubeMapPath_ = "resources/images/studio.dds";
-    TextureManager::GetInstance()->LoadTexture(cubeMapPath_);
-    cubeSrvIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(cubeMapPath_);
-    cubeHandle_ = TextureManager::GetInstance()->GetSrvManager()->GetGPUDescriptorHandle(cubeSrvIndex_);
-
 }
 
 void NormalEnemy::Finalize()
@@ -337,12 +331,6 @@ void NormalEnemy::HitVignetteTrap()
         // パーティクルを生成
         ParticleEmitter::Emit("vignetteGroup", { position_.x, position_.y + 1.0f,position_.z }, 3);
 
-        environmentStrength_ = 1.0f;
-
-        object_->SetEnvironmentMapHandle(cubeHandle_, true);
-        object_->SetEnvironmentStrength(environmentStrength_);
-
-
         // タイマー更新
         if (vignetteTime_ > 0)
         {
@@ -355,9 +343,6 @@ void NormalEnemy::HitVignetteTrap()
             // タイマーをリセット
             vignetteTime_ = kMaxVignetteTime;
 
-			// 環境マップを無効化
-            environmentStrength_ = 0.0f;
-            object_->SetEnvironmentStrength(environmentStrength_);
 
         }
     }

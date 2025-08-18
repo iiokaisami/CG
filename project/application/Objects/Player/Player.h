@@ -123,5 +123,12 @@ private:
 	float evadeTargetRotationX_ = 0.0f; // 回避中の目標x軸角度
 	const float kEvadeRotateAngle_ = 3.14f * 4.0f; // 1回転(360度) 
 
+
+	// 環境マップ
+	std::string cubeMapPath_ = "";
+	uint32_t cubeSrvIndex_ = 0u;
+	D3D12_GPU_DESCRIPTOR_HANDLE cubeHandle_ = { 0 };
+	float environmentStrength_ = 1.0f;
+
 };
 
