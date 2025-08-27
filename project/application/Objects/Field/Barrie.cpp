@@ -91,7 +91,7 @@ void Barrie::Update()
 			isBarrierDestroyed_ = false;
 
 			// パーティクル
-			ParticleEmitter::Emit("sparkBurst", position_ , 5);
+			ParticleEmitter::Emit("sparkBurst", position_ , 8);
 
 		}
 
