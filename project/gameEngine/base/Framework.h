@@ -38,7 +38,7 @@
 #include "../../scene/base/SceneManager.h"
 #include "../../scene/base/SceneFactory.h"   
 
-#include "../../Skybox.h"
+#include "../skybox/Skybox.h"
 
 #ifdef _DEBUG
 

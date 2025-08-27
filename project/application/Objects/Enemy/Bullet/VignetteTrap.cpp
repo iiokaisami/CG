@@ -141,7 +141,8 @@ void VignetteTrap::OnCollisionTrigger(const Collider* _other)
 
 void VignetteTrap::OnCollision(const Collider* _other)
 {
-	if (_other->GetColliderID() == "Wall")
+	if (_other->GetColliderID() == "Wall" or 
+		_other->GetColliderID() == "Barrie")
 	{
 		// 反射処理用のAABBを取得
 		collisionWallAABB_ = *_other->GetAABB();

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -112,6 +112,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="application\Objects\Enemy\NormalEnemy.cpp" />
     <ClCompile Include="application\Objects\Field\Field.cpp" />
     <ClCompile Include="application\Objects\Enemy\Bullet\EnemyBullet.cpp" />
+    <ClCompile Include="application\Objects\Field\Barrie.cpp" />
     <ClCompile Include="gameEngine\Collider\Collider.cpp" />
     <ClCompile Include="gameEngine\Collider\ColliderManager.cpp" />
     <ClCompile Include="application\Objects\Enemy\EnemyManager.cpp" />
@@ -175,7 +176,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="gameEngine\particle\ParticleManager.cpp" />
     <ClCompile Include="scene\scene\TitleScene.cpp" />
     <ClCompile Include="gameEngine\base\postEffect\VignettePass.cpp" />
-    <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="gameEngine\skybox\Skybox.cpp" />
     <ClCompile Include="application\Objects\Field\Wall.cpp" />
     <ClCompile Include="application\Objects\Enemy\TrapEnemy.cpp" />
     <ClCompile Include="application\Objects\Enemy\Bullet\TimeBomb.cpp" />
@@ -193,6 +194,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\Objects\Enemy\NormalEnemy.h" />
     <ClInclude Include="application\Objects\Field\Field.h" />
     <ClInclude Include="application\Objects\Enemy\Bullet\EnemyBullet.h" />
+    <ClInclude Include="application\Objects\Field\Barrie.h" />
     <ClInclude Include="gameEngine\Collider\Collider.h" />
     <ClInclude Include="gameEngine\Collider\ColliderManager.h" />
     <ClInclude Include="application\Objects\Enemy\EnemyManager.h" />
@@ -259,7 +261,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="gameEngine\Collider\Shape.h" />
     <ClInclude Include="application\Objects\Field\Wall.h" />
     <ClInclude Include="gameEngine\base\postEffect\VignettePass.h" />
-    <ClInclude Include="Skybox.h" />
+    <ClInclude Include="gameEngine\skybox\Skybox.h" />
     <ClInclude Include="application\Objects\Enemy\TrapEnemy.h" />
     <ClInclude Include="application\Objects\Enemy\Bullet\TimeBomb.h" />
     <ClInclude Include="application\Objects\Enemy\Bullet\VignetteTrap.h" />

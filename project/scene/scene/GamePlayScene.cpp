@@ -8,22 +8,16 @@ void GamePlayScene::Initialize()
 	cameraManager.ClearAllCameras();
 
 	// カメラの作成
-	camera1 = std::make_shared<Camera>();
-	camera2 = std::make_shared<Camera>();
+	camera = std::make_shared<Camera>();
 
-	camera1Rotate = camera1->GetRotate();
-	camera1Position = camera1->GetPosition();
-	camera1Position.y = 70.0f;
-	camera1Position.z = -15.0f;
-	camera1Rotate.x = 1.2f;
-	camera2Rotate = camera2->GetRotate();
-	camera2Position = camera2->GetPosition();
-	camera2Position.y = 4.0f;
-	camera2Position.z = -10.0f;
+	cameraRotate = camera->GetRotate();
+	cameraPosition = camera->GetPosition();
+	cameraPosition.y = 70.0f;
+	cameraPosition.z = -15.0f;
+	cameraRotate.x = 1.2f;
 
 	// カメラの追加
-	cameraManager.AddCamera(camera1);
-	cameraManager.AddCamera(camera2);
+	cameraManager.AddCamera(camera);
 
 	// アクティブカメラの設定
 	cameraManager.SetActiveCamera(0);
@@ -131,10 +125,8 @@ void GamePlayScene::Update()
 	// 稼働中のカメラインデックス
 	activeIndex = cameraManager.GetActiveIndex();
 
-	camera1->SetRotate(camera1Rotate);
-	camera1->SetPosition(camera1Position);
-	camera2->SetRotate(camera2Rotate);
-	camera2->SetPosition(camera2Position);
+	camera->SetRotate(cameraRotate);
+	camera->SetPosition(cameraPosition);
 
 	// 当たり判定チェック
 	colliderManager_->CheckAllCollision();
@@ -161,7 +153,7 @@ void GamePlayScene::Update()
 
 	// ゴールの更新
 	pGoal_->Update();
-	pGoal_->SetGoalVisible(pEnemyManager_->IsAllEnemyDefeated());
+	pGoal_->SetBarrierDestroyed(pEnemyManager_->IsAllEnemyDefeated());
 
 
 #ifdef _DEBUG
@@ -170,24 +162,14 @@ void GamePlayScene::Update()
 
 	ImGui::Begin("PlayScene");
 
-	// camera1
-	Vector3 cam1Pos = camera1->GetPosition();
-	Vector3 cam1Rot = camera1->GetRotate();
-	if (ImGui::SliderFloat3("camera1Position", &cam1Pos.x, -100.0f, 100.0f)) {
-		camera1->SetPosition(cam1Pos);
+	// camera
+	Vector3 cam1Pos = camera->GetPosition();
+	Vector3 cam1Rot = camera->GetRotate();
+	if (ImGui::SliderFloat3("cameraPosition", &cam1Pos.x, -100.0f, 100.0f)) {
+		camera->SetPosition(cam1Pos);
 	}
-	if (ImGui::SliderFloat3("camera1Rotate", &cam1Rot.x, -10.0f, 10.0f)) {
-		camera1->SetRotate(cam1Rot);
-	}
-
-	// camera2
-	Vector3 cam2Pos = camera2->GetPosition();
-	Vector3 cam2Rot = camera2->GetRotate();
-	if (ImGui::SliderFloat3("camera2Position", &cam2Pos.x, -100.0f, 100.0f)) {
-		camera2->SetPosition(cam2Pos);
-	}
-	if (ImGui::SliderFloat3("camera2Rotate", &cam2Rot.x, -10.0f, 10.0f)) {
-		camera2->SetRotate(cam2Rot);
+	if (ImGui::SliderFloat3("cameraRotate", &cam1Rot.x, -10.0f, 10.0f)) {
+		camera->SetRotate(cam1Rot);
 	}
 
 
@@ -288,7 +270,7 @@ void GamePlayScene::CameraShake()
 
 void GamePlayScene::CameraFollow()
 {
-	if (!camera1 or !pPlayer_) 
+	if (!camera or !pPlayer_) 
 	{
 		return;
 	}
@@ -303,14 +285,14 @@ void GamePlayScene::CameraFollow()
 	Vector3 targetRot = { 2.0f, 0.0f, 0.0f };  // やや下向き
 
 	// 滑らかに補間して追従
-	Vector3 currentPos = camera1->GetPosition();
+	Vector3 currentPos = camera->GetPosition();
 	Vector3 nextPos;
 	nextPos.Lerp(currentPos, targetPos, 0.8f);
 
-	Vector3 currentRot = camera1->GetRotate();
+	Vector3 currentRot = camera->GetRotate();
 	Vector3 nextRot;
 	nextRot.Lerp(currentRot, targetRot, 0.25f);
 
-	camera1->SetPosition(nextPos);
-	camera1->SetRotate(nextRot);
+	camera->SetPosition(nextPos);
+	camera->SetRotate(nextRot);
 }

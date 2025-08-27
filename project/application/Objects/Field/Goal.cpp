@@ -4,13 +4,13 @@ void Goal::Initialize()
 {
 	// --- 3Dオブジェクト ---
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("cube.obj");
+	object_->Initialize("goal.obj");
 	position_ = { 0.0f,0.0f,-3.5f };
 	object_->SetPosition(position_);
 	object_->SetRotate(rotation_);
 
 	// 仮置き
-	scale_ = { 0.0f,0.0f,0.0f };
+	scale_ = { 1.0f,1.0f,1.0f };
 	object_->SetScale(scale_);
 
 	// 当たり判定
@@ -24,11 +24,17 @@ void Goal::Initialize()
 	collider_.SetAttribute(colliderManager_->GetNewAttribute(collider_.GetColliderID()));
 	collider_.SetOnCollisionTrigger(std::bind(&Goal::OnCollisionTrigger, this, std::placeholders::_1));
 	colliderManager_->RegisterCollider(&collider_);
+
+	// バリア
+	pBarrie_ = std::make_unique<Barrie>();
+	pBarrie_->SetPosition(position_);
+	pBarrie_->Initialize();
 }
 
 void Goal::Finalize()
 {
 	colliderManager_->DeleteCollider(&collider_);
+	pBarrie_->Finalize();
 }
 
 void Goal::Update()
@@ -39,25 +45,30 @@ void Goal::Update()
 	object_->SetScale(scale_);
 	object_->Update();
 
+	// バリアの更新
+	pBarrie_->Update();
+
 	// 当たり判定更新
 	aabb_.min = position_ - object_->GetScale();
 	aabb_.max = position_ + object_->GetScale();
 	aabb_.max.y += 1.0f; // 見た目よりも縦に大きく
 	collider_.SetPosition(position_);
 
-	// ゴール出現処理
-	if (isGoalVisible_)
+	// バリア破壊の状態が変わったときだけ伝える
+	if (isBarrierDestroyed_ && !wasBarrierDestroyed_)
 	{
-		scale_ = { 2.5f,3.0f,2.0f };
+		pBarrie_->SetBarrierDestroyed(true);
 	}
+	
+	// 状態を保存
+	wasBarrierDestroyed_ = isBarrierDestroyed_;
 }
 
 void Goal::Draw()
 {
-	if (isGoalVisible_)
-	{
-		object_->Draw();
-	}
+	object_->Draw();
+	
+	pBarrie_->Draw();
 }
 
 void Goal::ImGuiDraw()
@@ -66,7 +77,7 @@ void Goal::ImGuiDraw()
 
 void Goal::OnCollisionTrigger(const Collider* _other)
 {
-	if (_other->GetColliderID() == "Player" && isGoalVisible_)
+	if (_other->GetColliderID() == "Player" && isBarrierDestroyed_)
 	{
 		// プレイヤーがゴールに到達した場合クリア
 		isCleared_ = true;

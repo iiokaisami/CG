@@ -39,14 +39,11 @@ public:
 private:
 
 	CameraManager& cameraManager = CameraManager::GetInstance();
-	std::shared_ptr<Camera> camera1 = nullptr;
-	std::shared_ptr<Camera> camera2 = nullptr;
+	std::shared_ptr<Camera> camera = nullptr;
     
     uint32_t activeIndex = 0;
-	Vector3 camera1Rotate = { -0.9f,0.0f,0.0f };
-	Vector3 camera1Position = { 0.0f,-20.0f,0.0f };
-	Vector3 camera2Rotate = { 0.0f,0.0f,0.0f };
-	Vector3 camera2Position = { 0.0f,4.0f,0.0f };
+	Vector3 cameraRotate = { -0.9f,0.0f,0.0f };
+	Vector3 cameraPosition = { 0.0f,-20.0f,0.0f };
 
 	// 2Dスプライト
 	//std::vector<Sprite*>sprites = {};

@@ -162,7 +162,8 @@ void TimeBomb::OnSetCollisionTrigger(const Collider* _other)
 
 void TimeBomb::OnSetCollision(const Collider* _other)
 {
-	if (_other->GetColliderID() == "Wall")
+	if (_other->GetColliderID() == "Wall" or
+		_other->GetColliderID() == "Barrie")
 	{
 		collisionWallAABB_ = *_other->GetAABB();
 		isWallCollision_ = true;

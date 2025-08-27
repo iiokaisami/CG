@@ -1,19 +1,18 @@
 #pragma once
 
 #include "../../BaseObject/GameObject.h"
-#include "../../../gameEngine/Collider/ColliderManager.h"
-#include "Barrie.h"
+#include"../../../gameEngine/Collider/ColliderManager.h"
 
 #include <Object3d.h>
 #include <memory>
 #include <Framework.h>
 
-class Goal : public GameObject
+class Barrie : public GameObject
 {
 public:
 
-	Goal() = default;
-	~Goal() = default;
+	Barrie() = default;
+	~Barrie() = default;
 
 	// 初期化
 	void Initialize() override;
@@ -27,19 +26,11 @@ public:
 	// 描画
 	void Draw() override;
 
-	// ImGui
-	void ImGuiDraw();
 
 public: // セッター
 
-	// ゴール出現フラグをセット
+	// バリア破壊フラグをセット
 	void SetBarrierDestroyed(bool _isDestroyed) { isBarrierDestroyed_ = _isDestroyed; }
-	
-public: // ゲッター
-
-	// クリアフラグを取得
-	bool IsCleared() const { return isCleared_; }
-
 
 private: // 衝突判定
 
@@ -50,19 +41,24 @@ private:
 	// 3Dオブジェクト
 	std::unique_ptr<Object3d> object_ = nullptr;
 
-	// バリア
-	std::unique_ptr<Barrie> pBarrie_ = nullptr;
-
 	// 当たり判定関係
 	ColliderManager* colliderManager_ = nullptr;
 	Collider collider_;
 	AABB aabb_;
 
-	// クリアフラグ
-	bool isCleared_ = false;
-
 	// バリア破壊フラグ
 	bool isBarrierDestroyed_ = false;
-	bool wasBarrierDestroyed_ = false;
+
+	// 元のスケール
+	Vector3 defaultScale_ = { 1.5f, 1.5f, 1.5f };
+	// 目標スケール
+	Vector3 targetScale_ = { 1.5f, 1.5f, 1.5f };  
+	float scaleLerpSpeed_ = 0.2f;
+
+	// 爆発演出用カウント
+	uint32_t explodeCount_ = 0;      
+	// 爆発演出の継続フレーム数
+	const int explodeMaxCount_ = 10; 
+	bool isExploding_ = false;
 
 };

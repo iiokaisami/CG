@@ -3,7 +3,7 @@
 #include <DirectXCommon.h>
 #include <SrvManager.h>
 
-#include "gameEngine/3d/CameraManager.h"
+#include "../3d/CameraManager.h"
 
 void Skybox::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
