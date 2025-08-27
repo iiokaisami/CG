@@ -273,6 +273,8 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
         { "Sphere",   MeshBuilder::BuildSphere },
         { "Triangle", MeshBuilder::BuildTriangle },
         { "Petal",    MeshBuilder::BuildPetal},
+		{ "Cube",     MeshBuilder::BuildCube },
+		{ "Line",     MeshBuilder::BuildLine },
     };
 
     // モデル構築後に呼ぶ
@@ -462,7 +464,7 @@ void ParticleManager::DebugUI()
 {
     static std::string newGroupName = "MyGroup";
     static std::string selectedShape = "Ring";
-    static const char* shapeOptions[] = { "Ring", "Cylinder", "Cone", "Spiral", "Torus", "Helix", "Sphere", "Petal","Triangle"};
+    static const char* shapeOptions[] = { "Ring", "Cylinder", "Cone", "Spiral", "Torus", "Helix", "Sphere", "Petal","Triangle","Petal","Cube"};
     static int currentShape = 0;
 
     static int selectedGroupIndex = 0;

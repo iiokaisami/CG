@@ -33,6 +33,11 @@ public:
 	// ペラペラな三角形
 	static void BuildTriangle(Model* model);
 
+	// 小さい立方体
+	static void BuildCube(Model* model);
+
+	// 線形状
+	static void BuildLine(Model* model);
 
 };
 

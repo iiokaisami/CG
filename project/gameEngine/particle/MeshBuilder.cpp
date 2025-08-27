@@ -134,7 +134,8 @@ void MeshBuilder::BuildSpiral(Model* model)
     const float kHeight = 5.0f;           // 長方形の高さ（Z方向）
     const float kTwist = 3.0f * std::numbers::pi_v<float>; // ねじれ量（ラジアン）
 
-    for (uint32_t i = 0; i <= kDivisions; ++i) {
+    for (uint32_t i = 0; i <= kDivisions; ++i) 
+    {
         float t = float(i) / float(kDivisions);
         float z = t * kHeight;
         float angle = t * kTwist;
@@ -153,7 +154,8 @@ void MeshBuilder::BuildSpiral(Model* model)
     }
 
     // インデックス（三角形化）
-    for (uint32_t i = 0; i < kDivisions; ++i) {
+    for (uint32_t i = 0; i < kDivisions; ++i) 
+    {
         uint32_t base = i * 2;
         model->AddIndex(base + 0);
         model->AddIndex(base + 1);
@@ -177,15 +179,18 @@ void MeshBuilder::BuildTorus(Model* model)
     const float kOuterR = 1.5f;
     const float kInnerR = 0.4f;
 
-    for (uint32_t i = 0; i < kCircleDiv; ++i) {
+    for (uint32_t i = 0; i < kCircleDiv; ++i)
+    {
         float theta = 2.0f * std::numbers::pi_v<float> *float(i) / float(kCircleDiv);
         float nextTheta = 2.0f * std::numbers::pi_v<float> *float(i + 1) / float(kCircleDiv);
 
-        for (uint32_t j = 0; j < kTubeDiv; ++j) {
+        for (uint32_t j = 0; j < kTubeDiv; ++j) 
+        {
             float phi = 2.0f * std::numbers::pi_v<float> *float(j) / float(kTubeDiv);
             float nextPhi = 2.0f * std::numbers::pi_v<float> *float(j + 1) / float(kTubeDiv);
 
-            auto point = [&](float t, float p) -> Vector3 {
+            auto point = [&](float t, float p) -> Vector3 
+                {
                 float x = (kOuterR + kInnerR * std::cos(p)) * std::cos(t);
                 float y = kInnerR * std::sin(p);
                 float z = (kOuterR + kInnerR * std::cos(p)) * std::sin(t);
@@ -226,7 +231,8 @@ void MeshBuilder::BuildHelix(Model* model)
     const uint32_t kTurns = 5;
     const float kWidth = 0.05f;
 
-    for (uint32_t i = 0; i < kSegments; ++i) {
+    for (uint32_t i = 0; i < kSegments; ++i)
+    {
         float t = float(i) / float(kSegments);
         float angle = t * kTurns * 2.0f * std::numbers::pi_v<float>;
 
@@ -277,13 +283,15 @@ void MeshBuilder::BuildSphere(Model* model)
     const uint32_t kLongitude = 32;  // 経度分割数
     const float kRadius = 0.1f;
 
-    for (uint32_t lat = 0; lat <= kLatitude; ++lat) {
+    for (uint32_t lat = 0; lat <= kLatitude; ++lat)
+    {
         float theta = float(lat) * std::numbers::pi_v<float> / float(kLatitude);
         float y = std::cos(theta) * kRadius;
         float r = std::sin(theta) * kRadius;
         float v = float(lat) / float(kLatitude);
 
-        for (uint32_t lon = 0; lon <= kLongitude; ++lon) {
+        for (uint32_t lon = 0; lon <= kLongitude; ++lon)
+        {
             float phi = float(lon) * 2.0f * std::numbers::pi_v<float> / float(kLongitude);
             float x = std::cos(phi) * r;
             float z = std::sin(phi) * r;
@@ -294,8 +302,10 @@ void MeshBuilder::BuildSphere(Model* model)
         }
     }
 
-    for (uint32_t lat = 0; lat < kLatitude; ++lat) {
-        for (uint32_t lon = 0; lon < kLongitude; ++lon) {
+    for (uint32_t lat = 0; lat < kLatitude; ++lat)
+    {
+        for (uint32_t lon = 0; lon < kLongitude; ++lon) 
+        {
             uint32_t curr = lat * (kLongitude + 1) + lon;
             uint32_t next = (lat + 1) * (kLongitude + 1) + lon;
 
@@ -334,7 +344,8 @@ void MeshBuilder::BuildPetal(Model* model)
     model->AddVertex({ 0.0f, 0.0f, 0.0f, 1.0f }, { 0.5f, 1.0f }, { 0,0,1 });
 
     // 花びらの輪郭
-    for (uint32_t i = 0; i <= kDiv; ++i) {
+    for (uint32_t i = 0; i <= kDiv; ++i) 
+    {
         float t = float(i) / float(kDiv);
         float angle = (t - 0.5f) * angleSpan;
 
@@ -352,7 +363,8 @@ void MeshBuilder::BuildPetal(Model* model)
         float py = v * tipHeight;
 
         // 先端の割れ
-        if (t > 0.45f && t < 0.55f) {
+        if (t > 0.45f && t < 0.55f) 
+        {
             float split = tipSplit * std::sin((t - 0.5f) * std::numbers::pi_v<float> *2.0f);
             py += tipBulge * std::sin(std::numbers::pi_v<float> *t);
             px += split;
@@ -370,7 +382,8 @@ void MeshBuilder::BuildPetal(Model* model)
     }
 
     // 根元の扇形
-    for (uint32_t i = 0; i < kDiv; ++i) {
+    for (uint32_t i = 0; i < kDiv; ++i) 
+    {
         model->AddIndex(centerIdx);
         model->AddIndex(edgeIndices[i]);
         model->AddIndex(edgeIndices[i + 1]);
@@ -387,9 +400,11 @@ void MeshBuilder::BuildTriangle(Model* model)
     model->ClearVertexData();
 
     // XY平面上の正三角形
-    Vector3 v0 = { 0.0f, 0.5f, 0.0f };
-    Vector3 v1 = { -0.433f, -0.25f, 0.0f }; // -sqrt(3)/4, -1/4
-    Vector3 v2 = { 0.433f, -0.25f, 0.0f };  // sqrt(3)/4, -1/4
+    float scale = 1.0f; // 拡大率
+    Vector3 v0 = { 0.0f, 0.5f * scale, 0.0f };
+    Vector3 v1 = { -0.433f * scale, -0.25f * scale, 0.0f };
+    Vector3 v2 = { 0.433f * scale, -0.25f * scale, 0.0f };
+
 
     uint32_t base = model->GetVertexCount();
     model->AddVertex({ v0.x, v0.y, v0.z, 1.0f }, { 0.5f, 0.0f }, { 0,0,1 });
@@ -402,4 +417,94 @@ void MeshBuilder::BuildTriangle(Model* model)
 
     model->UpdateVertexBuffer();
     model->UpdateIndexBuffer();
+}
+
+void MeshBuilder::BuildCube(Model* model)
+{
+    model->ClearVertexData();
+
+    // 1辺0.2fの立方体（中心原点）
+    const float h = 1.0f;
+
+    // 頂点座標（x, y, z, w）
+    const Vector4 positions[8] =
+    {
+        { -h, -h, -h, 1.0f }, // 0: 左下手前
+        {  h, -h, -h, 1.0f }, // 1: 右下手前
+        {  h,  h, -h, 1.0f }, // 2: 右上手前
+        { -h,  h, -h, 1.0f }, // 3: 左上手前
+        { -h, -h,  h, 1.0f }, // 4: 左下奥
+        {  h, -h,  h, 1.0f }, // 5: 右下奥
+        {  h,  h,  h, 1.0f }, // 6: 右上奥
+        { -h,  h,  h, 1.0f }, // 7: 左上奥
+    };
+
+    // UV座標（各面共通）
+    const Vector2 uvs[4] =
+    {
+        {0.0f, 1.0f}, // 左下
+        {1.0f, 1.0f}, // 右下
+        {1.0f, 0.0f}, // 右上
+        {0.0f, 0.0f}, // 左上
+    };
+
+    // 各面の頂点インデックスと法線
+    struct Face
+    {
+        int idx[4];
+        Vector3 normal;
+    };
+    const Face faces[6] =
+    {
+        // 前面
+        { {0, 1, 2, 3}, { 0,  0, -1} },
+        // 背面
+        { {5, 4, 7, 6}, { 0,  0,  1} },
+        // 左面
+        { {4, 0, 3, 7}, {-1,  0,  0} },
+        // 右面
+        { {1, 5, 6, 2}, { 1,  0,  0} },
+        // 上面
+        { {3, 2, 6, 7}, { 0,  1,  0} },
+        // 下面
+        { {4, 5, 1, 0}, { 0, -1,  0} },
+    };
+
+    // 頂点追加
+    for (int f = 0; f < 6; ++f)
+    {
+        uint32_t base = model->GetVertexCount();
+        for (int v = 0; v < 4; ++v) 
+        {
+            model->AddVertex(positions[faces[f].idx[v]], uvs[v], faces[f].normal);
+        }
+        // インデックス（2三角形）
+        model->AddIndex(base + 0);
+        model->AddIndex(base + 1);
+        model->AddIndex(base + 2);
+        model->AddIndex(base + 2);
+        model->AddIndex(base + 3);
+        model->AddIndex(base + 0);
+    }
+
+    model->UpdateVertexBuffer();
+    model->UpdateIndexBuffer();
+
+}
+
+void MeshBuilder::BuildLine(Model* model)
+{
+	model->ClearVertexData();
+
+	// 原点からY軸方向に1.0fの線分
+	Vector3 start = { 0.0f, 0.0f, 0.0f };
+	Vector3 end = { 0.2f, 1.2f, 0.2f };
+	uint32_t base = model->GetVertexCount();
+	
+    model->AddVertex({ start.x, start.y, start.z, 1.0f }, { 0.0f, 0.0f }, { 0,0,1 });
+	model->AddVertex({ end.x,   end.y,   end.z,   1.0f }, { 1.0f, 1.0f }, { 0,0,1 });
+	model->AddIndex(base + 0);
+	model->AddIndex(base + 1);
+	model->UpdateVertexBuffer();
+	model->UpdateIndexBuffer();
 }

@@ -35,6 +35,10 @@ void MyGame::Initialize()
 
 	particleManager->CreateParticleGroup("explosionGroup", "resources/images/white.png", "plane.obj", "Ring", "Explosion");
 	particleManager->CreateParticleGroup("vignetteGroup", "resources/images/black.png", "plane.obj", "Ring", "Wiggle");
+	particleManager->CreateParticleGroup("work", "resources/images/white.png", "plane.obj", "Cube", "Dust");
+	particleManager->CreateParticleGroup("debuff", "resources/images/white.png", "plane.obj", "Line", "Debuff");
+	particleManager->CreateParticleGroup("spark", "resources/images/white.png", "plane.obj", "Triangle", "Spark");
+	particleManager->CreateParticleGroup("sparkBurst", "resources/images/white.png", "plane.obj", "Triangle", "SparkBurst");
 
 	// Cylinderを出すときに向き指定する
 	ParticleMotion::SetDirection("UP");
@@ -82,7 +86,7 @@ void MyGame::Update()
 
 	if (Input::GetInstance()->TriggerKey(DIK_1))
 	{
-		particleManager->Emit("slash", { 0.0f,2.0f,0.0f }, 3);
+		particleManager->Emit("sparkBurst", { 0.0f,2.0f,0.0f }, 3);
 	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_2))

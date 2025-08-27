@@ -46,6 +46,10 @@ void ParticleMotion::Initialize()
 	Register("Petal", MakePetal);
 	Register("Water", MakeWater);
 	Register("Bubble", MakeBubble);
+	Register("Dust", MakeDust);
+	Register("Debuff", MakeDebuff);
+	Register("Spark", MakeSpark);
+    Register("SparkBurst", MakeSparkBurst);
 }
 
 const std::unordered_map<std::string, ParticleMotion::MotionFunc>& ParticleMotion::GetAll()
@@ -240,11 +244,11 @@ Particle ParticleMotion::MakeLaser(std::mt19937& rand, const Vector3& translate)
     Particle p;
     p.transform.translate = translate;
     p.transform.scale = { 0.8f, 0.0f, 0.8f };
-    p.transform.rotate = { 0.0f, 0.0f, 0.0f };
+    p.transform.rotate = { -1.5f, 0.0f, 0.0f };
     p.velocity = { distWiggle(rand), 0.0f, distWiggle(rand) };
-	p.scaleVelocity = { -0.2f, 2.0f, -0.2f };
-    p.color = { 1.0f, 0.2f, 0.2f, 1.0f };
-    p.lifeTime = 4.0f;
+	p.scaleVelocity = { -0.5f, 10.0f, -0.5f };
+    p.color = { 1.0f, 0.1f, 0.1f, 1.0f };
+    p.lifeTime = 0.8f;
     p.currentTime = 0.0f;
     return p;
 }
@@ -317,6 +321,169 @@ Particle ParticleMotion::MakeBubble(std::mt19937& rand, const Vector3& translate
     p.currentTime = 0.0f;
     return p;
 }
+
+Particle ParticleMotion::MakeDust(std::mt19937& rand, const Vector3& translate)
+{
+    // XZ方向に広がる・Yは少し上向き
+    std::uniform_real_distribution<float> distXZ(-0.6f, 0.6f);
+    std::uniform_real_distribution<float> distVelY(0.08f, 0.15f);
+    std::uniform_real_distribution<float> distScale(0.08f, 0.15f);
+
+
+    Particle p;
+    // 足元から少し下げて発生
+    p.transform.translate = translate + Vector3(distXZ(rand), 0.0f, distXZ(rand));
+    p.transform.scale = { distScale(rand), distScale(rand), distScale(rand) };
+    p.transform.rotate = { 0.0f, 0.0f, 0.0f };
+    // XZ方向に広がり、Yは少し上向き
+    p.velocity = { distXZ(rand), distVelY(rand), distXZ(rand) };
+    // 徐々に大きくなる
+    p.scaleVelocity = { 0.01f, 0.01f, 0.01f };
+    // 灰色・やや透明
+    p.color = { 0.6f, 0.6f, 0.6f, 0.7f };
+    p.lifeTime = 0.8f;
+    p.currentTime = 0.0f;
+    return p;
+}
+
+Particle ParticleMotion::MakeDebuff(std::mt19937& rand, const Vector3& translate)
+{
+    std::uniform_real_distribution<float> distAngle(0.0f, 2.0f * std::numbers::pi_v<float>);
+    std::uniform_real_distribution<float> distRadius(0.0f, 1.3f);
+    float angle = distAngle(rand);
+    float radius = distRadius(rand);
+    float offsetX = std::cos(angle) * radius;
+    float offsetZ = std::sin(angle) * radius;
+
+    // Y座標はtranslate.yそのまま
+    Vector3 pos = translate + Vector3(offsetX, 1.0f, offsetZ);
+
+    Particle p;
+    p.transform.translate = pos;
+    p.transform.scale = { 1.0f, 1.0f, 1.0f };
+    p.transform.rotate = { 0.0f, 0.0f, 0.0f };
+    // 徐々に下がる（Y方向に負の速度）
+    std::uniform_real_distribution<float> distVelY(-0.03f, -0.01f);
+    p.velocity = { 0.0f, distVelY(rand), 0.0f };
+    // 徐々に大きくなる
+    p.scaleVelocity = { 0.01f, 0.01f, 0.01f };
+    // 色は灰色・やや透明
+    p.color = { 0.6f, 0.6f, 0.6f, 0.7f };
+    p.lifeTime = 1.0f;
+    p.currentTime = 0.0f;
+    return p;
+}
+
+Particle ParticleMotion::MakeSpark(std::mt19937& rand, const Vector3& translate)
+{
+    // 球面上のランダムな方向
+    std::uniform_real_distribution<float> distTheta(0.0f, 2.0f * std::numbers::pi_v<float>);
+    std::uniform_real_distribution<float> distPhi(0.0f, std::numbers::pi_v<float>);
+    float theta = distTheta(rand);
+    float phi = distPhi(rand);
+
+    // バリア半径（1.5f）
+    float radius = 1.5f;
+    float x = std::sin(phi) * std::cos(theta);
+    float y = std::cos(phi);
+    float z = std::sin(phi) * std::sin(theta);
+    Vector3 normal = { x, y, z };
+
+    // 発生位置：バリア表面
+    Vector3 pos = translate + normal * radius;
+
+    // 色：白・黄色・青電色からランダム
+    std::uniform_int_distribution<int> distColor(0, 1);
+    int colorType = distColor(rand);
+    Vector4 color;
+    if (colorType == 0)
+    {
+        color = { 1.0f, 1.0f, 0.2f, 1.0f };   // 黄色
+    }
+    else
+    {
+        color = { 0.6f, 1.0f, 0.2f, 1.0f };   // 黄緑
+    }
+
+    // 回転もランダム
+    std::uniform_real_distribution<float> distRot(0.0f, 2.0f * std::numbers::pi_v<float>);
+    float rotX = distRot(rand);
+    float rotY = distRot(rand);
+    float rotZ = distRot(rand);
+
+    Particle p;
+    p.transform.translate = pos;
+    p.transform.scale = { 0.8f, 0.8f, 0.8f };
+    p.transform.rotate = { rotX, rotY, rotZ };
+    // 外向きに速く飛ばす
+    std::uniform_real_distribution<float> distSpeed(0.15f, 0.35f);
+    p.velocity = normal * distSpeed(rand);
+    // 少しだけ拡大
+    p.scaleVelocity = { 0.02f, 0.02f, 0.02f };
+    // 色
+    p.color = color;
+    // 短命（0.15～0.25秒）
+    std::uniform_real_distribution<float> distLife(0.15f, 0.25f);
+    p.lifeTime = distLife(rand);
+    p.currentTime = 0.0f;
+    return p;
+}
+
+Particle ParticleMotion::MakeSparkBurst(std::mt19937& rand, const Vector3& translate)
+{
+    // 球面上のランダムな方向
+    std::uniform_real_distribution<float> distTheta(0.0f, 2.0f * std::numbers::pi_v<float>);
+    std::uniform_real_distribution<float> distPhi(0.0f, std::numbers::pi_v<float>);
+    float theta = distTheta(rand);
+    float phi = distPhi(rand);
+
+    // バリア半径（1.5f）
+    float radius = 1.5f;
+    float x = std::sin(phi) * std::cos(theta);
+    float y = std::cos(phi);
+    float z = std::sin(phi) * std::sin(theta);
+    Vector3 normal = { x, y, z };
+
+    // 発生位置：バリア表面
+    Vector3 pos = translate + normal * radius;
+
+    // スケール
+    std::uniform_real_distribution<float> distScale(0.35f, 0.85f);
+    float scale = distScale(rand);
+
+    // 色：黄色・黄緑・白からランダム
+    std::uniform_int_distribution<int> distColor(0, 2);
+    int colorType = distColor(rand);
+    Vector4 color;
+    if (colorType == 0)
+        color = { 1.0f, 1.0f, 0.2f, 1.0f };   // 黄色
+    else if (colorType == 1)
+        color = { 0.6f, 1.0f, 0.2f, 1.0f };   // 黄緑
+    else
+        color = { 1.0f, 1.0f, 1.0f, 1.0f };   // 白
+
+    // 回転もランダム
+    std::uniform_real_distribution<float> distRot(0.0f, 2.0f * std::numbers::pi_v<float>);
+    float rotX = distRot(rand);
+    float rotY = distRot(rand);
+    float rotZ = distRot(rand);
+
+    Particle p;
+    p.transform.translate = pos;
+    p.transform.scale = { scale, scale, scale };
+    p.transform.rotate = { rotX, rotY, rotZ };
+    // 速く飛び散る
+    std::uniform_real_distribution<float> distSpeed(0.5f, 0.8f);
+    p.velocity = normal * distSpeed(rand);
+    // 徐々に消える
+    p.scaleVelocity = { -0.01f, -0.01f, -0.01f };
+    p.color = color;
+    std::uniform_real_distribution<float> distLife(0.5f, 0.8f);
+    p.lifeTime = distLife(rand);
+    p.currentTime = 0.0f;
+    return p;
+}
+
 
 void ParticleMotion::SetDirection(const std::string& direction)
 {

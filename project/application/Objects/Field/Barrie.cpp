@@ -90,6 +90,9 @@ void Barrie::Update()
 			// 破壊フラグをリセット
 			isBarrierDestroyed_ = false;
 
+			// パーティクル
+			ParticleEmitter::Emit("sparkBurst", position_ , 5);
+
 		}
 
 		// 補間後処理
@@ -98,6 +101,12 @@ void Barrie::Update()
 			targetScale_ = defaultScale_;
 		}
 
+	}
+
+	if (scale_.x >= 0.1f)
+	{
+		// パーティクル
+		ParticleEmitter::Emit("spark", { position_.x,position_.y + 3.0f,position_.z }, 1);
 	}
 }
 

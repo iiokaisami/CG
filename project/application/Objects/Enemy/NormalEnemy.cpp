@@ -47,6 +47,9 @@ void NormalEnemy::Initialize()
 	// 出現時は無敵状態
     isInvincible_ = true;
 
+
+	// パーティクル
+	ParticleEmitter::Emit("laserGroup", position_, 2);
 }
 
 void NormalEnemy::Finalize()

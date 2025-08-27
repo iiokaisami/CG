@@ -183,6 +183,9 @@ void Player::Move()
 
 	// 位置更新
 	position_ += moveVelocity_;
+
+	// パーティクル
+	ParticleEmitter::Emit("work", position_, 1);
 }
 
 void Player::Attack()
@@ -374,6 +377,8 @@ void Player::HitVignetteTrap()
 		// vignetteの強さを設定
 		PostEffectManager::GetInstance()->SetActiveEffect("Vignette", isHitVignetteTrap_);
 		PostEffectManager::GetInstance()->GetPassAs<VignettePass>("Vignette")->SetStrength(vignetteStrength_);
+
+		ParticleEmitter::Emit("debuff", position_, 2);
 
 		environmentStrength_ = 1.0f;
 
