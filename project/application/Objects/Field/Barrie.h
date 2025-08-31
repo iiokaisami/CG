@@ -59,7 +59,7 @@ private:
 	// 爆発演出用カウント
 	uint32_t explodeCount_ = 0;      
 	// 爆発演出の継続フレーム数
-	const int explodeMaxCount_ = 10; 
+	const uint32_t explodeMaxCount_ = 10; 
 	bool isExploding_ = false;
 
 };

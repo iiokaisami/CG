@@ -59,7 +59,7 @@ void Barrie::Update()
 	// 破裂演出処理
 	if (isExploding_)
 	{
-		int phaseLength = explodeMaxCount_ / 2;
+		uint32_t phaseLength = explodeMaxCount_ / 2;
 		float scale = 1.0f;
 
 		if (explodeCount_ < phaseLength)
