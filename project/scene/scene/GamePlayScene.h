@@ -9,6 +9,7 @@
 #include "../../application/Objects/Field/Wall.h"
 #include "../../application/Objects/Field/Goal.h"
 #include "../../gameEngine/Collider/ColliderManager.h"
+#include "../../gameEngine/level_editor/LevelDataLoader.h"
 
 class GamePlayScene : public BaseScene
 {
@@ -70,6 +71,9 @@ private:
 	Vector3 cameraRestCenter_; 
 	// カメラが現在静止モードかどうか
 	bool cameraIsResting_ = true;
+
+	// レベルデータローダー
+	std::unique_ptr<LevelData> levelData_ = nullptr;
 
 };
 

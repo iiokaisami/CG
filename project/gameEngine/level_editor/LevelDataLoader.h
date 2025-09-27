@@ -29,6 +29,14 @@ public:
 		Vector3 rotation;
 	};
 
+	// 壁のデータ
+	struct WallData
+	{
+		Vector3 position;
+		Vector3 rotation;
+		Vector3 scale;
+	};
+
 	struct ObjectData 
 	{
 		std::string type;
@@ -46,6 +54,9 @@ public:
 
 	// 敵キャラ配列
 	std::vector<EnemySpawnData> enemies;
+
+	// 壁配列
+	std::vector<WallData> walls;
 
 };
 

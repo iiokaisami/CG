@@ -85,7 +85,6 @@
     <ClCompile Include="gameEngine\particle\ParticleManager.cpp" />
     <ClCompile Include="scene\scene\TitleScene.cpp" />
     <ClCompile Include="gameEngine\base\postEffect\VignettePass.cpp" />
-    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="application\Objects\Field\Wall.cpp" />
     <ClCompile Include="application\Objects\Enemy\TrapEnemy.cpp" />
     <ClCompile Include="application\Objects\Enemy\Bullet\TimeBomb.cpp" />
@@ -97,6 +96,9 @@
     <ClCompile Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorMove.cpp" />
     <ClCompile Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorSetTrap.cpp" />
     <ClCompile Include="application\Objects\Field\Goal.cpp" />
+    <ClCompile Include="application\Objects\Field\Barrie.cpp" />
+    <ClCompile Include="gameEngine\level_editor\LevelDataLoader.cpp" />
+    <ClCompile Include="gameEngine\skybox\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\BaseObject\GameObject.h" />
@@ -169,7 +171,6 @@
     <ClInclude Include="gameEngine\Collider\Shape.h" />
     <ClInclude Include="application\Objects\Field\Wall.h" />
     <ClInclude Include="gameEngine\base\postEffect\VignettePass.h" />
-    <ClInclude Include="Skybox.h" />
     <ClInclude Include="application\Objects\Enemy\TrapEnemy.h" />
     <ClInclude Include="application\Objects\Enemy\Bullet\TimeBomb.h" />
     <ClInclude Include="application\Objects\Enemy\Bullet\VignetteTrap.h" />
@@ -180,6 +181,9 @@
     <ClInclude Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorMove.h" />
     <ClInclude Include="application\Objects\Enemy\BehaviorState\TrapEnemyState\TrapEnemyBehaviorSetTrap.h" />
     <ClInclude Include="application\Objects\Field\Goal.h" />
+    <ClInclude Include="application\Objects\Field\Barrie.h" />
+    <ClInclude Include="gameEngine\level_editor\LevelDataLoader.h" />
+    <ClInclude Include="gameEngine\skybox\Skybox.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\BoxFilter.hlsli" />

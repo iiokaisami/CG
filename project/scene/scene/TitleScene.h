@@ -10,7 +10,7 @@
 #include "../base/BaseScene.h"
 #include "../../gameEngine/particle/ParticleEmitter.h"
 
-#include "../../level_editor/LevelDataLoader.h"
+#include "../../gameEngine/level_editor/LevelDataLoader.h"
 
 class TitleScene : public BaseScene
 {
