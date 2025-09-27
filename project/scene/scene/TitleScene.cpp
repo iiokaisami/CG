@@ -36,7 +36,7 @@ void TitleScene::Initialize()
 		{
 			object->Initialize("terrain.obj");
 		}
-		
+
 		position_ = { 0.0f,0.0f,5.0f };
 		scale_ = { 1.0f,1.0f,1.0f };
 		object->SetPosition(position_);
@@ -48,14 +48,14 @@ void TitleScene::Initialize()
 	for (uint32_t i = 0; i < 1; ++i)
 	{
 		Sprite* sprite = new Sprite();
-		
+
 		if (i == 0)
 		{
 			sprite->Initialize("title.png", { 0,0 }, { 1.0f,1.0f,1.0f,1.0f }, { 0,0 });
-		}		
-		
+		}
+
 		sprites.push_back(sprite);
-	 
+
 	}
 
 	// --- サウンド ---
@@ -71,9 +71,9 @@ void TitleScene::Initialize()
 	cubeSrvIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(cubeMapPath_);
 	cubeHandle_ = TextureManager::GetInstance()->GetSrvManager()->GetGPUDescriptorHandle(cubeSrvIndex_);
 	ParticleEmitter::Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1);
-}
+
 	// レベルデータの読み込み
-	levelData_  = LevelDataLoader::LoadLevelData("test");
+	levelData_ = LevelDataLoader::LoadLevelData("test");
 
 	if (levelData_)
 	{
@@ -142,7 +142,6 @@ void TitleScene::Initialize()
 			}
 		}
 	}
-
 }
 
 void TitleScene::Finalize()
