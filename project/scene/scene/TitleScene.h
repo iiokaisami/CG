@@ -10,6 +10,8 @@
 #include "../base/BaseScene.h"
 #include "../../gameEngine/particle/ParticleEmitter.h"
 
+#include "../../level_editor/LevelDataLoader.h"
+
 class TitleScene : public BaseScene
 {
 public:
@@ -44,7 +46,6 @@ private:
 	Vector3 position_ = { 0.0f,0.0f,-10.0f };
 	Vector3 scale_{};
 	Vector3 rotate_{ 0.0f,0.0f,0.0f };
-
 
 	// 透明チェック
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
@@ -89,5 +90,9 @@ private:
 
 	// パーティクル用変数
 	float time_ = 0.0f;
+
+
+	// レベルデータローダー
+	std::unique_ptr<LevelData> levelData_ = nullptr;
 
 };
