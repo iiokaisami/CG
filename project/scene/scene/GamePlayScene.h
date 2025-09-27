@@ -26,7 +26,7 @@ public:
 	// 描画
 	void Draw() override;
 
-	// カメラ処理
+	// カメラ更新
 	void CameraUpdate();
 
 	// カメラシェイク

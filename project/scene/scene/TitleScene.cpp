@@ -21,6 +21,10 @@ void TitleScene::Initialize()
 	camera_->SetRotate(cameraRotate_);
 
 	// --- 3Dオブジェクト ---
+	ModelManager::GetInstance()->LoadModel("sphere.obj");
+	ModelManager::GetInstance()->LoadModel("terrain.obj");
+	ModelManager::GetInstance()->LoadModel("cube.obj");
+
 	for (uint32_t i = 0; i < 2; ++i)
 	{
 		Object3d* object = new Object3d();
@@ -32,7 +36,7 @@ void TitleScene::Initialize()
 		{
 			object->Initialize("terrain.obj");
 		}
-		
+
 		position_ = { 0.0f,0.0f,5.0f };
 		scale_ = { 1.0f,1.0f,1.0f };
 		object->SetPosition(position_);
@@ -44,14 +48,14 @@ void TitleScene::Initialize()
 	for (uint32_t i = 0; i < 1; ++i)
 	{
 		Sprite* sprite = new Sprite();
-		
+
 		if (i == 0)
 		{
 			sprite->Initialize("title.png", { 0,0 }, { 1.0f,1.0f,1.0f,1.0f }, { 0,0 });
-		}		
-		
+		}
+
 		sprites.push_back(sprite);
-	 
+
 	}
 
 	// --- サウンド ---
@@ -67,6 +71,77 @@ void TitleScene::Initialize()
 	cubeSrvIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(cubeMapPath_);
 	cubeHandle_ = TextureManager::GetInstance()->GetSrvManager()->GetGPUDescriptorHandle(cubeSrvIndex_);
 	ParticleEmitter::Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1);
+
+	// レベルデータの読み込み
+	levelData_ = LevelDataLoader::LoadLevelData("test");
+
+	if (levelData_)
+	{
+		for (const auto& obj : levelData_->objects)
+		{
+			// モデル検索
+			ModelManager::GetInstance()->LoadModel(obj.fileName);
+			Model* model = ModelManager::GetInstance()->FindModel(obj.fileName);
+			if (model == nullptr)
+			{
+				assert(false && "Model not found");
+				continue;
+			}
+
+			// object3dの生成
+			Object3d* object = new Object3d();
+			object->Initialize(obj.fileName);
+			object->SetPosition(obj.translation);
+			object->SetRotate(obj.rotation);
+			object->SetScale(obj.scale);
+			object3ds.push_back(object);
+
+			// レベルエディタプレイヤー確認用
+			if (!levelData_->players.empty())
+			{
+				for (const auto& player : levelData_->players)
+				{
+					// モデル検索
+					ModelManager::GetInstance()->LoadModel("player/player.obj");
+					Model* model = ModelManager::GetInstance()->FindModel("player.obj");
+					if (model == nullptr)
+					{
+						assert(false && "Model not found");
+						continue;
+					}
+
+					Object3d* playerObj = new Object3d();
+					playerObj->Initialize("player.obj");
+					playerObj->SetPosition(player.position);
+					playerObj->SetRotate(player.rotation);
+					playerObj->SetScale({ 1.0f, 1.0f, 1.0f });
+					object3ds.push_back(playerObj);
+				}
+			}
+
+			// レベルエディタ敵キャラ確認用
+			if (!levelData_->enemies.empty())
+			{
+				for (const auto& enemy : levelData_->enemies)
+				{
+					// モデル検索
+					ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
+					Model* model = ModelManager::GetInstance()->FindModel("enemy.obj");
+					if (model == nullptr)
+					{
+						assert(false && "Model not found");
+						continue;
+					}
+					Object3d* enemyObj = new Object3d();
+					enemyObj->Initialize("enemy.obj");
+					enemyObj->SetPosition(enemy.position);
+					enemyObj->SetRotate(enemy.rotation);
+					enemyObj->SetScale({ 1.0f, 1.0f, 1.0f });
+					object3ds.push_back(enemyObj);
+				}
+			}
+		}
+	}
 }
 
 void TitleScene::Finalize()
@@ -139,7 +214,7 @@ void TitleScene::Update()
 
 	//ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
 
-	ImGui::SliderFloat3("cameraPosition", &cameraPosition_.x, -20.0f, 20.0f);
+	ImGui::SliderFloat3("cameraPosition", &cameraPosition_.x, -70.0f, 20.0f);
 	ImGui::SliderFloat3("cameraRotate", &cameraRotate_.x, -3.14f, 3.14f);
 
 	ImGui::SliderFloat3("sphere scale", &scale_.x, 0.0f, 10.0f);
@@ -224,18 +299,10 @@ void TitleScene::Draw()
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
-	//for (auto& obj : object3ds)
-	//{
-	//	obj->Draw();
-	//}
-
-	object3ds[0]->Draw();
-	
-	if (isTerrainDraw)
+	for (auto& obj : object3ds)
 	{
-		object3ds[1]->Draw();
+		obj->Draw();
 	}
-
 }
 
 void TitleScene::SetLightSettings()

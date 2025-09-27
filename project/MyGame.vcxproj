@@ -142,6 +142,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="gameEngine\base\postEffect\NoneEffectPass.cpp" />
     <ClCompile Include="gameEngine\particle\MeshBuilder.cpp" />
     <ClCompile Include="gameEngine\particle\ParticleMotion.cpp" />
+    <ClCompile Include="level_editor\LevelDataLoader.cpp" />
     <ClCompile Include="scene\base\SceneFactory.cpp" />
     <ClCompile Include="scene\base\SceneManager.cpp" />
     <ClCompile Include="scene\base\BaseScene.cpp" />
@@ -216,6 +217,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="gameEngine\base\postEffect\BasePostEffectPass.h" />
     <ClInclude Include="gameEngine\audio\Audio.h" />
     <ClInclude Include="gameEngine\math\Quaternion.h" />
+    <ClInclude Include="level_editor\LevelDataLoader.h" />
     <ClInclude Include="scene\scene\GameOverScene.h" />
     <ClInclude Include="gameEngine\base\RenderTexture.h" />
     <ClInclude Include="gameEngine\base\postEffect\IPostEffectPass.h" />
