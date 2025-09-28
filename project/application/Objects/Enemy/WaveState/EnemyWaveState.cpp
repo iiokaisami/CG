@@ -24,69 +24,93 @@ void EnemyWaveState::LoadCSV(const std::string& csvPath)
 
 void EnemyWaveState::UpdateEnemyPopCommands(EnemyManager* _pEnemyManager)
 {
-	//待機処理
-	if (isEnemyWaiting_) 
-	{
-		enemyWaitingTimer_--;
+	enemyWaitingTimer_++; // 毎フレームカウント
 
-		if (enemyWaitingTimer_ <= 0)
-		{
-			isEnemyWaiting_ = false;
-		}
-		return;
-	}
+    for (auto& enemy : levelData_->enemies)
+    {
+        if (!enemy.isSpawned && enemy.waveNum == currentWave_ && enemyWaitingTimer_ >= enemy.spawnDelay)
+        {
+            // 敵を出現
+            _pEnemyManager->NormalEnemyInit(enemy.position);
+            enemy.isSpawned = true;
 
-	std::string line;
+            // タイマーをリセットして、次の敵のdelayカウント開始
+            enemyWaitingTimer_ = 0;
 
-	while (getline(enemyPopCommands_, line)) 
-	{
-		std::istringstream line_stream(line);
-		std::string word;
+            // 1フレームに複数出さないように break
+            break;
+        }
+    }
+}
 
-		getline(line_stream, word, ','); // コマンド取得
+void EnemyWaveState::UpdateCSV(EnemyManager* _pEnemyManager)
+{
+    //待機処理
+    if (isEnemyWaiting_) 
+    {
+        if (debugCount_ > 0)
+        {
+            debugCount_--;
+        }
 
-		// コメント行をスキップ
-		if (word.find("//") == 0)
-		{
-			continue;
-		}
+    	if (debugCount_ == 0)
+    	{
+    		isEnemyWaiting_ = false;
+    	}
+    	return;
+    }
 
-		// POSITONコマンド（NormalEnemy or TrapEnemy）
-		if (word == "POSITION")
-		{
+    std::string line;
 
-			// 敵タイプ（例: "Normal", "Trap"）
-			std::string enemyType;
-			getline(line_stream, enemyType, ',');
+    while (getline(enemyPopCommands_, line)) 
+    {
+    	std::istringstream line_stream(line);
+    	std::string word;
 
-			// X, Y, Z 座標を取得
-			getline(line_stream, word, ',');
-			float x = static_cast<float>(atof(word.c_str()));
+    	getline(line_stream, word, ','); // コマンド取得
 
-			getline(line_stream, word, ',');
-			float y = static_cast<float>(atof(word.c_str()));
+    	// コメント行をスキップ
+    	if (word.find("//") == 0)
+    	{
+    		continue;
+    	}
 
-			getline(line_stream, word, ',');
-			float z = static_cast<float>(atof(word.c_str()));
+    	// POSITONコマンド（NormalEnemy or TrapEnemy）
+    	if (word == "POSITION")
+    	{
 
-			if (enemyType == "Normal")
-			{
-				_pEnemyManager->NormalEnemyInit({ x, y, z });
-			} 
-			else if (enemyType == "Trap") 
-			{
-				_pEnemyManager->TrapEnemyInit({ x, y, z });
-			}
-		}
-		// WAITコマンド
-		else if (word == "WAIT")
-		{
-			getline(line_stream, word, ',');
-			int waitTime = atoi(word.c_str());
+    		// 敵タイプ（例: "Normal", "Trap"）
+    		std::string enemyType;
+    		getline(line_stream, enemyType, ',');
 
-			isEnemyWaiting_ = true;
-			enemyWaitingTimer_ = waitTime;
-			break;
-		}
-	}
+    		// X, Y, Z 座標を取得
+    		getline(line_stream, word, ',');
+    		float x = static_cast<float>(atof(word.c_str()));
+
+    		getline(line_stream, word, ',');
+    		float y = static_cast<float>(atof(word.c_str()));
+
+    		getline(line_stream, word, ',');
+    		float z = static_cast<float>(atof(word.c_str()));
+
+    		if (enemyType == "Normal")
+    		{
+    			_pEnemyManager->NormalEnemyInit({ x, y, z });
+    		} 
+    		else if (enemyType == "Trap") 
+    		{
+    			_pEnemyManager->TrapEnemyInit({ x, y, z });
+    		}
+    	}
+    	// WAITコマンド
+    	else if (word == "WAIT")
+    	{
+    		getline(line_stream, word, ',');
+    		int waitTime = atoi(word.c_str());
+
+    		isEnemyWaiting_ = true;
+            debugCount_ = waitTime;
+    		break;
+    	}
+    }
 }

@@ -11,10 +11,18 @@ void EnemyWaveStage1::Initialize()
 {
 	// CSVファイルの読み込み
 	LoadCSV("resources/csv/EnemyPop1.csv");
+
+	// EnemyManagerから共有LevelDataを受け取る
+	SetLevelData(pEnemyManager_->GetLevelData());
+
+	currentWave_ = 1;
 }
 
 void EnemyWaveStage1::Update()
 {
+	// 確認用csv更新
+	UpdateCSV(pEnemyManager_);
+
 	// 敵の発生コマンドを更新
 	UpdateEnemyPopCommands(pEnemyManager_);
 

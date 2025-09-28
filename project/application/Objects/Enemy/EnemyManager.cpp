@@ -5,8 +5,14 @@
 
 void EnemyManager::Initialize()
 {
+	// エディタ読み込み
+	auto levelData = std::make_shared<LevelData>();
+	levelData = LevelDataLoader::LoadLevelData("normalEnemySpawn");
+	SetLevelData(levelData);
+
 	// ウェーブステート
 	ChangeState(std::make_unique<EnemyWaveStage1>(this));
+
 }
 
 void EnemyManager::Finalize()

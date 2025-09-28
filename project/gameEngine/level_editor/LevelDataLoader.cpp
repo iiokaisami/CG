@@ -105,7 +105,7 @@ void LevelDataLoader::LoadObjectRecursive(const nlohmann::json& objectJson, Leve
 	{
 		// enemies に要素を 1 つ追加
 		LevelData::EnemySpawnData enemyData;
-		// transform 情報が存在すれば位置と回転を取得
+		// transform 情報が存在すれば情報を取得
 		if (objectJson.contains("transform"))
 		{
 			const auto& t = objectJson["transform"];
@@ -122,6 +122,17 @@ void LevelDataLoader::LoadObjectRecursive(const nlohmann::json& objectJson, Leve
 				enemyData.rotation = { -1.0f * rot[0], 3.14f + rot[1], -1.0f * rot[2] };
 			}
 		}
+
+        // wave_id と delay は transform の外にあるので objectJson から読む
+        if (objectJson.contains("wave_id"))
+        {
+            enemyData.waveNum = objectJson["wave_id"].get<uint32_t>();
+        }
+        if (objectJson.contains("delay"))
+        {
+            enemyData.spawnDelay = objectJson["delay"].get<uint32_t>();
+        }
+
 		levelData->enemies.push_back(enemyData);
 	}
     // 壁発生ポイント

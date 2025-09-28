@@ -6,6 +6,7 @@
 #include "NormalEnemy.h"
 #include "TrapEnemy.h"
 #include "WaveState/EnemyWaveState.h"
+#include "../../../gameEngine/level_editor/LevelDataLoader.h"
 
 class EnemyManager
 {
@@ -47,6 +48,9 @@ public: // ゲッター
 	// 全てのウェーブの敵を倒したかどうかのフラグ
 	bool IsAllEnemyDefeated() const { return isAllEnemyDefeated_; }
 
+	// レベルエディタ
+	std::shared_ptr<LevelData> GetLevelData() const { return levelData_; }
+
 public: // セッター
 
 	// プレイヤーの位置をセット
@@ -54,6 +58,9 @@ public: // セッター
 
 	// 全てのウェーブの敵を倒したら立てるフラグセット
 	void SetAllEnemyDefeated(bool isDefeated) { isAllEnemyDefeated_ = isDefeated; }
+
+	// エディタセット
+	void SetLevelData(std::shared_ptr<LevelData> _levelData) { levelData_ = _levelData; }
 
 private:
 
@@ -79,6 +86,9 @@ private:
 
 	// 全てのウェーブの敵を倒したら立てるフラグ
 	bool isAllEnemyDefeated_ = false;
+
+	// レベルデータローダー
+	std::shared_ptr<LevelData> levelData_ = nullptr;
 
 };
 

@@ -27,6 +27,9 @@ public:
 	{
 		Vector3 position;
 		Vector3 rotation;
+		uint32_t waveNum = 1;
+		uint32_t spawnDelay = 0;
+		bool isSpawned = false; // 敵がスポーンしたかどうか
 	};
 
 	// 壁のデータ
