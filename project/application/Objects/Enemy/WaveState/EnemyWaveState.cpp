@@ -41,6 +41,22 @@ void EnemyWaveState::UpdateEnemyPopCommands(EnemyManager* _pEnemyManager)
             break;
         }
     }
+
+    for (auto& trapEnemy : levelData_->trapEnemies)
+    {
+        if (!trapEnemy.isSpawned && trapEnemy.waveNum == currentWave_ && enemyWaitingTimer_ >= trapEnemy.spawnDelay)
+        {
+            // 敵を出現
+            _pEnemyManager->TrapEnemyInit(trapEnemy.position);
+            trapEnemy.isSpawned = true;
+           
+            // タイマーをリセットして、次の敵のdelayカウント開始
+            enemyWaitingTimer_ = 0;
+            
+            // 1フレームに複数出さないように break
+            break;
+        }
+	}
 }
 
 void EnemyWaveState::UpdateCSV(EnemyManager* _pEnemyManager)

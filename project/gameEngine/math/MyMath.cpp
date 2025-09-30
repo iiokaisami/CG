@@ -410,3 +410,10 @@ Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t)
 
 	return man;
 }
+
+// 角度の線形補間
+float LerpAngle(float a, float b, float t)
+{
+	float diff = std::fmod(b - a + 3.14159265f, 2.0f * 3.14159265f) - 3.14159265f;
+	return a + diff * t;
+}

@@ -35,7 +35,7 @@ void MyGame::Initialize()
 
 	particleManager->CreateParticleGroup("explosionGroup", "resources/images/white.png", "plane.obj", "Ring", "Explosion");
 	particleManager->CreateParticleGroup("vignetteGroup", "resources/images/black.png", "plane.obj", "Ring", "Wiggle");
-	particleManager->CreateParticleGroup("walk", "resources/images/white.png", "plane.obj", "Cube", "Dust");
+	particleManager->CreateParticleGroup("work", "resources/images/white.png", "plane.obj", "Cube", "Dust");
 	particleManager->CreateParticleGroup("debuff", "resources/images/white.png", "plane.obj", "Line", "Debuff");
 	particleManager->CreateParticleGroup("spark", "resources/images/white.png", "plane.obj", "Triangle", "Spark");
 	particleManager->CreateParticleGroup("sparkBurst", "resources/images/white.png", "plane.obj", "Triangle", "SparkBurst");

@@ -174,18 +174,31 @@ void Player::Move()
 	}
 
 	// 移動ベクトルがゼロでない場合にプレイヤーの向きを補間で更新
-	if (moveVelocity_.x != 0.0f or moveVelocity_.z != 0.0f)
+	if (moveVelocity_.x != 0.0f || moveVelocity_.z != 0.0f)
 	{
-		float targetAngle = std::atan2(moveVelocity_.x, moveVelocity_.z);
-		const float rotationSpeed = 0.1f;
-		rotation_.y += (targetAngle - rotation_.y) * rotationSpeed;
+		// 正規化された方向ベクトル
+		Vector3 normalizedDir = moveVelocity_;
+		
+		normalizedDir = normalizedDir.Normalize();
+
+		// Y軸回りの目標回転角度を計算
+		float targetRotationY = std::atan2(normalizedDir.x, normalizedDir.z);
+
+		// 現在の回転を取得
+		Vector3 currentRotation = rotation_;
+
+		// Y軸の回転のみ、最短経路で補間
+		float easedRotationY = LerpAngle(currentRotation.y, targetRotationY, 0.2f);
+
+		// 回転を更新
+		rotation_ = { currentRotation.x, easedRotationY, currentRotation.z };
 	}
 
 	// 位置更新
 	position_ += moveVelocity_;
 
 	// パーティクル
-	ParticleEmitter::Emit("work", position_, 1);
+	ParticleEmitter::Emit("walk", position_, 1);
 }
 
 void Player::Attack()

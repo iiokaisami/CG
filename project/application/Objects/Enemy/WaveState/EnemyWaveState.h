@@ -37,7 +37,7 @@ protected:
 
 	
 	// 敵待機タイマー
-	int32_t enemyWaitingTimer_ = 9;
+	uint32_t enemyWaitingTimer_ = 9;
 
 	// レベルデータローダー
 	std::shared_ptr<LevelData> levelData_ = nullptr;

@@ -21,7 +21,7 @@ void EnemyWaveStage1::Initialize()
 void EnemyWaveStage1::Update()
 {
 	// 確認用csv更新
-	UpdateCSV(pEnemyManager_);
+	//UpdateCSV(pEnemyManager_);
 
 	// 敵の発生コマンドを更新
 	UpdateEnemyPopCommands(pEnemyManager_);

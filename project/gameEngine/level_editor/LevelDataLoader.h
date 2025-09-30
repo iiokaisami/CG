@@ -57,6 +57,7 @@ public:
 
 	// 敵キャラ配列
 	std::vector<EnemySpawnData> enemies;
+	std::vector<EnemySpawnData> trapEnemies;
 
 	// 壁配列
 	std::vector<WallData> walls;

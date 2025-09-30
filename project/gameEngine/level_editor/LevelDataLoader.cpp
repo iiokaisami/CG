@@ -135,6 +135,41 @@ void LevelDataLoader::LoadObjectRecursive(const nlohmann::json& objectJson, Leve
 
 		levelData->enemies.push_back(enemyData);
 	}
+    // 罠敵発生ポイント
+    else if (type == "Trap")
+    {
+        // enemies に要素を 1 つ追加
+        LevelData::EnemySpawnData enemyData;
+        // transform 情報が存在すれば情報を取得
+        if (objectJson.contains("transform"))
+        {
+            const auto& t = objectJson["transform"];
+            // position の数値を書き込む
+            if (t.contains("translation"))
+            {
+                const auto& pos = t["translation"];
+                enemyData.position = { -1.0f * pos[0], pos[2], -1.0f * pos[1] };
+            }
+            // rotation の数値を書き込む（Blenderとの座標系補正が必要なら -1.0f を掛ける）
+            if (t.contains("rotation"))
+            {
+                const auto& rot = t["rotation"];
+                enemyData.rotation = { -1.0f * rot[0], 3.14f + rot[1], -1.0f * rot[2] };
+            }
+        }
+
+        // wave_id と delay は transform の外にあるので objectJson から読む
+        if (objectJson.contains("wave_id"))
+        {
+            enemyData.waveNum = objectJson["wave_id"].get<uint32_t>();
+        }
+        if (objectJson.contains("delay"))
+        {
+            enemyData.spawnDelay = objectJson["delay"].get<uint32_t>();
+        }
+        
+        levelData->trapEnemies.push_back(enemyData);
+	}
     // 壁発生ポイント
     else if (type == "Wall")
     {

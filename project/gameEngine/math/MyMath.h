@@ -80,6 +80,7 @@ float Lerp(const float& v1, const float& v2, float t);
 // ベクトルの線形補間
 Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
 Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t);
+float LerpAngle(float a, float b, float t);
 
 namespace MyMath 
 {
