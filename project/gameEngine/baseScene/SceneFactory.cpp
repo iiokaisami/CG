@@ -1,9 +1,9 @@
 #include "SceneFactory.h"
 
-#include "../scene/TitleScene.h"
-#include "../scene/GamePlayScene.h"
-#include "../scene/GameOverScene.h"
-#include "../scene/ClearScene.h"
+#include "../../application/scene/TitleScene.h"
+#include "../../application/scene/GamePlayScene.h"
+#include "../../application/scene/GameOverScene.h"
+#include "../../application/scene/ClearScene.h"
 
 BaseScene* SceneFactory::CreateScene(const std::string& sceneName)
 {

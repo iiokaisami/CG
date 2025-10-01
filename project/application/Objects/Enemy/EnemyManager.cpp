@@ -1,7 +1,7 @@
 #include "EnemyManager.h"
 
-#include "WaveState/EnemyWaveStage1.h"
-#include "WaveState/EnemyWaveStage2.h"
+#include "waveState/EnemyWaveStage1.h"
+#include "waveState/EnemyWaveStage2.h"
 
 void EnemyManager::Initialize()
 {

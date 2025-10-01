@@ -2,13 +2,13 @@
 
 #include <Framework.h>
 
-#include "../base/BaseScene.h"
-#include "../../application/Objects/Player/Player.h"
-#include "../../application/Objects/Enemy/EnemyManager.h"
-#include "../../application/Objects/Field/Field.h"
-#include "../../application/Objects/Field/Wall.h"
-#include "../../application/Objects/Field/Goal.h"
-#include "../../gameEngine/Collider/ColliderManager.h"
+#include "../../gameEngine/baseScene/BaseScene.h"
+#include "../../application/objects/player/Player.h"
+#include "../../application/objects/enemy/EnemyManager.h"
+#include "../../application/objects/field/Field.h"
+#include "../../application/objects/field/Wall.h"
+#include "../../application/objects/field/Goal.h"
+#include "../../gameEngine/collider/ColliderManager.h"
 #include "../../gameEngine/level_editor/LevelDataLoader.h"
 
 class GamePlayScene : public BaseScene

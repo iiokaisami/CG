@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../BaseObject/GameObject.h"
-#include "Bullet/VignetteTrap.h"
-#include "Bullet/TimeBomb.h"
-#include "BehaviorState/TrapEnemyState/TrapEnemyBehaviorState.h"
-#include"../../../gameEngine/Collider/ColliderManager.h"
+#include "../../baseObject/GameObject.h"
+#include "bullet/VignetteTrap.h"
+#include "bullet/TimeBomb.h"
+#include "behaviorState/trapEnemyState/TrapEnemyBehaviorState.h"
+#include"../../../gameEngine/collider/ColliderManager.h"
 #include "../../../gameEngine/particle/ParticleEmitter.h"
 
 #include <Object3d.h>

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../BaseObject/GameObject.h"
-#include "Bullet/EnemyBullet.h"
-#include "BehaviorState/NormalEmemyState/EnemyBehaviorState.h"
-#include"../../../gameEngine/Collider/ColliderManager.h"
+#include "../../baseObject/GameObject.h"
+#include "bullet/EnemyBullet.h"
+#include "behaviorState/normalEmemyState/EnemyBehaviorState.h"
+#include"../../../gameEngine/collider/ColliderManager.h"
 #include "../../../gameEngine/particle/ParticleEmitter.h"
 
 #include <Object3d.h>

@@ -35,8 +35,8 @@
 
 #include "../particle/ParticleManager.h"
 
-#include "../../scene/base/SceneManager.h"
-#include "../../scene/base/SceneFactory.h"   
+#include "../baseScene/SceneManager.h"
+#include "../baseScene/SceneFactory.h"   
 
 #include "../skybox/Skybox.h"
 

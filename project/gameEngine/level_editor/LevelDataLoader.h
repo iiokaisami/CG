@@ -9,7 +9,7 @@
 #include <Model.h>
 #include <Object3d.h>
 
-#include "../externals/json/json.hpp"
+#include "../../externals/json/json.hpp"
 
 class LevelData 
 {

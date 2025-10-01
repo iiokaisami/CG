@@ -5,7 +5,7 @@
 
 #include "NormalEnemy.h"
 #include "TrapEnemy.h"
-#include "WaveState/EnemyWaveState.h"
+#include "waveState/EnemyWaveState.h"
 #include "../../../gameEngine/level_editor/LevelDataLoader.h"
 
 class EnemyManager

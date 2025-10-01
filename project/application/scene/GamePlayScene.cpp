@@ -41,16 +41,6 @@ void GamePlayScene::Initialize()
 	pField_ = std::make_unique<Field>();
 	pField_->Initialize();
 
-	// 壁の初期化
-	/*for (int i = 0; i < 1; ++i)
-	{
-		auto wall = std::make_unique<Wall>();
-		wall->Initialize();
-		wall->SetPosition({ static_cast<float>(i * 5.0f),0.0f,1.5f });
-		wall->SetRotation({ 0.0f, i * 0.7f, 0.0f });
-		pWalls_.push_back(std::move(wall));
-	}*/
-
 	// ゴールの初期化
 	pGoal_ = std::make_unique<Goal>();
 	pGoal_->Initialize();
@@ -72,7 +62,7 @@ void GamePlayScene::Initialize()
 	}*/
 
 	// レベルデータの読み込み
-	levelData_ = LevelDataLoader::LoadLevelData("wall");
+	levelData_ = LevelDataLoader::LoadLevelData("wallSetting");
 	if (levelData_)
 	{
 		// レベルデータに基づいて壁を配置

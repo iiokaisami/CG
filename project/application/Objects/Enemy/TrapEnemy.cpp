@@ -1,11 +1,11 @@
 #include "TrapEnemy.h"
 
 // BehaviorState
-#include "BehaviorState/TrapEnemyState/TrapEnemyBehaviorSpawn.h"
-#include "BehaviorState/TrapEnemyState/TrapEnemyBehaviorMove.h"
-#include "BehaviorState/TrapEnemyState/TrapEnemyBehaviorSetTrap.h"
-#include "BehaviorState/TrapEnemyState/TrapEnemyBehaviorHitReact.h"
-#include "BehaviorState/TrapEnemyState/TrapEnemyBehaviorDead.h"
+#include "behaviorState/trapEnemyState/TrapEnemyBehaviorSpawn.h"
+#include "behaviorState/trapEnemyState/TrapEnemyBehaviorMove.h"
+#include "behaviorState/trapEnemyState/TrapEnemyBehaviorSetTrap.h"
+#include "behaviorState/trapEnemyState/TrapEnemyBehaviorHitReact.h"
+#include "behaviorState/trapEnemyState/TrapEnemyBehaviorDead.h"
 
 
 void TrapEnemy::Initialize()

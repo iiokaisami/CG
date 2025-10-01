@@ -7,10 +7,8 @@
 #include <Object3d.h>
 #include <Vector3.h>
 
-#include "../base/BaseScene.h"
+#include "../../gameEngine/baseScene/BaseScene.h"
 #include "../../gameEngine/particle/ParticleEmitter.h"
-
-#include "../../gameEngine/level_editor/LevelDataLoader.h"
 
 class TitleScene : public BaseScene
 {
@@ -90,9 +88,5 @@ private:
 
 	// パーティクル用変数
 	float time_ = 0.0f;
-
-
-	// レベルデータローダー
-	std::unique_ptr<LevelData> levelData_ = nullptr;
 
 };

@@ -7,7 +7,7 @@
 #include <Object3d.h>
 #include <Vector3.h>
 
-#include "../base/BaseScene.h"
+#include "../../gameEngine/baseScene/BaseScene.h"
 
 class GameOverScene : public BaseScene
 {

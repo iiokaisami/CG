@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../BaseObject/GameObject.h"
-#include "Bullet/PlayerBullet.h"
-#include"../../../gameEngine/Collider/ColliderManager.h"
+#include "../../baseObject/GameObject.h"
+#include "bullet/PlayerBullet.h"
+#include"../../../gameEngine/collider/ColliderManager.h"
 
 #include "postEffect/PostEffectManager.h"
 
