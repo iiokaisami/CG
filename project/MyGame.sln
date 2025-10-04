@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyGame", "MyGame.vcxproj", "{B6DBB98E-3268-4B15-9BA5-8BE74293EC79}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3EAA19DA-7FAD-4515-AD0D-3E68F441D07C} = {3EAA19DA-7FAD-4515-AD0D-3E68F441D07C}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目", "ソリューション項目", "{244FA81E-1F00-4FAE-81D8-2D0ABBB4C939}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTex", "externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj", "{371B9FA9-4C90-4AC6-A123-ACED756D6C77}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgui", "imgui\imgui.vcxproj", "{3EAA19DA-7FAD-4515-AD0D-3E68F441D07C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgui", "externals\imgui\imgui.vcxproj", "{3EAA19DA-7FAD-4515-AD0D-3E68F441D07C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,8 +38,8 @@ Global
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.Release|x64.Build.0 = Release|x64
 		{3EAA19DA-7FAD-4515-AD0D-3E68F441D07C}.Debug|x64.ActiveCfg = Debug|x64
 		{3EAA19DA-7FAD-4515-AD0D-3E68F441D07C}.Debug|x64.Build.0 = Debug|x64
-		{3EAA19DA-7FAD-4515-AD0D-3E68F441D07C}.Profile|x64.ActiveCfg = Debug|x64
-		{3EAA19DA-7FAD-4515-AD0D-3E68F441D07C}.Profile|x64.Build.0 = Debug|x64
+		{3EAA19DA-7FAD-4515-AD0D-3E68F441D07C}.Profile|x64.ActiveCfg = Release|x64
+		{3EAA19DA-7FAD-4515-AD0D-3E68F441D07C}.Profile|x64.Build.0 = Release|x64
 		{3EAA19DA-7FAD-4515-AD0D-3E68F441D07C}.Release|x64.ActiveCfg = Release|x64
 		{3EAA19DA-7FAD-4515-AD0D-3E68F441D07C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
