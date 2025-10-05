@@ -282,7 +282,9 @@ void MyGame::LoadModel()
 	ModelManager::GetInstance()->LoadModel("wall/wall.obj");
 	ModelManager::GetInstance()->LoadModel("field/field.obj");
 	ModelManager::GetInstance()->LoadModel("goal/goal.obj");
+	ModelManager::GetInstance()->LoadModel("logo/logo.obj");
 	ModelManager::GetInstance()->LoadModel("barrie/barrie.obj");
+	
 }
 
 void MyGame::LoadSound()

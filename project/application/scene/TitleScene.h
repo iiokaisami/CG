@@ -42,6 +42,9 @@ public:
 	// ライトの設定
 	void SetLightSettings();
 
+	// ロゴ位置
+	void LogoPosition();
+
 private:
 
 	CameraManager& cameraManager = CameraManager::GetInstance();

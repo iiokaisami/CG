@@ -27,7 +27,7 @@ void TitleScene::Initialize()
 		Object3d* object = new Object3d();
 		if (i == 0)
 		{
-			object->Initialize("sphere.obj");
+			object->Initialize("logo.obj");
 		}
 		if (i == 1)
 		{
@@ -37,10 +37,16 @@ void TitleScene::Initialize()
 		position_ = { 0.0f,0.0f,5.0f };
 		scale_ = { 1.0f,1.0f,1.0f };
 		object->SetPosition(position_);
-		object->SetScale(scale_);
+		//object->SetScale(scale_);
 
 		object3ds.push_back(object);
 	}
+	// ロゴ
+	object3ds[0]->SetPosition({ -13.0f,10.0f,0.745f });
+	object3ds[0]->SetScale({ 3.5f,3.5f,3.5f });
+	object3ds[0]->SetRotate({ 0.0f,3.14f,0.0f });
+
+
 
 	// 衝突判定
 	colliderManager_ = ColliderManager::GetInstance();
@@ -61,18 +67,18 @@ void TitleScene::Initialize()
 
 
 	// --- 2Dスプライト ---
-	for (uint32_t i = 0; i < 1; ++i)
+	/*for (uint32_t i = 0; i < 1; ++i)
 	{
 		Sprite* sprite = new Sprite();
 
 		if (i == 0)
 		{
-			sprite->Initialize("title.png", { 0,0 }, { 1.0f,1.0f,1.0f,1.0f }, { 0,0 });
+			sprite->Initialize("titleUI.png", { 0,0 }, { 1.0f,1.0f,1.0f,1.0f }, { 0,0 });
 		}
 
 		sprites.push_back(sprite);
 
-	}
+	}*/
 
 	// --- サウンド ---
 	soundData_ = Audio::GetInstance()->LoadWav("fanfare.wav");
@@ -142,11 +148,8 @@ void TitleScene::Update()
 		obj->Update();
 	}
 
-	//rotate_.x += 0.01f;
-
-	object3ds[0]->SetRotate(rotate_);
-
-	object3ds[0]->SetScale(scale_);
+	// ロゴ
+	LogoPosition();
 
 	// 当たり判定チェック
 	colliderManager_->CheckAllCollision();
@@ -234,6 +237,7 @@ void TitleScene::Update()
 		ImGui::SliderFloat("Environment Strength", &environmentStrength_, 0.0f, 1.0f);
 	}
 
+
 	ImGui::End();
 
 	pPlayer_->ImGuiDraw();
@@ -278,6 +282,8 @@ void TitleScene::Draw()
 	//	obj->Draw();
 	//}
 
+	// ロゴ
+	object3ds[0]->Draw();
 	// プレイヤー
 	pPlayer_->Draw();
 	// エネミー
@@ -354,6 +360,11 @@ void TitleScene::CameraFollow()
 	camera_->SetPosition(nextPos);
 	camera_->SetRotate(nextRot);
 
+	// カメラの位置をobject3ds[0]に追従させる
+	if (!object3ds.empty() && object3ds[0])
+	{
+		object3ds[0]->SetPosition({nextPos.x - 15.0f,10.0f,nextPos.z + 20.75f});
+	}
 }
 
 void TitleScene::SetLightSettings()
@@ -391,4 +402,9 @@ void TitleScene::SetLightSettings()
 		obj->SetSpotLightCosFalloffStart(spotLightCosFalloffStart);
 
 	}
+}
+
+void TitleScene::LogoPosition()
+{
+	
 }

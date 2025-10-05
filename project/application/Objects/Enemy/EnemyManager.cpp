@@ -135,6 +135,8 @@ void EnemyManager::TitleEnemyInit()
 {
 	NormalEnemyInit({ 2.0f,0.5f,-5.0f });
 	TrapEnemyInit({ -2.0f,0.5f,2.0f });
+	NormalEnemyInit({ -5.0f,0.5f,-2.0f });
+	TrapEnemyInit({ 5.0f,0.5f,5.0f });
 }
 
 void EnemyManager::TitleEnemyUpdate()
