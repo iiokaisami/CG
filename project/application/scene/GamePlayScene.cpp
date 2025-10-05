@@ -199,7 +199,7 @@ void GamePlayScene::Update()
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("CLEAR");
 	}
-	if (Input::GetInstance()->TriggerKey(DIK_DOWN) or pPlayer_->IsDead())
+	if (Input::GetInstance()->TriggerKey(DIK_DOWN) or (pPlayer_->IsDead() && !pPlayer_->IsAutoControl()))
 	{
 		// シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMEOVER");

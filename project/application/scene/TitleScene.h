@@ -10,6 +10,10 @@
 #include "../../gameEngine/baseScene/BaseScene.h"
 #include "../../gameEngine/particle/ParticleEmitter.h"
 
+#include "../../application/objects/player/Player.h"
+#include "../../application/objects/enemy/EnemyManager.h"
+#include "../../application/objects/field/Field.h"
+
 class TitleScene : public BaseScene
 {
 public:
@@ -25,6 +29,15 @@ public:
 	
 	// 描画
 	void Draw() override;
+
+	// カメラ更新
+	void CameraUpdate();
+
+	// カメラシェイク
+	void CameraShake();
+
+	// カメラ追尾
+	void CameraFollow();
 
 	// ライトの設定
 	void SetLightSettings();
@@ -44,6 +57,20 @@ private:
 	Vector3 position_ = { 0.0f,0.0f,-10.0f };
 	Vector3 scale_{};
 	Vector3 rotate_{ 0.0f,0.0f,0.0f };
+
+
+	// 衝突判定
+	ColliderManager* colliderManager_ = nullptr;
+
+	// プレイヤー
+	std::unique_ptr<Player> pPlayer_ = nullptr;
+
+	// エネミー
+	std::unique_ptr<EnemyManager> pEnemyManager_ = nullptr;
+
+	// フィールド
+	std::unique_ptr<Field> pField_ = nullptr;
+
 
 	// 透明チェック
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };

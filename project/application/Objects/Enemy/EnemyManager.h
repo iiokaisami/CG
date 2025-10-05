@@ -30,6 +30,12 @@ public:
 	// ImGui
 	void ImGuiDraw();
 
+	// タイトルシーン用の敵初期化
+	void TitleEnemyInit();
+
+	// タイトルシーン用の敵更新
+	void TitleEnemyUpdate();
+
 	// 敵の初期化
 	void NormalEnemyInit(const Vector3& pos);
 	void TrapEnemyInit(const Vector3& pos);

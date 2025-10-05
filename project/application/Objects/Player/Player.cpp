@@ -30,8 +30,9 @@ void Player::Initialize()
 	colliderManager_->RegisterCollider(&collider_);
 
 	// ステータス
-	hp_ = 13;
+	hp_ = 8;
 	isDead_ = false;
+	isAutoControl_= false;
 
 	// パーティクル
 
@@ -72,16 +73,34 @@ void Player::Update()
 	object_->SetScale(scale_);
 	object_->Update();
 
-	// 回避処理
-	Evade();
-	// アクティブフラグに回避フラグを入れる
-	isActive_ = isEvading_;
-
-	// 回避中は移動・攻撃を無効化
-	if (!isEvading_) 
+	if (isAutoControl_)
 	{
-		Move();
-		Attack();
+		// オート移動
+		AutoMove();
+		// オート攻撃
+		AutoAttack();
+
+		if (isDead_)
+		{
+			isDead_ = false;
+
+			hp_ = 8;
+		}
+
+	}
+	else
+	{
+		// 回避処理
+		Evade();
+		// アクティブフラグに回避フラグを入れる
+		isActive_ = isEvading_;
+
+		// 回避中は移動・攻撃を無効化
+		if (!isEvading_)
+		{
+			Move();
+			Attack();
+		}
 	}
 
 	// 弾の削除
@@ -205,7 +224,7 @@ void Player::Attack()
 {
 	if (Input::GetInstance()->PushKey(DIK_SPACE))
 	{
-		/// プレイヤーの向きに合わせて弾の速度を変更
+		// プレイヤーの向きに合わせて弾の速度を変更
 		Vector3 bulletVelocity =
 		{
 			std::cosf(rotation_.x) * std::sinf(rotation_.y),     // x
@@ -279,6 +298,100 @@ void Player::Evade()
 	}
 }
 
+void Player::AutoMove()
+{
+	static int moveTimer = 0;
+	static Vector3 autoDir = { 0.0f, 0.0f, 1.0f }; // 初期は前進
+
+	// フィールド端の範囲
+	const float minX = -15.0f, maxX = 15.0f;
+	const float minZ = -15.0f, maxZ = 15.0f;
+
+	// 一定フレームごとに新しいランダム方向を決める
+	if (moveTimer <= 0)
+	{
+		// -1.0f～1.0fの範囲でランダムなx,zを生成
+		float randX = (float(rand()) / RAND_MAX) * 2.0f - 1.0f;
+		float randZ = (float(rand()) / RAND_MAX) * 2.0f - 1.0f;
+		Vector3 dir = { randX, 0.0f, randZ };
+		if (dir.Length() < 0.1f) dir.z = 1.0f; // ゼロベクトル対策
+		autoDir = dir.Normalize();
+		moveTimer = 60 + rand() % 90; // 1～2.5秒ごとに方向転換
+	}
+	moveTimer--;
+
+	// 壁際判定：端に近づいたら(今の進行方向が外に向かっていたら)強制的に内向きにリダイレクト
+	bool redirected = false;
+	Vector3 nextPos = position_ + Vector3{ autoDir.x * moveSpeed_.x, 0.0f, autoDir.z * moveSpeed_.z };
+
+	if (nextPos.x < minX or nextPos.x > maxX) 
+	{
+		autoDir.x = -autoDir.x;
+		redirected = true;
+	}
+	if (nextPos.z < minZ or nextPos.z > maxZ) 
+	{
+		autoDir.z = -autoDir.z;
+		redirected = true;
+	}
+
+	if (redirected) 
+	{
+		// 端で方向反転したら新たにmoveTimerを設定し、即座に再ランダム化しない
+		moveTimer = 60 + rand() % 90;
+	}
+
+	// 移動速度を計算
+	moveVelocity_ = { autoDir.x * moveSpeed_.x, 0.0f, autoDir.z * moveSpeed_.z };
+
+	// プレイヤーの向き補間
+	if (moveVelocity_.x != 0.0f or moveVelocity_.z != 0.0f)
+	{
+		Vector3 normalizedDir = moveVelocity_.Normalize();
+		float targetRotationY = std::atan2(normalizedDir.x, normalizedDir.z);
+		Vector3 currentRotation = rotation_;
+		float easedRotationY = LerpAngle(currentRotation.y, targetRotationY, 0.2f);
+		rotation_ = { currentRotation.x, easedRotationY, currentRotation.z };
+	}
+
+	// 位置更新
+	position_ += moveVelocity_;
+
+	// パーティクル
+	ParticleEmitter::Emit("walk", position_, 1);
+}
+
+void Player::AutoAttack()
+{
+	// 一定間隔で自動攻撃
+	static int attackCooldown = 0;
+	const int attackInterval = 50; // フレーム数
+	if (attackCooldown <= 0)
+	{
+		// プレイヤーの向きに合わせて弾の速度を変更
+		Vector3 bulletVelocity =
+		{
+			std::cosf(rotation_.x) * std::sinf(rotation_.y),     // x
+			std::sinf(-rotation_.x),                             // y
+			std::cosf(rotation_.x) * std::cosf(rotation_.y)      // z
+		};
+		// 弾を生成し、初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->SetPosition(position_);
+		newBullet->Initialize();
+		newBullet->SetVelocity(bulletVelocity);
+		newBullet->RunSetMask();
+		collider_.SetMask(colliderManager_->GetNewMask(collider_.GetColliderID(), "PlayerBullet"));
+		// 弾を登録する
+		pBullets_.push_back(newBullet);
+		attackCooldown = attackInterval;
+	}
+	else
+	{
+		attackCooldown--;
+	}
+}
+
 void Player::OnCollisionTrigger(const Collider* _other)
 {
 
@@ -292,7 +405,7 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		}
 		else
 		{
-			//isDead_ = true;
+			isDead_ = true;
 		}
 
 		isHitMoment_ = true;
@@ -309,8 +422,9 @@ void Player::OnCollisionTrigger(const Collider* _other)
 			}
 			else
 			{
-				//isDead_ = true;
+				isDead_ = true;
 			}
+
 			isHitMoment_ = true;
 		}
 	}
@@ -327,7 +441,7 @@ void Player::OnCollisionTrigger(const Collider* _other)
 
 void Player::OnCollision(const Collider* _other)
 {
-	if (_other->GetColliderID() == "Wall" or _other->GetColliderID() == "Barrie")
+	if (_other->GetColliderID() == "Wall" or _other->GetColliderID() == "Barrie" or _other->GetColliderID() == "NormalEnemy")
 	{
 		// 相手のAABBを取得
 		const AABB* otherAABB = _other->GetAABB();

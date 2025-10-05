@@ -9,22 +9,19 @@ void TitleScene::Initialize()
 	cameraManager.ClearAllCameras();
 
 	camera_ = std::make_shared<Camera>();
-	camera_->SetRotate({ 0.3f,0.0f,0.0f });
-	camera_->SetPosition({ 0.0f,4.0f,-20.0f });
-	Object3dCommon::GetInstance()->SetDefaultCamera(camera_);
+
+	cameraPosition_ = camera_->GetRotate();
+	cameraRotate_ = camera_->GetPosition();
+	cameraPosition_.y = 70.0f;
+	cameraPosition_.z = -15.0f;
+	cameraRotate_.x = 1.2f;
+
 	cameraManager.AddCamera(camera_);
 	cameraManager.SetActiveCamera(0);
+	Object3dCommon::GetInstance()->SetDefaultCamera(camera_);
 
-	cameraPosition_ = { 0.0f,4.0f,-10.0f };
-	cameraRotate_ = { 0.3f,0.0f,0.0f };
-	camera_->SetPosition(cameraPosition_);
-	camera_->SetRotate(cameraRotate_);
 
 	// --- 3Dオブジェクト ---
-	ModelManager::GetInstance()->LoadModel("sphere.obj");
-	ModelManager::GetInstance()->LoadModel("terrain.obj");
-	ModelManager::GetInstance()->LoadModel("cube.obj");
-
 	for (uint32_t i = 0; i < 2; ++i)
 	{
 		Object3d* object = new Object3d();
@@ -45,6 +42,25 @@ void TitleScene::Initialize()
 		object3ds.push_back(object);
 	}
 
+	// 衝突判定
+	colliderManager_ = ColliderManager::GetInstance();
+	colliderManager_->Initialize();
+
+	// プレイヤー
+	pPlayer_ = std::make_unique<Player>();
+	pPlayer_->Initialize();
+	pPlayer_->SetAutoControl(true); // デモモードに設定
+
+	// エネミー
+	pEnemyManager_ = std::make_unique<EnemyManager>();
+	pEnemyManager_->TitleEnemyInit();
+
+	// フィールド
+	pField_ = std::make_unique<Field>();
+	pField_->Initialize();
+
+
+	// --- 2Dスプライト ---
 	for (uint32_t i = 0; i < 1; ++i)
 	{
 		Sprite* sprite = new Sprite();
@@ -70,7 +86,9 @@ void TitleScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture(cubeMapPath_);
 	cubeSrvIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(cubeMapPath_);
 	cubeHandle_ = TextureManager::GetInstance()->GetSrvManager()->GetGPUDescriptorHandle(cubeSrvIndex_);
-	ParticleEmitter::Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1);
+	
+	// パーティクル
+	//ParticleEmitter::Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1);
 
 }
 
@@ -80,6 +98,10 @@ void TitleScene::Finalize()
 	{
 		delete obj;
 	}
+
+	pPlayer_->Finalize();
+	pEnemyManager_->Finalize();
+	pField_->Finalize();
 
 	for (Sprite* sprite : sprites)
 	{
@@ -101,10 +123,10 @@ void TitleScene::Update()
 
 	time_ += 1.0f / 60.0f;
 
-	
+	// パーティクル発生
 	if (std::fmod(time_, 1.0f) < 0.1f)
 	{
-		ParticleEmitter::Emit("magic2Group", { 0.0f,1.0f,0.0f }, 5);
+		//ParticleEmitter::Emit("magic2Group", { 0.0f,1.0f,0.0f }, 5);
 	}
 
 	camera_->Update();
@@ -125,6 +147,24 @@ void TitleScene::Update()
 	object3ds[0]->SetRotate(rotate_);
 
 	object3ds[0]->SetScale(scale_);
+
+	// 当たり判定チェック
+	colliderManager_->CheckAllCollision();
+
+	// プレイヤー
+	pPlayer_->Update();
+	// プレイヤーの位置をエネミーマネージャーにセット
+	pEnemyManager_->SetPlayerPosition(pPlayer_->GetPosition());
+
+	// カメラの更新(シェイク、追尾、引き)
+	CameraUpdate();
+	
+	// エネミー
+	pEnemyManager_->TitleEnemyUpdate();
+	
+	// フィールド
+	pField_->Update();
+
 
 	for (Sprite* sprite : sprites)
 	{
@@ -196,6 +236,10 @@ void TitleScene::Update()
 
 	ImGui::End();
 
+	pPlayer_->ImGuiDraw();
+	pEnemyManager_->ImGuiDraw();
+	pField_->ImGuiDraw();
+
 #endif // _DEBUG
 
 	
@@ -229,10 +273,87 @@ void TitleScene::Draw()
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
-	for (auto& obj : object3ds)
+	//for (auto& obj : object3ds)
+	//{
+	//	obj->Draw();
+	//}
+
+	// プレイヤー
+	pPlayer_->Draw();
+	// エネミー
+	pEnemyManager_->Draw();
+	// フィールド
+	pField_->Draw();
+
+}
+
+void TitleScene::CameraUpdate()
+{
+	// カメラのシェイク
+	CameraShake();
+
+	// カメラの追従
+	CameraFollow();
+}
+
+void TitleScene::CameraShake()
+{
+	// アクティブカメラの情報を取得
+	auto activeCamera = cameraManager.GetActiveCamera();
+	if (activeCamera)
 	{
-		obj->Draw();
+		auto viewMatrix = activeCamera->GetViewMatrix();
 	}
+
+	// プレイヤーがヒットした場合にカメラをシェイク
+	if (pPlayer_->IsHitMoment())
+	{
+		// アクティブなカメラを取得
+		if (activeCamera)
+		{
+			// カメラをシェイク (持続時間,振幅)
+			activeCamera->StartShake(0.3f, 0.5f);
+
+			// ヒットフラグをリセット
+			pPlayer_->SetHitMoment(false);
+		}
+	}
+
+	// シェイク
+	if (activeCamera)
+	{
+		activeCamera->UpdateShake(1.0f / 60.0f);
+	}
+}
+
+void TitleScene::CameraFollow()
+{
+	if (!camera_ or !pPlayer_)
+	{
+		return;
+	}
+
+	Vector3 playerPos = pPlayer_->GetPosition();
+
+	// 固定のオフセット（プレイヤーから見たカメラ位置）
+	Vector3 offset = { 0.0f, 80.0f, -20.0f };  // Y: 高さ、Z: 後方
+
+	// 追従先の位置・回転
+	Vector3 targetPos = playerPos + offset;
+	Vector3 targetRot = { 2.0f, 0.0f, 0.0f };  // やや下向き
+
+	// 滑らかに補間して追従
+	Vector3 currentPos = camera_->GetPosition();
+	Vector3 nextPos;
+	nextPos.Lerp(currentPos, targetPos, 0.8f);
+
+	Vector3 currentRot = camera_->GetRotate();
+	Vector3 nextRot;
+	nextRot.Lerp(currentRot, targetRot, 0.25f);
+
+	camera_->SetPosition(nextPos);
+	camera_->SetRotate(nextRot);
+
 }
 
 void TitleScene::SetLightSettings()

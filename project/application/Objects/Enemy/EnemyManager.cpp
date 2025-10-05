@@ -131,6 +131,76 @@ void EnemyManager::ImGuiDraw()
 	}
 }
 
+void EnemyManager::TitleEnemyInit()
+{
+	NormalEnemyInit({ 2.0f,0.5f,-5.0f });
+	TrapEnemyInit({ -2.0f,0.5f,2.0f });
+}
+
+void EnemyManager::TitleEnemyUpdate()
+{
+	// ノーマルエネミーの更新
+	for (auto& enemy : pNormalEnemies_)
+	{
+		enemy->SetPlayerPosition(playerPosition_);
+		enemy->Update();
+		toPlayerDistance_.push_back(enemy->GetToPlayer());
+	}
+
+	// isDeat がたったら削除
+	pNormalEnemies_.erase(
+		std::remove_if(
+			pNormalEnemies_.begin(),
+			pNormalEnemies_.end(),
+			[this](std::unique_ptr<NormalEnemy>& enemy)
+			{
+				if (enemy->IsDead())
+				{
+					enemy->Finalize();
+
+					// 敵のカウントを減らす
+					enemyCount_--;
+
+					return true;
+				}
+				return false;
+			}),
+		pNormalEnemies_.end()
+	);
+
+	// トラップエネミーの更新
+	for (auto& enemy : pTrapEnemies_)
+	{
+		enemy->SetPlayerPosition(playerPosition_);
+		enemy->Update();
+	}
+
+	// isDead がたったら削除
+	pTrapEnemies_.erase(
+		std::remove_if(
+			pTrapEnemies_.begin(),
+			pTrapEnemies_.end(),
+			[this](std::unique_ptr<TrapEnemy>& enemy)
+			{
+				if (enemy->IsDead())
+				{
+					enemy->Finalize();
+					// 敵のカウントを減らす
+					enemyCount_--;
+					return true;
+				}
+				return false;
+			}),
+		pTrapEnemies_.end()
+	);
+
+	// 敵が全て倒されたらもう一度出現
+	if (enemyCount_ == 0)
+	{
+		TitleEnemyInit();
+	}
+}
+
 void EnemyManager::NormalEnemyInit(const Vector3& pos)
 {
 	// ノーマルエネミー

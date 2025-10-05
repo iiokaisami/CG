@@ -43,7 +43,7 @@ private:
 	std::shared_ptr<Camera> camera = nullptr;
     
     uint32_t activeIndex = 0;
-	Vector3 cameraRotate = { -0.9f,0.0f,0.0f };
+	Vector3 cameraRotate = { -0.9f,0.0f,0.0f};
 	Vector3 cameraPosition = { 0.0f,-20.0f,0.0f };
 
 	// 2Dスプライト

@@ -44,6 +44,14 @@ public:
 	// 回避
 	void Evade();
 
+private:
+
+	// オート移動
+	void AutoMove();
+
+	// オート攻撃
+	void AutoAttack();
+
 
 private: // 衝突判定
 
@@ -62,9 +70,15 @@ public: // ゲッター
 
 	Vector3 GetVelocity() const { return moveVelocity_; }
 
+	// オートフラグのゲッター
+	bool IsAutoControl() const { return isAutoControl_; }
+
 public: // セッター
 
 	void SetHitMoment(bool _isHitMoment) { isHitMoment_ = _isHitMoment; }
+
+	// オートフラグのセッター
+	void SetAutoControl(bool _isAuto) { isAutoControl_ = _isAuto; }
 
 private:
 
@@ -87,6 +101,9 @@ private:
 	// 移動速度
 	Vector3 moveVelocity_{};
 	Vector3 moveSpeed_ = { 0.1f,0.0f,0.1f };
+
+	// タイトル用オートフラグ(trueだったら自動で動く 入力は受け付けない)
+	bool isAutoControl_ = false;
 
 	// ヒットした瞬間のフラグ
 	bool isHitMoment_ = false;
