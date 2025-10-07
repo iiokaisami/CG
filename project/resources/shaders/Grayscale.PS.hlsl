@@ -16,9 +16,11 @@ struct PixelShaderOutput
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
-    output.color = gTexture.Sample(gSampler, input.texcoord);
+    float4 texColor = gTexture.Sample(gSampler, input.texcoord);
 
-  
+    // まず元の色を出力
+    output.color = texColor;
+
     if (useGrayscale == 0)
     {
         float value = dot(output.color.rgb, float3(0.2125f, 0.7154f, 0.0721f));
@@ -40,7 +42,9 @@ PixelShaderOutput main(VertexShaderOutput input)
         cool.b = output.color.rgb.b * 1.5f;
         output.color.rgb = saturate(cool);
     }
-    
+
+    // アルファ値はそのまま
+    // output.color.a = texColor.a; // これは既にセット済み
 
     return output;
 }

@@ -67,18 +67,19 @@ void TitleScene::Initialize()
 
 
 	// --- 2Dスプライト ---
-	/*for (uint32_t i = 0; i < 1; ++i)
+	for (uint32_t i = 0; i < 1; ++i)
 	{
 		Sprite* sprite = new Sprite();
 
 		if (i == 0)
 		{
-			sprite->Initialize("titleUI.png", { 0,0 }, { 1.0f,1.0f,1.0f,1.0f }, { 0,0 });
+			
+			sprite->Initialize("titleUI.png", { 0,0 }, color_, { 0,0 });
 		}
 
 		sprites.push_back(sprite);
 
-	}*/
+	}
 
 	// --- サウンド ---
 	soundData_ = Audio::GetInstance()->LoadWav("fanfare.wav");
@@ -185,7 +186,7 @@ void TitleScene::Update()
 
 	ImGui::Begin("TitleScene");
 
-	//ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
+	ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
 
 	ImGui::SliderFloat3("cameraPosition", &cameraPosition_.x, -70.0f, 20.0f);
 	ImGui::SliderFloat3("cameraRotate", &cameraRotate_.x, -3.14f, 3.14f);

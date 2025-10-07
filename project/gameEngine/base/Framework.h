@@ -42,7 +42,7 @@
 
 #ifdef _DEBUG
 
-#include "../../ImGuiManager.h"
+#include "../imgui/ImGuiManager.h"
 #include "../../externals/imgui/imgui.h"
 
 #endif // _DEBUG

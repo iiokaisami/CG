@@ -154,7 +154,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="gameEngine\io\Input.cpp" />
     <ClCompile Include="gameEngine\utillity\Logger.cpp" />
     <ClCompile Include="application\scene\GamePlayScene.cpp" />
-    <ClCompile Include="ImGuiManager.cpp" />
+    <ClCompile Include="gameEngine\imgui\ImGuiManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="gameEngine\3d\Model.cpp" />
     <ClCompile Include="gameEngine\3d\ModelCommon.cpp" />
@@ -254,7 +254,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="gameEngine\math\Vector3.h" />
     <ClInclude Include="gameEngine\base\SrvManager.h" />
     <ClInclude Include="application\scene\GamePlayScene.h" />
-    <ClInclude Include="ImGuiManager.h" />
+    <ClInclude Include="gameEngine\imgui\ImGuiManager.h" />
     <ClInclude Include="gameEngine\baseScene\MyGame.h" />
     <ClInclude Include="gameEngine\particle\Particle.h" />
     <ClInclude Include="gameEngine\particle\ParticleEmitter.h" />
