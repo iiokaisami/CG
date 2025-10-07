@@ -17,13 +17,14 @@ struct PixelShaderOutput
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
-    output.color = gTexture.Sample(gSampler, input.texcoord);
+    float4 texColor = gTexture.Sample(gSampler, input.texcoord);
 
     float2 coord = input.texcoord - 0.5f;
     float dist = length(coord);
     float vignette = 1.0f - saturate(dist * intensity * 2.0f);
 
-    output.color.rgb *= vignette;
-
+    output.color.rgb = texColor.rgb * vignette;
+    output.color.a = texColor.a;
+    
     return output;
 }

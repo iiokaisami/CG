@@ -51,7 +51,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="gameEngine\2d\Sprite.cpp">
       <Filter>gameEngine\2d</Filter>
@@ -287,9 +286,11 @@
     <ClCompile Include="application\Objects\Player\Bullet\PlayerBullet.cpp">
       <Filter>application\objects\player\bullet</Filter>
     </ClCompile>
+    <ClCompile Include="gameEngine\imgui\ImGuiManager.cpp">
+      <Filter>gameEngine\imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="gameEngine\2d\Sprite.h">
       <Filter>gameEngine\2d</Filter>
     </ClInclude>
@@ -536,6 +537,9 @@
     <ClInclude Include="gameEngine\Collider\Shape.h">
       <Filter>gameEngine\collider</Filter>
     </ClInclude>
+    <ClInclude Include="gameEngine\imgui\ImGuiManager.h">
+      <Filter>gameEngine\imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\BoxFilter.hlsli">
@@ -668,6 +672,9 @@
     </Filter>
     <Filter Include="externals\json">
       <UniqueIdentifier>{e46bb7c5-077a-4a82-81b7-8e11aa54c844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameEngine\imgui">
+      <UniqueIdentifier>{cc07e6dd-95f2-4529-8dae-7dd151c7e501}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
