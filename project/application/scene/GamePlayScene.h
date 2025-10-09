@@ -47,7 +47,8 @@ private:
 	Vector3 cameraPosition = { 0.0f,-20.0f,0.0f };
 
 	// 2Dスプライト
-	//std::vector<Sprite*>sprites = {};
+	std::vector<Sprite*>sprites = {};
+	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 
 	// 衝突判定
 	ColliderManager* colliderManager_ = nullptr;

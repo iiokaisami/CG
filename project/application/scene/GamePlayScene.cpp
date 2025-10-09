@@ -50,16 +50,17 @@ void GamePlayScene::Initialize()
 	cameraRestCenter_ = pPlayer_->GetPosition() + Vector3{ 0.0f,70.0f,-20.0f };
 
 	// スプライト
-	/*for (uint32_t i = 0; i < 1; ++i)
+	for (uint32_t i = 0; i < 1; ++i)
 	{
 		Sprite* sprite = new Sprite();
 
-		if (i == 0) {
-			sprite->Initialize("monsterBall.png", { 0,0 }, color_, { 0,0 });
+		if (i == 0)
+		{
+			sprite->Initialize("titleUI.png", { 0,0 }, color_, { 0,0 });
 		}
 
 		sprites.push_back(sprite);
-	}*/
+	}
 
 	// レベルデータの読み込み
 	levelData_ = LevelDataLoader::LoadLevelData("wallSetting");
@@ -89,11 +90,11 @@ void GamePlayScene::Finalize()
 	}
 	pGoal_->Finalize();
 
-	/*for (Sprite* sprite : sprites)
+	for (Sprite* sprite : sprites)
 	{
 		delete sprite;
 	}
-	sprites.clear();*/
+	sprites.clear();
 
 	// カメラ解放
 	cameraManager.RemoveCamera(0);
@@ -103,13 +104,13 @@ void GamePlayScene::Finalize()
 void GamePlayScene::Update()
 {
 
-	/*for (Sprite* sprite : sprites)
+	for (Sprite* sprite : sprites)
 	{
 		sprite->Update();
 
 		sprite->SetColor(color_);
 
-	}*/
+	}
 
 	// カメラマネージャーのテスト
 	cameraManager.UpdateAll();
@@ -164,17 +165,21 @@ void GamePlayScene::Update()
 
 #ifdef _DEBUG
 
-	// 透明度の更新
-
 	ImGui::Begin("PlayScene");
+
+
+	// 透明度の更新
+	ImGui::SliderFloat4("SpriteColor", &color_.x, 0.0f, 1.0f);
 
 	// camera
 	Vector3 cam1Pos = camera->GetPosition();
 	Vector3 cam1Rot = camera->GetRotate();
-	if (ImGui::SliderFloat3("cameraPosition", &cam1Pos.x, -100.0f, 100.0f)) {
+	if (ImGui::SliderFloat3("cameraPosition", &cam1Pos.x, -100.0f, 100.0f))
+	{
 		camera->SetPosition(cam1Pos);
 	}
-	if (ImGui::SliderFloat3("cameraRotate", &cam1Rot.x, -10.0f, 10.0f)) {
+	if (ImGui::SliderFloat3("cameraRotate", &cam1Rot.x, -10.0f, 10.0f)) 
+	{
 		camera->SetRotate(cam1Rot);
 	}
 
@@ -228,10 +233,10 @@ void GamePlayScene::Draw()
 	// 描画前処理(Sprite)
 	SpriteCommon::GetInstance()->CommonDrawSetting();
 
-	//for (Sprite* sprite : sprites)
-	//{
-	//	sprite->Draw();
-	//}
+	for (Sprite* sprite : sprites)
+	{
+		sprite->Draw();
+	}
 }
 
 void GamePlayScene::CameraUpdate()

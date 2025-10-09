@@ -114,6 +114,7 @@ void TitleScene::Finalize()
 	{
 		delete sprite;
 	}
+	sprites.clear();
 
 	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData_);
 	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData2_);
@@ -267,14 +268,6 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	// 描画前処理(Sprite)
-	SpriteCommon::GetInstance()->CommonDrawSetting();
-
-	for (Sprite* sprite : sprites)
-	{
-		sprite->Draw();
-	}
-
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
@@ -291,6 +284,14 @@ void TitleScene::Draw()
 	pEnemyManager_->Draw();
 	// フィールド
 	pField_->Draw();
+
+	// 描画前処理(Sprite)
+	SpriteCommon::GetInstance()->CommonDrawSetting();
+
+	for (Sprite* sprite : sprites)
+	{
+		sprite->Draw();
+	}
 
 }
 
