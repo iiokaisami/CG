@@ -9,6 +9,8 @@
 
 #include "../../gameEngine/baseScene/BaseScene.h"
 
+#include "../../FadeTransition.h"
+
 class ClearScene : public BaseScene
 {
 public:
@@ -34,6 +36,10 @@ private:
 
 	// 2Dスプライト
 	std::vector<Sprite*>sprites = {};
+
+	// 遷移
+	std::unique_ptr<FadeTransition> transition_ = nullptr;
+	bool isTransitioning_ = false;
 
 	// 3Dオブジェクト
 	std::vector<Object3d*> object3ds = {};

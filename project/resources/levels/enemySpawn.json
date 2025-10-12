@@ -67,7 +67,7 @@
             },
             "file_name": "EnemySpawn",
             "wave_id": 1,
-            "delay": 0
+            "delay": 120
         },
         {
             "type": "Trap",

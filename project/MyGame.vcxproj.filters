@@ -289,6 +289,9 @@
     <ClCompile Include="gameEngine\imgui\ImGuiManager.cpp">
       <Filter>gameEngine\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="TransitionManager.cpp" />
+    <ClCompile Include="BaseTransition.cpp" />
+    <ClCompile Include="FadeTransition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameEngine\2d\Sprite.h">
@@ -540,6 +543,9 @@
     <ClInclude Include="gameEngine\imgui\ImGuiManager.h">
       <Filter>gameEngine\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="TransitionManager.h" />
+    <ClInclude Include="BaseTransition.h" />
+    <ClInclude Include="FadeTransition.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\BoxFilter.hlsli">

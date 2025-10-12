@@ -96,7 +96,11 @@ void TitleScene::Initialize()
 	
 	// パーティクル
 	//ParticleEmitter::Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1);
-
+	
+	// シーン開始時にフェードイン
+	transition_ = std::make_unique<FadeTransition>(FadeTransition::Mode::FadeInOnly);
+	isTransitioning_ = true;
+	transition_->Start(nullptr);
 }
 
 void TitleScene::Finalize()
@@ -124,6 +128,21 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
+	// トランジション更新
+	if (isTransitioning_ && transition_) 
+	{
+		transition_->Update();
+
+		// トランジション終了判定
+		if (transition_->IsFinished())
+		{
+			transition_.reset();
+			isTransitioning_ = false;
+		}
+	
+	}
+
+
 	if (time_ > 9.0f)
 	{
 		time_ = 0.0f;
@@ -252,8 +271,14 @@ void TitleScene::Update()
 
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
 	{
-		// シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+		// トランジション開始
+		transition_ = std::make_unique<FadeTransition>();
+		isTransitioning_ = true;
+		transition_->Start([]
+			{
+				// フェードアウト後にシーン切り替え
+				SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+			});
 	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_Q))
@@ -293,6 +318,12 @@ void TitleScene::Draw()
 		sprite->Draw();
 	}
 
+	// トランジション描画
+	if (isTransitioning_ && transition_) 
+	{
+		transition_->Draw();
+	}
+	
 }
 
 void TitleScene::CameraUpdate()

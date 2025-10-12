@@ -58,6 +58,11 @@ void ClearScene::Initialize()
 		sprite->SetSize(size);*/
 	}
 
+	// シーン開始時にフェードイン
+	transition_ = std::make_unique<FadeTransition>(FadeTransition::Mode::FadeInOnly);
+	isTransitioning_ = true;
+	transition_->Start(nullptr);
+
 }
 
 void ClearScene::Finalize()
@@ -77,6 +82,21 @@ void ClearScene::Finalize()
 
 void ClearScene::Update()
 {
+	// トランジション更新
+	if (isTransitioning_ && transition_)
+	{
+		transition_->Update();
+
+		// トランジション終了判定
+		if (transition_->IsFinished())
+		{
+			transition_.reset();
+			isTransitioning_ = false;
+		}
+
+	}
+
+
 	camera_->Update();
 	camera_->SetPosition(cameraPosition_);
 	camera_->SetRotate(cameraRotate_);
@@ -119,8 +139,14 @@ void ClearScene::Update()
 
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
 	{
-		// シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		// トランジション開始
+		transition_ = std::make_unique<FadeTransition>();
+		isTransitioning_ = true;
+		transition_->Start([]
+			{
+				// シーン切り替え
+				SceneManager::GetInstance()->ChangeScene("TITLE");
+			});
 	}
 }
 
@@ -140,6 +166,13 @@ void ClearScene::Draw()
 	for (Sprite* sprite : sprites)
 	{
 		sprite->Draw();
+	}
+
+
+	// トランジション描画
+	if (isTransitioning_ && transition_)
+	{
+		transition_->Draw();
 	}
 
 }
