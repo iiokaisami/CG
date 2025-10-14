@@ -11,7 +11,7 @@
 #include "../../gameEngine/collider/ColliderManager.h"
 #include "../../gameEngine/level_editor/LevelDataLoader.h"
 
-#include "../../FadeTransition.h"
+#include "../../BlockRiseTransition.h"
 
 class GamePlayScene : public BaseScene
 {
@@ -53,7 +53,7 @@ private:
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 
 	// 遷移
-	std::unique_ptr<FadeTransition> transition_ = nullptr;
+	std::unique_ptr<BlockRiseTransition> transition_ = nullptr;
 	bool isTransitioning_ = false;
 
 	// 衝突判定

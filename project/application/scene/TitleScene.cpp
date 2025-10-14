@@ -98,7 +98,7 @@ void TitleScene::Initialize()
 	//ParticleEmitter::Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1);
 	
 	// シーン開始時にフェードイン
-	transition_ = std::make_unique<FadeTransition>(FadeTransition::Mode::FadeInOnly);
+	transition_ = std::make_unique<BlockRiseTransition>(BlockRiseTransition::Mode::DropOnly);
 	isTransitioning_ = true;
 	transition_->Start(nullptr);
 }
@@ -272,7 +272,7 @@ void TitleScene::Update()
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
 	{
 		// トランジション開始
-		transition_ = std::make_unique<FadeTransition>();
+		transition_ = std::make_unique<BlockRiseTransition>();
 		isTransitioning_ = true;
 		transition_->Start([]
 			{

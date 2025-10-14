@@ -114,6 +114,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="application\Objects\Enemy\Bullet\EnemyBullet.cpp" />
     <ClCompile Include="application\Objects\Field\Barrie.cpp" />
     <ClCompile Include="BaseTransition.cpp" />
+    <ClCompile Include="BlockRiseTransition.cpp" />
     <ClCompile Include="FadeTransition.cpp" />
     <ClCompile Include="gameEngine\Collider\Collider.cpp" />
     <ClCompile Include="gameEngine\Collider\ColliderManager.cpp" />
@@ -200,6 +201,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\Objects\Enemy\Bullet\EnemyBullet.h" />
     <ClInclude Include="application\Objects\Field\Barrie.h" />
     <ClInclude Include="BaseTransition.h" />
+    <ClInclude Include="BlockRiseTransition.h" />
     <ClInclude Include="FadeTransition.h" />
     <ClInclude Include="gameEngine\Collider\Collider.h" />
     <ClInclude Include="gameEngine\Collider\ColliderManager.h" />

@@ -292,6 +292,7 @@
     <ClCompile Include="TransitionManager.cpp" />
     <ClCompile Include="BaseTransition.cpp" />
     <ClCompile Include="FadeTransition.cpp" />
+    <ClCompile Include="BlockRiseTransition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameEngine\2d\Sprite.h">
@@ -546,6 +547,7 @@
     <ClInclude Include="TransitionManager.h" />
     <ClInclude Include="BaseTransition.h" />
     <ClInclude Include="FadeTransition.h" />
+    <ClInclude Include="BlockRiseTransition.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\BoxFilter.hlsli">

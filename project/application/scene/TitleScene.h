@@ -14,7 +14,7 @@
 #include "../../application/objects/enemy/EnemyManager.h"
 #include "../../application/objects/field/Field.h"
 
-#include "../../FadeTransition.h"
+#include "../../BlockRiseTransition.h"
 
 class TitleScene : public BaseScene
 {
@@ -56,7 +56,7 @@ private:
 	Vector3 cameraRotate_{};
 
 	// 遷移
-	std::unique_ptr<FadeTransition> transition_ = nullptr;
+	std::unique_ptr<BlockRiseTransition> transition_ = nullptr;
 	bool isTransitioning_ = false;
 
 	// 2Dスプライト

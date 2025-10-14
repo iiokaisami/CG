@@ -79,7 +79,7 @@ void GamePlayScene::Initialize()
 	}
 
 	// シーン開始時にフェードイン
-	transition_ = std::make_unique<FadeTransition>(FadeTransition::Mode::FadeInOnly);
+	transition_ = std::make_unique<BlockRiseTransition>(BlockRiseTransition::Mode::DropOnly);
 	isTransitioning_ = true;
 	transition_->Start(nullptr);
 
@@ -221,7 +221,7 @@ void GamePlayScene::Update()
 	if (Input::GetInstance()->TriggerKey(DIK_UP) or pGoal_->IsCleared())
 	{
 		// トランジション開始
-		transition_ = std::make_unique<FadeTransition>();
+		transition_ = std::make_unique<BlockRiseTransition>();
 		isTransitioning_ = true;
 		transition_->Start([]
 			{
@@ -232,7 +232,7 @@ void GamePlayScene::Update()
 	if (Input::GetInstance()->TriggerKey(DIK_DOWN) or (pPlayer_->IsDead() && !pPlayer_->IsAutoControl()))
 	{
 		// トランジション開始
-		transition_ = std::make_unique<FadeTransition>();
+		transition_ = std::make_unique<BlockRiseTransition>();
 		isTransitioning_ = true;
 		transition_->Start([]
 			{

@@ -9,7 +9,7 @@
 
 #include "../../gameEngine/baseScene/BaseScene.h"
 
-#include "../../FadeTransition.h"
+#include "../../BlockRiseTransition.h"
 
 class GameOverScene : public BaseScene
 {
@@ -38,7 +38,7 @@ private:
 	std::vector<Sprite*>sprites = {};
 
 	// 遷移
-	std::unique_ptr<FadeTransition> transition_ = nullptr;
+	std::unique_ptr<BlockRiseTransition> transition_ = nullptr;
 	bool isTransitioning_ = false;
 
 	// 3Dオブジェクト
