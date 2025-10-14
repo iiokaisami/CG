@@ -4,7 +4,7 @@
 #include <cmath>
 
 #ifndef M_PI
-#define M_PI 3.14159265358979323846
+#define M_PI 3.14159265358979f
 #endif
 
 BlockRiseTransition::BlockRiseTransition(Mode mode) : mode_(mode)
@@ -18,7 +18,7 @@ BlockRiseTransition::BlockRiseTransition(Mode mode) : mode_(mode)
         {
             Block block;
             block.sprite = std::make_unique<Sprite>();
-            block.sprite->Initialize("uvChecker.png", { 0,0 }, { 1.0f,1.0f,1.0f,1.0f }, { 0,0 });
+            block.sprite->Initialize("transition_.png", { 0,0 }, { 1.0f,1.0f,1.0f,1.0f }, { 0,0 });
 
             block.position = { x * blockSize_, y * blockSize_ };
             block.scale = { 0.0f, 0.0f };
@@ -27,12 +27,12 @@ BlockRiseTransition::BlockRiseTransition(Mode mode) : mode_(mode)
             block.fallSpeed = 0.0f;
 			block.verticalOffset = 0.0f;
 			block.riseTimer = 0.0f;
-            block.dropDelay = ((float)x * 1.5f + std::sin((float)y * 0.7f) * 2.0f + 1.0f) * blockInterval_;
-            block.riseDuration = 0.15f + 0.07f * ((float)(rand() % 100) / 100.0f);
+            block.dropDelay = 0.0f;//((float)x * 1.5f + std::sin((float)y * 0.7f) * 2.0f + 1.0f) * blockInterval_; <-↓こっちは波状にバラバラ落ちていく
+            block.riseDuration = 0.12f + (rand() % 100) * 0.005f; //0.15f + 0.07f * ((float)(rand() % 100) / 100.0f);
             block.isRising = false;
             block.isDropped = false;
 
-            block.sprite->SetSize({ blockSize_, blockSize_ });
+            block.sprite->SetSize({ blockSize_, blockSize_ + 2.0f });
             block.sprite->SetColor({ 1,1,1,1 });
 
             blocks_.push_back(std::move(block));
@@ -59,7 +59,7 @@ void BlockRiseTransition::Start(std::function<void()> onSceneChange)
 
                 // 位置を正しいグリッドに補正
                 b.position = { x * blockSize_, y * blockSize_ };
-                b.scale = { blockSize_, blockSize_ };
+                b.scale = { blockSize_, blockSize_ + 2.0f };
                 b.active = true;
                 b.fallSpeed = 0.0f;
             
@@ -163,7 +163,7 @@ void BlockRiseTransition::Update()
                     b.isRising = false;
                     b.isDropped = true;
                     b.verticalOffset = 0.0f;
-                    b.fallSpeed = 1.0f + static_cast<float>(rand() % 100) / 100.0f;
+                    b.fallSpeed = 1.2f + (rand() % 100) * 0.012f; // ->こっちは波状にバラバラ落ちていく 1.0f + static_cast<float>(rand() % 100) / 100.0f;
                 }
             }
             // 落下

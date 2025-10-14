@@ -67,7 +67,7 @@
             },
             "file_name": "EnemySpawn",
             "wave_id": 1,
-            "delay": 120
+            "delay": 240
         },
         {
             "type": "Trap",
@@ -91,7 +91,7 @@
             },
             "file_name": "TrapEnemySpawn",
             "wave_id": 1,
-            "delay": 25
+            "delay": 250
         },
         {
             "type": "EnemySpawn",
@@ -115,7 +115,7 @@
             },
             "file_name": "EnemySpawn",
             "wave_id": 1,
-            "delay": 25
+            "delay": 250
         },
         {
             "type": "Trap",
@@ -283,7 +283,7 @@
             },
             "file_name": "TrapEnemySpawn",
             "wave_id": 1,
-            "delay": 25
+            "delay": 250
         }
     ]
 }
