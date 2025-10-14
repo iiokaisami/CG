@@ -14,6 +14,8 @@
 #include "../../application/objects/enemy/EnemyManager.h"
 #include "../../application/objects/field/Field.h"
 
+#include "../../BlockRiseTransition.h"
+
 class TitleScene : public BaseScene
 {
 public:
@@ -47,10 +49,15 @@ public:
 
 private:
 
+	// カメラ
 	CameraManager& cameraManager = CameraManager::GetInstance();
 	std::shared_ptr<Camera> camera_ = std::make_shared<Camera>();
 	Vector3 cameraPosition_{};
 	Vector3 cameraRotate_{};
+
+	// 遷移
+	std::unique_ptr<BlockRiseTransition> transition_ = nullptr;
+	bool isTransitioning_ = false;
 
 	// 2Dスプライト
 	std::vector<Sprite*>sprites = {};

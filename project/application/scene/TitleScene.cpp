@@ -96,7 +96,11 @@ void TitleScene::Initialize()
 	
 	// パーティクル
 	//ParticleEmitter::Emit("magic1Group", { 0.0f,1.0f,-1.0f }, 1);
-
+	
+	// シーン開始時にフェードイン
+	transition_ = std::make_unique<BlockRiseTransition>(BlockRiseTransition::Mode::DropOnly);
+	isTransitioning_ = true;
+	transition_->Start(nullptr);
 }
 
 void TitleScene::Finalize()
@@ -114,6 +118,7 @@ void TitleScene::Finalize()
 	{
 		delete sprite;
 	}
+	sprites.clear();
 
 	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData_);
 	Audio::GetInstance()->SoundUnload(Audio::GetInstance()->GetXAudio2(), &soundData2_);
@@ -123,6 +128,21 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
+	// トランジション更新
+	if (isTransitioning_ && transition_) 
+	{
+		transition_->Update();
+
+		// トランジション終了判定
+		if (transition_->IsFinished())
+		{
+			transition_.reset();
+			isTransitioning_ = false;
+		}
+	
+	}
+
+
 	if (time_ > 9.0f)
 	{
 		time_ = 0.0f;
@@ -251,8 +271,14 @@ void TitleScene::Update()
 
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
 	{
-		// シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+		// トランジション開始
+		transition_ = std::make_unique<BlockRiseTransition>();
+		isTransitioning_ = true;
+		transition_->Start([]
+			{
+				// フェードアウト後にシーン切り替え
+				SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+			});
 	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_Q))
@@ -267,14 +293,6 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	// 描画前処理(Sprite)
-	SpriteCommon::GetInstance()->CommonDrawSetting();
-
-	for (Sprite* sprite : sprites)
-	{
-		sprite->Draw();
-	}
-
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
@@ -292,6 +310,20 @@ void TitleScene::Draw()
 	// フィールド
 	pField_->Draw();
 
+	// 描画前処理(Sprite)
+	SpriteCommon::GetInstance()->CommonDrawSetting();
+
+	for (Sprite* sprite : sprites)
+	{
+		sprite->Draw();
+	}
+
+	// トランジション描画
+	if (isTransitioning_ && transition_) 
+	{
+		transition_->Draw();
+	}
+	
 }
 
 void TitleScene::CameraUpdate()

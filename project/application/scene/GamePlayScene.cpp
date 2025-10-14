@@ -50,16 +50,17 @@ void GamePlayScene::Initialize()
 	cameraRestCenter_ = pPlayer_->GetPosition() + Vector3{ 0.0f,70.0f,-20.0f };
 
 	// スプライト
-	/*for (uint32_t i = 0; i < 1; ++i)
-	{
-		Sprite* sprite = new Sprite();
+	//for (uint32_t i = 0; i < 1; ++i)
+	//{
+	//	Sprite* sprite = new Sprite();
 
-		if (i == 0) {
-			sprite->Initialize("monsterBall.png", { 0,0 }, color_, { 0,0 });
-		}
+	//	if (i == 0)
+	//	{
+	//		//sprite->Initialize("titleUI.png", { 0,0 }, color_, { 0,0 });
+	//	}
 
-		sprites.push_back(sprite);
-	}*/
+	//	sprites.push_back(sprite);
+	//}
 
 	// レベルデータの読み込み
 	levelData_ = LevelDataLoader::LoadLevelData("wallSetting");
@@ -76,6 +77,12 @@ void GamePlayScene::Initialize()
 			pWalls_.push_back(std::move(wall));
 		}
 	}
+
+	// シーン開始時にフェードイン
+	transition_ = std::make_unique<BlockRiseTransition>(BlockRiseTransition::Mode::DropOnly);
+	isTransitioning_ = true;
+	transition_->Start(nullptr);
+
 }
 
 void GamePlayScene::Finalize()
@@ -89,11 +96,11 @@ void GamePlayScene::Finalize()
 	}
 	pGoal_->Finalize();
 
-	/*for (Sprite* sprite : sprites)
+	for (Sprite* sprite : sprites)
 	{
 		delete sprite;
 	}
-	sprites.clear();*/
+	sprites.clear();
 
 	// カメラ解放
 	cameraManager.RemoveCamera(0);
@@ -102,14 +109,27 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
+	// トランジション更新
+	if (isTransitioning_ && transition_)
+	{
+		transition_->Update();
 
-	/*for (Sprite* sprite : sprites)
+		// トランジション終了判定
+		if (transition_->IsFinished())
+		{
+			transition_.reset();
+			isTransitioning_ = false;
+		}
+
+	}
+
+	for (Sprite* sprite : sprites)
 	{
 		sprite->Update();
 
 		sprite->SetColor(color_);
 
-	}*/
+	}
 
 	// カメラマネージャーのテスト
 	cameraManager.UpdateAll();
@@ -164,17 +184,21 @@ void GamePlayScene::Update()
 
 #ifdef _DEBUG
 
-	// 透明度の更新
-
 	ImGui::Begin("PlayScene");
+
+
+	// 透明度の更新
+	ImGui::SliderFloat4("SpriteColor", &color_.x, 0.0f, 1.0f);
 
 	// camera
 	Vector3 cam1Pos = camera->GetPosition();
 	Vector3 cam1Rot = camera->GetRotate();
-	if (ImGui::SliderFloat3("cameraPosition", &cam1Pos.x, -100.0f, 100.0f)) {
+	if (ImGui::SliderFloat3("cameraPosition", &cam1Pos.x, -100.0f, 100.0f))
+	{
 		camera->SetPosition(cam1Pos);
 	}
-	if (ImGui::SliderFloat3("cameraRotate", &cam1Rot.x, -10.0f, 10.0f)) {
+	if (ImGui::SliderFloat3("cameraRotate", &cam1Rot.x, -10.0f, 10.0f)) 
+	{
 		camera->SetRotate(cam1Rot);
 	}
 
@@ -196,13 +220,25 @@ void GamePlayScene::Update()
 
 	if (Input::GetInstance()->TriggerKey(DIK_UP) or pGoal_->IsCleared())
 	{
-		// シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("CLEAR");
+		// トランジション開始
+		transition_ = std::make_unique<BlockRiseTransition>();
+		isTransitioning_ = true;
+		transition_->Start([]
+			{
+			// シーン切り替え
+			SceneManager::GetInstance()->ChangeScene("CLEAR");
+			});
 	}
 	if (Input::GetInstance()->TriggerKey(DIK_DOWN) or (pPlayer_->IsDead() && !pPlayer_->IsAutoControl()))
 	{
-		// シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+		// トランジション開始
+		transition_ = std::make_unique<BlockRiseTransition>();
+		isTransitioning_ = true;
+		transition_->Start([]
+			{
+				// シーン切り替え
+				SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+			});
 	}
 }
 
@@ -228,10 +264,17 @@ void GamePlayScene::Draw()
 	// 描画前処理(Sprite)
 	SpriteCommon::GetInstance()->CommonDrawSetting();
 
-	//for (Sprite* sprite : sprites)
-	//{
-	//	sprite->Draw();
-	//}
+	for (Sprite* sprite : sprites)
+	{
+		sprite->Draw();
+	}
+
+
+	// トランジション描画
+	if (isTransitioning_ && transition_)
+	{
+		transition_->Draw();
+	}
 }
 
 void GamePlayScene::CameraUpdate()

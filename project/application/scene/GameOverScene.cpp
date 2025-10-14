@@ -53,6 +53,10 @@ void GameOverScene::Initialize()
 		sprites.push_back(sprite);
 	}
 
+	// シーン開始時にフェードイン
+	transition_ = std::make_unique<BlockRiseTransition>(BlockRiseTransition::Mode::DropOnly);
+	isTransitioning_ = true;
+	transition_->Start(nullptr);
 }
 
 void GameOverScene::Finalize()
@@ -72,6 +76,20 @@ void GameOverScene::Finalize()
 
 void GameOverScene::Update()
 {
+	// トランジション更新
+	if (isTransitioning_ && transition_)
+	{
+		transition_->Update();
+
+		// トランジション終了判定
+		if (transition_->IsFinished())
+		{
+			transition_.reset();
+			isTransitioning_ = false;
+		}
+
+	}
+
 	camera_->Update();
 	camera_->SetPosition(cameraPosition_);
 	camera_->SetRotate(cameraRotate_);
@@ -114,21 +132,19 @@ void GameOverScene::Update()
 
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
 	{
-		// シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		// トランジション開始
+		transition_ = std::make_unique<BlockRiseTransition>();
+		isTransitioning_ = true;
+		transition_->Start([]
+			{
+				// シーン切り替え
+				SceneManager::GetInstance()->ChangeScene("TITLE");
+			});
 	}
 }
 
 void GameOverScene::Draw()
 {
-	// 描画前処理(Sprite)
-	SpriteCommon::GetInstance()->CommonDrawSetting();
-
-	for (Sprite* sprite : sprites)
-	{
-		sprite->Draw();
-	}
-
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
@@ -137,4 +153,18 @@ void GameOverScene::Draw()
 		obj->Draw();
 	}
 
+	// 描画前処理(Sprite)
+	SpriteCommon::GetInstance()->CommonDrawSetting();
+
+	for (Sprite* sprite : sprites)
+	{
+		sprite->Draw();
+	}
+
+
+	// トランジション描画
+	if (isTransitioning_ && transition_)
+	{
+		transition_->Draw();
+	}
 }
