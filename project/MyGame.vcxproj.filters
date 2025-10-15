@@ -289,10 +289,18 @@
     <ClCompile Include="gameEngine\imgui\ImGuiManager.cpp">
       <Filter>gameEngine\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="TransitionManager.cpp" />
-    <ClCompile Include="BaseTransition.cpp" />
-    <ClCompile Include="FadeTransition.cpp" />
-    <ClCompile Include="BlockRiseTransition.cpp" />
+    <ClCompile Include="gameEngine\transition\BaseTransition.cpp">
+      <Filter>gameEngine\transition</Filter>
+    </ClCompile>
+    <ClCompile Include="gameEngine\transition\BlockRiseTransition.cpp">
+      <Filter>gameEngine\transition</Filter>
+    </ClCompile>
+    <ClCompile Include="gameEngine\transition\FadeTransition.cpp">
+      <Filter>gameEngine\transition</Filter>
+    </ClCompile>
+    <ClCompile Include="gameEngine\transition\TransitionManager.cpp">
+      <Filter>gameEngine\transition</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameEngine\2d\Sprite.h">
@@ -544,10 +552,18 @@
     <ClInclude Include="gameEngine\imgui\ImGuiManager.h">
       <Filter>gameEngine\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="TransitionManager.h" />
-    <ClInclude Include="BaseTransition.h" />
-    <ClInclude Include="FadeTransition.h" />
-    <ClInclude Include="BlockRiseTransition.h" />
+    <ClInclude Include="gameEngine\transition\BaseTransition.h">
+      <Filter>gameEngine\transition</Filter>
+    </ClInclude>
+    <ClInclude Include="gameEngine\transition\BlockRiseTransition.h">
+      <Filter>gameEngine\transition</Filter>
+    </ClInclude>
+    <ClInclude Include="gameEngine\transition\FadeTransition.h">
+      <Filter>gameEngine\transition</Filter>
+    </ClInclude>
+    <ClInclude Include="gameEngine\transition\TransitionManager.h">
+      <Filter>gameEngine\transition</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\BoxFilter.hlsli">
@@ -683,6 +699,9 @@
     </Filter>
     <Filter Include="gameEngine\imgui">
       <UniqueIdentifier>{cc07e6dd-95f2-4529-8dae-7dd151c7e501}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameEngine\transition">
+      <UniqueIdentifier>{5585ca46-951a-45d4-be99-d785e70caa30}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

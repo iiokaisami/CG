@@ -11,7 +11,7 @@
 #include "../../gameEngine/collider/ColliderManager.h"
 #include "../../gameEngine/level_editor/LevelDataLoader.h"
 
-#include "../../BlockRiseTransition.h"
+#include "../../gameEngine/transition/BlockRiseTransition.h"
 
 class GamePlayScene : public BaseScene
 {

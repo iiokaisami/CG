@@ -14,7 +14,7 @@
 #include "../../application/objects/enemy/EnemyManager.h"
 #include "../../application/objects/field/Field.h"
 
-#include "../../BlockRiseTransition.h"
+#include "../../gameEngine/transition/BlockRiseTransition.h"
 
 class TitleScene : public BaseScene
 {

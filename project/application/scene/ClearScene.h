@@ -9,7 +9,7 @@
 
 #include "../../gameEngine/baseScene/BaseScene.h"
 
-#include "../../BlockRiseTransition.h"
+#include "../../gameEngine/transition/BlockRiseTransition.h"
 
 class ClearScene : public BaseScene
 {
