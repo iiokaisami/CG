@@ -301,6 +301,12 @@
     <ClCompile Include="gameEngine\transition\TransitionManager.cpp">
       <Filter>gameEngine\transition</Filter>
     </ClCompile>
+    <ClCompile Include="application\objects\enemy\Corruptor.cpp" />
+    <ClCompile Include="corruptorBehaviorSpawn.cpp" />
+    <ClCompile Include="corruptorBehaviorState.cpp" />
+    <ClCompile Include="corruptorBehaviorMove.cpp" />
+    <ClCompile Include="corruptorBehaviorHitReact.cpp" />
+    <ClCompile Include="corruptorBehaviorSelfDestruct.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameEngine\2d\Sprite.h">
@@ -564,6 +570,12 @@
     <ClInclude Include="gameEngine\transition\TransitionManager.h">
       <Filter>gameEngine\transition</Filter>
     </ClInclude>
+    <ClInclude Include="application\objects\enemy\Corruptor.h" />
+    <ClInclude Include="corruptorBehaviorSpawn.h" />
+    <ClInclude Include="corruptorBehaviorState.h" />
+    <ClInclude Include="corruptorBehaviorMove.h" />
+    <ClInclude Include="corruptorBehaviorHitReact.h" />
+    <ClInclude Include="corruptorBehaviorSelfDestruct.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\BoxFilter.hlsli">

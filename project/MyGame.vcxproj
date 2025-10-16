@@ -113,6 +113,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="application\Objects\Field\Field.cpp" />
     <ClCompile Include="application\Objects\Enemy\Bullet\EnemyBullet.cpp" />
     <ClCompile Include="application\Objects\Field\Barrie.cpp" />
+    <ClCompile Include="application\objects\enemy\Corruptor.cpp" />
+    <ClCompile Include="corruptorBehaviorHitReact.cpp" />
+    <ClCompile Include="corruptorBehaviorMove.cpp" />
+    <ClCompile Include="corruptorBehaviorSelfDestruct.cpp" />
+    <ClCompile Include="corruptorBehaviorSpawn.cpp" />
+    <ClCompile Include="corruptorBehaviorState.cpp" />
     <ClCompile Include="gameEngine\transition\BaseTransition.cpp" />
     <ClCompile Include="gameEngine\transition\BlockRiseTransition.cpp" />
     <ClCompile Include="gameEngine\transition\FadeTransition.cpp" />
@@ -200,6 +206,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\Objects\Field\Field.h" />
     <ClInclude Include="application\Objects\Enemy\Bullet\EnemyBullet.h" />
     <ClInclude Include="application\Objects\Field\Barrie.h" />
+    <ClInclude Include="application\objects\enemy\Corruptor.h" />
+    <ClInclude Include="corruptorBehaviorHitReact.h" />
+    <ClInclude Include="corruptorBehaviorMove.h" />
+    <ClInclude Include="corruptorBehaviorSelfDestruct.h" />
+    <ClInclude Include="corruptorBehaviorSpawn.h" />
+    <ClInclude Include="corruptorBehaviorState.h" />
     <ClInclude Include="gameEngine\transition\BaseTransition.h" />
     <ClInclude Include="gameEngine\transition\BlockRiseTransition.h" />
     <ClInclude Include="gameEngine\transition\FadeTransition.h" />
