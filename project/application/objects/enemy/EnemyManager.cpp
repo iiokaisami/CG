@@ -205,36 +205,34 @@ void EnemyManager::TitleEnemyUpdate()
 
 void EnemyManager::NormalEnemyInit(const Vector3& pos)
 {
-	//// ノーマルエネミー
-	//std::unique_ptr<NormalEnemy> enemy = std::make_unique<NormalEnemy>();
-	//enemy->SetPosition(pos);
-	//enemy->Initialize();
-	//enemy->SetPlayerPosition(playerPosition_);
-	//enemy->Update();
+	// ノーマルエネミー
+	std::unique_ptr<NormalEnemy> enemy = std::make_unique<NormalEnemy>();
+	enemy->SetPosition(pos);
+	enemy->Initialize();
+	enemy->SetPlayerPosition(playerPosition_);
+	enemy->Update();
 
-	//// 敵を登録
-	//pNormalEnemies_.push_back(std::move(enemy));
+	// 敵を登録
+	pNormalEnemies_.push_back(std::move(enemy));
 
-	//// 敵のカウントを増やす
-	//enemyCount_++;
-	pos;
+	// 敵のカウントを増やす
+	enemyCount_++;
 }
 
 void EnemyManager::TrapEnemyInit(const Vector3& pos)
 {
-	//// トラップエネミー
-	//std::unique_ptr<TrapEnemy> trapEnemy = std::make_unique<TrapEnemy>();
-	//trapEnemy->SetPosition(pos);
-	//trapEnemy->Initialize();
-	//trapEnemy->SetPlayerPosition(playerPosition_);
-	//trapEnemy->Update();
+	// トラップエネミー
+	std::unique_ptr<TrapEnemy> trapEnemy = std::make_unique<TrapEnemy>();
+	trapEnemy->SetPosition(pos);
+	trapEnemy->Initialize();
+	trapEnemy->SetPlayerPosition(playerPosition_);
+	trapEnemy->Update();
 
-	//// 敵を登録
-	//pTrapEnemies_.push_back(std::move(trapEnemy));
+	// 敵を登録
+	pTrapEnemies_.push_back(std::move(trapEnemy));
 
-	//// 敵のカウントを増やす
-	//enemyCount_++;
-	pos;
+	// 敵のカウントを増やす
+	enemyCount_++;
 }
 
 void EnemyManager::ChangeState(std::unique_ptr<EnemyWaveState> _pState)
