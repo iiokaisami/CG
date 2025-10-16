@@ -9,6 +9,10 @@
 #undef max
 #undef min
 
+/// <summary>
+/// カメラマネージャー
+/// 複数のカメラを管理し、アクティブなカメラを切り替えたり、全カメラの更新を行ったりする
+/// </summary>
 class CameraManager
 {
 public:

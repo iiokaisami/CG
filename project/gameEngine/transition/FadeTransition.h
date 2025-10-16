@@ -6,6 +6,10 @@
 
 #include "BaseTransition.h"
 
+/// <summary>
+/// フェードトランジション
+/// フェードインのみ or フェードアウト→シーン切り替え→フェードイン
+/// </summary>
 class FadeTransition : public BaseTransition
 {
 public:

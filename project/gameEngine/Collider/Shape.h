@@ -2,6 +2,9 @@
 
 #include "Vector3.h"
 
+/// <summary>
+/// 形状の種類
+/// </summary>
 enum class Shape
 {
     Sphere,

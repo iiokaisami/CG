@@ -302,11 +302,11 @@
       <Filter>gameEngine\transition</Filter>
     </ClCompile>
     <ClCompile Include="application\objects\enemy\Corruptor.cpp" />
-    <ClCompile Include="corruptorBehaviorSpawn.cpp" />
-    <ClCompile Include="corruptorBehaviorState.cpp" />
-    <ClCompile Include="corruptorBehaviorMove.cpp" />
-    <ClCompile Include="corruptorBehaviorHitReact.cpp" />
-    <ClCompile Include="corruptorBehaviorSelfDestruct.cpp" />
+    <ClCompile Include="CorruptorBehaviorSpawn.cpp" />
+    <ClCompile Include="CorruptorBehaviorState.cpp" />
+    <ClCompile Include="CorruptorBehaviorMove.cpp" />
+    <ClCompile Include="CorruptorBehaviorHitReact.cpp" />
+    <ClCompile Include="CorruptorBehaviorSelfDestruct.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameEngine\2d\Sprite.h">
@@ -571,11 +571,11 @@
       <Filter>gameEngine\transition</Filter>
     </ClInclude>
     <ClInclude Include="application\objects\enemy\Corruptor.h" />
-    <ClInclude Include="corruptorBehaviorSpawn.h" />
-    <ClInclude Include="corruptorBehaviorState.h" />
-    <ClInclude Include="corruptorBehaviorMove.h" />
-    <ClInclude Include="corruptorBehaviorHitReact.h" />
-    <ClInclude Include="corruptorBehaviorSelfDestruct.h" />
+    <ClInclude Include="CorruptorBehaviorSpawn.h" />
+    <ClInclude Include="CorruptorBehaviorState.h" />
+    <ClInclude Include="CorruptorBehaviorMove.h" />
+    <ClInclude Include="CorruptorBehaviorHitReact.h" />
+    <ClInclude Include="CorruptorBehaviorSelfDestruct.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\BoxFilter.hlsli">

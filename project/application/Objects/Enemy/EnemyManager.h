@@ -8,6 +8,9 @@
 #include "waveState/EnemyWaveState.h"
 #include "../../../gameEngine/level_editor/LevelDataLoader.h"
 
+/// <summary>
+/// 敵マネージャー
+/// </summary>
 class EnemyManager
 {
 public:
@@ -83,7 +86,7 @@ private:
 	// 敵のウェーブ切り替え
 	bool isWaveChange_ = false;
 	// 敵のウェーブ切り替えインターバル
-	int32_t waveChangeInterval_ = 120;
+	int32_t waveChangeInterval_ = 270;
 
 	// プレイヤーの位置
 	Vector3 playerPosition_{};

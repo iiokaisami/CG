@@ -8,6 +8,10 @@
 #include <memory>
 #include <Framework.h>
 
+/// <summary>
+/// バリア
+/// プレイヤーを守るバリアオブジェクト
+/// </summary>
 class Barrie : public GameObject
 {
 public:

@@ -2,6 +2,9 @@
 
 #include "EnemyBehaviorState.h"
 
+/// <summary>
+/// 敵の行動ステート：死亡
+/// </summary>
 class EnemyBehaviorDead : public EnemyBehaviorState
 {
 public:

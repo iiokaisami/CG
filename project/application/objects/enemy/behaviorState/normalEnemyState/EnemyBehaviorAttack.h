@@ -2,6 +2,9 @@
 
 #include "EnemyBehaviorState.h"
 
+/// <summary>
+/// 通常敵の攻撃状態
+/// </summary>
 class EnemyBehaviorAttack : public EnemyBehaviorState
 {
 public:

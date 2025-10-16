@@ -11,6 +11,10 @@
 
 class ColliderManager;
 
+/// <summary>
+/// コライダー
+/// 形状はSphere、OBB、AABBの3種類
+/// </summary>
 class Collider
 {
 public:

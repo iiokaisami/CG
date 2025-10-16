@@ -6,6 +6,10 @@
 
 class EnemyManager;
 
+/// <summary>
+/// 通常敵のウェーブステート
+/// 通常敵の発生を管理
+/// </summary>
 class EnemyWaveState
 {
 public:

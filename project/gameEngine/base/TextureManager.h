@@ -5,6 +5,10 @@
 #include "DirectXCommon.h"
 #include "SrvManager.h"
 
+/// <summary>
+/// テクスチャ管理クラス
+/// テクスチャの読み込み、SRVの生成、SRVハンドルの取得を行う
+/// </summary>
 class TextureManager
 {
 private:

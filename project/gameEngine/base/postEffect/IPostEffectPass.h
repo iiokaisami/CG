@@ -7,6 +7,10 @@
 class DirectXCommon;
 class SrvManager;
 
+/// <summary>
+/// ポストエフェクトパスのインターフェース
+/// 継承して各ポストエフェクトパスを実装する
+/// </summary>
 class IPostEffectPass
 {
 public:

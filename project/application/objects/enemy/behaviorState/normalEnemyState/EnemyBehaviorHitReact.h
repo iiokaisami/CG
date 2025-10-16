@@ -2,6 +2,9 @@
 
 #include "EnemyBehaviorState.h"
 
+/// <summary>
+/// 被弾リアクション
+/// </summary>
 class EnemyBehaviorHitReact : public EnemyBehaviorState
 {
 public:

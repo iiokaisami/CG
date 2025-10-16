@@ -13,6 +13,10 @@
 
 #include "../../gameEngine/transition/BlockRiseTransition.h"
 
+/// <summary>
+///	ゲームプレイシーン
+/// プレイヤー操作、敵出現、フィールド、ゴール、衝突判定、シーン遷移
+/// </summary>
 class GamePlayScene : public BaseScene
 {
 public:

@@ -6,6 +6,9 @@
 
 #include <Object3d.h>
 
+/// <summary>
+/// 時限爆弾
+/// </summary>
 class TimeBomb : public GameObject
 {
 public:

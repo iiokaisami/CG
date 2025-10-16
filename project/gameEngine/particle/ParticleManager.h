@@ -52,6 +52,9 @@ struct EmitSetting {
 	bool isLooping = false;
 };
 
+/// <summary>
+/// パーティクル管理クラス
+/// </summary>
 class ParticleManager
 {
 public:

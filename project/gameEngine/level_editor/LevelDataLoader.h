@@ -11,6 +11,10 @@
 
 #include "../../externals/json/json.hpp"
 
+/// <summary>
+/// レベルデータ
+/// レベルエディタで作成したデータを読み込むためのクラス
+/// </summary>
 class LevelData 
 {
 public:
@@ -64,6 +68,10 @@ public:
 
 };
 
+/// <summary>
+/// レベルデータローダー
+/// レベルエディタで作成したデータを読み込むためのクラス
+/// </summary>
 class LevelDataLoader
 {
 public:

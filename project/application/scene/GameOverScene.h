@@ -11,6 +11,10 @@
 
 #include "../../gameEngine/transition/BlockRiseTransition.h"
 
+/// <summary>
+/// ゲームオーバーシーン
+/// ゲームオーバー表示、エフェクト、BGM再生、シーン遷移
+/// </summary>
 class GameOverScene : public BaseScene
 {
 public:

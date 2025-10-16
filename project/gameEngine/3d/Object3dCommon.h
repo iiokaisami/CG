@@ -7,6 +7,9 @@
 #include "Logger.h"
 #include "CameraManager.h"
 
+/// <summary>
+/// 3Dオブジェクト共通機能
+/// </summary>
 class Object3dCommon
 {
 #pragma region シングルトンインスタンス

@@ -8,6 +8,9 @@
 #include <memory>
 #include <Framework.h>
 
+/// <summary>
+/// ゴール
+/// </summary>
 class Goal : public GameObject
 {
 public:

@@ -16,6 +16,10 @@
 
 #include "../../gameEngine/transition/BlockRiseTransition.h"
 
+/// <summary>
+/// タイトルシーン
+/// タイトルロゴ表示、エフェクト、BGM再生、シーン遷移
+/// </summary>
 class TitleScene : public BaseScene
 {
 public:

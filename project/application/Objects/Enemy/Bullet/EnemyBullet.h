@@ -5,6 +5,9 @@
 
 #include <Object3d.h>
 
+/// <summary>
+/// 敵の弾クラス
+/// </summary>
 class EnemyBullet : public GameObject
 {
 public:

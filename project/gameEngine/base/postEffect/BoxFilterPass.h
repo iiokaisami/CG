@@ -6,6 +6,10 @@
 #include <wrl/client.h>
 #include <string>
 
+/// <summary>
+/// ボックスフィルタ
+/// 適度にぼかすことでジャギーを目立たなくする
+/// </summary>
 class BoxFilterPass : public BasePostEffectPass
 {
 public:

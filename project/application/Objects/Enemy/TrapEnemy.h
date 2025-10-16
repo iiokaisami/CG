@@ -11,6 +11,9 @@
 #include <Sprite.h>
 #include <Framework.h>
 
+/// <summary>
+/// 罠を設置してくる敵
+/// </summary>
 class TrapEnemy : public GameObject
 {
 public:

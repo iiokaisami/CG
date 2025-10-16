@@ -8,6 +8,9 @@
 class DirectXCommon;
 class SrvManager;
 
+/// <summary>
+/// レンダーターゲットとして使うテクスチャ
+/// </summary>
 class RenderTexture  
 {  
 public:

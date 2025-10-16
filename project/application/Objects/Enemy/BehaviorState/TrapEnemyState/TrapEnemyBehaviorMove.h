@@ -2,6 +2,9 @@
 
 #include "TrapEnemyBehaviorState.h"
 
+/// <summary>
+/// 罠設置型敵の移動状態
+/// </summary>
 class TrapEnemyBehaviorMove : public TrapEnemyBehaviorState
 {
 public:

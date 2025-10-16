@@ -9,6 +9,10 @@
 
 class ModelCommon;
 
+/// <summary>
+/// 3Dモデル
+/// Objファイルを読み込む
+/// </summary>
 class Model
 {
 public:

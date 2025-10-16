@@ -2,7 +2,10 @@
 
 #include "AbstractSceneFactory.h"
 
-// シーン工場
+/// <summary>
+/// シーンファクトリ
+/// シーンの生成を行う
+/// </summary>
 class SceneFactory : public AbstractSceneFactory
 {
 public:

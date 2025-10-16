@@ -22,6 +22,9 @@
 #include "StringUtility.h"
 #include "Logger.h"
 
+/// <summary>
+/// DirectX共通機能
+/// </summary>
 class DirectXCommon
 {
 public:

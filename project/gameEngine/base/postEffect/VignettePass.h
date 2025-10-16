@@ -7,6 +7,10 @@
 #include <string>
 #include <MyMath.h>
 
+/// <summary>
+/// ビネット処理
+/// カメラの周辺を暗くする
+/// </summary>
 class VignettePass :public BasePostEffectPass {
 public:
    

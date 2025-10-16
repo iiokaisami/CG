@@ -47,6 +47,10 @@
 
 #endif // _DEBUG
 
+/// <summary>
+/// フレームワーク
+/// 基底クラス
+/// </summary>
 class Framework
 {
 public:

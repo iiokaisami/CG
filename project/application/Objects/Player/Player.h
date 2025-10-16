@@ -10,6 +10,10 @@
 #include <Sprite.h>
 #include <Framework.h>
 
+/// <summary>
+/// プレイヤークラス
+/// プレイヤーの移動、攻撃、回避、当たり判定などを管理
+/// </summary>
 class Player : public GameObject
 {
 public:

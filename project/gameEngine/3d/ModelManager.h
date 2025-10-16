@@ -9,6 +9,10 @@
 class ModelCommon;
 class DirectXCommon;
 
+/// <summary>
+/// モデル管理クラス
+/// モデルの読み込み、検索を行う
+/// </summary>
 class ModelManager
 {
 #pragma region シングルトンインスタンス

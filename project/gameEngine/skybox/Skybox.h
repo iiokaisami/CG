@@ -22,6 +22,9 @@ struct Material
     DirectX::XMFLOAT4X4 uvTransform;
 };
 
+/// <summary>
+/// スカイボックス
+/// </summary>
 class Skybox
 {
 public:

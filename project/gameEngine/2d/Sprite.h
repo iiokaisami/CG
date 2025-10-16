@@ -13,7 +13,9 @@
 class SpriteCommon;
 
 
-
+/// <summary>
+/// スプライト
+/// </summary>
 class Sprite
 {
 public:

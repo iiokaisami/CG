@@ -2,6 +2,10 @@
 
 #include <Model.h>
 
+/// <summary>
+/// メッシュ作成クラス
+/// メッシュを頂点とインデックスで作成する
+/// </summary>
 class MeshBuilder
 {
 public:

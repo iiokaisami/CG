@@ -6,6 +6,7 @@ class Matrix4x4;
 
 /// <summary>
 /// 3th Dimension Vector
+/// 3次元ベクトル
 /// </summary>
 class Vector3 final {
 public:
