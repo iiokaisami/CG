@@ -97,6 +97,7 @@ private:
 	ColliderManager* colliderManager_ = nullptr;
 	Collider collider_;
 	AABB aabb_;
+	Collider::ColliderDesc desc = {};
 
 	// 移動速度
 	Vector3 moveVelocity_{};

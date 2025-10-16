@@ -18,6 +18,28 @@ public:
     Collider();
     ~Collider();
 
+    // コライダー作成の構造体
+    struct ColliderDesc
+    {
+        GameObject* owner = nullptr;
+        std::string colliderID;
+        Shape shape = Shape::AABB;
+        void* shapeData = nullptr;
+        uint32_t attribute = 0;
+        std::function<void(const Collider*)> onCollision = nullptr;
+        std::function<void(const Collider*)> onCollisionTrigger = nullptr;
+    };
+
+    // コライダー作成
+    // AABB
+    void MakeAABBDesc(const ColliderDesc& desc);
+
+    // OBB
+    void MakeOBBDesc(const ColliderDesc& desc);
+
+    // Sphere
+    void MakeSphereDesc(const ColliderDesc& desc);
+
 public: // ゲッター
     inline const GameObject* GetOwner()const { return owner_; }
 

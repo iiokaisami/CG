@@ -22,8 +22,5 @@ public: // ゲッター
 	// トランジションが終了したか
 	virtual bool IsFinished() const = 0;
 
-	// 画面が覆い隠されているか
-	virtual bool IsCovered() const = 0; 
-
 };
 

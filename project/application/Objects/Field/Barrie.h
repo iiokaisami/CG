@@ -46,6 +46,7 @@ private:
 	ColliderManager* colliderManager_ = nullptr;
 	Collider collider_;
 	AABB aabb_;
+	Collider::ColliderDesc desc = {};
 
 	// バリア破壊フラグ
 	bool isBarrierDestroyed_ = false;

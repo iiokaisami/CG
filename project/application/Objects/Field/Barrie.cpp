@@ -15,12 +15,17 @@ void Barrie::Initialize()
 	// 当たり判定
 	colliderManager_ = ColliderManager::GetInstance();
 	objectName_ = "Barrie";
-	collider_.SetOwner(this);
-	collider_.SetColliderID(objectName_);
-	collider_.SetShapeData(&aabb_);
-	collider_.SetShape(Shape::AABB);
-	collider_.SetAttribute(colliderManager_->GetNewAttribute(collider_.GetColliderID()));
-	collider_.SetOnCollisionTrigger(std::bind(&Barrie::OnCollisionTrigger, this, std::placeholders::_1));
+	desc =
+	{
+		//ここに設定
+		.owner = this,
+		.colliderID = objectName_,
+		.shape = Shape::AABB,
+		.shapeData = &aabb_,
+		.attribute = colliderManager_->GetNewAttribute(objectName_),
+		.onCollisionTrigger = std::bind(&Barrie::OnCollisionTrigger, this, std::placeholders::_1),
+	};
+	collider_.MakeAABBDesc(desc);
 	colliderManager_->RegisterCollider(&collider_);
 
 }

@@ -19,22 +19,32 @@ void TimeBomb::Initialize()
 	colliderManager_ = ColliderManager::GetInstance();
 	// 設置判定用
 	objectName_ = "SetTimeBomb";
-	setCollider_.SetOwner(this);
-	setCollider_.SetColliderID(objectName_);
-	setCollider_.SetShapeData(&setAABB_);
-	setCollider_.SetShape(Shape::AABB);
-	setCollider_.SetAttribute(colliderManager_->GetNewAttribute(setCollider_.GetColliderID()));
-	setCollider_.SetOnCollisionTrigger(std::bind(&TimeBomb::OnSetCollisionTrigger, this, std::placeholders::_1));
-	setCollider_.SetOnCollision(std::bind(&TimeBomb::OnSetCollision, this, std::placeholders::_1));
+	setDesc =
+	{
+		//ここに設定
+		.owner = this,
+		.colliderID = objectName_,
+		.shape = Shape::AABB,
+		.shapeData = &setAABB_,
+		.attribute = colliderManager_->GetNewAttribute(objectName_),
+		.onCollision = std::bind(&TimeBomb::OnSetCollision, this, std::placeholders::_1),
+		.onCollisionTrigger = std::bind(&TimeBomb::OnSetCollisionTrigger, this, std::placeholders::_1),
+	};
+	setCollider_.MakeAABBDesc(setDesc);
 	colliderManager_->RegisterCollider(&setCollider_);
 	// 爆発判定用
 	explosionObjectName_ = "ExplosionTimeBomb";
-	explosionCollider_.SetOwner(this);
-	explosionCollider_.SetColliderID(explosionObjectName_);
-	explosionCollider_.SetShapeData(&explosionAABB_);
-	explosionCollider_.SetShape(Shape::AABB);
-	explosionCollider_.SetAttribute(colliderManager_->GetNewAttribute(explosionCollider_.GetColliderID()));
-	explosionCollider_.SetOnCollisionTrigger(std::bind(&TimeBomb::OnExplosionTrigger, this, std::placeholders::_1));
+	explosionDesc =
+	{
+		//ここに設定
+		.owner = this,
+		.colliderID = objectName_,
+		.shape = Shape::AABB,
+		.shapeData = &explosionAABB_,
+		.attribute = colliderManager_->GetNewAttribute(objectName_),
+		.onCollisionTrigger = std::bind(&TimeBomb::OnExplosionTrigger, this, std::placeholders::_1),
+	};
+	explosionCollider_.MakeAABBDesc(explosionDesc);
 	colliderManager_->RegisterCollider(&explosionCollider_);
 
 }

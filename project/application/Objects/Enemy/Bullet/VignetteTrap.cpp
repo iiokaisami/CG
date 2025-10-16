@@ -19,13 +19,18 @@ void VignetteTrap::Initialize()
 	colliderManager_ = ColliderManager::GetInstance();
 	objectName_ = "VignetteTrap";
 
-	collider_.SetOwner(this);
-	collider_.SetColliderID(objectName_);
-	collider_.SetShapeData(&aabb_);
-	collider_.SetShape(Shape::AABB);
-	collider_.SetAttribute(colliderManager_->GetNewAttribute(collider_.GetColliderID()));
-	collider_.SetOnCollisionTrigger(std::bind(&VignetteTrap::OnCollisionTrigger, this, std::placeholders::_1));
-	collider_.SetOnCollision(std::bind(&VignetteTrap::OnCollision, this, std::placeholders::_1));
+	desc =
+	{
+		//ここに設定
+		.owner = this,
+		.colliderID = objectName_,
+		.shape = Shape::AABB,
+		.shapeData = &aabb_,
+		.attribute = colliderManager_->GetNewAttribute(objectName_),
+		.onCollision = std::bind(&VignetteTrap::OnCollision, this, std::placeholders::_1),
+		.onCollisionTrigger = std::bind(&VignetteTrap::OnCollisionTrigger, this, std::placeholders::_1),
+	};
+	collider_.MakeAABBDesc(desc);
 	colliderManager_->RegisterCollider(&collider_);
 }
 

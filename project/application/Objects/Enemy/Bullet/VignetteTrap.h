@@ -61,6 +61,7 @@ private:
 	ColliderManager* colliderManager_ = nullptr;
 	Collider collider_;
 	AABB aabb_;
+	Collider::ColliderDesc desc = {};
 	
 	// 壁との衝突フラグ
 	bool isWallCollision_ = false;

@@ -57,6 +57,7 @@ private:
 	ColliderManager* colliderManager_ = nullptr;
 	Collider collider_;
 	AABB aabb_;
+	Collider::ColliderDesc desc = {};
 
 	// クリアフラグ
 	bool isCleared_ = false;

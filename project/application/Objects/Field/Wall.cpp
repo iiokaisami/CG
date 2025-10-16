@@ -17,12 +17,17 @@ void Wall::Initialize()
 	colliderManager_ = ColliderManager::GetInstance();
 
 	objectName_ = "Wall";
-	collider_.SetOwner(this);
-	collider_.SetColliderID(objectName_);
-	collider_.SetShapeData(&aabb_);
-	collider_.SetShape(Shape::AABB);
-	collider_.SetAttribute(colliderManager_->GetNewAttribute(collider_.GetColliderID()));
-	collider_.SetOnCollisionTrigger(std::bind(&Wall::OnCollisionTrigger, this));
+	desc =
+	{
+		//ここに設定
+		.owner = this,
+		.colliderID = objectName_,
+		.shape = Shape::AABB,
+		.shapeData = &aabb_,
+		.attribute = colliderManager_->GetNewAttribute(objectName_),
+	};
+	
+	collider_.MakeAABBDesc(desc);
 	colliderManager_->RegisterCollider(&collider_);
 }
 

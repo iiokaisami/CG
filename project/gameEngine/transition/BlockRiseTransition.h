@@ -28,9 +28,6 @@ public: // ゲッター
 
 	// トランジションが終了したか
     bool IsFinished() const override;
-    
-	// 画面が覆い隠されているか
-    bool IsCovered() const override;
 
 private:
 
