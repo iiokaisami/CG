@@ -2,6 +2,10 @@
 
 #include "DirectXCommon.h"
 
+/// <summary>
+/// SRVマネージャー
+/// SRVの確保、生成、管理を行う
+/// </summary>
 class SrvManager
 {
 public:

@@ -4,6 +4,10 @@
 
 #include "SceneFactory.h"
 
+/// <summary>
+/// ゲーム固有のフレームワーク
+/// ゲーム固有の初期化、終了、更新、描画を行う
+/// </summary>
 class MyGame : public Framework
 {
 public:

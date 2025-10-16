@@ -3,6 +3,10 @@
 #include "BaseScene.h"
 #include "AbstractSceneFactory.h"
 
+/// <summary>
+/// シーンマネージャ
+/// ここでシーンの更新、描画を行う
+/// </summary>
 class SceneManager
 {
 #pragma region シングルトンインスタンス

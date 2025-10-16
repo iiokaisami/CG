@@ -5,6 +5,9 @@
 
 class NormalEnemy;
 
+/// <summary>
+/// 敵の行動ステート基底クラス
+/// </summary>
 class EnemyBehaviorState
 {
 public:

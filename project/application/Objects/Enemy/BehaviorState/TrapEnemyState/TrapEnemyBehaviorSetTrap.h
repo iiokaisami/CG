@@ -2,6 +2,9 @@
 
 #include "TrapEnemyBehaviorState.h"
 
+/// <summary>
+/// 罠設置状態
+/// </summary>
 class TrapEnemyBehaviorSetTrap : public TrapEnemyBehaviorState
 {
 public:

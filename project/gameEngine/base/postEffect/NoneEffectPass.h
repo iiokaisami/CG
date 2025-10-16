@@ -6,6 +6,10 @@
 #include <wrl/client.h>
 #include <string>
 
+/// <summary>
+/// エフェクトなしパス
+/// DirectXTexを使ってリサイズするだけ
+/// </summary>
 class NoneEffectPass : public BasePostEffectPass
 {
 public:

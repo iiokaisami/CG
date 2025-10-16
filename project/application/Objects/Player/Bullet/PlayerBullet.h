@@ -7,6 +7,9 @@
 #include <Object3d.h>
 #include <Sprite.h>
 
+/// <summary>
+/// プレイヤー弾クラス
+/// </summary>
 class PlayerBullet : public GameObject
 {
 public:

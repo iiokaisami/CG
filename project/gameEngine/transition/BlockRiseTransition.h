@@ -7,6 +7,9 @@
 #include "BaseTransition.h"
 #include "Sprite.h"
 
+/// <summary>
+/// ブロックが下から上にせり上がるトランジション
+/// </summary>
 class BlockRiseTransition : public BaseTransition
 {
 public:

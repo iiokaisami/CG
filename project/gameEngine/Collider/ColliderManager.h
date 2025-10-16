@@ -8,6 +8,9 @@
 #include"Shape.h"
 #include"Collider.h"
 
+/// <summary>
+/// コライダー管理クラス
+/// </summary>
 class ColliderManager
 {
 

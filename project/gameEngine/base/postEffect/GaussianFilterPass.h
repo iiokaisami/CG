@@ -6,6 +6,10 @@
 #include <wrl/client.h>
 #include <string>
 
+/// <summary>
+/// ガウシアンフィルタ
+/// 画面をぼかすエフェクト
+/// </summary>
 class GaussianFilterPass : public BasePostEffectPass
 {
 public:

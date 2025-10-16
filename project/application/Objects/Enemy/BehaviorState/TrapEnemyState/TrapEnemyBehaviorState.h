@@ -5,6 +5,15 @@
 
 class TrapEnemy;
 
+/// <summary>
+/// 罠型敵の行動ステート基底クラス
+/// 行動ステートは以下の5つ
+/// ・出現(Spawn)
+/// ・移動(Move)
+/// ・罠設置(SetTrap)
+/// ・被弾(HitReact)
+/// ・死亡(Dead)
+/// </summary>
 class TrapEnemyBehaviorState
 {
 public:

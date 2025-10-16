@@ -7,7 +7,9 @@
 class Object3dCommon;
 class Model;
 
-
+/// <summary>
+/// 3Dオブジェクト
+/// </summary>
 class Object3d
 {
 public:

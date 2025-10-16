@@ -2,6 +2,9 @@
 
 #include "TrapEnemyBehaviorState.h"
 
+/// <summary>
+/// 罠設置型敵の出現状態
+/// </summary>
 class TrapEnemyBehaviorSpawn : public TrapEnemyBehaviorState
 {
 public:

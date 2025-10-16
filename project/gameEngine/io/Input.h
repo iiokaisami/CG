@@ -9,6 +9,10 @@ using namespace Microsoft::WRL;
 
 #include "WinApp.h"
 
+/// <summary>
+/// 入力クラス
+/// DirectInputを使用してキーボードの入力を管理
+/// </summary>
 class Input
 {
 #pragma region シングルトンインスタンス

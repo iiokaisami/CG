@@ -7,7 +7,9 @@
 #include <memory>
 #include <Framework.h>
 
-
+/// <summary>
+/// 壁クラス
+/// </summary>
 class Wall : public GameObject
 {
 public:

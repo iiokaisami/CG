@@ -28,6 +28,10 @@ struct SoundData {
 	unsigned int bufferSize;// バッファサイズ
 };
 
+/// <summary>
+/// オーディオ
+/// 音声再生、管理を行う
+/// </summary>
 class Audio
 {
 #pragma region シングルトンインスタンス

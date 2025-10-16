@@ -5,6 +5,10 @@
 #include <memory>
 #include <functional>
 
+/// <summary>
+/// トランジション管理クラス
+/// 他のシーンへ切り替える際にトランジションを管理する
+/// </summary>
 class TransitionManager
 {
 

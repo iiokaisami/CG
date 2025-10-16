@@ -3,7 +3,10 @@
 #include "BaseScene.h"
 #include <string>
 
-// シーン工場(概念)
+/// <summary>
+/// シーン生成の抽象クラス
+/// 継承先でCreateSceneを実装してシーンを生成する
+/// </summary>
 class AbstractSceneFactory
 {
 public:

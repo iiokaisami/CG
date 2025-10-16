@@ -6,6 +6,9 @@
 #include "DirectXCommon.h"
 #include "Logger.h"
 
+/// <summary>
+/// モデル共通
+/// </summary>
 class ModelCommon
 {
 public:

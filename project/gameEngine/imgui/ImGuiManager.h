@@ -2,6 +2,10 @@
 
 #include "DirectXCommon.h"
 
+/// <summary>
+/// ImGui管理クラス
+/// <para>ImGuiの初期化、終了、描画を行う</para>
+/// </summary>
 class ImGuiManager
 {
 public:

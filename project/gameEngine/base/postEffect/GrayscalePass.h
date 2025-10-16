@@ -6,6 +6,10 @@
 #include <wrl/client.h>
 #include <string>
 
+/// <summary>
+/// グレースケールエフェクト
+/// グレースケール化するかどうかを切り替え可能
+/// </summary>
 class GrayscalePass : public BasePostEffectPass
 {
 public:

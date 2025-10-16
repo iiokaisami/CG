@@ -7,6 +7,10 @@
 #include <memory>
 #include <vector>
 
+/// <summary>
+/// ポストエフェクトマネージャー
+/// ポストエフェクトのパスを管理し、描画を行う
+/// </summary>
 class PostEffectManager 
 {
 public:

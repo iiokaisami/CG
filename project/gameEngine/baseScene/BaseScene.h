@@ -2,6 +2,10 @@
 
 class SceneManager;
 
+/// <summary>
+/// シーンの基底クラス
+/// 継承して使用する
+/// </summary>
 class BaseScene
 {
 public:

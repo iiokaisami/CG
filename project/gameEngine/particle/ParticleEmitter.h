@@ -5,6 +5,10 @@
 
 #include "ParticleManager.h"
 
+/// <summary>
+/// パーティクルエミッター
+/// パーティクルを発生させる
+/// </summary>
 class ParticleEmitter
 {
 public:

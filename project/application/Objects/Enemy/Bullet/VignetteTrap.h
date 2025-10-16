@@ -5,6 +5,10 @@
 
 #include <Object3d.h>
 
+/// <summary>
+/// ヴィネットトラップ
+/// プレイヤーの周囲に放物線を描いて飛んでいきプレイヤーに衝突すると爆発する罠
+/// </summary>
 class VignetteTrap : public GameObject
 {
 public:

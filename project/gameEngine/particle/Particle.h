@@ -4,6 +4,10 @@
 
 #include "MyMath.h"
 
+/// <summary>
+/// パーティクル1つ分の情報
+/// 粒子の位置、速度、寿命など
+/// </summary>
 class Particle
 {
 public:

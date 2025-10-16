@@ -6,6 +6,9 @@
 #include "DirectXCommon.h"
 #include "Logger.h"
 
+/// <summary>
+/// スプライト共通クラス
+/// </summary>
 class SpriteCommon
 {
 #pragma region シングルトンインスタンス

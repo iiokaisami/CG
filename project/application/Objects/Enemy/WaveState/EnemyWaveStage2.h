@@ -2,6 +2,10 @@
 
 #include "EnemyWaveState.h"
 
+/// <summary>
+/// 敵のウェーブステート
+/// ウェーブ2
+/// </summary>
 class EnemyWaveStage2 : public EnemyWaveState
 {
 public:

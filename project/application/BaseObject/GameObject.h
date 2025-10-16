@@ -5,6 +5,9 @@
 
 #include "../../gameEngine/Collider/Shape.h"
 
+/// <summary>
+/// ゲームオブジェクトの基底クラス
+/// </summary>
 class GameObject
 {
 public:

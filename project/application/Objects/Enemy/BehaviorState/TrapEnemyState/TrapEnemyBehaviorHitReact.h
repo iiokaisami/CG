@@ -2,6 +2,9 @@
 
 #include "TrapEnemyBehaviorState.h"
 
+/// <summary>
+/// 罠型敵の被弾状態
+/// </summary>
 class TrapEnemyBehaviorHitReact : public TrapEnemyBehaviorState
 {
 public:

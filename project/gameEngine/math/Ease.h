@@ -3,6 +3,9 @@
 #include <cmath>
 #include <numbers>
 
+/// <summary>
+/// イージング
+/// </summary>
 class Ease 
 {
 public:

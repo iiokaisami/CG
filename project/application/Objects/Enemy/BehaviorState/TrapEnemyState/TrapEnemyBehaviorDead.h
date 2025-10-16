@@ -2,6 +2,9 @@
 
 #include "TrapEnemyBehaviorState.h"
 
+/// <summary>
+/// 罠設置型敵の死亡状態
+/// </summary>
 class TrapEnemyBehaviorDead : public TrapEnemyBehaviorState
 {
 public:

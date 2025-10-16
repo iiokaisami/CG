@@ -2,6 +2,9 @@
 
 #include "EnemyBehaviorState.h"
 
+/// <summary>
+/// 敵キャラクターの移動状態を管理するクラス
+/// </summary>
 class EnemyBehaviorMove : public EnemyBehaviorState
 {
 public:

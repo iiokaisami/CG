@@ -4,6 +4,10 @@
 
 #include <random>
 
+/// <summary>
+/// カメラクラス
+/// カメラの位置、向き、射影変換行列を管理
+/// </summary>
 class Camera
 {
 public:

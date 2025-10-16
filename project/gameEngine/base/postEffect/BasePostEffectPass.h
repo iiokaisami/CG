@@ -9,6 +9,10 @@
 class DirectXCommon;
 class SrvManager;
 
+/// <summary>
+/// ポストエフェクトパスの基底クラス
+/// 継承して使用する
+/// </summary>
 class BasePostEffectPass : public IPostEffectPass {
 public:
 

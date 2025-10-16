@@ -2,6 +2,9 @@
 
 #include "EnemyBehaviorState.h"
 
+/// <summary>
+/// 敵の出現状態
+/// </summary>
 class EnemyBehaviorSpawn : public EnemyBehaviorState
 {
 public:

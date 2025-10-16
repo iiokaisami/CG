@@ -2,6 +2,9 @@
 
 #include "MyMath.h"
 
+/// <summary>
+/// 四元数
+/// </summary>
 struct Quaternion
 {
 	float x;

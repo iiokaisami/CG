@@ -8,6 +8,10 @@
 
 #include "Particle.h"
 
+/// <summary>
+/// パーティクルのモーション管理
+/// 登録、生成、一覧取得など
+/// </summary>
 class ParticleMotion
 {
 public:

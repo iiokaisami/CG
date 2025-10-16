@@ -10,6 +10,10 @@
 #include <Sprite.h>
 #include <Framework.h>
 
+/// <summary>
+/// 通常敵
+/// 行動ステートを持つ
+/// </summary>
 class NormalEnemy : public GameObject
 {
 public:
