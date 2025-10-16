@@ -217,6 +217,7 @@ void EnemyManager::NormalEnemyInit(const Vector3& pos)
 
 	//// 敵のカウントを増やす
 	//enemyCount_++;
+	pos;
 }
 
 void EnemyManager::TrapEnemyInit(const Vector3& pos)
@@ -233,6 +234,7 @@ void EnemyManager::TrapEnemyInit(const Vector3& pos)
 
 	//// 敵のカウントを増やす
 	//enemyCount_++;
+	pos;
 }
 
 void EnemyManager::ChangeState(std::unique_ptr<EnemyWaveState> _pState)
