@@ -12,6 +12,39 @@ Collider::~Collider()
 {
 }
 
+void Collider::MakeAABBDesc(const ColliderDesc& desc)
+{
+    SetOwner(desc.owner);
+    SetColliderID(desc.colliderID);
+    SetShape(Shape::AABB);
+    SetShapeData(static_cast<AABB*>(desc.shapeData));
+    SetAttribute(desc.attribute);
+    if (desc.onCollision) SetOnCollision(desc.onCollision);
+    if (desc.onCollisionTrigger) SetOnCollisionTrigger(desc.onCollisionTrigger);
+}
+
+void Collider::MakeOBBDesc(const ColliderDesc& desc)
+{
+    SetOwner(desc.owner);
+    SetColliderID(desc.colliderID);
+    SetShape(Shape::OBB);
+    SetShapeData(static_cast<OBB*>(desc.shapeData));
+    SetAttribute(desc.attribute);
+    if (desc.onCollision) SetOnCollision(desc.onCollision);
+    if (desc.onCollisionTrigger) SetOnCollisionTrigger(desc.onCollisionTrigger);
+}
+
+void Collider::MakeSphereDesc(const ColliderDesc& desc)
+{
+    SetOwner(desc.owner);
+    SetColliderID(desc.colliderID);
+    SetShape(Shape::Sphere);
+    SetShapeData(static_cast<Sphere*>(desc.shapeData));
+    SetAttribute(desc.attribute);
+    if (desc.onCollision) SetOnCollision(desc.onCollision);
+    if (desc.onCollisionTrigger) SetOnCollisionTrigger(desc.onCollisionTrigger);
+}
+
 const bool Collider::IsRegisteredCollidingPtr(const Collider* _ptr) const
 {
     for (auto itr = collidingPtrList_.begin(); itr != collidingPtrList_.end(); ++itr)

@@ -67,10 +67,12 @@ private:
 	// 設置判定
 	Collider setCollider_;
 	AABB setAABB_;
+	Collider::ColliderDesc setDesc = {};
 	// 爆発判定
 	std::string explosionObjectName_;
 	Collider explosionCollider_;
 	AABB explosionAABB_;
+	Collider::ColliderDesc explosionDesc = {};
 
 
 	// 爆発フラグ

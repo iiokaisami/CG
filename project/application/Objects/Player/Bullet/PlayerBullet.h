@@ -53,6 +53,7 @@ private: // メンバ変数
 	ColliderManager* colliderManager_ = nullptr;
 	Collider collider_;
 	AABB aabb_;
+	Collider::ColliderDesc desc = {};
 
 	// 速度
 	Vector3 velocity_{};

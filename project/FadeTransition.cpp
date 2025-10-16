@@ -72,8 +72,3 @@ bool FadeTransition::IsFinished() const
 {
     return state_ == State::Done;
 }
-
-bool FadeTransition::IsCovered() const
-{
-    return (state_ == State::FadeOut && alpha_ >= 1.0f);
-}

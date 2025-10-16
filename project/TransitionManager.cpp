@@ -33,8 +33,3 @@ bool TransitionManager::IsRunning() const
 {
     return transition_ != nullptr;
 }
-
-bool TransitionManager::IsCovered() const
-{
-    return transition_ && transition_->IsCovered();
-}

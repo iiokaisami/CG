@@ -24,9 +24,6 @@ public: // ゲッター
 	// トランジション中か
     bool IsRunning() const;
 
-	// 画面が覆い隠されているか
-    bool IsCovered() const;
-
 private:
 
 	// 現在のトランジション

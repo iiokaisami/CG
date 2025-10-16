@@ -27,13 +27,18 @@ void TrapEnemy::Initialize()
 
     objectName_ = "TrapEnemy";
 
-    collider_.SetOwner(this);
-    collider_.SetColliderID(objectName_);
-    collider_.SetShapeData(&aabb_);
-    collider_.SetShape(Shape::AABB);
-    collider_.SetAttribute(colliderManager_->GetNewAttribute(collider_.GetColliderID()));
-    collider_.SetOnCollisionTrigger(std::bind(&TrapEnemy::OnCollisionTrigger, this, std::placeholders::_1));
-    collider_.SetOnCollision(std::bind(&TrapEnemy::OnCollision, this, std::placeholders::_1));
+    desc =
+    {
+        //ここに設定
+        .owner = this,
+        .colliderID = objectName_,
+        .shape = Shape::AABB,
+        .shapeData = &aabb_,
+        .attribute = colliderManager_->GetNewAttribute(objectName_),
+        .onCollision = std::bind(&TrapEnemy::OnCollision, this, std::placeholders::_1),
+        .onCollisionTrigger = std::bind(&TrapEnemy::OnCollisionTrigger, this, std::placeholders::_1),
+    };
+    collider_.MakeAABBDesc(desc);
     colliderManager_->RegisterCollider(&collider_);
 
     // ステータス

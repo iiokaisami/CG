@@ -26,8 +26,6 @@ public:
 public: // ゲッター
 
 	bool IsFinished() const override;
-	
-	bool IsCovered() const override;
 
 private:
 

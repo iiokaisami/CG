@@ -176,7 +176,18 @@ void BlockRiseTransition::Update()
             b.sprite->Update();
         }
 
+		// 全ブロックが画面外に落下完了
+		if (std::all_of(blocks_.begin(), blocks_.end(),
+			[](auto& b) { return b.position.y > 900.0f; }))
+		{
+			state_ = State::Done;
+		}
+
         break;
+
+	case State::Done:
+
+		break;
 
     default:
 
@@ -197,9 +208,4 @@ void BlockRiseTransition::Draw()
 bool BlockRiseTransition::IsFinished() const
 {
     return state_ == State::Done;
-}
-
-bool BlockRiseTransition::IsCovered() const
-{
-    return state_ == State::Hold;
 }
