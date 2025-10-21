@@ -42,6 +42,11 @@ public:
 	// カメラ追尾
 	void CameraFollow();
 
+	/// <summary>
+	/// スタートカメラ
+	///	</summary>
+	void StartCamera();
+
 
 private:
 
@@ -86,5 +91,15 @@ private:
 	// レベルデータローダー
 	std::unique_ptr<LevelData> levelData_ = nullptr;
 
-};
+	// スタートカメラ演出変数
+	bool isStartCamera_ = false;
+	float cameraStartTimer_ = 0.0f;
+	float cameraStartDuration_ = 1.5f;
+	Vector3 camStart_ = { 0.16f, 5.0f, 8.0f };
+	Vector3 camControl1_ = { 0.16f, 5.0f, -8.0f };
+	Vector3 camControl2_ = { 0.16f, 50.0f, -20.0f };
+	Vector3 camEnd_ = { 0.16f, 78.5f, -19.8f };
+	Vector3 camStartRot_ = { 0.0f, 0.0f, 0.0f };
+	Vector3 camEndRot_ = { 1.4f, 0.0f, 0.0f };
 
+};

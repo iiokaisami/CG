@@ -417,3 +417,17 @@ float LerpAngle(float a, float b, float t)
 	float diff = std::fmod(b - a + 3.14159265f, 2.0f * 3.14159265f) - 3.14159265f;
 	return a + diff * t;
 }
+
+Vector3 Bezier3(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t)
+{
+	float u = 1.0f - t;
+	float tt = t * t;
+	float uu = u * u;
+	float uuu = uu * u;
+	float ttt = tt * t;
+	Vector3 p = uuu * p0; // (1-t)^3 * P0
+	p += 3 * uu * t * p1; // 3*(1-t)^2*t*P1
+	p += 3 * u * tt * p2; // 3*(1-t)*t^2*P2
+	p += ttt * p3;        // t^3*P3
+	return p;
+}

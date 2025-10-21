@@ -82,6 +82,8 @@ Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
 Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t);
 float LerpAngle(float a, float b, float t);
 
+Vector3 Bezier3(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t);
+
 namespace MyMath 
 {
 	inline float cot(float a) { return cos(a) / sin(a); }

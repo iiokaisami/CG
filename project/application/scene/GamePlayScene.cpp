@@ -2,6 +2,8 @@
 
 #include <ModelManager.h>
 
+#include <Ease.h>
+
 void GamePlayScene::Initialize()
 {
 	// 必ず先頭でカメラを全クリア
@@ -15,6 +17,9 @@ void GamePlayScene::Initialize()
 	cameraPosition.y = 70.0f;
 	cameraPosition.z = -15.0f;
 	cameraRotate.x = 1.2f;
+
+	camera->SetPosition(camStart_);
+	camera->SetRotate(camStartRot_);
 
 	// カメラの追加
 	cameraManager.AddCamera(camera);
@@ -50,17 +55,17 @@ void GamePlayScene::Initialize()
 	cameraRestCenter_ = pPlayer_->GetPosition() + Vector3{ 0.0f,70.0f,-20.0f };
 
 	// スプライト
-	//for (uint32_t i = 0; i < 1; ++i)
-	//{
-	//	Sprite* sprite = new Sprite();
+	for (uint32_t i = 0; i < 1; ++i)
+	{
+		Sprite* sprite = new Sprite();
 
-	//	if (i == 0)
-	//	{
-	//		//sprite->Initialize("titleUI.png", { 0,0 }, color_, { 0,0 });
-	//	}
+		if (i == 0)
+		{
+			sprite->Initialize("StartCheckUI.png", { 0,0 }, color_, { 0,0 });
+		}
 
-	//	sprites.push_back(sprite);
-	//}
+		sprites.push_back(sprite);
+	}
 
 	// レベルデータの読み込み
 	levelData_ = LevelDataLoader::LoadLevelData("wallSetting");
@@ -83,6 +88,10 @@ void GamePlayScene::Initialize()
 	isTransitioning_ = true;
 	transition_->Start(nullptr);
 
+
+	// スタートカメラ演出
+	isStartCamera_ = true;
+	cameraStartTimer_ = 0.0f;
 }
 
 void GamePlayScene::Finalize()
@@ -122,6 +131,12 @@ void GamePlayScene::Update()
 		}
 
 	}
+	
+	// スタートカメラ演出
+	StartCamera();
+
+	// カメラマネージャーの更新
+	cameraManager.UpdateAll();
 
 	for (Sprite* sprite : sprites)
 	{
@@ -130,9 +145,6 @@ void GamePlayScene::Update()
 		sprite->SetColor(color_);
 
 	}
-
-	// カメラマネージャーのテスト
-	cameraManager.UpdateAll();
 
 	// P押してカメラ切り替え
 	if (Input::GetInstance()->TriggerKey(DIK_P))
@@ -151,9 +163,6 @@ void GamePlayScene::Update()
 	// 稼働中のカメラインデックス
 	activeIndex = cameraManager.GetActiveIndex();
 
-	camera->SetRotate(cameraRotate);
-	camera->SetPosition(cameraPosition);
-
 	// 当たり判定チェック
 	colliderManager_->CheckAllCollision();
 
@@ -163,7 +172,12 @@ void GamePlayScene::Update()
 	pEnemyManager_->SetPlayerPosition(pPlayer_->GetPosition());
 
 	// カメラの更新(シェイク、追尾、引き)
-	CameraUpdate();
+	if (!isStartCamera_)
+	{
+		camera->SetRotate(cameraRotate);
+		camera->SetPosition(cameraPosition);
+		CameraUpdate();
+	}
 
 	// エネミーの更新
 	pEnemyManager_->Update();
@@ -240,6 +254,20 @@ void GamePlayScene::Update()
 				SceneManager::GetInstance()->ChangeScene("GAMEOVER");
 			});
 	}
+
+
+	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
+	{
+		// トランジション開始
+		transition_ = std::make_unique<BlockRiseTransition>();
+		isTransitioning_ = true;
+		transition_->Start([]
+			{
+				// シーン切り替え
+				SceneManager::GetInstance()->ChangeScene("TITLE");
+			});
+	}
+
 }
 
 void GamePlayScene::Draw()
@@ -344,4 +372,28 @@ void GamePlayScene::CameraFollow()
 
 	camera->SetPosition(nextPos);
 	camera->SetRotate(nextRot);
+}
+
+void GamePlayScene::StartCamera()
+{
+	if (isStartCamera_ && !isTransitioning_)
+	{
+		cameraStartTimer_ += 1.0f / 60.0f;
+		float t = std::clamp(cameraStartTimer_ / cameraStartDuration_, 0.0f, 1.0f);
+		float t_eased = Ease::InOutQuad(t);
+
+		// 補間
+		Vector3 camPos = Bezier3(camStart_, camControl1_, camControl2_, camEnd_, t_eased);
+		Vector3 camRot = Lerp(camStartRot_, camEndRot_, t_eased);
+		camera->SetPosition(camPos);
+		camera->SetRotate(camRot);
+
+		if (t >= 1.0f)
+		{
+			isStartCamera_ = false; // 終了
+			camera->SetPosition(camEnd_);
+			camera->SetRotate(camEndRot_);
+		}
+	}
+
 }
