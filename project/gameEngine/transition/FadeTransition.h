@@ -18,7 +18,10 @@ public:
 
 	FadeTransition(Mode mode = Mode::Full);
 
-	//  開始(シーン切り替え時に呼び出す)
+	/// <summary>
+	/// シーン変更時に呼び出されるコールバック関数を登録
+	/// </summary>
+	/// <param name="onSceneChange">シーン切り替え時に呼び出されるコールバック関数</param>
 	void Start(std::function<void()> onSceneChange)override;
 	
 	//  更新
@@ -29,6 +32,7 @@ public:
 
 public: // ゲッター
 
+	// トランジションが終了したか
 	bool IsFinished() const override;
 
 private:

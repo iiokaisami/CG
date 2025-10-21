@@ -12,20 +12,32 @@ public:
     // デストラクタ
     virtual ~BaseScene() = default;
 
-    // 初期化
+    /// <summary>
+    /// 初期化
+    /// </summary>
     virtual void Initialize();
 
-    // 終了
+    /// <summary>
+    /// 終了
+    /// </summary>
     virtual void Finalize();
 
-    // 更新処理
+    /// <summary>
+    /// 更新処理
+    /// </summary>
     virtual void Update();
 
-    // 描画処理
+    /// <summary>
+    /// 描画処理
+    /// </summary>
     virtual void Draw();
 
 public:
 
+    /// <summary>
+	/// シーンマネージャのセット
+    /// </summary>
+    /// <param name="sceneManager">シーン管理を行うSceneManagerのポインタ</param>
     virtual void SetSceneManager(SceneManager* sceneManager) { sceneManager_ = sceneManager; }
 
 protected:

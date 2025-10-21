@@ -13,23 +13,61 @@ class Camera
 public:
 
 	Camera();
-
-	// 更新
+	
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
-	// シェイクを開始
+	/// <summary>
+	/// シェイク開始
+	/// </summary>
+	/// <param name="duration">シェイクの持続時間</param>
+	/// <param name="magnitude">シェイクの強さ</param>
 	void StartShake(float duration, float magnitude);
 
-	// シェイクを更新
+	/// <summary>
+	/// シェイク更新
+	/// </summary>
+	/// <param name="deltaTime">前フレームからの経過時間</param>
 	void UpdateShake(float deltaTime);
 
 public: // セッター
 
+	/// <summary>
+	/// 回転を設定
+	/// </summary>
+	/// <param name="rotate"></param>
 	void SetRotate(Vector3 rotate) { transform_.rotate = rotate; }
+	
+	/// <summary>
+	/// 位置を設定
+	/// </summary>
+	/// <param name="translate"></param>
 	void SetPosition(Vector3 translate) { transform_.translate = translate; }
+	
+	/// <summary>
+	/// 視野角を設定
+	/// </summary>
+	/// <param name="fovY"></param>
 	void SetFovY(float fovY) { fovY_ = fovY; }
+	
+	/// <summary>
+	/// アスペクト比を設定
+	/// </summary>
+	/// <param name="aspectRatio"></param>
 	void SetAspectRatio(float aspectRatio) { aspectRatio_ = aspectRatio; }
+	
+	/// <summary>
+	/// ニアクリップ距離を設定
+	/// </summary>
+	/// <param name="nearClip"></param>
 	void SetNearClip(float nearClip) { nearClip_ = nearClip; }
+
+	/// <summary>
+	/// ファークリップ距離を設定
+	/// </summary>
+	/// <param name="farClip"></param>
 	void SetFarClip(float farClip) { farClip_ = farClip; }
 
 public: // ゲッター

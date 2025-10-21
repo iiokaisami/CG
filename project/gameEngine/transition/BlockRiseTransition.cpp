@@ -43,9 +43,17 @@ BlockRiseTransition::BlockRiseTransition(Mode mode) : mode_(mode)
 void BlockRiseTransition::Start(std::function<void()> onSceneChange)
 {
     onSceneChange_ = onSceneChange;
-    state_ = State::Fill;
-    timer_ = -blockInterval_;
     sceneChanged_ = false;
+    if (mode_ == Mode::DropOnly) 
+    {
+        state_ = State::Hold;
+        timer_ = 0.0f;
+    }
+    else
+    {
+        state_ = State::Fill;
+        timer_ = -blockInterval_;
+    }
 
     if (mode_ == Mode::DropOnly)
     {

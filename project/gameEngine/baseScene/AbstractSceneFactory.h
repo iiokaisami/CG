@@ -10,9 +10,14 @@
 class AbstractSceneFactory
 {
 public:
+
 	// 仮想デストラクタ
 	virtual ~AbstractSceneFactory() = default;
 
-	// シーン生成
+	/// <summary>
+	/// シーン生成
+	/// </summary>
+	/// <param name="sceneName">生成したいシーンの名前</param>
+	/// <returns>生成されたシーンのインスタンス</returns>
 	virtual BaseScene* CreateScene(const std::string& sceneName) = 0;
 };

@@ -14,7 +14,11 @@ class TransitionManager
 
 public:
 
-	// トランジション開始
+    /// <summary>
+	/// 開始(シーン切り替え時に呼び出す)
+    /// </summary>
+    /// <param name="transition">トランジション処理を行うBaseTransition派生オブジェクト</param>
+    /// <param name="onSceneChange">シーン切り替え時に呼び出されるコールバック関数</param>
     void Start(std::unique_ptr<BaseTransition> transition, std::function<void()> onSceneChange);
 
 	// 更新

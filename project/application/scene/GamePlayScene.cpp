@@ -218,7 +218,7 @@ void GamePlayScene::Update()
 #endif // _DEBUG
 
 
-	if (Input::GetInstance()->TriggerKey(DIK_UP) or pGoal_->IsCleared())
+	if (Input::GetInstance()->TriggerKey(DIK_UP) or (pGoal_->IsCleared() && !isTransitioning_))
 	{
 		// トランジション開始
 		transition_ = std::make_unique<BlockRiseTransition>();
@@ -229,7 +229,7 @@ void GamePlayScene::Update()
 			SceneManager::GetInstance()->ChangeScene("CLEAR");
 			});
 	}
-	if (Input::GetInstance()->TriggerKey(DIK_DOWN) or (pPlayer_->IsDead() && !pPlayer_->IsAutoControl()))
+	if (Input::GetInstance()->TriggerKey(DIK_DOWN) or (pPlayer_->IsDead() && !pPlayer_->IsAutoControl() && !isTransitioning_))
 	{
 		// トランジション開始
 		transition_ = std::make_unique<BlockRiseTransition>();
@@ -273,7 +273,7 @@ void GamePlayScene::Draw()
 	// トランジション描画
 	if (isTransitioning_ && transition_)
 	{
-		transition_->Draw();
+ 		transition_->Draw();
 	}
 }
 

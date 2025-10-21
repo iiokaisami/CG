@@ -55,22 +55,39 @@ public:
 	// 初期化
 	void Initialize();
 	
-	// 音声データ読み込み
+	/// <summary>
+	/// 音声データ読み込み
+	/// </summary>
+	/// <param name="filename">読み込むWAVファイルのパス</param>
+	/// <returns>読み込んだ音声データ</returns>
 	SoundData LoadWav(const char* filename);
 
-	// 音声データの解放
+	/// <summary>
+	/// 音声データの解放
+	/// </summary>
+	/// <param name="xAudio2"> XAudio2インスタンス</param>
+	/// <param name="soundData">解放したい音声データ</param>
 	void SoundUnload(Microsoft::WRL::ComPtr<IXAudio2> xAudio2, SoundData* soundData);
 
-	// サウンド再生
-	// 再生したいサウンドデータとループフラグ、ボリュームを引数に取る
+	/// <summary>
+	/// サウンド再生
+	/// </summary>
+	/// <param name="soundData"> 再生したいサウンドデータ</param>
+	/// <param name="loop">ループするか</param>
+	/// <param name="volume">ボリューム</param>
 	void PlayWave(const SoundData& soundData, bool loop, float volume);
 
-	// サウンド停止
-	// 停止したいサウンドデータを引数に取る
+	/// <summary>
+	/// サウンド停止 
+	/// </summary>
+	/// <param name="soundData">停止したいサウンドデータ</param>
 	void SoundStop(SoundData& soundData);
 
-	// ボリュームを設定	
-	// 設定したいサウンドデータとボリュームを引数に取る
+	/// <summary>
+	/// ボリュームを設定 
+	/// </summary>
+	/// <param name="soundData">設定したいサウンドデータ</param>
+	/// <param name="volume">ボリューム</param>
 	void SetVolume(SoundData& soundData, float volume);
 
 public: // ゲッター

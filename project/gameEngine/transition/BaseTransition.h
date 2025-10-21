@@ -12,13 +12,20 @@ public:
 
 	virtual ~BaseTransition() = default;
 
-	//  開始(シーン切り替え時に呼び出す)
+	/// <summary>
+	/// シーン変更時に呼び出されるコールバック関数を登録
+	/// </summary>
+	/// <param name="onSceneChange">シーンが変更されたときに実行されるコールバック関数</param>
 	virtual void Start(std::function<void()> onSceneChange) = 0;
 
-	//  更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	virtual void Update() = 0;
 
-	//  描画
+	/// <summary>
+	/// 描画
+	/// </summary>
 	virtual void Draw() = 0;
 
 public: // ゲッター

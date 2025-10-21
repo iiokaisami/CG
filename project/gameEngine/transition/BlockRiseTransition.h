@@ -18,13 +18,20 @@ public:
 
     BlockRiseTransition(Mode mode = Mode::Full);
 
-	//  開始(シーン切り替え時に呼び出す)
+    /// <summary>
+	/// 開始(シーン切り替え時に呼び出す)
+    /// </summary>
+    /// <param name="onSceneChange">シーンが切り替わるタイミングで呼び出されるコールバック関数</param>
     void Start(std::function<void()> onSceneChange) override;
     
-	//  更新
+    /// <summary>
+	/// 更新
+    /// </summary>
     void Update() override;
     
-	//  描画
+    /// <summary>
+	/// 描画
+    /// </summary>
     void Draw() override;
     
 public: // ゲッター
@@ -34,6 +41,9 @@ public: // ゲッター
 
 private:
 
+    /// <summary>
+	/// ブロック1つ分の情報
+    /// </summary>
     struct Block
     {
         std::unique_ptr<Sprite> sprite;
@@ -51,11 +61,14 @@ private:
         float riseDuration;
     };
 
+	// ブロック群
     std::vector<Block> blocks_;
 
+	// ブロックの初期化
     enum class State { Fill, Hold, Drop, Done };
     State state_ = State::Fill;
 
+    
     float timer_ = 0.0f;
     float fillSpeed_ = 4.0f;
     float blockInterval_ = 0.04f;
