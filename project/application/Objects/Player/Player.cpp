@@ -7,7 +7,7 @@ void Player::Initialize()
 	object_->Initialize("player.obj");
 
 
-	position_ = { 0.2f,0.7f,-1.2f };
+	position_ = { -9.0f,0.7f,-5.0f }; //{ 0.2f,0.7f,-1.2f };
 	object_->SetPosition(position_);
 	object_->SetRotate(rotation_);
 	
@@ -395,7 +395,7 @@ void Player::DeadEffect()
 	}
 
 	// パーティクルを発生させる
-	ParticleEmitter::Emit("explosionGroup", position_, 12);
+	ParticleEmitter::Emit("explosionGroup", position_, 20);
 
 	// モーション終了扱いにする（isActive=false）
 	deathMotion_.isActive = false;
