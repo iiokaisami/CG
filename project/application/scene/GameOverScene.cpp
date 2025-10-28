@@ -7,51 +7,40 @@ void GameOverScene::Initialize()
 
 	camera_ = std::make_shared<Camera>();
 	camera_->SetRotate({ 0.3f,0.0f,0.0f });
-	camera_->SetPosition({ 0.0f,4.0f,-20.0f });
+	camera_->SetPosition({ 0.0f,4.0f,-40.0f });
 	Object3dCommon::GetInstance()->SetDefaultCamera(camera_);
 	cameraManager.AddCamera(camera_);
 	cameraManager.SetActiveCamera(0);
 
-	cameraPosition_ = { 0.0f,4.0f,-10.0f };
+	cameraPosition_ = { 0.0f,20.0f,-50.0f };
 	cameraRotate_ = { 0.3f,0.0f,0.0f };
 	camera_->SetPosition(cameraPosition_);
 	camera_->SetRotate(cameraRotate_);
-
-	// --- 3Dオブジェクト ---
-	for (uint32_t i = 0; i < 3; ++i)
-	{
-		Object3d* object = new Object3d();
-		if (i == 0)
-		{
-			object->Initialize("sphere.obj");
-		}
-		if (i == 1)
-		{
-			object->Initialize("terrain.obj");
-		}
-		if (i == 2)
-		{
-			object->Initialize("plane.obj");
-		}
-
-		position_ = { 0.0f,0.0f,5.0f };
-		scale_ = { 1.0f,1.0f,1.0f };
-		object->SetPosition(position_);
-		object->SetScale(scale_);
-
-		object3ds.push_back(object);
-	}
 
 	for (uint32_t i = 0; i < 1; ++i)
 	{
 		Sprite* sprite = new Sprite();
 		
 		if (i == 0) {
-			sprite->Initialize("GameOver.png", { 0,0 }, {1.0f,1.0f,1.0f,1.0f}, { 0,0 });
+			sprite->Initialize("gameOverLogo.png", { -10,0 }, {1.0f,1.0f,1.0f,1.0f}, { 0,0 });
 		}
 		
 		sprites.push_back(sprite);
 	}
+
+	// 衝突判定
+	colliderManager_ = ColliderManager::GetInstance();
+	colliderManager_->Initialize();
+
+	// プレイヤー
+	pPlayer_ = std::make_unique<Player>();
+	pPlayer_->Initialize();
+	pPlayer_->SetPosition({ 0.0f,0.0f,0.0f });
+	pPlayer_->SetIsCanMove(false); // 移動不可
+
+	// エネミー
+	pEnemyManager_ = std::make_unique<EnemyManager>();
+	pEnemyManager_->GameOverEnemyInit();
 
 	// シーン開始時にフェードイン
 	transition_ = std::make_unique<BlockRiseTransition>(BlockRiseTransition::Mode::DropOnly);
@@ -61,10 +50,8 @@ void GameOverScene::Initialize()
 
 void GameOverScene::Finalize()
 {
-	for (auto& obj : object3ds)
-	{
-		delete obj;
-	}
+	pPlayer_->Finalize();
+	pEnemyManager_->Finalize();
 
 	for (Sprite* sprite : sprites)
 	{
@@ -92,23 +79,32 @@ void GameOverScene::Update()
 
 	camera_->Update();
 	camera_->SetPosition(cameraPosition_);
-	camera_->SetRotate(cameraRotate_);
-
-
-	for (auto& obj : object3ds)
-	{
-		obj->Update();
-	}
-
-	rotate_.x += 0.01f;
-	object3ds[0]->SetScale(scale_);
-	object3ds[0]->SetRotate(rotate_);
+	camera_->SetRotate(cameraRotate_);	
 
 	for (Sprite* sprite : sprites)
 	{
 		sprite->Update();
 
 	}
+
+	// 当たり判定チェック
+	colliderManager_->CheckAllCollision();
+
+	// プレイヤーの更新
+	pPlayer_->Update();
+	// プレイヤーの位置をエネミーマネージャーにセット
+	pEnemyManager_->SetPlayerPosition(pPlayer_->GetPosition());
+
+	// カメラの更新(シェイク、追尾、引き)
+	if (!pPlayer_->IsDead())
+	{
+		camera_->SetRotate(cameraRotate_);
+		camera_->SetPosition(cameraPosition_);
+		CameraShake();
+	}
+
+	// エネミーの更新
+	pEnemyManager_->GameOverEnemyUpdate();
 
 
 
@@ -120,12 +116,13 @@ void GameOverScene::Update()
 
 	//ImGui::SliderFloat4("transparent", &color_.x, 0.0f, 1.0f);
 
-	ImGui::SliderFloat3("cameraPosition", &cameraPosition_.x, -20.0f, 20.0f);
+	ImGui::SliderFloat3("cameraPosition", &cameraPosition_.x, -50.0f, 20.0f);
 	ImGui::SliderFloat3("cameraRotate", &cameraRotate_.x, -3.14f, 3.14f);
 
-	ImGui::SliderFloat3("sphere scale", &scale_.x, 0.0f, 10.0f);
-
+	
 	ImGui::End();
+
+	pEnemyManager_->ImGuiDraw();
 
 #endif // _DEBUG
 
@@ -148,10 +145,9 @@ void GameOverScene::Draw()
 	// 描画前処理(Object)
 	Object3dCommon::GetInstance()->CommonDrawSetting();
 
-	for (auto& obj : object3ds)
-	{
-		obj->Draw();
-	}
+	pPlayer_->Draw();
+
+	pEnemyManager_->Draw();
 
 	// 描画前処理(Sprite)
 	SpriteCommon::GetInstance()->CommonDrawSetting();
@@ -166,5 +162,35 @@ void GameOverScene::Draw()
 	if (isTransitioning_ && transition_)
 	{
 		transition_->Draw();
+	}
+}
+
+void GameOverScene::CameraShake()
+{
+	// アクティブカメラの情報を取得
+	auto activeCamera = cameraManager.GetActiveCamera();
+	if (activeCamera)
+	{
+		auto viewMatrix = activeCamera->GetViewMatrix();
+	}
+
+	// プレイヤーがヒットした場合にカメラをシェイク
+	if (pPlayer_->IsHitMoment())
+	{
+		// アクティブなカメラを取得
+		if (activeCamera)
+		{
+			// カメラをシェイク (持続時間,振幅)
+			activeCamera->StartShake(0.3f, 0.6f);
+
+			// ヒットフラグをリセット
+			pPlayer_->SetHitMoment(false);
+		}
+	}
+
+	// シェイク
+	if (activeCamera)
+	{
+		activeCamera->UpdateShake(1.0f / 60.0f);
 	}
 }

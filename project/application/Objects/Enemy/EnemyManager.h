@@ -39,6 +39,12 @@ public:
 	// タイトルシーン用の敵更新
 	void TitleEnemyUpdate();
 
+	// ゲームオーバーシーン用の敵初期化
+	void GameOverEnemyInit();
+
+	// ゲームオーバーシーン用の敵更新
+	void GameOverEnemyUpdate();
+
 	// 敵の初期化
 	void NormalEnemyInit(const Vector3& pos);
 	void TrapEnemyInit(const Vector3& pos);

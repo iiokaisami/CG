@@ -262,7 +262,7 @@ void GamePlayScene::Update()
 			SceneManager::GetInstance()->ChangeScene("CLEAR");
 			});
 	}
-	if (Input::GetInstance()->TriggerKey(DIK_DOWN))
+	if (Input::GetInstance()->TriggerKey(DIK_DOWN) or (pPlayer_->IsDeathMotionComplete() && !isTransitioning_))
 	{
 		// トランジション開始
 		transition_ = std::make_unique<BlockRiseTransition>();
@@ -273,20 +273,6 @@ void GamePlayScene::Update()
 				SceneManager::GetInstance()->ChangeScene("GAMEOVER");
 			});
 	}
-
-
-	if (Input::GetInstance()->TriggerKey(DIK_RETURN))
-	{
-		// トランジション開始
-		transition_ = std::make_unique<BlockRiseTransition>();
-		isTransitioning_ = true;
-		transition_->Start([]
-			{
-				// シーン切り替え
-				SceneManager::GetInstance()->ChangeScene("TITLE");
-			});
-	}
-
 }
 
 void GamePlayScene::Draw()
@@ -350,7 +336,7 @@ void GamePlayScene::CameraShake()
 		if (activeCamera)
 		{
 			// カメラをシェイク (持続時間,振幅)
-			activeCamera->StartShake(0.3f, 0.5f);
+			activeCamera->StartShake(0.3f, 0.6f);
 
 			// ヒットフラグをリセット
 			pPlayer_->SetHitMoment(false);
@@ -512,6 +498,6 @@ void GamePlayScene::UpdateDeathCamera(float deltaTime)
 
 		// プレイヤー死亡演出
 		pPlayer_->StartDeathMotion();
-		
+
 	}
 }

@@ -35,7 +35,7 @@ void Player::Initialize()
 	colliderManager_->RegisterCollider(&collider_);
 
 	// ステータス
-	hp_ = 2;
+	hp_ = 1;
 	isDead_ = false;
 	isAutoControl_= false;
 
@@ -49,11 +49,15 @@ void Player::Initialize()
 
 	// 死亡モーション初期値
 	deathMotion_.isActive = false;
+	deathMotion_.isComplete = false;
 	deathMotion_.count = 0;
 	deathMotion_.shakeFrames = 40;     // ぷるぷる時間（フレーム）
 	deathMotion_.wobbleAmplitude = 0.10f;
 	deathMotion_.wobbleFreq = 10.0f;
 	deathMotion_.popScale = 2.0f;
+
+
+	isCanMove_ = true;
 }
 
 void Player::Finalize()
@@ -107,8 +111,8 @@ void Player::Update()
 		}
 
 	}
-	else
-	{
+	else if(isCanMove_)
+ 	{
 		// 回避処理
 		Evade();
 		// アクティブフラグに回避フラグを入れる
@@ -119,6 +123,15 @@ void Player::Update()
 		{
 			Move();
 			Attack();
+		}
+	}
+	else
+	{
+		if (isDead_)
+		{
+			isDead_ = false;
+
+			hp_ = 8;
 		}
 	}
 
@@ -386,6 +399,7 @@ void Player::DeadEffect()
 
 	// モーション終了扱いにする（isActive=false）
 	deathMotion_.isActive = false;
+	deathMotion_.isComplete = true;
 }
 
 void Player::StartDeathMotion()

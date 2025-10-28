@@ -26,7 +26,7 @@ private:
 	// 攻撃フラグ
 	bool isAttack_ = false;
 	// 攻撃クールタイム
-	uint32_t attackCooldown_ = 0;
+	int attackCooldown_ = 0;
 
 };
 

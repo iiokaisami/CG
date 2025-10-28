@@ -8,8 +8,10 @@
 #include <Vector3.h>
 
 #include "../../gameEngine/baseScene/BaseScene.h"
-
 #include "../../gameEngine/transition/BlockRiseTransition.h"
+#include "../../application/objects/player/Player.h"
+#include "../../application/objects/enemy/EnemyManager.h"
+#include "../../gameEngine/collider/ColliderManager.h"
 
 /// <summary>
 /// ゲームオーバーシーン
@@ -33,6 +35,11 @@ public:
 
 private:
 
+	// カメラシェイク
+	void CameraShake();
+
+private:
+
 	CameraManager& cameraManager = CameraManager::GetInstance();
 	std::shared_ptr<Camera> camera_ = std::make_shared<Camera>();
 	Vector3 cameraPosition_{};
@@ -45,11 +52,14 @@ private:
 	std::unique_ptr<BlockRiseTransition> transition_ = nullptr;
 	bool isTransitioning_ = false;
 
-	// 3Dオブジェクト
-	std::vector<Object3d*> object3ds = {};
-	Vector3 position_ = { 0.0f,0.0f,-10.0f };
-	Vector3 scale_{};
-	Vector3 rotate_{};
+	// 衝突判定
+	ColliderManager* colliderManager_ = nullptr;
+
+	// プレイヤー
+	std::unique_ptr<Player> pPlayer_ = nullptr;
+
+	// エネミー
+	std::unique_ptr<EnemyManager> pEnemyManager_ = nullptr;
 
 };
 

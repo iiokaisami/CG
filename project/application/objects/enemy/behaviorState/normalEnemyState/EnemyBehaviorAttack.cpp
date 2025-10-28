@@ -28,6 +28,9 @@ void EnemyBehaviorAttack::Update()
     // 溜め
     if (motion_.isActive)
     {
+        // モーションカウントを更新
+        MotionCount(motion_);
+
         if (motion_.count <= 20)
         {
             float t = float(motion_.count) / 20.0f; // 0〜1
@@ -62,9 +65,6 @@ void EnemyBehaviorAttack::Update()
 
         }
     }
-
-	// モーションカウントを更新
-	MotionCount(motion_);
 
 	if (pNormalEnemy_->GetHP() <= 0)
 	{

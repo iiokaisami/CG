@@ -86,12 +86,18 @@ public: // ゲッター
 	// オートフラグのゲッター
 	bool IsAutoControl() const { return isAutoControl_; }
 
+	// 死亡演出がアクティブかどうか
+	bool IsDeathMotionComplete() const { return deathMotion_.isComplete; }
+
 public: // セッター
 
 	void SetHitMoment(bool _isHitMoment) { isHitMoment_ = _isHitMoment; }
 
 	// オートフラグのセッター
 	void SetAutoControl(bool _isAuto) { isAutoControl_ = _isAuto; }
+
+	// 移動可能フラグのセッター
+	bool SetIsCanMove(bool _isCanMove) { return isCanMove_ = _isCanMove; }
 
 private:
 
@@ -165,6 +171,7 @@ private:
 	struct Motion
 	{
 		bool isActive = false;
+		bool isComplete = false;
 		uint32_t count = 0;           // 現在フレームカウント
 		uint32_t shakeFrames = 40;    // ぷるぷる継続フレーム数（調整可）
 		// 振動パラメータ
@@ -179,6 +186,8 @@ private:
 	};
 
 	Motion deathMotion_;
+
+	bool isCanMove_ = true;
 
 };
 
