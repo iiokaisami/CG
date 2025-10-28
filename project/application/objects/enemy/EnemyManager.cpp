@@ -203,6 +203,49 @@ void EnemyManager::TitleEnemyUpdate()
 	}
 }
 
+void EnemyManager::GameOverEnemyInit()
+{
+	NormalEnemyInit({ -20.0f,0.5f,0.0f });
+}
+
+void EnemyManager::GameOverEnemyUpdate()
+{
+	// ノーマルエネミーの更新
+	for (auto& enemy : pNormalEnemies_)
+	{
+		enemy->SetPlayerPosition(playerPosition_);
+		enemy->Update();
+		toPlayerDistance_.push_back(enemy->GetToPlayer());
+	}
+
+	// isDeat がたったら削除
+	pNormalEnemies_.erase(
+		std::remove_if(
+			pNormalEnemies_.begin(),
+			pNormalEnemies_.end(),
+			[this](std::unique_ptr<NormalEnemy>& enemy)
+			{
+				if (enemy->IsDead())
+				{
+					enemy->Finalize();
+
+					// 敵のカウントを減らす
+					enemyCount_--;
+
+					return true;
+				}
+				return false;
+			}),
+		pNormalEnemies_.end()
+	);
+
+	// 敵が全て倒されたらもう一度出現
+	if (enemyCount_ == 0)
+	{
+		GameOverEnemyInit();
+	}
+}
+
 void EnemyManager::NormalEnemyInit(const Vector3& pos)
 {
 	// ノーマルエネミー

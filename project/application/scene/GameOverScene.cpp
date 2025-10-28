@@ -1,5 +1,7 @@
 #include "GameOverScene.h"
 
+#include <Ease.h>
+
 void GameOverScene::Initialize()
 {
 	// 必ず先頭でカメラを全クリア
@@ -17,16 +19,26 @@ void GameOverScene::Initialize()
 	camera_->SetPosition(cameraPosition_);
 	camera_->SetRotate(cameraRotate_);
 
-	for (uint32_t i = 0; i < 1; ++i)
+	for (uint32_t i = 0; i < 3; ++i)
 	{
 		Sprite* sprite = new Sprite();
 		
-		if (i == 0) {
+		if (i == 0)
+		{
 			sprite->Initialize("gameOverLogo.png", { -10,0 }, {1.0f,1.0f,1.0f,1.0f}, { 0,0 });
 		}
-		
+		else if (i == 1)
+		{
+			sprite->Initialize("gameOverReTry.png", { 0,620 }, { 1.0f,1.0f,1.0f,1.0f }, { 0,0 });
+		}
+		else if (i == 2)
+		{
+			sprite->Initialize("gameOverToTitle.png", { -70,620 }, { 1.0f,1.0f,1.0f,1.0f }, { 0,0 });
+		}
+
 		sprites.push_back(sprite);
 	}
+
 
 	// 衝突判定
 	colliderManager_ = ColliderManager::GetInstance();
@@ -138,6 +150,19 @@ void GameOverScene::Update()
 				SceneManager::GetInstance()->ChangeScene("TITLE");
 			});
 	}
+
+	if( Input::GetInstance()->TriggerKey(DIK_R))
+	{
+		// トランジション開始
+		transition_ = std::make_unique<BlockRiseTransition>();
+		isTransitioning_ = true;
+		transition_->Start([]
+			{
+				// シーン切り替え
+				SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+			});
+	}
+
 }
 
 void GameOverScene::Draw()
