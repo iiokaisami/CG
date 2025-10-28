@@ -29,6 +29,7 @@ public:
 
     std::string motionName;
 
+	// コンストラクタ
     Particle()
 		: velocity(0.0f, 0.0f, 0.0f), color(1.0f, 1.0f, 1.0f, 1.0f), lifeTime(1.0f), currentTime(0.0f)
     {

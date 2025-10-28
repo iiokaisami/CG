@@ -92,14 +92,14 @@ Particle ParticleMotion::MakeOrbit(std::mt19937& rand, const Vector3& target)
 
 Particle ParticleMotion::MakeExplosion(std::mt19937& rand, const Vector3& center)
 {
-    std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
+    std::uniform_real_distribution<float> dist(-15.0f, 15.0f);
     Particle particle;
     particle.transform.translate = { center.x,center.y + 1.0f,center.z };
     particle.transform.scale = { 1.0f, 1.0f, 1.0f };
-    particle.velocity = Normalize(Vector3(dist(rand), dist(rand), dist(rand)));
+    particle.velocity = Vector3(dist(rand), dist(rand), dist(rand));
     particle.lifeTime = 1.0f;
     particle.currentTime = 0.0f;
-    particle.color = { 1.0f, 0.5f, 0.0f, 1.0f }; // オレンジ色（炎）
+    particle.color = { 1.0f, 0.0f, 0.0f, 1.0f };
     return particle;
 }
 

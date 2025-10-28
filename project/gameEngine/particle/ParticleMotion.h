@@ -18,22 +18,48 @@ public:
 
     using MotionFunc = std::function<Particle(std::mt19937&, const Vector3&)>;
 
-    // モーションの登録
+    /// <summary>
+	/// モーションの登録
+    /// </summary>
+	/// <param name="name">モーション名</param>
+	/// <param name="func">モーション生成関数</param>
     static void Register(const std::string& name, MotionFunc func);
 
-    // モーションの生成（文字列で）
+	/// <summary>
+	/// パーティクルの生成
+	/// </summary>
+	/// <param name="name">モーション名</param>
+	/// <param name="rand">乱数生成器</param>
+	/// <param name="pos">生成位置</param>
+	/// <returns>生成したパーティクル</returns>
     static Particle Create(const std::string& name, std::mt19937& rand, const Vector3& pos);
 
-    // 初期化（登録関数をまとめて呼び出す）
+    /// <summary>
+	/// 初期化(モーション登録)
+    /// </summary>
     static void Initialize();
 
-    // 登録済み一覧取得（ImGui などUI表示用）
+    /// <summary>
+    /// 登録済み一覧取得(ImGui などUI表示用)
+    /// </summary>
+	/// <returns>モーション関数のマップ</returns>
     static const std::unordered_map<std::string, MotionFunc>& GetAll();
 
     // 各モーション関数の定義
-	// targetへ向かう
+ 
+    /// <summary>
+	/// ターゲットに向かって飛ぶ
+    /// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="target">目標位置</param>
+	/// <returns>生成したパーティクル</returns>
     static Particle MakeHoming(std::mt19937& rand, const Vector3& target);
-	// targetを中心に円運動
+    /// <summary>
+	/// ターゲットの周りを回る
+    /// </summary>
+	/// <param name="rand">ランダム生成器</param>
+    /// <param name="target"></param>
+    /// <returns></returns>
     static Particle MakeOrbit(std::mt19937& rand, const Vector3& target);
 	// 中心からランダムに放射状に飛ぶ
     static Particle MakeExplosion(std::mt19937& rand, const Vector3& center);

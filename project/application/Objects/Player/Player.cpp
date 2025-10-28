@@ -35,7 +35,7 @@ void Player::Initialize()
 	colliderManager_->RegisterCollider(&collider_);
 
 	// ステータス
-	hp_ = 8;
+	hp_ = 2;
 	isDead_ = false;
 	isAutoControl_= false;
 
@@ -47,6 +47,13 @@ void Player::Initialize()
 	cubeSrvIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(cubeMapPath_);
 	cubeHandle_ = TextureManager::GetInstance()->GetSrvManager()->GetGPUDescriptorHandle(cubeSrvIndex_);
 
+	// 死亡モーション初期値
+	deathMotion_.isActive = false;
+	deathMotion_.count = 0;
+	deathMotion_.shakeFrames = 40;     // ぷるぷる時間（フレーム）
+	deathMotion_.wobbleAmplitude = 0.10f;
+	deathMotion_.wobbleFreq = 10.0f;
+	deathMotion_.popScale = 2.0f;
 }
 
 void Player::Finalize()
@@ -73,6 +80,13 @@ void Player::Finalize()
 
 void Player::Update()
 {
+	// 死亡モーションがアクティブなら移動入力等を無視して DeadEffect を更新
+	if (deathMotion_.isActive)
+	{
+		DeadEffect();
+		return;
+	}
+
 	object_->SetPosition(position_);
 	object_->SetRotate(rotation_);
 	object_->SetScale(scale_);
@@ -101,7 +115,7 @@ void Player::Update()
 		isActive_ = isEvading_;
 
 		// 回避中は移動・攻撃を無効化
-		if (!isEvading_)
+		if (!isEvading_ && !isDead_)
 		{
 			Move();
 			Attack();
@@ -303,6 +317,104 @@ void Player::Evade()
 	}
 }
 
+void Player::DeadEffect()
+{
+	if (!deathMotion_.isActive)
+	{
+		return;
+	}
+
+	uint32_t frame = deathMotion_.count;
+
+	// まずは「ぷるぷる」フェーズ：frame < shakeFrames
+	if (frame < deathMotion_.shakeFrames)
+	{
+		// 正規化 t [0,1]
+		float t = static_cast<float>(frame) / static_cast<float>(deathMotion_.shakeFrames);
+		t = std::clamp(t, 0.0f, 1.0f);
+
+		// 減衰付きサイン振動（frame単位）
+		// 周波数補正: wobbleFreq 回/秒 想定 -> frameベースの角度は frame * wobbleFreq * 2*pi / 60
+		float angular = static_cast<float>(frame) * deathMotion_.wobbleFreq * (2.0f * 3.14159265f / 60.0f);
+		float decay = 1.0f - t; // だんだん振幅を減らす
+		float wobble = std::sin(angular) * deathMotion_.wobbleAmplitude * decay;
+
+		// 基準スケールに wobble を加算（均等）
+		float baseSx = deathMotion_.startScale.x;
+		float s = baseSx + wobble;
+		if (s < 0.001f) s = 0.001f; // 負スケール防止
+		scale_.x = s;
+		scale_.y = s;
+		scale_.z = s;
+
+		// ちょっと上下に揺らす（視覚効果）
+		position_ = deathMotion_.startPosition;
+		position_.y += std::sin(angular) * 0.01f * decay;
+
+		// 軽く回す
+		rotation_ = deathMotion_.startRotation;
+		rotation_.y += 0.04f * decay;
+
+		// 反映
+		if (object_)
+		{
+			object_->SetPosition(position_);
+			object_->SetRotate(rotation_);
+			object_->SetScale(scale_);
+			object_->Update();
+		}
+
+		deathMotion_.count++;
+		return;
+	}
+
+	// ぷるぷるが終わった直後：はじけ（瞬時に大きくして消える）
+	// ここでは即時にスケールを0にする仕様とのことなので、瞬時に scale=0 にする
+	// （もし一瞬だけ大きく見せたい場合は簡単に挿入できる）
+	scale_.x = 0.0f;
+	scale_.y = 0.0f;
+	scale_.z = 0.0f;
+
+	if (object_)
+	{
+		object_->SetScale(scale_);
+		object_->Update();
+	}
+
+	// パーティクルを発生させる
+	ParticleEmitter::Emit("explosionGroup", position_, 12);
+
+	// モーション終了扱いにする（isActive=false）
+	deathMotion_.isActive = false;
+}
+
+void Player::StartDeathMotion()
+{
+	if (deathMotion_.isActive)
+	{
+		return;
+	}
+
+	deathMotion_.isActive = true;
+	deathMotion_.count = 0;
+	// 保存しておく現在のトランスフォーム
+	deathMotion_.startPosition = position_;
+	deathMotion_.startRotation = rotation_;
+	deathMotion_.startScale = scale_;
+
+	// 即時に少し大きく見せたい場合は startScale を調整しておく
+	// deathMotion_.startScale = scale_;
+
+	// 反映
+	if (object_)
+	{
+		object_->SetPosition(position_);
+		object_->SetRotate(rotation_);
+		object_->SetScale(scale_);
+		object_->Update();
+	}
+}
+
 void Player::AutoMove()
 {
 	static int moveTimer = 0;
@@ -404,7 +516,7 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		_other->GetColliderID() == "NormalEnemy"))
 	{
 		// プレイヤーのHPを減少
-		if (hp_ > 0)
+		if (hp_ > 0.3)
 		{
 			hp_--;
 		}
@@ -421,7 +533,7 @@ void Player::OnCollisionTrigger(const Collider* _other)
 		if (_other->GetOwner()->IsActive())
 		{
 			// プレイヤーのHPを減少
-			if (hp_ > 0)
+			if (hp_ > 0.3)
 			{
 				hp_ -= 1.5f;
 			}

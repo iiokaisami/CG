@@ -1,8 +1,8 @@
 #include "GamePlayScene.h"
 
 #include <ModelManager.h>
-
 #include <Ease.h>
+#include <corecrt_math_defines.h>
 
 void GamePlayScene::Initialize()
 {
@@ -55,7 +55,7 @@ void GamePlayScene::Initialize()
 	cameraRestCenter_ = pPlayer_->GetPosition() + Vector3{ 0.0f,70.0f,-20.0f };
 
 	// スプライト
-	for (uint32_t i = 0; i < 1; ++i)
+	/*for (uint32_t i = 0; i < 1; ++i)
 	{
 		Sprite* sprite = new Sprite();
 
@@ -65,7 +65,7 @@ void GamePlayScene::Initialize()
 		}
 
 		sprites.push_back(sprite);
-	}
+	}*/
 
 	// レベルデータの読み込み
 	levelData_ = LevelDataLoader::LoadLevelData("wallSetting");
@@ -92,6 +92,10 @@ void GamePlayScene::Initialize()
 	// スタートカメラ演出
 	isStartCamera_ = true;
 	cameraStartTimer_ = 0.0f;
+
+	// デスカメラフラグ初期化
+	isDeathCamera_ = false;
+	isDeadCameraPlayer_ = false;
 }
 
 void GamePlayScene::Finalize()
@@ -172,7 +176,7 @@ void GamePlayScene::Update()
 	pEnemyManager_->SetPlayerPosition(pPlayer_->GetPosition());
 
 	// カメラの更新(シェイク、追尾、引き)
-	if (!isStartCamera_)
+	if (!isStartCamera_ && !pPlayer_->IsDead())
 	{
 		camera->SetRotate(cameraRotate);
 		camera->SetPosition(cameraPosition);
@@ -194,6 +198,21 @@ void GamePlayScene::Update()
 	// ゴールの更新
 	pGoal_->Update();
 	pGoal_->SetBarrierDestroyed(pEnemyManager_->IsAllEnemyDefeated());
+
+	// プレイヤーが死んだらデスカメラを開始(1回だけ)
+	if (pPlayer_->IsDead() && !pPlayer_->IsAutoControl() && !isTransitioning_ && !isDeadCameraPlayer_)
+	{
+		if (!isDeathCamera_)
+		{
+			StartDeathCamera();
+		}
+	}
+
+	// DeathCamera更新(StartDeathCameraが呼ばれている場合)
+	if (isDeathCamera_)
+	{
+		UpdateDeathCamera(1.0f / 60.0f);
+	}
 
 
 #ifdef _DEBUG
@@ -243,7 +262,7 @@ void GamePlayScene::Update()
 			SceneManager::GetInstance()->ChangeScene("CLEAR");
 			});
 	}
-	if (Input::GetInstance()->TriggerKey(DIK_DOWN) or (pPlayer_->IsDead() && !pPlayer_->IsAutoControl() && !isTransitioning_))
+	if (Input::GetInstance()->TriggerKey(DIK_DOWN))
 	{
 		// トランジション開始
 		transition_ = std::make_unique<BlockRiseTransition>();
@@ -396,4 +415,103 @@ void GamePlayScene::StartCamera()
 		}
 	}
 
+}
+
+void GamePlayScene::StartDeathCamera()
+{
+	if (!camera or !pPlayer_)
+	{
+		return;
+	}
+
+	// 一度だけフラグ
+	isDeadCameraPlayer_ = true;
+
+	isDeathCamera_ = true;
+	deathCameraTimer_ = 0.0f;
+
+	// プレイヤー位置と現カメラ位置から開始角度・半径・高さを算出
+	Vector3 playerPos = pPlayer_->GetPosition();
+	Vector3 camPos = camera->GetPosition();
+
+	float dx = camPos.x - playerPos.x;
+	float dz = camPos.z - playerPos.z;
+	// startAngle を atan2(dx, dz)の順で取る(Bezier等で使ったのと整合を取る)
+	deathStartAngle_ = std::atan2(dx, dz);
+	deathStartRadius_ = std::sqrt(dx * dx + dz * dz);
+	deathStartHeight_ = camPos.y - playerPos.y;
+
+	// 最終的にプレイヤーの正面は 0 に
+	deathTargetAngleOffset_ = 0.0f;
+}
+
+void GamePlayScene::UpdateDeathCamera(float deltaTime)
+{
+	if (!isDeathCamera_ or (!camera || !pPlayer_))
+	{
+		return;
+	}
+
+	deathCameraTimer_ += deltaTime;
+	float t = std::clamp(deathCameraTimer_ / deathCameraDuration_, 0.0f, 1.0f);
+
+	// イージング
+	float t_eased = Ease::InOutQuad(t);
+
+	// 角度は start -> target を経由して rotations 周回させる
+	// targetAngle = deathTargetAngleOffset_0: プレイヤー前方
+	float targetAngle = deathTargetAngleOffset_;
+	// 差分を符号付きで正規化しておき、さらに周回分を追加
+	float delta = targetAngle - deathStartAngle_;
+	// normalize delta to [-pi, pi]
+	while (delta > (float)M_PI) delta -= 2.0f * (float)M_PI;
+	while (delta < (float) - M_PI) delta += 2.0f * (float)M_PI;
+	float totalAngularTravel = delta + deathCameraRotations_ * 2.0f * (float)M_PI;
+	float angle = deathStartAngle_ + totalAngularTravel * t_eased;
+
+	// 半径と高さを補間(start -> end)
+	float radius = std::lerp(deathStartRadius_, deathEndRadius_, t_eased);
+	float height = std::lerp(deathStartHeight_, deathEndHeight_, t_eased);
+
+	// カメラ位置を計算(playerを中心に極座標から)
+	Vector3 playerPos = pPlayer_->GetPosition();
+	Vector3 camPos;
+	camPos.x = playerPos.x + std::sin(angle) * radius;
+	camPos.z = playerPos.z + std::cos(angle) * radius;
+	camPos.y = playerPos.y + height;
+
+	camera->SetPosition(camPos);
+
+	// カメラの回転：プレイヤーを見る方向に向ける
+	Vector3 dir = (playerPos - camPos);
+	// yaw: y軸回転(左右)を atan2(dir.x, dir.z)
+	float yaw = std::atan2(dir.x, dir.z);
+	// pitch: x軸回転(上下)を atan2(-dir.y, sqrt(x^2+z^2))
+	float horizontalDist = std::sqrt(dir.x * dir.x + dir.z * dir.z);
+	float pitch = std::atan2(-dir.y, horizontalDist);
+
+	Vector3 camRot = { pitch, yaw, 0.0f };
+	camera->SetRotate(camRot);
+
+	// 終了判定
+	if (t >= 1.0f)
+	{
+		isDeathCamera_ = false;
+		// 最終的にぴったり正面位置にセットして終了
+		Vector3 finalPos;
+		finalPos.x = playerPos.x + std::sin(targetAngle) * deathEndRadius_;
+		finalPos.z = playerPos.z + std::cos(targetAngle) * deathEndRadius_;
+		finalPos.y = playerPos.y + deathEndHeight_;
+		camera->SetPosition(finalPos);
+
+		Vector3 finalDir = (playerPos - finalPos);
+		float finalYaw = std::atan2(finalDir.x, finalDir.z);
+		float finalH = std::sqrt(finalDir.x * finalDir.x + finalDir.z * finalDir.z);
+		float finalPitch = std::atan2(-finalDir.y, finalH);
+		camera->SetRotate({ finalPitch, finalYaw, 0.0f });
+
+		// プレイヤー死亡演出
+		pPlayer_->StartDeathMotion();
+		
+	}
 }

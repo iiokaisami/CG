@@ -38,13 +38,23 @@ public:
 
 public:
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="dxCommon">DirectX共通機能管理クラスへのポインタ</param>
 	void Initialize(DirectXCommon* dxCommon);
 
-	// モデルファイルの読み込み
+	/// <summary>
+	/// モデルファイルの読み込み
+	/// </summary>
+	/// <param name="filePath">ファイルパス</param>
 	void LoadModel(const std::string& filePath);
 
-	// モデルの検索
+	/// <summary>
+	/// モデルの検索
+	/// </summary>
+	/// <param name="filePath">ファイルパス</param>
+	/// <returns>モデルデータ</returns>
 	Model* FindModel(const std::string& filePath);
 
 private:

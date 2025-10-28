@@ -18,12 +18,13 @@
 class Object3dCommon;
 
 // 構造体(Emitterでも使いたい)
+// マテリアルデータ
 struct MaterialData
 {
 	std::string textureFilePath;
 	uint32_t textureIndex = 0;
 };
-
+// GPU用パーティクル構造体
 struct ParticleForGPU
 {
 	Matrix4x4 WVP;
@@ -31,7 +32,7 @@ struct ParticleForGPU
 	Vector4 color;
 };
 
-
+// パーティクルグループ構造体
 struct ParticleGroup
 {
 	MaterialData materialData;
@@ -42,7 +43,7 @@ struct ParticleGroup
 	ParticleForGPU* instancingData;
 	std::string motionName = "Homing";
 };
-
+// エミット設定構造体
 struct EmitSetting {
 	std::string groupName;
 	std::string motionName;
@@ -59,43 +60,78 @@ class ParticleManager
 {
 public:
 
+	// シングルトンインスタンスの取得
 	static ParticleManager* GetInstance();
 
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="dxCommon">DirectX共通機能</param>
+	/// <param name="srvManager">SrvManagerのポインタ</param>
+	/// <param name="modelCommon">ModelCommonのポインタ</param>
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, ModelCommon* modelCommon);
 
-	// 終了
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void Finalize();
 
-	// パイプライン生成
+	/// <summary>
+	/// パイプライン生成
+	/// </summary>
 	void CreatePipeline();
 
-	// ルートシグネイチャ生成
+	/// <summary>
+	/// ルートシグネチャ生成
+	/// </summary>
 	void CreateRootSignature();
 
-	// パーティクルグループの生成
-	// name: パーティクルグループの名前
-	// textureFilePath: テクスチャファイルのパス
-	// modelFilePath: モデルファイルのパス
-	// type: パーティクルのタイプ（"Default", "Ring", "Cylinder", "Slash"など）
+	/// <summary>
+	/// パーティクルグループの生成
+	/// </summary>
+	/// <param name="name">パーティクルグループの名前</param>
+	/// <param name="textureFilePath">テクスチャファイルのパス</param>
+	/// <param name="modelFilePath">モデルファイルのパス</param>
+	/// <param name="type">パーティクルのタイプ("Default", "Ring", "Cylinder", "Slash"など)</param>
+	/// <param name="motionName">動きの名前</param>
 	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const std::string& modelFilePath, const std::string& type = "Default", const std::string& motionName = "Homing");
 
-	// 更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
-	// 描画
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// パーティクルの発生
+	/// </summary>
+	/// <param name="groupName">パーティクルグループの名前</param>
+	/// <param name="position">発生位置</param>
+	/// <param name="count">発生数</param>
 	void Emit(const std::string groupName, const Vector3& position, uint32_t count);
 
+	/// <summary>
+	/// エミッター設定の追加
+	/// </summary>
+	/// <param name="setting">エミッター設定</param>
 	void AddEmitterSetting(const EmitSetting& setting);
 
-	// 形、動きをそれぞれ確認できる関数
+	/// <summary>
+	/// デバッグUI
+	/// </summary>
 	void DebugUI();
 
 public: // セッター
 
+	/// <summary>
+	/// カメラのセット
+	/// </summary>
+	/// <param name="camera">カメラ</param>
 	void SetCamera(std::shared_ptr<Camera> camera) { camera_ = camera; }
 
 private: // 構造体

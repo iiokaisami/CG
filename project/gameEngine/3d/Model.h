@@ -17,18 +17,43 @@ class Model
 {
 public:
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="modelCommon">モデル共通機能管理クラスへのポインタ</param>	
+	/// <param name="directoryPath">ディレクトリパス</param>
+	/// <param name="filename">ファイル名</param>
 	void Initialize(ModelCommon* modelCommon, const std::string& directorypath, const std::string& filename);
 
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void UpData();
 
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 頂点バッファ更新
+	///	</summary>
 	void UpdateVertexBuffer();
 
+	/// <summary>
+	/// インデックスバッファ更新
+	/// </summary>
 	void UpdateIndexBuffer();
 
+	/// <summary>
+	/// 頂点データクリア
+	/// </summary>
 	void ClearVertexData();
 
+	/// <summary>
+	/// 他のモデルデータをコピー
+	/// </summary>
+	/// <param name="other">コピー元モデルデータ</param>
 	void CopyFrom(const Model& other);
 
 private: // 構造体、関数

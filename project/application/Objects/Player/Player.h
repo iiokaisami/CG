@@ -48,6 +48,15 @@ public:
 	// 回避
 	void Evade();
 
+	// 死亡演出
+	void DeadEffect();
+
+	/// <summary>
+	/// デスモーション開始
+	/// 外部から呼び出す用
+	/// </summary>
+	void StartDeathMotion();
+
 private:
 
 	// オート移動
@@ -151,6 +160,25 @@ private:
 	uint32_t cubeSrvIndex_ = 0u;
 	D3D12_GPU_DESCRIPTOR_HANDLE cubeHandle_ = { 0 };
 	float environmentStrength_ = 1.0f;
+
+	// デスモーション用構造体
+	struct Motion
+	{
+		bool isActive = false;
+		uint32_t count = 0;           // 現在フレームカウント
+		uint32_t shakeFrames = 40;    // ぷるぷる継続フレーム数（調整可）
+		// 振動パラメータ
+		float wobbleAmplitude = 0.10f; // 振幅
+		float wobbleFreq = 10.0f;      // 周波数（frameベース）
+		// 保存しておく基底トランスフォーム
+		Vector3 startPosition = { 0.0f, 0.0f, 0.0f };
+		Vector3 startRotation = { 0.0f, 0.0f, 0.0f };
+		Vector3 startScale = { 1.0f, 1.0f, 1.0f };
+		// pop スケール（はじける最大値、ただし今回は瞬時消失でも可）
+		float popScale = 2.0f;
+	};
+
+	Motion deathMotion_;
 
 };
 

@@ -10,37 +10,70 @@ class MeshBuilder
 {
 public:
 
-	// Ring作成(円状)
+	/// <summary>
+	/// Ring作成(円状)
+	/// </summary>
+	/// <param name="model">モデルポインタ</param>
 	static void BuildRing(Model* model);
 
-	//　Cylinder作成(円柱状上下ふた無)
+	/// <summary>
+	/// Cylinder作成(円柱状上下ふた無)
+	/// </summary>
+	/// <param name="model">モデルポインタ</param>
 	static void BuildCylinder(Model* model);
 
-	// Cone作成(円錐)
+	/// <summary>
+	/// Cone作成(円錐)
+	/// </summary>
+	/// <param name="model">モデルポインタ</param>
 	static void BuildCone(Model* model);
 
-	// Spiral作成(ねじれ線)
+	/// <summary>
+	/// Spiral作成(ねじれ線)
+	/// </summary>
+	/// <param name="model">モデルポインタ</param>
 	static void BuildSpiral(Model* model);
 
-	// Torus作成(ドーナツ)
+	/// <summary>
+	/// Torus作成(ドーナツ)
+	/// </summary>
+	/// <param name="model">モデルポインタ</param>
 	static void BuildTorus(Model* model);
 
-	// Helix作成(ばね状)
+	/// <summary>
+	/// Helix作成(ばね状)
+	/// </summary>
+	/// <param name="model">モデルポインタ</param>
 	static void BuildHelix(Model* model);
 
-	// 小さい球
+	/// <summary>
+	/// 小さい球
+	/// </summary>
+	/// <param name="model">モデルポインタ</param>
 	static void BuildSphere(Model* model);
 
-	// 花びら
+	/// <summary>
+	/// 花びら
+	/// </summary>
+	/// <param name="model">モデルポインタ</param>
 	static void BuildPetal(Model* model);
 
-	// ペラペラな三角形
+	/// <summary>
+	/// ペラペラな三角形
+	/// </summary>
+	/// <param name="model">モデルポインタ</param>
 	static void BuildTriangle(Model* model);
 
-	// 小さい立方体
+	/// <summary>
+	/// 小さい立方体
+	/// </summary>
+	/// <param name="model">モデルポインタ</param>
 	static void BuildCube(Model* model);
 
-	// 線形状
+	/// <summary>
+	/// 線形状
+	/// </summary>
+	/// <param name="model">モデルポインタ</param>
 	static void BuildLine(Model* model);
 
 };

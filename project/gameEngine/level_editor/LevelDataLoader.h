@@ -44,6 +44,7 @@ public:
 		Vector3 scale;
 	};
 
+	// オブジェクトデータ
 	struct ObjectData 
 	{
 		std::string type;
@@ -53,6 +54,7 @@ public:
 		Vector3 scale;
 	};
 
+	// オブジェクト配列
 	std::vector<ObjectData> objects;
 
 
@@ -79,10 +81,20 @@ public:
 	static constexpr const char* kDefaultBaseDirectory = "resources/levels/";
 	static constexpr const char* kExtension = ".json";
 
+	/// <summary>
+	/// レベルデータの読み込み
+	/// </summary>
+	/// <param name="fileName">ファイル名（拡張子不要）</param>
+	/// <returns>レベルデータのポインタ</returns>
 	static std::unique_ptr<LevelData> LoadLevelData(const std::string& fileName);
 
 private:
 
+	/// <summary>
+	/// オブジェクトの再帰的読み込み
+	/// </summary>
+	/// <param name="objectJson">オブジェクトのJSONデータ</param>
+	/// <param name="levelData">レベルデータのポインタ</param>
 	static void LoadObjectRecursive(const nlohmann::json& objectJson, LevelData* levelData);
 
 };

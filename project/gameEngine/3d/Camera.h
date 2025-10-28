@@ -37,48 +37,60 @@ public: // セッター
 	/// <summary>
 	/// 回転を設定
 	/// </summary>
-	/// <param name="rotate"></param>
+	/// <param name="rotate">回転</param>
 	void SetRotate(Vector3 rotate) { transform_.rotate = rotate; }
 	
 	/// <summary>
 	/// 位置を設定
 	/// </summary>
-	/// <param name="translate"></param>
+	/// <param name="translate">位置</param>
 	void SetPosition(Vector3 translate) { transform_.translate = translate; }
 	
 	/// <summary>
 	/// 視野角を設定
 	/// </summary>
-	/// <param name="fovY"></param>
+	/// <param name="fovY">視野角</param>
 	void SetFovY(float fovY) { fovY_ = fovY; }
 	
 	/// <summary>
 	/// アスペクト比を設定
 	/// </summary>
-	/// <param name="aspectRatio"></param>
+	/// <param name="aspectRatio">アスペクト比</param>
 	void SetAspectRatio(float aspectRatio) { aspectRatio_ = aspectRatio; }
 	
 	/// <summary>
 	/// ニアクリップ距離を設定
 	/// </summary>
-	/// <param name="nearClip"></param>
+	/// <param name="nearClip">ニアクリップ距離</param>
 	void SetNearClip(float nearClip) { nearClip_ = nearClip; }
 
 	/// <summary>
 	/// ファークリップ距離を設定
 	/// </summary>
-	/// <param name="farClip"></param>
+	/// <param name="farClip">ファークリップ距離</param>
 	void SetFarClip(float farClip) { farClip_ = farClip; }
 
 public: // ゲッター
 
+	// 各種行列、情報の取得
 	const Vector3& GetRotate() const { return transform_.rotate; }
+
+	// 位置の取得
 	const Vector3& GetPosition() const { return transform_.translate; }
+
+	// ワールド行列の取得
 	const Matrix4x4& GetWorldMatrix() const { return worldMatrix_; }
+	
+	// ビュー行列の取得
 	const Matrix4x4& GetViewMatrix() const { return viewMatrix_; }
+	
+	// 透視投影行列の取得
 	const Matrix4x4& GetProjectionMatrix() const { return projectionMatrix_; }
+	
+	// ビュープロジェクション行列の取得
 	const Matrix4x4& GetViewProjectionMatrix() const { return viewProjectionMatrix_; }
 
+	// シェイク中かどうか取得
 	bool IsShaking() const { return isShaking_; }
 
 private:

@@ -66,6 +66,10 @@ public:
 	/// <summary>
 	/// デスクリプタヒープを生成する
 	/// </summary>
+	/// <param name="heapType">ヒープタイプ</param>
+	/// <param name="numDescriptor">デスクリプタ数</param>
+	/// <param name="shaderVisible">シェーダーから見えるか</param>
+	/// <returns>デスクリプタヒープ</returns>
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptor, bool shaderVisible);
 
 	/// <summary>
@@ -76,21 +80,34 @@ public:
 	/// <summary>
 	/// CPUのDescriptorHandleを取得
 	/// </summary>
+	/// <param name="descriptorHeap">デスクリプタヒープ</param>
+	/// <param name="descriptorSize">デスクリプタサイズ</param>
+	/// <param name="index">インデックス</param>
+	/// <returns>CPUのデスクリプタハンドル</returns>
+	/// <returns> オフセットされたCPUデスクリプタハンドル</returns>
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index);
 
 	/// <summary>
 	/// GPUのDescriptorHandleを取得
 	/// </summary>
+	/// <param name="descriptorHeap">デスクリプタヒープ</param>
+	/// <param name="descriptorSize">デスクリプタサイズ</param>
+	/// <param name="index">インデックス</param>
+	/// <returns>GPUのデスクリプタハンドル</returns>
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index);
 
 	/// <summary>
 	/// SRVの指定番号のCPUデスクリプタハンドルを取得する
 	/// </summary>
+	/// <param name="index">SRV番号</param>
+	/// <returns>CPUのデスクリプタハンドル</returns>
 	D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUDescriptorHandle(uint32_t index);
 
 	/// <summary>
 	/// SRVの指定番号のGPUデスクリプタハンドルを取得する
 	/// </summary>
+	/// <param name="index">SRV番号</param>
+	/// <returns>GPUのデスクリプタハンドル</returns>
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUDescriptorHandle(uint32_t index);
 
 	/// <summary>
@@ -136,37 +153,63 @@ public:
 	/// <summary>
 	/// シェーダーのコンパイル
 	/// </summary>
+	/// <param name="filePath">ファイルパス</param>
+	/// <param name="profile">プロファイル</param>
+	/// <returns>コンパイル済みシェーダーブロブ</returns>
 	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
 
 	/// <summary>
 	/// バッファリソースの生成
 	/// </summary>
+	/// <param name="sizeInBytes">サイズ(バイト単位)</param>
+	/// <returns>バッファリソース</returns>
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
 	/// <summary>
 	/// テクスチャリソースの生成
 	/// </summary>
+	/// <param name="metadata">テクスチャメタデータ</param>
+	/// <returns>テクスチャリソース</returns>
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
 
 	/// <summary>
 	/// テクスチャデータの転送
 	/// </summary>
+	/// <param name="texture">テクスチャリソース</param>
+	/// <param name="mipImages">ミップイメージ群</param>
+	/// <returns>テクスチャリソース</returns>
 	Microsoft::WRL::ComPtr<ID3D12Resource> UploadTextureData(Microsoft::WRL::ComPtr<ID3D12Resource> texture, const DirectX::ScratchImage& mipImages);
 
 	/// <summary>
 	/// テクスチャファイルの読み込み
 	/// </summary>
+	/// <param name="filePath">ファイルパス</param>
+	/// <returns>テクスチャデータ群</returns>
 	static DirectX::ScratchImage LoadTexture(const std::string& filePath);
 
 	/// <summary>
 	/// DepthStencilTextureを作る
 	/// </summary>
+	/// <param name="width">幅</param>
+	/// <param name="height">高さ</param>
+	/// <returns>深度ステンシルテクスチャリソース</returns>
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(int32_t width, int32_t height);
 
+	/// <summary>
+	/// コマンドの実行
+	/// </summary>
 	void CommandPass();
 
+	/// <summary>
+	/// Sampler用ディスクリプタヒープの生成
+	/// </summary>
 	void CreateSamplerHeap();
 
+	/// <summary>
+	/// アップロードバッファの生成
+	/// </summary>
+	/// <param name="sizeInBytes">サイズ(バイト単位)</param>
+	/// <returns>アップロードバッファリソース</returns>
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateUploadBuffer(size_t sizeInBytes);
 
 public: // ゲッター
@@ -189,9 +232,9 @@ public: // ゲッター
 	size_t GetBackBufferCount() const { return backBuffers_.size(); }
 	// swapChainDescを取得
 	DXGI_SWAP_CHAIN_DESC1 GetSwapChainDesc() { return swapChainDesc_; }
-
+	// DSV用ディスクリプタヒープを取得する関数
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle() { return dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(); }
-	
+	// descriptorSizeDSVを取得
 	size_t GetDescriptorSizeRTV() { return descriptorSizeRTV_; }
 	
 	// Sampler用ディスクリプタヒープを取得する関数
@@ -250,8 +293,6 @@ private:
 	D3D12_RESOURCE_BARRIER barrier_{};
 
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle_;
-
-	//Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_;
 
 	HANDLE fenceEvent_ = nullptr;
 

@@ -27,7 +27,7 @@ void EnemyBehaviorDead::Update()
 		motion_.transform.scale = Vector3(1.8f, 1.8f, 1.8f); // 初回だけ一気に膨らむ
 	}
 
-	// 徐々に縮む演出（1.8 → 0.0）
+	// 徐々に縮む演出(1.8 → 0.0)
 	float scale = Lerp(1.8f, 0.0f, Ease::InCubic(t));
 	motion_.transform.scale = (Vector3(scale, scale, scale));
 

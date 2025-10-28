@@ -32,28 +32,49 @@ public:
 
 public:
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="dxCommon">DirectX共通機能</param>
 	void Initialize(DirectXCommon* dxCommon);
 
-	// 共通描画設定
+	/// <summary>
+	/// 描画共通設定
+	/// </summary>
 	void CommonDrawSetting();
 
 public: // セッター
 
+	/// <summary>
+	/// デフォルトカメラの設定
+	/// </summary>
+	/// <param name="camera">カメラ</param>
 	void SetDefaultCamera(std::shared_ptr<Camera> camera) { defaultCamera_ = camera; }
 
 public: // ゲッター
 
+	/// <summary>
+	/// DirectX共通機能の取得
+	/// </summary>
+	/// <returns>DirectX共通機能</returns>
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
 
+	/// <summary>
+	/// デフォルトカメラの取得
+	/// </summary>
+	/// <returns>カメラ</returns>
 	std::shared_ptr<Camera> GetDefaultCamera() const { return defaultCamera_; }
 
 private:
 
-	// ルートシグネイチャの生成
+	/// <summary>
+	/// ルートシグネチャの生成
+	/// </summary>
 	void CreateRootSignature();
 
-	// グラフィックスパイプラインの生成
+	/// <summary>
+	/// グラフィックスパイプラインの生成
+	/// </summary>
 	void CreateGraphicsPipeline();
 
 private:

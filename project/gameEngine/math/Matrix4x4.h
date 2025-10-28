@@ -24,15 +24,30 @@ public:
     /// </summary>
     void SetIdentity();
 
+	/// <summary>
+	/// 単位行列を取得
+	/// </summary>
     /// <returns>単位行列</returns>
     static Matrix4x4 Identity();
 
+	/// <summary>
+	/// X回転行列
+	/// </summary>
+	/// <param name="_radian">ラジアン</param>
     /// <returns>X回転行列</returns>
     static Matrix4x4 RotateXMatrix(float _radian);
 
+	/// <summary>
+	/// Y回転行列
+	/// </summary>
+	/// <param name="_radian">ラジアン</param>
     /// <returns>Y回転行列</returns>
     static Matrix4x4 RotateYMatrix(float _radian);
 
+	/// <summary>
+	/// Z回転行列
+	/// </summary>
+	/// <param name="_radian">ラジアン</param>
     /// <returns>Z回転行列</returns>
     static Matrix4x4 RotateZMatrix(float _radian);
 
@@ -42,7 +57,7 @@ public:
     /// <param name="_scale">拡縮倍率</param>
     /// <param name="_rotate">角度</param>
     /// <param name="_translate">座標</param>
-    /// <returns></returns>
+	/// <returns>アフィン変換行列</returns>
     static Matrix4x4 AffineMatrix(
         const Vector3& _scale,
         const Vector3& _rotate,
@@ -56,7 +71,7 @@ public:
     /// <param name="_aspectRatio">アスペクト比</param>
     /// <param name="_nearClip">近クリップ</param>
     /// <param name="_farClip">遠クリップ</param>
-    /// <returns></returns>
+	/// <returns>透視投影行列</returns>
     static Matrix4x4 PerspectiveFovMatrix(
         float _fovY,
         float _aspectRatio,
@@ -73,7 +88,7 @@ public:
     /// <param name="_bottom">下</param>
     /// <param name="_nearClip">近クリップ</param>
     /// <param name="_farClip">遠クリップ</param>
-    /// <returns></returns>
+	/// <returns>正射影行列</returns>
     static Matrix4x4 OrthographicMatrix(
         float _left,
         float _top,
@@ -92,7 +107,7 @@ public:
     /// <param name="_height">高さ</param>
     /// <param name="_minDepth">最小深度</param>
     /// <param name="_maxDepth">最大深度</param>
-    /// <returns></returns>
+	/// <returns>ビューポート変換行列</returns>
     static Matrix4x4 ViewportMatrix(
         float _left,
         float _top,
@@ -106,22 +121,29 @@ public:
     /// 拡大行列
     /// </summary>
     /// <param name="_scale">拡大率</param>
-    /// <returns></returns>
+	/// <returns>拡大行列</returns>
     static Matrix4x4 ScaleMatrix(const Vector3& _scale);
 
     /// <summary>
     /// 移動行列
     /// </summary>
     /// <param name="_translate">移動量</param>
-    /// <returns></returns>
+	/// <returns>移動行列</returns>
     static Matrix4x4 TranslateMatrix(const Vector3& _translate);
 
+	/// <summary>
+	/// 逆行列
+	/// </summary>
     /// <returns>逆行列</returns>
     Matrix4x4 Inverse() const;
 
+	/// <summary>
+	/// 転置行列
+	/// </summary>
     /// <returns>転置行列</returns>
     Matrix4x4 Transpose() const;
 
+    
     Matrix4x4& operator+=(const Matrix4x4& _rm);
     Matrix4x4& operator-=(const Matrix4x4& _rm);
     Matrix4x4& operator*=(const Matrix4x4& _rm);

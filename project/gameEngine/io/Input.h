@@ -38,9 +38,15 @@ public:
 
 public:
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="winApp">WindowsAPI</param>
 	void Initialize(WinApp* winApp);
-	// 更新
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
     /// <summary>

@@ -12,76 +12,141 @@ public:
 
    static constexpr float pi = std::numbers::pi_v<float>;
 
-   // 線形補間
+   /// <summary>
+   /// 線形補間
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float Linear(float t) 
    {
        return t;
    }
 
-   // イーズイン（加速）
+   /// <summary>
+   /// イーズイン(加速)
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float InQuad(float t)
    {
        return t * t;
    }
 
+   /// <summary>
+   /// イーズイン(加速)
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float InCubic(float t) 
    {
        return t * t * t;
    }
 
+   /// <summary>
+   /// イーズイン(加速)
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float InQuart(float t) 
    {
        return t * t * t * t;
    }
 
+   /// <summary>
+   /// イーズイン(加速)
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float InQuint(float t) 
    {
        return t * t * t * t * t;
    }
 
-   // イーズアウト（減速）
+   /// <summary>
+   /// イーズアウト(減速)
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float OutQuad(float t)
    {
        return 1.0f - (1.0f - t) * (1.0f - t);
    }
 
+   /// <summary>
+   /// イーズアウト(減速)
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float OutCubic(float t)
    {
        return 1.0f - std::pow(1.0f - t, 3.0f);
    }
 
+   /// <summary>
+   /// イーズアウト(減速)
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float OutQuart(float t)
    {
        return 1.0f - std::pow(1.0f - t, 4.0f);
    }
 
+   /// <summary>
+   /// イーズアウト(減速)
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float OutQuint(float t) 
    {
        return 1.0f - std::pow(1.0f - t, 5.0f);
    }
 
-   // イーズインアウト（加速→減速）
+   /// <summary>
+   /// イーズインアウト(加速→減速)
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float InOutQuad(float t)
    {
        return t < 0.5f ? 2.0f * t * t : 1.0f - std::pow(-2.0f * t + 2.0f, 2.0f) / 2.0f;
    }
 
+   /// <summary>
+   /// イーズインアウト(加速→減速)
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float InOutCubic(float t)
    {
        return t < 0.5f ? 4.0f * t * t * t : 1.0f - static_cast<float>(std::pow(-2.0f * t + 2.0f, 3.0f)) / 2.0f;
    }
 
+   /// <summary>
+   /// イーズインアウト(加速→減速)
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float InOutQuart(float t) 
    {
        return t < 0.5f ? 8.0f * static_cast<float>(std::pow(t, 4.0f)) : 1.0f - static_cast<float>(std::pow(-2.0f * t + 2.0f, 4.0f)) / 2.0f;
    }
 
+   /// <summary>
+   /// イーズインアウト(加速→減速)
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float InOutQuint(float t)
    {
        return t < 0.5f ? 16.0f * static_cast<float>(std::pow(t, 5.0f)) : 1.0f - static_cast<float>(std::pow(-2.0f * t + 2.0f, 5.0f)) / 2.0f;
    }
    
-   // バウンス
+   /// <summary>
+   /// バウンス
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float OutBounce(float t) 
    {
        const float n1 = 7.5625f;
@@ -108,7 +173,11 @@ public:
        }
    }
 
-   // バックアウト（バウンド的に出現）
+   /// <summary>
+   /// バックアウト(バウンド的に出現)
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float OutBack(float t) 
    {
        const float c1 = 1.70158f;
@@ -118,19 +187,31 @@ public:
        return 1.0f + c3 * static_cast<float>(std::pow(t1, 3.0f)) + c1 * static_cast<float>(std::pow(t1, 2.0f));
    }
 
-   // イーズインサイン
+   /// <summary>
+   /// イーズインサイン
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float InSine(float t)
    {
        return 1.0f - std::cos((t * pi) / 2.0f);
    }
 
-   // イーズアウトサイン
+   /// <summary>
+   /// イーズアウトサイン
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float OutSine(float t)
    {
        return std::sin((t * pi) / 2.0f);
    }
 
-   // イーズインアウトサイン
+   /// <summary>
+   /// イーズインアウトサイン
+   /// </summary>
+   /// <param name="t">0.0〜1.0の補間値</param>
+   /// <returns>補間後の値</returns>
    static float InOutSine(float t)
    {
        return -(std::cos(pi * t) - 1.0f) / 2.0f;

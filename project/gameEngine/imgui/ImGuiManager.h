@@ -10,19 +10,31 @@ class ImGuiManager
 {
 public:
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="winApp">WindowsAPI</param>
+	/// <param name="dxCommon">DirectX共通機能管理クラスへのポインタ</param>
 	void Initialize(WinApp* winApp, DirectXCommon* dxCommon);
 
-	// 終了
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void Finalize();
 
-	// ImGui受付開始
+	/// <summary>
+	/// ImGui受付開始
+	/// </summary>
 	void Begin();
 
-	// ImGui受付終了
+	/// <summary>
+	/// ImGui受付終了
+	/// </summary>
 	void End();
 
-	// 画面への描画
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
 private:

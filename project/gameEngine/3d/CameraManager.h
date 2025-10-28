@@ -22,17 +22,31 @@ public:
         return instance;
     }
 
-    // カメラの追加
+    /// <summary>
+    /// カメラの追加
+    /// </summary>
+    /// <param name="camera">追加するCameraの共有ポインタ</param>
     void AddCamera(std::shared_ptr<Camera> camera);
 
-    // カメラの削除
-    // シーンの変更時等に呼び出す
+    /// <summary>
+    /// カメラの削除
+    /// シーンの変更時等に呼び出す
+    /// </summary>
+    /// <param name="index">削除するカメラのインデックス</param>
     void RemoveCamera(uint32_t index);
 
-    // アップデート（全カメラの更新処理を実行）
+    /// <summary>
+    /// アップデート(全カメラの更新処理を実行)
+    /// </summary>
+    /// <param name="deltaTime">デルタタイム</param>
     void UpdateAll(float deltaTime = 0.0f);
 
-    // 特定のカメラのシェイクを開始
+    /// <summary>
+    /// 特定のカメラのシェイクを開始
+    /// </summary>
+    /// <param name="index">シェイクを開始するカメラのインデックス</param>
+    /// <param name="duration">シェイクの持続時間(秒)</param>
+    /// <param name="magnitude">シェイクの強さ</param>
     void ShakeSpecificCamera(uint32_t index, float duration, float magnitude);
 
     // アクティブカメラのシェイクを開始
@@ -42,13 +56,28 @@ public:
     // cameraManager.StartShakeActiveCamera(0.5f, 0.8f);
     // 大規模な爆発のシェイク
     // cameraManager.StartShakeActiveCamera(1.0f, 1.5f);
+
+    /// <summary>
+    /// アクティブカメラのシェイクを開始
+    /// 軽い衝撃のシェイク
+    /// cameraManager.StartShakeActiveCamera(0.2f, 0.3f);
+    /// 中規模の爆発のシェイク
+    /// cameraManager.StartShakeActiveCamera(0.5f, 0.8f);
+    /// 大規模な爆発のシェイク
+    /// cameraManager.StartShakeActiveCamera(1.0f, 1.5f);
+    /// </summary>
+    /// <param name="duration">シェイクの持続時間(秒)</param>
+    /// <param name="magnitude">シェイクの強さ</param>
     void StartShakeActiveCamera(float duration, float magnitude);
 
-	// 全てのカメラを削除
+    /// <summary>
+    /// 全てのカメラを削除
+    /// </summary>
     void ClearAllCameras();
 
 public: // ゲッター
 
+	// アクティブカメラのインデックス取得
     uint32_t GetActiveIndex()const { return activeCameraIndex_; }
 
     // アクティブカメラの取得
@@ -59,7 +88,10 @@ public: // ゲッター
 
 public: // セッター
 
-    // アクティブカメラを設定
+    /// <summary>
+    /// アクティブカメラを設定
+    /// </summary>
+    /// <param name="index">アクティブにしたいカメラのインデックス</param>
     void SetActiveCamera(uint32_t index);
 
 private:

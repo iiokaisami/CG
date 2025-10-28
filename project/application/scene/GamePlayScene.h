@@ -33,6 +33,8 @@ public:
 	// 描画
 	void Draw() override;
 
+private:
+
 	// カメラ更新
 	void CameraUpdate();
 
@@ -46,6 +48,16 @@ public:
 	/// スタートカメラ
 	///	</summary>
 	void StartCamera();
+
+	/// <summary>
+	/// デスカメラ
+	/// </summary>
+	void StartDeathCamera();
+
+	/// <summary>
+	/// デスカメラ更新
+	/// </summary>
+	void UpdateDeathCamera(float deltaTime);
 
 
 private:
@@ -101,5 +113,18 @@ private:
 	Vector3 camEnd_ = { 0.16f, 78.5f, -19.8f };
 	Vector3 camStartRot_ = { 0.0f, 0.0f, 0.0f };
 	Vector3 camEndRot_ = { 1.4f, 0.0f, 0.0f };
+
+	// 死亡カメラ演出変数
+	bool isDeathCamera_ = false;
+	bool isDeadCameraPlayer_ = false;
+	float deathCameraTimer_ = 0.0f;
+	float deathCameraDuration_ = 3.0f;
+	float deathCameraRotations_ = 2.0f;
+	float deathStartAngle_ = 0.0f;
+	float deathStartRadius_ = 0.0f;
+	float deathEndRadius_ = 12.0f;
+	float deathStartHeight_ = 0.0f;
+	float deathEndHeight_ = 12.0f;
+	float deathTargetAngleOffset_ = 0.0f;
 
 };

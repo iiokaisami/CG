@@ -13,10 +13,17 @@ class ModelCommon
 {
 public:
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="dxCommon"> DirectX共通機能管理クラスへのポインタ</param>
 	void Initialize(DirectXCommon* dxCommon);
 
 public: // ゲッター
+
+	/// <summary>
+	/// DirectX共通機能管理クラスの取得
+	/// </summary>
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
 
 private:

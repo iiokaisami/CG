@@ -13,22 +13,42 @@ class ParticleEmitter
 {
 public:
 
-	// 非インスタンス化でも使える静的ユーティリティとして提供
+	/// <summary>
+	/// 静的単発エミット
+	/// </summary>
+	/// <param name="groupName">グループ名</param>
+	/// <param name="position">発生位置</param>
+	/// <param name="count">発生数</param>
 	static void Emit(const std::string& groupName, const Vector3& position, uint32_t count = 10);
 
+	/// <summary>
+	/// 静的ループエミット
+	/// </summary>
+	/// <param name="groupName">グループ名</param>
+	/// <param name="motionName">モーション名</param>
+	/// <param name="position">発生位置</param>
+	/// <param name="count">発生数</param>
 	static void StartLoop(const std::string& groupName, const std::string& motionName, const Vector3& position, uint32_t count = 10);
 	
 	// --- 以下はインスタンス用：必要なら使う ---
-
+	// コンストラクタ
 	ParticleEmitter(ParticleManager* manager, const std::string& groupName, const std::string& motionName = "Homing")
 		: manager_(manager), groupName_(groupName), motionName_(motionName)
 	{
 	}
 
-	// 単発エミット
+	/// <summary>
+	/// 単発エミット
+	/// </summary>
+	/// <param name="position">発生位置</param>
+	/// <param name="count">発生数</param>
 	void EmitOnce(const Vector3& position, uint32_t count = 10);
 
-	// ループエミット（manager に設定を追加）
+	/// <summary>
+	/// ループエミット開始
+	/// </summary>
+	/// <param name="position">発生位置</param>
+	/// <param name="count">発生数</param>
 	void StartLoopEmit(const Vector3& position, uint32_t count);
 
 
