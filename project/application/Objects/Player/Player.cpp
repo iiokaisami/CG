@@ -34,6 +34,9 @@ void Player::Initialize()
 	collider_.MakeAABBDesc(desc);
 	colliderManager_->RegisterCollider(&collider_);
 
+	// 画面が更新されたらビネットを0にする
+	PostEffectManager::GetInstance()->GetPassAs<VignettePass>("Vignette")->SetStrength(0.0f);
+
 	// ステータス
 	hp_ = 1;
 	isDead_ = false;
