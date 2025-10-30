@@ -38,7 +38,7 @@ void Player::Initialize()
 	PostEffectManager::GetInstance()->GetPassAs<VignettePass>("Vignette")->SetStrength(0.0f);
 
 	// ステータス
-	hp_ = 1;
+	hp_ = 8;
 	isDead_ = false;
 	isAutoControl_= false;
 
@@ -398,7 +398,7 @@ void Player::DeadEffect()
 	}
 
 	// パーティクルを発生させる
-	ParticleEmitter::Emit("explosionGroup", position_, 20);
+	ParticleEmitter::Emit("rupture", position_, 20);
 
 	// モーション終了扱いにする（isActive=false）
 	deathMotion_.isActive = false;

@@ -17,6 +17,7 @@ void TimeBomb::Initialize()
 	
 	// 当たり判定
 	colliderManager_ = ColliderManager::GetInstance();
+	
 	// 設置判定用
 	objectName_ = "SetTimeBomb";
 	setDesc =
@@ -32,16 +33,17 @@ void TimeBomb::Initialize()
 	};
 	setCollider_.MakeAABBDesc(setDesc);
 	colliderManager_->RegisterCollider(&setCollider_);
+	
 	// 爆発判定用
 	explosionObjectName_ = "ExplosionTimeBomb";
 	explosionDesc =
 	{
 		//ここに設定
 		.owner = this,
-		.colliderID = objectName_,
+		.colliderID = explosionObjectName_,
 		.shape = Shape::AABB,
 		.shapeData = &explosionAABB_,
-		.attribute = colliderManager_->GetNewAttribute(objectName_),
+		.attribute = colliderManager_->GetNewAttribute(explosionObjectName_),
 		.onCollisionTrigger = std::bind(&TimeBomb::OnExplosionTrigger, this, std::placeholders::_1),
 	};
 	explosionCollider_.MakeAABBDesc(explosionDesc);

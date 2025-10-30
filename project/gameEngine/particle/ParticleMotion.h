@@ -69,6 +69,13 @@ public:
 	/// <returns>生成したパーティクル</returns>
     static Particle MakeExplosion(std::mt19937& rand, const Vector3& center);
 	/// <summary>
+	/// 中心から破裂するように飛ぶ
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="center">中心</param>
+	/// <returns>生成したパーティクル</returns>
+	static Particle MakeRupture(std::mt19937& rand, const Vector3& center);
+	/// <summary>
 	/// baseから上に向かって噴出
 	/// </summary>
 	/// <param name="rand">ランダム生成器</param>
