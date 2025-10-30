@@ -17,7 +17,14 @@ class TrapEnemy;
 class TrapEnemyBehaviorState
 {
 public:
+	
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_name">ステート名</param>
+	/// <param name="_trapEnemy">罠型敵のポインタ</param>
 	TrapEnemyBehaviorState(const std::string& _name, TrapEnemy* _trapEnemy) : stateName_(_name), pTrapEnemy_(_trapEnemy) {};
+	
 	virtual ~TrapEnemyBehaviorState();
 	
 	// 初期化

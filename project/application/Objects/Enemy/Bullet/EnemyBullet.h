@@ -37,13 +37,19 @@ public:
 
 private: // 衝突判定
 	
+	/// <summary>
+	/// 衝突時処理
+	/// </summary>
+	/// <param name="_other">衝突相手のコライダー</param>
 	void OnCollisionTrigger(const Collider* _other);
-
-public: // ゲッター
-
 
 public: // セッター
 
+	/// <summary>
+	/// 速度設定
+	/// </summary>
+	/// <param name="_velocity">速度ベクトル</param>
+	/// <returns>設定後の速度ベクトル</returns>
 	Vector3 SetVelocity(const Vector3 _velocity) { return velocity_ = _velocity; }
 
 private: // メンバ変数

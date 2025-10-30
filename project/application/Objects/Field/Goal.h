@@ -35,7 +35,10 @@ public:
 
 public: // セッター
 
-	// ゴール出現フラグをセット
+	/// <summary>
+	/// ゴール出現フラグをセット
+	/// </summary>
+	/// <param name="_isCleared"> クリアフラグ</param>
 	void SetBarrierDestroyed(bool _isDestroyed) { isBarrierDestroyed_ = _isDestroyed; }
 	
 public: // ゲッター
@@ -46,6 +49,10 @@ public: // ゲッター
 
 private: // 衝突判定
 
+	/// <summary>
+	/// 当たり判定処理
+	/// </summary>
+	/// <param name="_other"> 衝突相手のコライダー</param>
 	void OnCollisionTrigger(const Collider* _other);
 
 private:

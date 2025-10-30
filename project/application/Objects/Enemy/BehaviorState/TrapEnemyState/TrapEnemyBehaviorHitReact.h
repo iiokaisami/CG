@@ -9,6 +9,10 @@ class TrapEnemyBehaviorHitReact : public TrapEnemyBehaviorState
 {
 public:
 	
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_pTrapEnemy">罠型敵のポインタ</param>
 	TrapEnemyBehaviorHitReact(TrapEnemy* _pTrapEnemy);
 	
 	// 初期化

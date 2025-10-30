@@ -9,6 +9,11 @@
 class SceneFactory : public AbstractSceneFactory
 {
 public:
-	// シーン生成
+
+	/// <summary>
+	/// シーン生成
+	/// </summary>
+	/// <param name="sceneName">生成したいシーンの名前</param>
+	/// <returns>生成されたシーンのインスタンス</returns>
 	BaseScene* CreateScene(const std::string& sceneName) override;
 };

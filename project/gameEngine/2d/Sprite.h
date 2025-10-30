@@ -20,9 +20,14 @@ class Sprite
 {
 public:
 
-	// 初期化
-	void Initialize(std::string textureFilePath,
-		Vector2 position, Vector4 color = { (1) , (1), (1), (1) }, Vector2 anchorpoint = { 0.0f,0.0f });
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="textureFilePath">テクスチャファイルパス</param>
+	/// <param name="position">座標</param>
+	/// <param name="color">色</param>
+	/// <param name="anchorpoint">アンカーポイント</param>
+	void Initialize(std::string textureFilePath,Vector2 position, Vector4 color = { (1) , (1), (1), (1) }, Vector2 anchorpoint = { 0.0f,0.0f });
 
 	// 更新
 	void Update();
@@ -33,38 +38,85 @@ public:
 
 public:// ゲッター
 
+	// 座標取得
 	const Vector2& GetPosition()const { return position_; }
+	// 回転取得
 	float GetRotation() const { return rotation_; }
-
+	// 色取得
 	const Vector4& GetColor() const { return materialData_->color; }
-
+	// サイズ取得
 	const Vector2& GetSize()const { return size_; }
-
+	// アンカーポイント取得
 	const Vector2& GetAnchorPoint()const { return anchorPoint_; }
-
+	// フリップX取得
 	const bool& IsFlipX()const { return isFlipX_; }
+	// フリップY取得
 	const bool& IsFlipY()const { return isFlipY_; }
-
+	// テクスチャ左上座標取得
 	const Vector2& GetTextureLeftTop()const { return textureLeftTop_; }
+	// テクスチャ切り出しサイズ取得
 	const Vector2& GetTextureSize()const { return textureSize_; }
 
 public:// セッター
 
+	/// <summary>
+	/// 座標設定
+	/// </summary>
+	/// <param name="position">座標</param>
 	void SetPosition(const Vector2& position) { position_ = position; }
+	
+	/// <summary>
+	/// 回転設定
+	/// </summary>
+	///	<param name="rotation">回転角</param>
 	void SetRotation(float rotation) { rotation_ = rotation; }
 
+	/// <summary>
+	/// 色設定
+	/// </summary>
+	/// <param name="color">色</param>
 	void SetColor(const Vector4& color) { materialData_->color = color; }
 
+	/// <summary>
+	/// 色変更設定
+	/// </summary>
+	/// <param name="color">色変更量</param>
 	void SetColorChange(const Vector4& color);
 
+	/// <summary>
+	/// サイズ設定
+	/// </summary>
+	/// <param name="size">サイズ</param>
 	void SetSize(const Vector2& size) { size_ = size; }
 
+	/// <summary>
+	/// アンカーポイント設定
+	/// </summary>
+	/// <param name="anchorPoint">アンカーポイント</param>
 	void SetAnchorPoint(const Vector2& anchorPoint) { anchorPoint_ = anchorPoint; }
 
+	/// <summary>
+	/// フリップX設定
+	/// </summary>
+	/// <param name="IsFlipX">フリップXフラグ</param>
 	void SetFlipX(const bool& IsFlipX) { isFlipX_ = IsFlipX; }
+	
+	/// <summary>
+	/// フリップY設定
+	/// </summary>
+	/// <param name="IsFlipY">フリップYフラグ</param>
 	void SetFlipY(const bool& IsFlipY) { isFlipY_ = IsFlipY; }
 
+	/// <summary>
+	/// テクスチャ左上座標設定
+	/// </summary>
+	/// <param name="textureLeftTop">テクスチャ左上座標</param>
 	void SetTextureLeftTop(const Vector2& textureLeftTop) { textureLeftTop_ = textureLeftTop; }
+	
+	/// <summary>
+	/// テクスチャ切り出しサイズ設定
+	/// </summary>
+	/// 
 	void SetTextureSize(const Vector2& textureSize) { textureSize_ = textureSize; }
 
 private:

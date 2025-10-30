@@ -10,6 +10,10 @@ class EnemyWaveStage2 : public EnemyWaveState
 {
 public:
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_pEnemyManager">エネミーマネージャーのポインタ</param>
 	EnemyWaveStage2(EnemyManager* _pEnemyManager);
 
 	// 初期化

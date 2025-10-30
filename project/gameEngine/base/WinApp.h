@@ -13,6 +13,15 @@
 class WinApp
 {
 public:
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="hwnd">ウィンドウハンドル</param>
+	/// <param name="msg">メッセージ</param>
+	/// <param name="wparam">追加情報1</param>
+	/// <param name="lparam">追加情報2</param>
+	/// <returns>処理結果</returns>
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 public:
@@ -29,12 +38,19 @@ public:
 	// 終了
 	void Finalize();
 
-	// getter
-	HWND GetHwnd() const { return hwnd; }
-	HINSTANCE GetHInstance() const { return wc.hInstance; }
-
-	// メッセージの処理
+	/// <summary>
+	/// メッセージの処理
+	/// </summary>
+	/// <returns>処理結果</returns>
 	bool ProcessMessage();
+
+public: // ゲッター
+
+	// ウィンドウハンドルのゲッター
+	HWND GetHwnd() const { return hwnd; }
+
+	// インスタンスハンドルのゲッター
+	HINSTANCE GetHInstance() const { return wc.hInstance; }
 
 
 private:

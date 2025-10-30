@@ -39,8 +39,16 @@ public:
 
 private: // 衝突判定
 
+	/// <summary>
+	/// 衝突時処理
+	/// </summary>
+	/// <param name="_other>衝突相手のコライダー</param>
 	void OnCollisionTrigger(const Collider* _other);
 
+	/// <summary>
+	/// 衝突中処理
+	/// </summary>
+	/// <param name="_other">衝突相手のコライダー</param>
 	void OnCollision(const Collider* _other);
 
 	// 壁との反発処理
@@ -51,6 +59,11 @@ public: // ゲッター
 
 public: // セッター
 
+	/// <summary>
+	/// 速度設定
+	/// </summary>
+	/// <param name="_velocity">速度ベクトル</param>
+	/// <returns></returns>
 	Vector3 SetVelocity(const Vector3 _velocity) { return velocity_ = _velocity; }
 
 	// プレイヤーの周囲の座標を設定

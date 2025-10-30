@@ -9,6 +9,10 @@ class EnemyBehaviorHitReact : public EnemyBehaviorState
 {
 public:
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_pNormalEnemy">通常敵ポインタ</param>
 	EnemyBehaviorHitReact(NormalEnemy* _pNormalEnemy);
 	
 	// 初期化

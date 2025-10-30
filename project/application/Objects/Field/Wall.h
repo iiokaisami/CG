@@ -34,6 +34,7 @@ public:
 
 private: // 衝突判定
 
+	// 衝突時コールバック
 	void OnCollisionTrigger();
 
 private:

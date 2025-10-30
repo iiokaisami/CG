@@ -32,10 +32,16 @@ public:
 	// 描画
 	void Draw();
 
-	//　次シーン予約
+	/// <summary>
+	/// シーン変更
+	/// </summary>
+	/// <param name="sceneName">次のシーン名</param>
 	void ChangeScene(const std::string& sceneName);
 
-	// シーンファクトリーを設定
+	/// <summary>
+	/// シーンファクトリーを設定
+	/// </summary>
+	/// <param name="sceneFactory">シーンファクトリーのポインタ</param>
 	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
 
 private:

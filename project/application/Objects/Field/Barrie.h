@@ -34,11 +34,18 @@ public:
 
 public: // セッター
 
-	// バリア破壊フラグをセット
+	/// <summary>
+	/// バリア破壊フラグをセット
+	/// </summary>
+	/// <param name="_isDestroyed"> 破壊フラグ</param>
 	void SetBarrierDestroyed(bool _isDestroyed) { isBarrierDestroyed_ = _isDestroyed; }
 
 private: // 衝突判定
 
+	/// <summary>
+	/// 当たり判定処理
+	/// </summary>
+	/// <param name="_other"> 衝突相手のコライダー</param>
 	void OnCollisionTrigger(const Collider* _other);
 
 private:

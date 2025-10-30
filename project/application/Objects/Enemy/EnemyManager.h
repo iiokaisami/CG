@@ -46,10 +46,21 @@ public:
 	void GameOverEnemyUpdate();
 
 	// 敵の初期化
+	/// <summary>
+	/// 通常敵の初期化
+	/// </summary>
+	/// <param name="pos">出現位置</param>
 	void NormalEnemyInit(const Vector3& pos);
+	/// <summary>
+	/// トラップ敵の初期化
+	/// </summary>
+	/// <param name="pos">出現位置</param>
 	void TrapEnemyInit(const Vector3& pos);
 
-	// 敵のウェーブステート切り替え
+	/// <summary>
+	/// 敵のウェーブステート切り替え
+	/// </summary>
+	/// <param name="_pState">新しいステート</param>
 	void ChangeState(std::unique_ptr<EnemyWaveState>_pState);
 
 public: // ゲッター
@@ -68,13 +79,22 @@ public: // ゲッター
 
 public: // セッター
 
-	// プレイヤーの位置をセット
+	/// <summary>
+	/// プレイヤーの位置をセット
+	/// </summary>
+	/// <param name="playerPosition">プレイヤーの位置ベクトル</param>
 	void SetPlayerPosition(const Vector3& playerPosition) { playerPosition_ = playerPosition; }
 
-	// 全てのウェーブの敵を倒したら立てるフラグセット
+	/// <summary>
+	/// 全てのウェーブの敵を倒したら立てるフラグセット
+	/// </summary>
+	/// <param name="isDefeated">フラグ</param>
 	void SetAllEnemyDefeated(bool isDefeated) { isAllEnemyDefeated_ = isDefeated; }
 
-	// エディタセット
+	/// <summary>
+	/// エディタセット
+	/// </summary>
+	/// <param name="_levelData">レベルデータローダー</param>
 	void SetLevelData(std::shared_ptr<LevelData> _levelData) { levelData_ = _levelData; }
 
 private:

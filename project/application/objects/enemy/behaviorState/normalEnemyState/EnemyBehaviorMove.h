@@ -9,6 +9,10 @@ class EnemyBehaviorMove : public EnemyBehaviorState
 {
 public:
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_pNormalEnemy">通常敵ポインタ</param>
 	EnemyBehaviorMove(NormalEnemy* _pNormalEnemy);
 	
 	// 初期化

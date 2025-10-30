@@ -57,6 +57,7 @@ private:
 	/// <summary>
 	/// デスカメラ更新
 	/// </summary>
+	/// <param name="deltaTime">デルタタイム</param>
 	void UpdateDeathCamera(float deltaTime);
 
 

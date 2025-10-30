@@ -12,6 +12,11 @@ class EnemyBehaviorState
 {
 public:
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_state">ステート名</param>
+	/// <param name="_pNormalEnemy">通常敵ポインタ</param>
 	EnemyBehaviorState(const std::string& _state, NormalEnemy* _pNormalEnemy) :stateName_(_state), pNormalEnemy_(_pNormalEnemy) {};
 	virtual ~EnemyBehaviorState();
 	
@@ -45,10 +50,16 @@ protected:
 		Transform transform;
 	};
 
-	// モーションのカウント
+	/// <summary>
+	/// モーションのカウント
+	/// </summary>
+	/// <param name="_motion">モーション構造体</param>
 	void MotionCount(Motion& _motion);
 
-	// 敵のトランスフォームをmotion_.transformにセット
+	/// <summary>
+	/// 敵のトランスフォームをmotion_.transformにセット
+	/// </summary>
+	/// <param name="_pEnemy">通常敵ポインタ</param>
 	void TransformUpdate(NormalEnemy* _pEnemy);
 
 	std::string stateName_;

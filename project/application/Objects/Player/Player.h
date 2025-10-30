@@ -68,10 +68,16 @@ private:
 
 private: // 衝突判定
 
-	// 衝突時の処理
+	/// <summary>
+	/// 衝突時の処理
+	/// </summary>
+	/// <param name="_other">衝突相手のコライダー</param>
 	void OnCollisionTrigger(const Collider* _other);
 	
-	// 衝突中の処理
+	/// <summary>
+	/// 衝突中の処理
+	/// </summary>
+	/// <param name="_other">衝突相手のコライダー</param>
 	void OnCollision(const Collider* _other);
 
 	// 暗闇トラップに衝突したときの処理
@@ -79,8 +85,10 @@ private: // 衝突判定
 
 public: // ゲッター
 
+	// ヒットした瞬間のフラグのゲッター
 	bool IsHitMoment() const { return isHitMoment_; }
 
+	// 移動速度のゲッター
 	Vector3 GetVelocity() const { return moveVelocity_; }
 
 	// オートフラグのゲッター
@@ -91,12 +99,22 @@ public: // ゲッター
 
 public: // セッター
 
+	/// <summary>
+	/// ヒットした瞬間のフラグのセッター
+	/// </summary>
+	/// <param name="_isHitMoment">ヒットした瞬間のフラグ</param>
 	void SetHitMoment(bool _isHitMoment) { isHitMoment_ = _isHitMoment; }
 
-	// オートフラグのセッター
+	/// <summary>
+	/// オートフラグのセッター
+	/// </summary>
+	/// <param name="_isAuto">オートフラグ</param>
 	void SetAutoControl(bool _isAuto) { isAutoControl_ = _isAuto; }
 
-	// 移動可能フラグのセッター
+	/// <summary>
+	/// 移動可能フラグのセッター
+	/// </summary>
+	/// <param name="_isCanMove">移動可能フラグ</param>
 	bool SetIsCanMove(bool _isCanMove) { return isCanMove_ = _isCanMove; }
 
 private:

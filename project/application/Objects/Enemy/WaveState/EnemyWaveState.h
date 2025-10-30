@@ -14,7 +14,13 @@ class EnemyWaveState
 {
 public:
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_wave">ウェーブ名</param>
+	/// <param name="_pEnemyManager">エネミーマネージャーのポインタ</param>
 	EnemyWaveState(const std::string& _wave, EnemyManager* _pEnemyManager) : wave_(_wave), pEnemyManager_(_pEnemyManager) {};
+	
 	virtual~EnemyWaveState();
 
 	// 初期化
@@ -23,17 +29,32 @@ public:
 	// 更新
 	virtual void Update() = 0;
 
+public: // セッター
+
+	/// <summary>
+	/// エディタセット
+	/// </summary>
+	/// <param name="_levelData">レベルデータローダー</param>
 	void SetLevelData(std::shared_ptr<LevelData> _levelData) { levelData_ = _levelData; }
 
 protected:
 
-	// CSVファイルの読み込み
+	/// <summary>
+	/// CSVファイルの読み込み
+	/// </summary>
+	/// <param name="csvPath">CSVファイルのパス</param>
 	void LoadCSV(const std::string& csvPath);
 
-	// 敵の発生コマンドを更新
+	/// <summary>
+	/// 敵の発生コマンドを更新
+	/// </summary>
+	/// <param name="_pEnemyManager">エネミーマネージャーのポインタ</param>
 	void UpdateEnemyPopCommands(EnemyManager* _pEnemyManager);
 
-	// csvの更新
+	/// <summary>
+	/// csvの更新
+	/// </summary>
+	/// <param name="_pEnemyManager">エネミーマネージャーのポインタ</param>
 	void UpdateCSV(EnemyManager* _pEnemyManager);
 
 	std::string wave_;

@@ -9,6 +9,10 @@ class EnemyBehaviorSpawn : public EnemyBehaviorState
 {
 public:
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_pNormalEnemy">通常敵ポインタ</param>
 	EnemyBehaviorSpawn(NormalEnemy* _pNormalEnemy);
 	
 	// 初期化

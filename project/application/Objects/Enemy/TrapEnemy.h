@@ -45,18 +45,32 @@ public:
 	// 罠初期化
 	void TrapInit();
 
-	// 行動ステート切り替え
+	/// <summary>
+	/// 行動ステート切り替え
+	/// </summary>
+	/// <param name="_pState">新しいステートのポインタ</param>
 	void ChangeBehaviorState(std::unique_ptr<TrapEnemyBehaviorState> _pState);
 
-	// objectのtransformをセット
+	/// <summary>
+	/// objectのtransformをセット
+	/// </summary>
+	/// <param name="_position">位置</param>
+	/// <param name="_rotation">回転</param>
+	/// <param name="_scale">スケール</param>
 	void ObjectTransformSet(const Vector3& _position, const Vector3& _rotation, const Vector3& _scale);
 
 private: // 衝突判定
 
-	// 衝突時の処理
+	/// <summary>
+	/// 衝突時の処理
+	/// </summary>
+	/// <param name="_other">衝突相手のコライダー</param>
 	void OnCollisionTrigger(const Collider* _other);
 
-	// 衝突中の処理
+	/// <summary>
+	/// 衝突中の処理
+	/// </summary>
+	/// <param name="_other">衝突相手のコライダー</param>
 	void OnCollision(const Collider* _other);
 
 public: // ゲッター
@@ -70,17 +84,29 @@ public: // ゲッター
 
 public: // セッター
 
+	/// <summary>
+	/// プレイヤーの位置をセット
+	/// </summary>
+	/// <param name="_playerPosition">プレイヤーの位置</param>
 	Vector3 SetPlayerPosition(const Vector3& _playerPosition) { return playerPosition_ = _playerPosition; }
 
-	// 無敵フラグをセット
+	/// <summary>
+	/// 無敵フラグをセット
+	/// </summary>
+	/// <param name="_isInvincible">無敵フラグ</param>
 	void SetIsInvincible(bool _isInvincible) { isInvincible_ = _isInvincible; }
 
-	// 被弾フラグをセット
+	/// <summary>
+	/// 被弾フラグをセット
+	/// </summary>
+	/// <param name="_isHit">被弾フラグ</param>
 	void SetIsHit(bool _isHit) { isHit_ = _isHit; }
 
-	// オブジェクトのtransformをセット
+	// オブジェクトのpositionをセット
 	void SetObjectPosition(const Vector3& _position) { object_->SetPosition(_position); }
+	// オブジェクトのrotationをセット
 	void SetObjectRotation(const Vector3& _rotation) { object_->SetRotate(_rotation); }
+	// オブジェクトのscaleをセット
 	void SetObjectScale(const Vector3& _scale) { object_->SetScale(_scale); }
 
 	// 罠設置完了フラグセット

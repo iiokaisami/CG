@@ -9,6 +9,10 @@ class TrapEnemyBehaviorSpawn : public TrapEnemyBehaviorState
 {
 public:
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_pTrapEnemy">罠型敵のポインタ</param>
 	TrapEnemyBehaviorSpawn(TrapEnemy* _pTrapEnemy);
 	
 	// 初期化

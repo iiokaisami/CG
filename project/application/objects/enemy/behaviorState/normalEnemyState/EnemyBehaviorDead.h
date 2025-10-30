@@ -9,6 +9,10 @@ class EnemyBehaviorDead : public EnemyBehaviorState
 {
 public:
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_pNormalEnemy">通常敵ポインタ</param>
 	EnemyBehaviorDead(NormalEnemy* _pNormalEnemy);
 	
 	// 初期化

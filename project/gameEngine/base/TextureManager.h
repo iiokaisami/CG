@@ -12,9 +12,8 @@
 class TextureManager
 {
 private:
+
 	static TextureManager* instance;
-
-
 
 	TextureManager() = default;
 	~TextureManager() = default;
@@ -23,29 +22,55 @@ private:
 
 public:
 
-	// シングルトンインスタンスの取得
+	/// <summary>
+	/// シングルトンインスタンスの取得
+	/// </summary>
+	/// <returns>インスタンス</returns>
 	static TextureManager* GetInstance();
 	// 終了
 	void Finalize();
 
-
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="dxCommon">DirectX共通クラス</param>
+	/// <param name="srvManager">SRV管理クラス</param>
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
-	// テクスチャファイルの読み込み
+	/// <summary>
+	/// テクスチャファイルの読み込み
+	/// </summary>
+	/// <param name="filePath">ファイルパス</param>
+	/// <param name="forceCubeMap">強制的にキューブマップとして読み込むか</param>
 	void LoadTexture(const std::string& filePath, bool forceCubeMap = false);
 
 public: // ゲッター
 
-	// メタデータを取得
+	/// <summary>
+	/// メタデータを取得
+	/// </summary>
+	/// <param name="filePath">ファイルパス</param>
+	/// <returns>メタデータ</returns>
 	const DirectX::TexMetadata& GetMetaData(const std::string& filePath);
 
-	// SRVインデックスの取得
+	/// <summary>
+	/// SRVインデックスの取得
+	/// </summary>
+	/// <param name="filePath">ファイルパス</param>
+	/// <returns>SRVインデックス</returns>
 	uint32_t GetTextureIndexByFilePath(const std::string& filePath);
 
-	// テクスチャ番号からGPUハンドルを所得
+	/// <summary>
+	/// テクスチャ番号からGPUハンドルを所得
+	/// </summary>
+	/// <param name="filePath">ファイルパス</param>
+	/// <returns>GPUデスクリプタハンドル</returns>
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(const std::string& filePath);
 
+	/// <summary>
+	/// SRV管理クラスを取得
+	/// </summary>
+	/// <returns>SRV管理クラス</returns>
 	SrvManager* GetSrvManager() const { return srvManager_; }
 
 

@@ -1,4 +1,4 @@
-#pragma once  
+#pragma once
 
 #include <wrl.h>
 #include <d3d12.h>  
@@ -15,15 +15,35 @@ class RenderTexture
 {  
 public:
 
+    /// <summary>
+	/// 初期化
+    /// </summary>
+	/// <param name="dxCommon"> dx共通クラス</param>
+	/// <param name="srvManager"> SRVマネージャー</param>
+	/// <param name="width">ウィンドウ幅</param>
+	/// <param name="height">ウィンドウ高さ</param>
+	/// <param name="format">フォーマット</param>
+	/// <param name="clearColor">クリアカラー</param>
     void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor);
+    /// <summary>
+	/// レンダーターゲットとして使用開始
+    /// </summary>
     void BeginRender();
+	/// <summary>
+	/// レンダーターゲットとして使用終了
+	/// </summary>
     void EndRender();
 
 
 public: // ゲッター
 
+	// リソースの取得
     ID3D12Resource* GetResource() const { return texture_.Get(); }
+	
+    // RTV ハンドルの取得
     D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const;
+
+	// SRV インデックスの取得
     uint32_t GetSRVIndex() const { return srvIndex_; }
 
     // SRV ハンドルの取得

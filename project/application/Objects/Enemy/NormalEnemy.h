@@ -45,18 +45,32 @@ public:
 	// 攻撃
 	void Attack();
 
-	// 行動ステート切り替え
+	/// <summary>
+	/// 行動ステート切り替え
+	/// </summary>
+	/// <param name="_pState">新しいステートポインタ</param>
 	void ChangeBehaviorState(std::unique_ptr<EnemyBehaviorState> _pState);
 
-	// objectのtransformをセット
+	/// <summary>
+	/// objectのtransformをセット
+	/// </summary>
+	/// <param name="_position">位置</param>
+	/// <param name="_rotation">回転</param>
+	/// <param name="_scale">スケール</param>
 	void ObjectTransformSet(const Vector3& _position, const Vector3& _rotation, const Vector3& _scale);
 
 private: // 衝突判定
 
-	// 衝突時の処理
+	/// <summary>
+	/// 衝突時の処理
+	/// </summary>
+	/// <param name="_other">衝突相手のコライダー</param>
 	void OnCollisionTrigger(const Collider* _other);
 
-	// 衝突中の処理
+	/// <summary>
+	/// 衝突中の処理
+	/// </summary>
+	/// <param name="_other">衝突相手のコライダー</param>
 	void OnCollision(const Collider* _other);
 
 	// 暗闇トラップに衝突したときの処理
@@ -87,9 +101,11 @@ public: // セッター
 	// 被弾フラグをセット
 	void SetIsHit(bool _isHit) { isHit_ = _isHit; }
 
-	// オブジェクトのtransformをセット
+	// オブジェクトのpositionをセット
 	void SetObjectPosition(const Vector3& _position) { object_->SetPosition(_position); }
+	// オブジェクトのrotationをセット
 	void SetObjectRotation(const Vector3& _rotation) { object_->SetRotate(_rotation); }
+	// オブジェクトのscaleをセット
 	void SetObjectScale(const Vector3& _scale) { object_->SetScale(_scale); }
 
 private:

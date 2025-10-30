@@ -34,6 +34,9 @@ public:
 
 private: // 衝突判定
 
+	/// <summary>
+	/// 衝突時処理
+	/// </summary>
 	void OnCollisionTrigger();
 
 private: // メンバ変数

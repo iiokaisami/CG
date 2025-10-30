@@ -29,7 +29,10 @@ class Skybox
 {
 public:
 
-    // 初期化
+	/// <summary>
+    /// 初期化
+	/// </summary>
+	/// <param name="dxCommon">DirectX共通管理</param>
     void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
     // 終了
     void Finalize();
@@ -40,6 +43,10 @@ public:
 
 public: // セッター
 
+    /// <summary>
+	/// キューブマップのSRVインデックスを設定
+    /// </summary>
+	/// <param name="index">SRVインデックス</param>
     void SetCubeMapSrvIndex(uint32_t index) { cubeMapSrvIndex_ = index; }
 
 private:

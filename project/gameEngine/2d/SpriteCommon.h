@@ -29,7 +29,10 @@ public:
 
 public:
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="dxCommon">DirectXCommonのポインタ</param>
 	void Initialize(DirectXCommon* dxCommon);
 
 	// ルートシグネイチャの作成
@@ -41,8 +44,12 @@ public:
 	// 共通描画設定
 	void CommonDrawSetting();
 
-	//-----------ゲッター----------//
+public: // ゲッター
 
+	/// <summary>
+	/// DirectXCommonのポインタを取得
+	/// </summary>
+	/// <returns>DirectXCommonのポインタ</returns>
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
 
 private:

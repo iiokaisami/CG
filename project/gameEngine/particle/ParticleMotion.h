@@ -58,54 +58,142 @@ public:
 	/// ターゲットの周りを回る
     /// </summary>
 	/// <param name="rand">ランダム生成器</param>
-    /// <param name="target"></param>
-    /// <returns></returns>
+    /// <param name="target">目標位置</param>
+    /// <returns>生成したパーティクル</returns>
     static Particle MakeOrbit(std::mt19937& rand, const Vector3& target);
-	// 中心からランダムに放射状に飛ぶ
+	/// <summary>
+	/// 中心からランダムに放射状に飛ぶ
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="center">中心</param>
+	/// <returns>生成したパーティクル</returns>
     static Particle MakeExplosion(std::mt19937& rand, const Vector3& center);
-	// baseから上に向かって噴出
+	/// <summary>
+	/// baseから上に向かって噴出
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="base">発現地点</param>
+	/// <returns>生成したパーティクル</returns>
     static Particle MakeFountain(std::mt19937& rand, const Vector3& base);
-	// originを中心にランダムに揺れる
+	/// <summary>
+	/// originを中心にランダムに揺れる
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="origin">中心</param>
+	/// <returns>生成したパーティクル</returns>
     static Particle MakeWiggle(std::mt19937& rand, const Vector3& origin);
-	// 円柱状に放射
+	/// <summary>
+	/// 円柱状に放射
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="position">発現位置</param>
+	/// <returns>生成したパーティクル</returns>
     static Particle MakeCylinder(std::mt19937& rand, const Vector3& position);
-	// 斜めにスラッシュ
+	/// <summary>
+	/// 斜めにスラッシュ
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="translate">発現地点</param>
+	/// <returns>生成したパーティクル</returns>
     static Particle MakeSlash(std::mt19937& rand, const Vector3& translate);
-	// 炎のように上昇
+	/// <summary>
+	/// 炎のように上昇
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="base">発現位置</param>
+	/// <returns>生成したパーティクル</returns>
     static Particle MakeFlame(std::mt19937& rand, const Vector3& base);
 
     // 魔法陣
+	/// <summary>
+	/// 魔法陣
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="translate">発現地点</param>
+	/// <returns>生成したパーティクル</returns>
     static Particle MakeMagic1(std::mt19937& rand, const Vector3& translate);
+	/// <summary>
+	/// 魔法陣パラパラ
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="translate">中心</param>
+	/// <returns>生成したパーティクル</returns>
 	static Particle MakeMagic2(std::mt19937& rand, const Vector3& translate);
+	/// <summary>
+	/// レーザー
+	/// </summary>
+	/// <param name="rand">ランダム生成期</param>
+	/// <param name="translate">発現地点</param>
+	/// <returns>生成したパーティクル</returns>
 	static Particle MakeLaser(std::mt19937& rand, const Vector3& translate);
 
-	// 花びら
+	/// <summary>
+	/// 花びら
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="base">発現位置</param>
+	/// <returns>生成したパーティクル</returns>
 	static Particle MakePetal(std::mt19937& rand, const Vector3& translate);
 
-    // 水
+	/// <summary>
+	/// 水
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="base">発現位置</param>
+	/// <returns>生成したパーティクル</returns>
 	static Particle MakeWater(std::mt19937& rand, const Vector3& translate);
 
-    // 泡
+	/// <summary>
+	/// 泡
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="base">発現位置</param>
+	/// <returns>生成したパーティクル</returns>
 	static Particle MakeBubble(std::mt19937& rand, const Vector3& translate);
 
-    // 土埃
+	/// <summary>
+	/// 土埃
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="base">発現位置</param>
+	/// <returns>生成したパーティクル</returns>
 	static Particle MakeDust(std::mt19937& rand, const Vector3& translate);
 
-    // デバフ
+    
+	/// <summary>
+	/// デバフ
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="base">発現位置</param>
+	/// <returns>生成したパーティクル</returns>
 	static Particle MakeDebuff(std::mt19937& rand, const Vector3& translate);
 
-    // スパーク
+	/// <summary>
+	/// スパーク
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="base">発現位置</param>
+	/// <returns>生成したパーティクル</returns>
 	static Particle MakeSpark(std::mt19937& rand, const Vector3& translate);
 
-    // 弾けるスパーク
+	/// <summary>
+	/// 弾けるスパーク
+	/// </summary>
+	/// <param name="rand">ランダム生成器</param>
+	/// <param name="base">発現位置</param>
+	/// <returns>生成したパーティクル</returns>
 	static Particle MakeSparkBurst(std::mt19937& rand, const Vector3& translate);
  
 public: // セッター
 
-	// "UP"下から上
-	// "DOWN"上から下
-	// "LEFT"右から左
-	// "RIGHT"左から右
+	/// <summary>
+	/// Ring方向設定
+	/// "UP"下から上
+	/// "DOWN"上から下
+	/// "LEFT"右から左
+	/// "RIGHT"左から右
+	/// </summary>
+	/// <param name="direction">方向文字列</param>
     static void SetDirection(const std::string& direction);
 
 private:
