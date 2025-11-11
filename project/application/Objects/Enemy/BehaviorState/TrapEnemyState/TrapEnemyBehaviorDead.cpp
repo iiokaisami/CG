@@ -8,7 +8,7 @@ TrapEnemyBehaviorDead::TrapEnemyBehaviorDead(TrapEnemy* _pTrapEnemy) : TrapEnemy
 {
 	motion_.isActive = true;
 	motion_.count = 0;
-	motion_.maxCount = 30; // 移動モーションのカウントを設定
+	motion_.maxCount = 30; // モーションのカウントを設定
 }
 
 void TrapEnemyBehaviorDead::Initialize()
@@ -27,7 +27,7 @@ void TrapEnemyBehaviorDead::Update()
 		motion_.transform.scale = Vector3(1.8f, 1.8f, 1.8f); // 初回だけ一気に膨らむ
 	}
 
-	// 徐々に縮む演出（1.8 → 0.0）
+	// 徐々に縮む演出
 	float scale = Lerp(1.8f, 0.0f, Ease::InCubic(t));
 	motion_.transform.scale = (Vector3(scale, scale, scale));
 

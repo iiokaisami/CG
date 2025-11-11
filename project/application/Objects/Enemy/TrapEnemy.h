@@ -82,6 +82,9 @@ public: // ゲッター
 	// 罠を設置する距離かどうかのフラグ
 	bool IsStopAndTrap() const { return isStopAndTrap_; }
 
+	// 残っているTimeBombの座標を取得
+	std::vector<Vector3> GetRemainingTimeBombPositions() const;
+
 public: // セッター
 
 	/// <summary>

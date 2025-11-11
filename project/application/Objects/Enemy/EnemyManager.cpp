@@ -75,6 +75,15 @@ void EnemyManager::Update()
 			{
 				if (enemy->IsDead())
 				{
+					// Finalize 前に残っている罠の位置を取得
+					std::vector<Vector3> remainingTraps = enemy->GetRemainingTimeBombPositions();
+
+					// 出現位置にCorruptorを生成
+					for (const auto& trapPos : remainingTraps)
+					{
+						CorruptorInit(trapPos);
+					}
+
 					enemy->Finalize();
 					// 敵のカウントを減らす
 					enemyCount_--;
@@ -274,6 +283,22 @@ void EnemyManager::TrapEnemyInit(const Vector3& pos)
 	// 敵を登録
 	pTrapEnemies_.push_back(std::move(trapEnemy));
 
+	// 敵のカウントを増やす
+	enemyCount_++;
+}
+
+void EnemyManager::CorruptorInit(const Vector3& pos)
+{
+	// コラプター
+	std::unique_ptr<Corruptor> corruptor = std::make_unique<Corruptor>();
+	corruptor->SetPosition(pos);
+	corruptor->Initialize();
+	corruptor->SetPlayerPosition(playerPosition_);
+	corruptor->Update();
+
+	// 敵を登録
+	pCorruptors_.push_back(std::move(corruptor));
+	
 	// 敵のカウントを増やす
 	enemyCount_++;
 }

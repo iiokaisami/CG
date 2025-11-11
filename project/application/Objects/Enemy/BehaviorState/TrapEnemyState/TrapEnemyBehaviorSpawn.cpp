@@ -22,7 +22,7 @@ void TrapEnemyBehaviorSpawn::Update()
 	// 敵のトランスフォームをmotion_.transformにセット
 	TransformUpdate(pTrapEnemy_);
 
-	// イージングの進行度（0〜1）
+	// イージングの進行度
 	float t = float(motion_.count) / motion_.maxCount;
 	motion_.transform.scale.x = Ease::OutBack(t);
 	motion_.transform.scale.y = Ease::OutBack(t);
