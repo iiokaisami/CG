@@ -1,7 +1,5 @@
 #include "Player.h"
 
-
-
 void Player::Initialize()
 {
 	// --- 3Dオブジェクト ---

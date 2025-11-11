@@ -8,8 +8,8 @@
 #include <Vector3.h>
 
 #include "../../gameEngine/baseScene/BaseScene.h"
-
 #include "../../gameEngine/transition/BlockRiseTransition.h"
+#include "../../gameEngine/particle/ParticleEmitter.h"
 
 /// <summary>
 /// クリアシーン

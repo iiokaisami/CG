@@ -61,7 +61,7 @@ void GamePlayScene::Initialize()
 
 		if (i == 0)
 		{
-			sprite->Initialize("playUI.png", { 600,0 }, color_, { 0,0 });
+			sprite->Initialize("playUI.png", { 0,600 }, color_, { 0,0 });
 		}
 
 		sprites.push_back(sprite);

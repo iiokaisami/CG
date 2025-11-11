@@ -71,54 +71,6 @@
         },
         {
             "type": "Trap",
-            "name": "Trap",
-            "transform": {
-                "translation": [
-                    9.924478530883789,
-                    -6.4793500900268555,
-                    0.5
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "TrapEnemySpawn",
-            "wave_id": 1,
-            "delay": 200
-        },
-        {
-            "type": "EnemySpawn",
-            "name": "EnemySpawn.001",
-            "transform": {
-                "translation": [
-                    -13.081853866577148,
-                    12.06573486328125,
-                    0.5
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "EnemySpawn",
-            "wave_id": 1,
-            "delay": 250
-        },
-        {
-            "type": "Trap",
             "name": "Trap.001",
             "transform": {
                 "translation": [
@@ -212,78 +164,6 @@
             "file_name": "TrapEnemySpawn",
             "wave_id": 2,
             "delay": 25
-        },
-        {
-            "type": "EnemySpawn",
-            "name": "EnemySpawn.004",
-            "transform": {
-                "translation": [
-                    4.284858703613281,
-                    22.135332107543945,
-                    0.5
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "EnemySpawn",
-            "wave_id": 2,
-            "delay": 25
-        },
-        {
-            "type": "Trap",
-            "name": "Trap.003",
-            "transform": {
-                "translation": [
-                    14.158699989318848,
-                    -16.09524154663086,
-                    0.5
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "TrapEnemySpawn",
-            "wave_id": 2,
-            "delay": 25
-        },
-        {
-            "type": "Trap",
-            "name": "Trap.004",
-            "transform": {
-                "translation": [
-                    -29.146480560302734,
-                    -10.163566589355469,
-                    0.5
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "TrapEnemySpawn",
-            "wave_id": 1,
-            "delay": 250
         }
     ]
 }

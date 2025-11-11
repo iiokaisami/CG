@@ -117,7 +117,8 @@ void ClearScene::Update()
 
 	}
 
-
+	// パーティクル
+	ParticleEmitter::Emit("petalGroup", position_, 1);
 
 #ifdef USE_IMGUI
 
