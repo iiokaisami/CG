@@ -1,5 +1,7 @@
 #include "Player.h"
 
+
+
 void Player::Initialize()
 {
 	// --- 3Dオブジェクト ---
@@ -251,6 +253,9 @@ void Player::Move()
 	// 位置更新
 	position_ += moveVelocity_;
 
+	// 移動制限
+	ClampPosition();
+
 	// パーティクル
 	ParticleEmitter::Emit("walk", position_, 1);
 }
@@ -318,6 +323,9 @@ void Player::Evade()
 	{
 		// 回避移動
 		position_ += evadeDirection_ * kEvadeSpeed_;
+
+		// 移動制限
+		ClampPosition();
 
 		// 回避中のx軸回転（線形補間で速めに回す）
 		float t = 1.0f - static_cast<float>(evadeFrame_) / static_cast<float>(kEvadeDuration_);
@@ -400,7 +408,7 @@ void Player::DeadEffect()
 	// パーティクルを発生させる
 	ParticleEmitter::Emit("rupture", position_, 20);
 
-	// モーション終了扱いにする（isActive=false）
+	// モーション終了扱いにする(isActive=false)
 	deathMotion_.isActive = false;
 	deathMotion_.isComplete = true;
 }
@@ -491,6 +499,9 @@ void Player::AutoMove()
 	// 位置更新
 	position_ += moveVelocity_;
 
+	// 移動制限
+	ClampPosition();
+
 	// パーティクル
 	ParticleEmitter::Emit("walk", position_, 1);
 }
@@ -524,6 +535,12 @@ void Player::AutoAttack()
 	{
 		attackCooldown--;
 	}
+}
+
+void Player::ClampPosition()
+{
+	position_.x = std::clamp(position_.x, limitMin_.x, limitMax_.x);
+	position_.z = std::clamp(position_.z, limitMin_.y, limitMax_.y);
 }
 
 void Player::OnCollisionTrigger(const Collider* _other)

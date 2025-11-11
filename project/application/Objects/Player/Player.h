@@ -65,6 +65,8 @@ private:
 	// オート攻撃
 	void AutoAttack();
 
+	// 移動制限
+	void ClampPosition();
 
 private: // 衝突判定
 
@@ -207,5 +209,8 @@ private:
 
 	bool isCanMove_ = true;
 
+	// 移動制限
+	Vector2 limitMax_ = { 40.0f, 30.0f };
+	Vector2 limitMin_ = { -40.0f, -30.0f };
 };
 
