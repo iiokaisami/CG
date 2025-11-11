@@ -55,17 +55,17 @@ void GamePlayScene::Initialize()
 	cameraRestCenter_ = pPlayer_->GetPosition() + Vector3{ 0.0f,70.0f,-20.0f };
 
 	// スプライト
-	/*for (uint32_t i = 0; i < 1; ++i)
+	for (uint32_t i = 0; i < 1; ++i)
 	{
 		Sprite* sprite = new Sprite();
 
 		if (i == 0)
 		{
-			sprite->Initialize("StartCheckUI.png", { 0,0 }, color_, { 0,0 });
+			sprite->Initialize("playUI.png", { 600,0 }, color_, { 0,0 });
 		}
 
 		sprites.push_back(sprite);
-	}*/
+	}
 
 	// レベルデータの読み込み
 	levelData_ = LevelDataLoader::LoadLevelData("wallSetting");
