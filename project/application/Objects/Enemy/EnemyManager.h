@@ -112,7 +112,7 @@ private:
 	// 敵のウェーブ切り替え
 	bool isWaveChange_ = false;
 	// 敵のウェーブ切り替えインターバル
-	int32_t waveChangeInterval_ = 270;
+	int32_t waveChangeInterval_ = 250;
 
 	// プレイヤーの位置
 	Vector3 playerPosition_{};
