@@ -4,27 +4,29 @@
 #include <Vector3.h>
 
 // 前方宣言
-class Corruptor;
+class TrapEnemy;
 
 /// <summary>
-/// コラプター行動ステート基底クラス
-/// 行動ステートは以下の3つ
-/// ・出現
-/// ・移動
-/// ・自爆(死亡時も同じ行動)
+/// 罠型敵の行動ステート基底クラス
+/// 行動ステートは以下の5つ
+/// ・出現(Spawn)
+/// ・移動(Move)
+/// ・罠設置(SetTrap)
+/// ・被弾(HitReact)
+/// ・死亡(Dead)
 /// </summary>
-class CorruptorBehaviorState
+class TrapEnemyBehaviorState
 {
 public:
-
+	
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="_name">ステート名</param>
-	/// <param name="_corruptor">コラプターのポインタ</param>
-	CorruptorBehaviorState(const std::string& _name, Corruptor* _corruptor) : stateName_(_name), pCorruptor_(_corruptor){}
+	/// <param name="_trapEnemy">罠型敵のポインタ</param>
+	TrapEnemyBehaviorState(const std::string& _name, TrapEnemy* _trapEnemy) : stateName_(_name), pTrapEnemy_(_trapEnemy) {};
 	
-	virtual ~CorruptorBehaviorState() = default;
+	virtual ~TrapEnemyBehaviorState();
 	
 	// 初期化
 	virtual void Initialize() = 0;
@@ -32,16 +34,16 @@ public:
 	// 更新
 	virtual void Update() = 0;
 	
-	// モーションリセット
+	// モーションのリセット
 	virtual void ResetMotion() = 0;
-	
+
 protected:
 
 	struct Transform
 	{
-		Vector3 position{};
-		Vector3 rotation{};
-		Vector3 scale{};
+		Vector3 position = { 0.0f, 0.0f, 0.0f };
+		Vector3 rotation = { 0.0f, 0.0f, 0.0f };
+		Vector3 scale = { 1.0f, 1.0f, 1.0f };
 	};
 
 	struct Motion
@@ -60,10 +62,10 @@ protected:
 	void MotionCount(Motion& _motion);
 
 	// 敵のトランスフォームをmotion_.transformにセット
-	void TransformUpdate(Corruptor* _pEnemy);
+	void TransformUpdate(TrapEnemy* _pEnemy);
 
 	std::string stateName_;
-	Corruptor* pCorruptor_ = nullptr;
+	TrapEnemy* pTrapEnemy_ = nullptr;
 
 	Motion motion_;
 

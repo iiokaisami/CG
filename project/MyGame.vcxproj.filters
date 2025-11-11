@@ -305,7 +305,6 @@
     <ClCompile Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorSpawn.cpp" />
     <ClCompile Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorState.cpp" />
     <ClCompile Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorMove.cpp" />
-    <ClCompile Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorHitReact.cpp" />
     <ClCompile Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorSelfDestruct.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -574,7 +573,6 @@
     <ClInclude Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorSpawn.h" />
     <ClInclude Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorState.h" />
     <ClInclude Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorMove.h" />
-    <ClInclude Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorHitReact.h" />
     <ClInclude Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorSelfDestruct.h" />
   </ItemGroup>
   <ItemGroup>

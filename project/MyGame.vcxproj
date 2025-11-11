@@ -115,7 +115,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="application\Objects\Enemy\Bullet\EnemyBullet.cpp" />
     <ClCompile Include="application\Objects\Field\Barrie.cpp" />
     <ClCompile Include="application\objects\enemy\Corruptor.cpp" />
-    <ClCompile Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorHitReact.cpp" />
     <ClCompile Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorMove.cpp" />
     <ClCompile Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorSelfDestruct.cpp" />
     <ClCompile Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorSpawn.cpp" />
@@ -208,7 +207,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\Objects\Enemy\Bullet\EnemyBullet.h" />
     <ClInclude Include="application\Objects\Field\Barrie.h" />
     <ClInclude Include="application\objects\enemy\Corruptor.h" />
-    <ClInclude Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorHitReact.h" />
     <ClInclude Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorMove.h" />
     <ClInclude Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorSelfDestruct.h" />
     <ClInclude Include="application\objects\enemy\behaviorState\corruptorState\CorruptorBehaviorSpawn.h" />

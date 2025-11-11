@@ -5,6 +5,7 @@
 
 #include "NormalEnemy.h"
 #include "TrapEnemy.h"
+#include "Corruptor.h"
 #include "waveState/EnemyWaveState.h"
 #include "../../../gameEngine/level_editor/LevelDataLoader.h"
 
@@ -103,6 +104,8 @@ private:
 	std::vector<std::unique_ptr<NormalEnemy>> pNormalEnemies_;
 	// トラップエネミー
 	std::vector<std::unique_ptr<TrapEnemy>> pTrapEnemies_;
+	// コラプター
+	std::vector<std::unique_ptr<Corruptor>> pCorruptors_;
 
 	// 敵の数
 	uint32_t enemyCount_ = 0;
