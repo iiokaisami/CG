@@ -200,7 +200,7 @@ void TitleScene::Update()
 
 
 
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 
 	// 透明度の更新
 
@@ -265,7 +265,7 @@ void TitleScene::Update()
 	pEnemyManager_->ImGuiDraw();
 	pField_->ImGuiDraw();
 
-#endif // _DEBUG
+#endif // USE_IMGUI
 
 	
 

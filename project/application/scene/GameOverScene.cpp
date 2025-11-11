@@ -120,7 +120,7 @@ void GameOverScene::Update()
 
 
 
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 
 	// 透明度の更新
 
@@ -136,7 +136,7 @@ void GameOverScene::Update()
 
 	pEnemyManager_->ImGuiDraw();
 
-#endif // _DEBUG
+#endif // USE_IMGUI
 
 
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN))

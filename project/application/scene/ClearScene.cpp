@@ -119,7 +119,7 @@ void ClearScene::Update()
 
 
 
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 
 	// 透明度の更新
 
@@ -134,7 +134,7 @@ void ClearScene::Update()
 
 	ImGui::End();
 
-#endif // _DEBUG
+#endif // USE_IMGUI
 
 
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN))

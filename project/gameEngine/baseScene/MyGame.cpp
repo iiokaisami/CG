@@ -142,7 +142,7 @@ void MyGame::Update()
 
 
 
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 
 	//particleManager->DebugUI();
 
@@ -227,7 +227,7 @@ void MyGame::Update()
 		postEffectManager->GetPassAs<GaussianFilterPass>("GaussianFilter")->SetIntensity(gaussianIntensity);
 	}
 
-#endif // _DEBUG
+#endif // USE_IMGUI
 
 }
 
@@ -257,10 +257,10 @@ void MyGame::Draw()
 	
 	postEffectManager->DrawAll(dxCommon->GetCommandList(), renderTexture->GetGPUHandle(), inputRes.Get(), state);
 
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 	// ImGui描画
 	imGuiManager->Draw();
-#endif // _DEBUG
+#endif // USE_IMGUI
 
 	dxCommon->PostDraw();
 

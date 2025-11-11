@@ -12,19 +12,19 @@ void Framework::Run()
 			break;
 		}
 
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 		// ImGui開始
 		imGuiManager->Begin();
 
-#endif // _DEBUG
+#endif // USE_IMGUI
 
 		// 毎フレーム更新
 		Update();
 
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 		// ImGui終了
 		imGuiManager->End();
-#endif // _DEBUG
+#endif // USE_IMGUI
 
 		// 描画
 		Draw();
@@ -115,12 +115,12 @@ void Framework::Initialize()
 	skybox = std::make_unique<Skybox>();
 	skybox->Initialize(dxCommon.get(), srvManager.get());
 
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 
 	imGuiManager = std::make_unique<ImGuiManager>();
 	imGuiManager->Initialize(winApp.get(), dxCommon.get());
 
-#endif // _DEBUG
+#endif // USE_IMGUI
 		
 }
 
@@ -165,11 +165,11 @@ void Framework::Finalize()
 	// skybox解放
 	skybox->Finalize();
 
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 	// ImGuiManager解放
 	imGuiManager->Finalize();
 	imGuiManager.reset();
-#endif // _DEBUG
+#endif // USE_IMGUI
 }
 
 void Framework::Update()

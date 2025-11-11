@@ -40,12 +40,12 @@
 
 #include "../skybox/Skybox.h"
 
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 
 #include "../imgui/ImGuiManager.h"
 #include "../../externals/imgui/imgui.h"
 
-#endif // _DEBUG
+#endif // USE_IMGUI
 
 /// <summary>
 /// フレームワーク
@@ -109,10 +109,10 @@ protected:
 
 	std::unique_ptr<Skybox> skybox = nullptr;
 
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 
 	std::unique_ptr<ImGuiManager> imGuiManager = nullptr;
 
-#endif // _DEBUG
+#endif // USE_IMGUI
 };
 

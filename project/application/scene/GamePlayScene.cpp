@@ -215,7 +215,7 @@ void GamePlayScene::Update()
 	}
 
 
-#ifdef _DEBUG
+#ifdef USE_IMGUI
 
 	ImGui::Begin("PlayScene");
 
@@ -248,7 +248,7 @@ void GamePlayScene::Update()
 	pGoal_->ImGuiDraw();
 
 
-#endif // _DEBUG
+#endif // USE_IMGUI
 
 
 	if (Input::GetInstance()->TriggerKey(DIK_UP) or (pGoal_->IsCleared() && !isTransitioning_))
