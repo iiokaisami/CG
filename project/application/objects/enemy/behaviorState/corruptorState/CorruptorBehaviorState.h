@@ -24,7 +24,7 @@ public:
 	/// <param name="_corruptor">コラプターのポインタ</param>
 	CorruptorBehaviorState(const std::string& _name, Corruptor* _corruptor) : stateName_(_name), pCorruptor_(_corruptor){}
 	
-	virtual ~CorruptorBehaviorState() = default;
+	virtual ~CorruptorBehaviorState();
 	
 	// 初期化
 	virtual void Initialize() = 0;

@@ -57,6 +57,11 @@ public:
 	/// </summary>
 	/// <param name="pos">出現位置</param>
 	void TrapEnemyInit(const Vector3& pos);
+	/// <summary>
+	/// コラプターの初期化
+	/// </summary>
+	/// <param name="pos">出現位置</param>
+	void CorruptorInit(const Vector3& pos);
 
 	/// <summary>
 	/// 敵のウェーブステート切り替え
