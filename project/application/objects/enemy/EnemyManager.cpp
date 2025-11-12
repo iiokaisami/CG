@@ -12,7 +12,6 @@ void EnemyManager::Initialize()
 
 	// ウェーブステート
 	ChangeState(std::make_unique<EnemyWaveStage1>(this));
-
 }
 
 void EnemyManager::Finalize()
