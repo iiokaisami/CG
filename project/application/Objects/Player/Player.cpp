@@ -182,6 +182,8 @@ void Player::Draw2D()
 
 void Player::ImGuiDraw()
 {
+#ifdef USE_IMGUI
+
 	ImGui::Begin("Player");
 
 	ImGui::SliderFloat3("pos", &position_.x, -290.0f, 290.0f);
@@ -203,6 +205,8 @@ void Player::ImGuiDraw()
 	{
 		bullet->ImGuiDraw();
 	}
+
+#endif // USE_IMGUI
 }
 
 void Player::Move()

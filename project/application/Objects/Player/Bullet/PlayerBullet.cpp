@@ -77,6 +77,8 @@ void PlayerBullet::Draw2D()
 
 void PlayerBullet::ImGuiDraw()
 {
+#ifdef USE_IMGUI
+
 	ImGui::Begin("PlayerBullet");
 	
 	ImGui::SliderFloat3("position", &position_.x, -30.0f, 30.0f);
@@ -84,6 +86,8 @@ void PlayerBullet::ImGuiDraw()
 	ImGui::SliderFloat3("scale", &scale_.x, 0.0f, 10.0f);
 	
 	ImGui::End();
+
+#endif // USE_IMGUI
 }
 
 void PlayerBullet::OnCollisionTrigger(const Collider* _other)

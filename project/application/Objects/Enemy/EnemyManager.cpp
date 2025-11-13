@@ -128,6 +128,8 @@ void EnemyManager::Draw()
 
 void EnemyManager::ImGuiDraw()
 {
+#ifdef USE_IMGUI
+
 	for (auto& enemy : pNormalEnemies_)
 	{
 		enemy->ImGuiDraw();
@@ -137,6 +139,8 @@ void EnemyManager::ImGuiDraw()
 	{
 		enemy->ImGuiDraw();
 	}
+
+#endif // USE_IMGUI
 }
 
 void EnemyManager::TitleEnemyInit()

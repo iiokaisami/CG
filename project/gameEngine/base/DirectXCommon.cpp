@@ -431,6 +431,8 @@ void DirectXCommon::CreateDXCompiler()
 
 void DirectXCommon::InitializeImGui()
 {
+#ifdef USE_IMGUI
+
 	//ImGuiの初期化
 	/*IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -444,6 +446,8 @@ void DirectXCommon::InitializeImGui()
 		srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(),
 		srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart()
 	);*/
+
+#endif // USE_IMGUI
 }
 
 void DirectXCommon::PreDraw()

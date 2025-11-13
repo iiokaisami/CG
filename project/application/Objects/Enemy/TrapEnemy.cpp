@@ -201,6 +201,8 @@ void TrapEnemy::Draw2D()
 
 void TrapEnemy::ImGuiDraw()
 {
+#ifdef USE_IMGUI
+
 	ImGui::Begin("TrapEnemy");
 	ImGui::Text("Position: (%.2f, %.2f, %.2f)", position_.x, position_.y, position_.z);
 	ImGui::Text("Rotation: (%.2f, %.2f, %.2f)", rotation_.x, rotation_.y, rotation_.z);
@@ -208,6 +210,8 @@ void TrapEnemy::ImGuiDraw()
 	ImGui::Text("HP: %d", hp_);
 	ImGui::Text("Is Dead: %s", isDead_ ? "Yes" : "No");
 	ImGui::End();
+
+#endif // USE_IMGUI
 }
 
 void TrapEnemy::Move()

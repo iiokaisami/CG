@@ -491,6 +491,8 @@ void ParticleManager::DebugUI()
         groupNames.push_back(name);
     }
 
+#ifdef USE_IMGUI
+
     if (ImGui::Begin("Particle Control")) {
 
         // --- 新規作成用グループ名入力 ---
@@ -594,5 +596,7 @@ void ParticleManager::DebugUI()
     }
 
     ImGui::End();
+
+#endif // USE_IMGUI
 
 }

@@ -147,6 +147,8 @@ void NormalEnemy::Draw2D()
 
 void NormalEnemy::ImGuiDraw()
 {
+#ifdef USE_IMGUI
+
 	ImGui::Begin("Enemy");
 
 	ImGui::SliderFloat3("position", &position_.x, -30.0f, 30.0f);
@@ -174,6 +176,8 @@ void NormalEnemy::ImGuiDraw()
 	{
 		bullet->ImGuiDraw();
 	}
+
+#endif // USE_IMGUI
 }
 
 void NormalEnemy::Move()

@@ -71,6 +71,8 @@ void EnemyBullet::Draw2D()
 
 void EnemyBullet::ImGuiDraw()
 {
+#ifdef USE_IMGUI
+
 	ImGui::Begin("EnemyBullet");
 
 	ImGui::SliderFloat3("position", &position_.x, -30.0f, 30.0f);
@@ -78,6 +80,8 @@ void EnemyBullet::ImGuiDraw()
 	ImGui::SliderFloat3("scale", &scale_.x, 0.0f, 10.0f);
 
 	ImGui::End();
+
+#endif // USE_IMGUI
 }
 
 void EnemyBullet::UpdateModel()

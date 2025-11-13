@@ -85,6 +85,8 @@ void Corruptor::Draw2D()
 
 void Corruptor::ImGuiDraw()
 {
+#ifdef USE_IMGUI
+
 	ImGui::Begin("Corruptor");
 	ImGui::Text("Position: (%.2f, %.2f, %.2f)", position_.x, position_.y, position_.z);
 	ImGui::Text("Rotation: (%.2f, %.2f, %.2f)", rotation_.x, rotation_.y, rotation_.z);
@@ -92,6 +94,8 @@ void Corruptor::ImGuiDraw()
 	ImGui::Text("HP: %d", hp_);
 	ImGui::Text("Is Dead: %s", isDead_ ? "Yes" : "No");
 	ImGui::End();
+
+#endif // USE_IMGUI
 }
 
 void Corruptor::Move()

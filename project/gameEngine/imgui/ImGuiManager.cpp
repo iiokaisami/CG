@@ -1,14 +1,20 @@
 #include "ImGuiManager.h"
 
+#ifdef USE_IMGUI
+
 //#include <imgui.h>
 #include "../../externals/imgui/imgui_impl_win32.h"
 //#include <imgui_impl_dx12.h>
 
+#endif // USE_IMGUI
+
 void ImGuiManager::Initialize(WinApp* winApp, DirectXCommon* dxCommon)
 {
+
 	winApp_ = winApp;
 	dxCommon_ = dxCommon;
 
+#ifdef USE_IMGUI
 	// ImGuiのコンテキストを生成
 	ImGui::CreateContext();
 	// ImGuiのスタイルを設定
@@ -35,10 +41,14 @@ void ImGuiManager::Initialize(WinApp* winApp, DirectXCommon* dxCommon)
 		srvHeap_->GetCPUDescriptorHandleForHeapStart(),
 		srvHeap_->GetGPUDescriptorHandleForHeapStart()
 	);
+
+#endif // USE_IMGUI
 }
 
 void ImGuiManager::Finalize()
 {
+#ifdef USE_IMGUI
+
 	// 後始末
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
@@ -46,24 +56,36 @@ void ImGuiManager::Finalize()
 
 	// デスクリプタヒープを解放
 	srvHeap_.Reset();
+
+#endif // USE_IMGUI
 }
 
 void ImGuiManager::Begin()
 {
+#ifdef USE_IMGUI
+
 	// ImGuiフレーム開始
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+#endif // USE_IMGUI
 }
 
 void ImGuiManager::End()
 {
+#ifdef USE_IMGUI
+
 	// ImGui描画前準備
 	ImGui::Render();
+
+#endif // USE_IMGUI
 }
 
 void ImGuiManager::Draw()
 {
+#ifdef USE_IMGUI
+
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList().Get();
 
 	// デスクリプタヒープの配列を設定
@@ -71,4 +93,6 @@ void ImGuiManager::Draw()
 	commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 	// 描画コマンドを発行
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
+
+#endif // USE_IMGUI
 }

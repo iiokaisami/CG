@@ -58,6 +58,8 @@ void Wall::Draw()
 
 void Wall::ImGuiDraw()
 {
+#ifdef USE_IMGUI
+
 	ImGui::Begin("Wall");
 
 	ImGui::SliderFloat3("pos", &position_.x, -100.0f, 100.0f);
@@ -65,6 +67,8 @@ void Wall::ImGuiDraw()
 	ImGui::SliderFloat3("scale", &scale_.x, 0.0f, 10.0f);
 	
 	ImGui::End();
+
+#endif // USE_IMGUI
 }
 
 void Wall::OnCollisionTrigger()

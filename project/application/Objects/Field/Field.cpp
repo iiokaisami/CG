@@ -55,6 +55,8 @@ void Field::Draw()
 
 void Field::ImGuiDraw()
 {
+#ifdef USE_IMGUI
+
 	ImGui::Begin("Field");
 
 	ImGui::SliderFloat3("pos", &position_.x, -100.0f, 100.0f);
@@ -62,6 +64,8 @@ void Field::ImGuiDraw()
 	ImGui::SliderFloat3("scale", &scale_.x, 0.0f, 10.0f);
 	
 	ImGui::End();
+
+#endif // USE_IMGUI
 }
 
 void Field::OnCollisionTrigger()

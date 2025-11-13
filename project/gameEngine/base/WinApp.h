@@ -3,9 +3,13 @@
 #include <windows.h>
 #include <cstdint>
 
+#ifdef USE_IMGUI
+
 //ImGui
 #include "../../externals/imgui/imgui.h"
 #include "../../externals/imgui/imgui_impl_dx12.h"
+
+#endif // USE_IMGUI
 
 /// <summary>
 /// Windowsアプリケーションクラス
